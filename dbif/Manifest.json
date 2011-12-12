@@ -1,0 +1,32 @@
+{
+  "info" : 
+  {
+    "name" : "dbif",
+
+    "summary" : "App Inventor Gallery database interface",
+    "description" : "The database interface for App Inventor Gallery",
+    
+    "license" : "LGPL/EPL",
+    "authors" : 
+    [
+      {
+        "name" : "Derrell Lipman (derrell)",
+        "email" : "derrell.lipman@unwireduniverse.com"
+      }
+    ],
+
+    "version" : "trunk",
+    "qooxdoo-versions": ["1.7"]
+  },
+  
+  "provides" : 
+  {
+    "namespace"   : "aiagallery.dbif",
+    "encoding"    : "utf-8",
+    "class"       : "source/class",
+    "resource"    : "source/resource",
+    "translation" : "source/translation",
+    "type"        : "contribution"
+  }
+}
+
