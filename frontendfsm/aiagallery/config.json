@@ -93,16 +93,16 @@
       "library" :
       [
         {
-          "manifest" : "${CONTRIB_PATH}/Dialog/trunk/Manifest.json"
+          "manifest" : "../../lib/dialog/Manifest.json"
         },
         {
-          "manifest" : "${CONTRIB_PATH}/RpcJs/trunk/Manifest.json"
+          "manifest" : "../../lib/liberated/Manifest.json"
         },
         {
-          "manifest" : "${CONTRIB_PATH}/UploadWidget/trunk/Manifest.json"
+          "manifest" : "../../lib/uploadwidget/Manifest.json"
         },
         {
-          "manifest" : "${CONTRIB_PATH}/CollapsablePanel/trunk/Manifest.json"
+          "manifest" : "../../lib/collapsablepanel/Manifest.json"
         }
       ]
     },
