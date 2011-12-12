@@ -93,10 +93,13 @@
       "library" :
       [
         {
-          "manifest" : "../../lib/dialog/Manifest.json"
+          "manifest" : "../../dbif/Manifest.json"
         },
         {
           "manifest" : "../../lib/liberated/Manifest.json"
+        },
+        {
+          "manifest" : "../../lib/dialog/Manifest.json"
         },
         {
           "manifest" : "../../lib/uploadwidget/Manifest.json"
