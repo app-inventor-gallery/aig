@@ -1,0 +1,12 @@
+[submodule "lib/liberated"]
+	path = lib/liberated
+	url = git@github.com:liberated/liberated.git
+[submodule "lib/dialog"]
+	path = lib/dialog
+	url = git@github.com:qooxdoo-contrib/dialog.git
+[submodule "lib/uploadwidget"]
+	path = lib/uploadwidget
+	url = git@github.com:qooxdoo-contrib/uploadwidget.git
+[submodule "lib/collapsablepanel"]
+	path = lib/collapsablepanel
+	url = git@github.com:qooxdoo-contrib/collapsablepanel.git
