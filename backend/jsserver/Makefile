@@ -169,7 +169,7 @@ qxoo_classes/%.class : $(qxroot)/%.js
 	  /tmp/$(notdir $<)
 	  rm -f /tmp/$(notdir $<)
 
-qxoo_classes/%.class : $(app)/%.js
+qxoo_classes/%.class : $(dbif)/%.js
 	echo 'window = Packages.main.Window().get(); '			\
 		'navigator = window.navigator; '			\
 		'qx = window.qx;'					\
@@ -184,7 +184,7 @@ qxoo_classes/%.class : $(app)/%.js
 	  -extends java.lang.Object					   \
 	  -d qxoo_classes						   \
 	  -package $(basename $(shell echo $< |				   \
-			sed -e s,$(app)/,, -e 's,\.js,,' -e 's,/,.,g')) \
+			sed -e s,$(dbif)/,, -e 's,\.js,,' -e 's,/,.,g'))   \
 	  /tmp/$(notdir $<)
 	  rm -f /tmp/$(notdir $<)
 
