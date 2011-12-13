@@ -74,6 +74,7 @@
 
   "let" :
   {
+    "QOOXDOO_PATH" : "../../lib/qooxdoo",
     "APPLICATION"  : "aiagallery",
     "QXTHEME"      : "aiagallery.theme.Theme",
     "API_EXCLUDE"  : ["qx.test.*", "${APPLICATION}.theme.*", "${APPLICATION}.test.*", "${APPLICATION}.simulation.*"],
