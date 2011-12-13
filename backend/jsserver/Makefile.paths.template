@@ -1,0 +1,4 @@
+qxroot := ../../../qx/qooxdoo/framework/source/class/
+dbif := ../../dbif/source/class
+rpcjs := ../../lib/liberated/source/class
+
