@@ -1,0 +1,12 @@
+After cloning this repository, execute the following two commands from the top
+level, to retrieve the external repository modules used here:
+
+  git submodule init
+  git submodule update
+
+When submodules have changed (as indicated by "git status" or an email
+notification, issue the following command from the top level:
+
+  git submodule update
+
+Derrell
