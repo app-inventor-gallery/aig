@@ -12,7 +12,7 @@ server-side JavaScript has begun to gain momentum, allowing for more overlap
 of skill set, but still requiring separate development and testing of the
 frontend and backend pieces.
 
-<h2>Introducing LIBERATED</h2>
+<h2>Be LIBERATED from those hassles!</h2>
 
 LIBERATED is a new methodology for web-based client-server application
 development, in which a simulated server is built into the browser environment
