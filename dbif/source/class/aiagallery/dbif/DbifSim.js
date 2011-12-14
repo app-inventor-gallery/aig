@@ -8,7 +8,7 @@
 
 qx.Class.define("aiagallery.dbif.DbifSim",
 {
-  extend  : rpcjs.sim.Dbif,
+  extend  : liberated.sim.Dbif,
   type    : "singleton",
 
   include : 
@@ -23,7 +23,7 @@ qx.Class.define("aiagallery.dbif.DbifSim",
     this.base(arguments);
     
     // Prepare for remote procedure calls to aiagallery.features.*
-    this.__rpc = new rpcjs.sim.Rpc([ "aiagallery", "features" ], "/rpc");
+    this.__rpc = new liberated.sim.Rpc([ "aiagallery", "features" ], "/rpc");
         
     // Save the logged-in user. The whoAmI property is in MDbifCommon.
     this.setWhoAmI(
@@ -87,7 +87,7 @@ qx.Class.define("aiagallery.dbif.DbifSim",
       };
       
       // Retrieve all of the visitor records
-      rpcjs.dbif.Entity.query("aiagallery.dbif.ObjVisitors").forEach(
+      liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors").forEach(
         function(visitor, i)
         {
           // Add this visitor to the list
@@ -108,8 +108,8 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           var             guiWhoAmI;
 
           // Try to get this user's display name. Does the visitor exist?
-          visitor = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
-                                            result.username);
+          visitor = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
+                                                result.username);
           if (visitor.length > 0)
           {
             // Yup, he exists.
@@ -153,13 +153,13 @@ qx.Class.define("aiagallery.dbif.DbifSim",
       if (typeof localStorage.simDB == "string")
       {
         qx.Bootstrap.debug("Reading DB from Web Storage");
-        rpcjs.sim.Dbif.setDb(qx.lang.Json.parse(localStorage.simDB));
+        liberated.sim.Dbif.setDb(qx.lang.Json.parse(localStorage.simDB));
       }
       else
       {
         // No database yet stored. Retrieve the database from the MSimData mixin
         qx.Bootstrap.debug("No database yet. Using new SIM database.");
-        rpcjs.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
+        liberated.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
       }
     }
     else
@@ -178,16 +178,16 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           delete apps[appId];
         });
 
-      rpcjs.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
+      liberated.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
     }
     
     // Register our put & query functions
-    rpcjs.dbif.Entity.registerDatabaseProvider(
-      rpcjs.sim.Dbif.query,
-      rpcjs.sim.Dbif.put,
-      rpcjs.sim.Dbif.remove,
-      rpcjs.sim.Dbif.getBlob,
-      rpcjs.sim.Dbif.putBlob,
-      rpcjs.sim.Dbif.removeBlob);
+    liberated.dbif.Entity.registerDatabaseProvider(
+      liberated.sim.Dbif.query,
+      liberated.sim.Dbif.put,
+      liberated.sim.Dbif.remove,
+      liberated.sim.Dbif.getBlob,
+      liberated.sim.Dbif.putBlob,
+      liberated.sim.Dbif.removeBlob);
   }
 });

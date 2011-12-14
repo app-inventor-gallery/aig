@@ -21,7 +21,7 @@ qx.Class.define("aiagallery.test.AppsTest",
       var dbifSim = aiagallery.dbif.DbifSim.getInstance();
 
       // We need an error object
-      var error = new rpcjs.rpc.error.Error("2.0");
+      var error = new liberated.rpc.error.Error("2.0");
       
       // Adding then deleting an App to see it go smoothly.
       var myAppData = dbifSim.addOrEditApp(null, 
@@ -126,7 +126,7 @@ qx.Class.define("aiagallery.test.AppsTest",
       var dbifSim = aiagallery.dbif.DbifSim.getInstance();
       
       // We need an error object
-      var error = new rpcjs.rpc.error.Error("2.0");
+      var error = new liberated.rpc.error.Error("2.0");
       
       dbifSim.setWhoAmI(
         {

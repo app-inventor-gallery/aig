@@ -56,14 +56,14 @@ qx.Class.define("aiagallery.test.DeepPermissionCheckTest",
         });
       
       // Use a personalized database
-      rpcjs.sim.Dbif.setDb(this.__db);
+      liberated.sim.Dbif.setDb(this.__db);
       
     },
 
     tearDown: function() 
     {
       // Reset the db for other tests
-      rpcjs.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
+      liberated.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
     },
     
     "test: MDBifCommon._deepPermissionCheck()" : function()

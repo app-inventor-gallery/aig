@@ -91,7 +91,7 @@ qxoo_classes :=							\
 # 	qxoo_classes/qx/dev/DebugObject.class
 
 
-app_classes :=							\
+dbif_classes :=							\
 	qxoo_classes/aiagallery/dbif/Entity.class		\
 	qxoo_classes/aiagallery/dbif/MApps.class		\
 	qxoo_classes/aiagallery/dbif/MComments.class		\
@@ -119,14 +119,14 @@ app_classes :=							\
 	qxoo_classes/aiagallery/dbif/MSimData.class
 
 
-rpcjs_classes :=					\
-	qxoo_classes/rpcjs/AbstractRpcHandler.class	\
-	qxoo_classes/rpcjs/appengine/Rpc.class		\
-	qxoo_classes/rpcjs/rpc/Server.class		\
-	qxoo_classes/rpcjs/rpc/error/Error.class	\
-	qxoo_classes/rpcjs/dbif/Entity.class		\
-	qxoo_classes/rpcjs/sim/Dbif.class		\
-	qxoo_classes/rpcjs/appengine/Dbif.class
+liberated_classes :=					\
+	qxoo_classes/liberated/AbstractRpcHandler.class	\
+	qxoo_classes/liberated/appengine/Rpc.class	\
+	qxoo_classes/liberated/rpc/Server.class		\
+	qxoo_classes/liberated/rpc/error/Error.class	\
+	qxoo_classes/liberated/dbif/Entity.class	\
+	qxoo_classes/liberated/sim/Dbif.class		\
+	qxoo_classes/liberated/appengine/Dbif.class
 
 server_classes :=				\
 	qxoo_classes/main/Loader.class		\
@@ -135,28 +135,28 @@ server_classes :=				\
 	qxoo_classes/main/RpcServlet.class
 
 
-all: $(qxoo_classes) $(app_classes) $(rpcjs_classes) $(server_classes)
-	cd qxoo_classes && jar -cf ../$(qxoo_jar)			\
-	  $(shell echo $(qxoo_classes) | sed -e s,qxoo_classes/,,g)	\
-	  $(shell echo $(app_classes) | sed -e s,qxoo_classes/,,g)	\
-	  $(shell echo $(rpcjs_classes) | sed -e s,qxoo_classes/,,g)	\
-	  $(shell echo $(server_classes) | sed -e s,qxoo_classes/,,g)	\
-	  $(shell echo $(qxoo_classes) |				\
-		sed -e s,qxoo_classes/,,g -e 's,\.class,1.class,g')	\
-	  $(shell echo $(app_classes) |					\
-		sed -e s,qxoo_classes/,,g -e 's,\.class,1.class,g')	\
-	  $(shell echo $(rpcjs_classes) |				\
-		sed -e s,qxoo_classes/,,g -e 's,\.class,1.class,g')	\
-	  $(shell echo $(server_classes) |				\
+all: $(qxoo_classes) $(dbif_classes) $(liberated_classes) $(server_classes)
+	cd qxoo_classes && jar -cf ../$(qxoo_jar)			 \
+	  $(shell echo $(qxoo_classes) | sed -e s,qxoo_classes/,,g)	 \
+	  $(shell echo $(dbif_classes) | sed -e s,qxoo_classes/,,g)	 \
+	  $(shell echo $(liberated_classes) | sed -e s,qxoo_classes/,,g) \
+	  $(shell echo $(server_classes) | sed -e s,qxoo_classes/,,g)	 \
+	  $(shell echo $(qxoo_classes) |				 \
+		sed -e s,qxoo_classes/,,g -e 's,\.class,1.class,g')	 \
+	  $(shell echo $(dbif_classes) |				 \
+		sed -e s,qxoo_classes/,,g -e 's,\.class,1.class,g')	 \
+	  $(shell echo $(liberated_classes) |				 \
+		sed -e s,qxoo_classes/,,g -e 's,\.class,1.class,g')	 \
+	  $(shell echo $(server_classes) |				 \
 		sed -e s,qxoo_classes/,,g -e 's,\.class,1.class,g')
 
 qxoo_classes/%.class : $(qxroot)/%.js
-	echo 'window = Packages.main.Window().get(); '			\
-		'navigator = window.navigator; '			\
-		'qx = window.qx;'					\
-		'qxvariants = window.qxvariants;'			\
-		'aiagallery = window.aiagallery;'			\
-		'rpcjs = window.rpcjs;'					\
+	echo 'window = Packages.main.Window().get(); '			   \
+		'navigator = window.navigator; '			   \
+		'qx = window.qx;'					   \
+		'qxvariants = window.qxvariants;'			   \
+		'aiagallery = window.aiagallery;'			   \
+		'liberated = window.liberated;'				   \
 			| cat - $< > /tmp/$(notdir $<)
 	java -classpath							   \
 	  "$(classpath):$(shell find war/WEB-INF/lib			   \
@@ -167,45 +167,45 @@ qxoo_classes/%.class : $(qxroot)/%.js
 	  -package $(basename $(shell echo $< |				   \
 			sed -e s,$(qxroot)/,, -e 's,\.js,,' -e 's,/,.,g')) \
 	  /tmp/$(notdir $<)
-	  rm -f /tmp/$(notdir $<)
+	rm -f /tmp/$(notdir $<)
 
 qxoo_classes/%.class : $(dbif)/%.js
-	echo 'window = Packages.main.Window().get(); '			\
-		'navigator = window.navigator; '			\
-		'qx = window.qx;'					\
-		'qxvariants = window.qxvariants;'			\
-		'aiagallery = window.aiagallery;'			\
-		'rpcjs = window.rpcjs;'					\
+	echo 'window = Packages.main.Window().get(); '			 \
+		'navigator = window.navigator; '			 \
+		'qx = window.qx;'					 \
+		'qxvariants = window.qxvariants;'			 \
+		'aiagallery = window.aiagallery;'			 \
+		'liberated = window.liberated;'				 \
 			| cat - $< > /tmp/$(notdir $<)
-	java -classpath							   \
-	  "$(classpath):$(shell find war/WEB-INF/lib			   \
-			    -name '*.jar' -print0 | tr '\0' ':')"	   \
-	  org.mozilla.javascript.tools.jsc.Main				   \
-	  -extends java.lang.Object					   \
-	  -d qxoo_classes						   \
-	  -package $(basename $(shell echo $< |				   \
-			sed -e s,$(dbif)/,, -e 's,\.js,,' -e 's,/,.,g'))   \
+	java -classpath							 \
+	  "$(classpath):$(shell find war/WEB-INF/lib			 \
+			    -name '*.jar' -print0 | tr '\0' ':')"	 \
+	  org.mozilla.javascript.tools.jsc.Main				 \
+	  -extends java.lang.Object					 \
+	  -d qxoo_classes						 \
+	  -package $(basename $(shell echo $< |				 \
+			sed -e s,$(dbif)/,, -e 's,\.js,,' -e 's,/,.,g')) \
 	  /tmp/$(notdir $<)
-	  rm -f /tmp/$(notdir $<)
+	rm -f /tmp/$(notdir $<)
 
-qxoo_classes/%.class : $(rpcjs)/%.js
-	echo 'window = Packages.main.Window().get(); '			\
-		'navigator = window.navigator; '			\
-		'qx = window.qx;'					\
-		'qxvariants = window.qxvariants;'			\
-		'aiagallery = window.aiagallery;'			\
-		'rpcjs = window.rpcjs;'					\
+qxoo_classes/%.class : $(liberated)/%.js
+	echo 'window = Packages.main.Window().get(); '			      \
+		'navigator = window.navigator; '			      \
+		'qx = window.qx;'					      \
+		'qxvariants = window.qxvariants;'			      \
+		'aiagallery = window.aiagallery;'			      \
+		'liberated = window.liberated;'				      \
 			| cat - $< > /tmp/$(notdir $<)
-	java -classpath							   \
-	  "$(classpath):$(shell find war/WEB-INF/lib			   \
-			    -name '*.jar' -print0 | tr '\0' ':')"	   \
-	  org.mozilla.javascript.tools.jsc.Main				   \
-	  -extends java.lang.Object					   \
-	  -d qxoo_classes						   \
-	  -package $(basename $(shell echo $< |				   \
-			sed -e s,$(rpcjs)/,, -e 's,\.js,,' -e 's,/,.,g')) \
+	java -classpath							      \
+	  "$(classpath):$(shell find war/WEB-INF/lib			      \
+			    -name '*.jar' -print0 | tr '\0' ':')"	      \
+	  org.mozilla.javascript.tools.jsc.Main				      \
+	  -extends java.lang.Object					      \
+	  -d qxoo_classes						      \
+	  -package $(basename $(shell echo $< |				      \
+			sed -e s,$(liberated)/,, -e 's,\.js,,' -e 's,/,.,g')) \
 	  /tmp/$(notdir $<)
-	  rm -f /tmp/$(notdir $<)
+	rm -f /tmp/$(notdir $<)
 
 qxoo_classes/%.class : src/%.js
 	echo 'window = Packages.main.Window().get(); '			\
@@ -213,7 +213,7 @@ qxoo_classes/%.class : src/%.js
 		'qx = window.qx;'					\
 		'qxvariants = window.qxvariants;'			\
 		'aiagallery = window.aiagallery;'			\
-		'rpcjs = window.rpcjs;'					\
+		'liberated = window.liberated;'				\
 			| cat - $< > /tmp/$(notdir $<)
 	java -classpath							\
 	  "$(classpath):$(shell find war/WEB-INF/lib			\
@@ -224,7 +224,7 @@ qxoo_classes/%.class : src/%.js
 	  -package $(basename $(shell echo $< |				\
 			sed -e s,src/,, -e 's,\.js,,' -e 's,/,.,g'))	\
 	  /tmp/$(notdir $<)
-	  rm -f /tmp/$(notdir $<)
+	rm -f /tmp/$(notdir $<)
 
 qxoo_classes/main/RpcServlet.class : src/main/RpcServlet.js
 	echo 'window = Packages.main.Window().get(); '			\
@@ -232,7 +232,7 @@ qxoo_classes/main/RpcServlet.class : src/main/RpcServlet.js
 		'qx = window.qx;'					\
 		'qxvariants = window.qxvariants;'			\
 		'aiagallery = window.aiagallery;'			\
-		'rpcjs = window.rpcjs;'					\
+		'liberated = window.liberated;'				\
 			| cat - $< > /tmp/$(notdir $<)
 	java -classpath							\
 	  "$(classpath):$(shell find war/WEB-INF/lib			\
@@ -243,7 +243,7 @@ qxoo_classes/main/RpcServlet.class : src/main/RpcServlet.js
 	  -package $(basename $(shell echo $< |				\
 			sed -e s,src/,, -e 's,\.js,,' -e 's,/,.,g'))	\
 	  /tmp/$(notdir $<)
-	  rm -f /tmp/$(notdir $<)
+	rm -f /tmp/$(notdir $<)
 
 qxoo_classes/main/GuiServlet.class : src/main/GuiServlet.js
 	echo 'window = Packages.main.Window().get(); '			\
@@ -251,7 +251,7 @@ qxoo_classes/main/GuiServlet.class : src/main/GuiServlet.js
 		'qx = window.qx;'					\
 		'qxvariants = window.qxvariants;'			\
 		'aiagallery = window.aiagallery;'			\
-		'rpcjs = window.rpcjs;'					\
+		'liberated = window.liberated;'				\
 			| cat - $< > /tmp/$(notdir $<)
 	java -classpath							\
 	  "$(classpath):$(shell find war/WEB-INF/lib			\
@@ -262,7 +262,7 @@ qxoo_classes/main/GuiServlet.class : src/main/GuiServlet.js
 	  -package $(basename $(shell echo $< |				\
 			sed -e s,src/,, -e 's,\.js,,' -e 's,/,.,g'))	\
 	  /tmp/$(notdir $<)
-	  rm -f /tmp/$(notdir $<)
+	rm -f /tmp/$(notdir $<)
 
 # Window does not call its own get()
 qxoo_classes/main/Window.class : src/main/Window.js

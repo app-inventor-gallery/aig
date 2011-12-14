@@ -155,9 +155,9 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
               value : keyword
             };
           
-          queryResult = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjSearch",
-                                                criteria,
-                                                null);
+          queryResult = liberated.dbif.Entity.query("aiagallery.dbif.ObjSearch",
+                                                    criteria,
+                                                    null);
           
           // Collect all the single word queries in a map
           queryResult.forEach(function(obj)

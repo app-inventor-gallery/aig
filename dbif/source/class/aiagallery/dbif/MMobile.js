@@ -113,7 +113,7 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
         return error;
       }
       
-      var results = rpcjs.dbif.Entity.query(
+      var results = liberated.dbif.Entity.query(
         "aiagallery.dbif.ObjAppData",
         // We want everything, so null search criteria
         null,
@@ -252,7 +252,7 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
         return error;
       }
       
-      var results = rpcjs.dbif.Entity.query(
+      var results = liberated.dbif.Entity.query(
         "aiagallery.dbif.ObjAppData",
         {
           type  : "element",
@@ -342,7 +342,7 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       }
       
       // Then use the ownerId to query for all Apps
-      var results = rpcjs.dbif.Entity.query(
+      var results = liberated.dbif.Entity.query(
         "aiagallery.dbif.ObjAppData",
         {
           type  : "element",

@@ -20,7 +20,7 @@ qx.Class.define("aiagallery.test.LikingSimpleTest",
       var dbifSim = aiagallery.dbif.DbifSim.getInstance();
 
       // We need an error object
-      var error = new rpcjs.rpc.error.Error("2.0");
+      var error = new liberated.rpc.error.Error("2.0");
       
       // Adding a new app.
       var myAppData = dbifSim.addOrEditApp(null,

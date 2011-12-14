@@ -106,9 +106,9 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
 
         // Query for the likes of this app by the current visitor
         // (an array, which should have length zero or one).
-        flagsList = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjFlags",
-                                            criteria,
-                                            null);
+        flagsList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                criteria,
+                                                null);
 
         // Only change things if the visitor hasn't already flagged this app
         if (flagsList.length === 0)
@@ -205,9 +205,9 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
 
         // Query for the likes of this app by the current visitor
         // (an array, which should have length zero or one).
-        flagsList = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjFlags",
-                                            criteria,
-                                            null);
+        flagsList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                criteria,
+                                                null);
 
         // Only change things if the visitor hasn't 
         // already flagged this comment

@@ -160,7 +160,7 @@ function doGet(request, response)
     }
 
     // AppData
-    entities = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjAppData");
+    entities = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData");
     entities.forEach(
       function(entity)
       {
@@ -170,7 +170,7 @@ function doGet(request, response)
       });
 
     // Comments
-    entities = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjComments");
+    entities = liberated.dbif.Entity.query("aiagallery.dbif.ObjComments");
     entities.forEach(
       function(entity)
       {
@@ -180,7 +180,7 @@ function doGet(request, response)
       });
 
     // Search
-    entities = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjSearch");
+    entities = liberated.dbif.Entity.query("aiagallery.dbif.ObjSearch");
     entities.forEach(
       function(entity)
       {
@@ -194,7 +194,7 @@ function doGet(request, response)
       });
 
     // Tags
-    entities = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjTags");
+    entities = liberated.dbif.Entity.query("aiagallery.dbif.ObjTags");
     entities.forEach(
       function(entity)
       {
@@ -204,7 +204,7 @@ function doGet(request, response)
       });
 
     // Visitors
-    entities = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjVisitors");
+    entities = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors");
     entities.forEach(
       function(entity)
       {

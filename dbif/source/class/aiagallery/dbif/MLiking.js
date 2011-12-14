@@ -83,9 +83,9 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
 
       // Query for the likes of this app by the current visitor
       // (an array, which should have length zero or one).
-      likesList = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjLikes",
-                                          criteria,
-                                          null);
+      likesList = liberated.dbif.Entity.query("aiagallery.dbif.ObjLikes",
+                                              criteria,
+                                              null);
 
       // Only change things if the visitor hasn't already liked this app
       if (likesList.length === 0)

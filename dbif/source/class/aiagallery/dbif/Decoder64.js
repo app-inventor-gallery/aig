@@ -42,7 +42,7 @@ qx.Class.define("aiagallery.dbif.Decoder64",
 
         // Retrieve the blob data, which is the base64-encoded data. We want
         // the most recent entry, so use index 0.
-        fieldContent = rpcjs.dbif.Entity.getBlob(blobIds[0]);
+        fieldContent = liberated.dbif.Entity.getBlob(blobIds[0]);
         
         // Also specify the file name
         name = myObj.getData()[base64field + "FileName"];

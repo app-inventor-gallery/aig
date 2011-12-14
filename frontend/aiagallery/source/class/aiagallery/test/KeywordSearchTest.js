@@ -21,7 +21,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
       var dbifSim = aiagallery.dbif.DbifSim.getInstance();
       
       // We need an error object
-      var error = new rpcjs.rpc.error.Error("2.0");
+      var error = new liberated.rpc.error.Error("2.0");
       
       dbifSim.setWhoAmI(
         {
@@ -33,7 +33,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
         });
 
       // Ensure the database is properly initialized
-      rpcjs.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
+      liberated.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
 
       // Handcrafting a bunch of Apps with various words in their text fields
       var myApps = 

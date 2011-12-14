@@ -208,13 +208,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var searchObj;
       
       // Get all Search Objects with this uid then...
-      results = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjSearch",
-                                        {
-                                          type : "element",
-                                          field: "appId",
-                                          value: uid
-                                        },
-                                       null);
+      results = liberated.dbif.Entity.query("aiagallery.dbif.ObjSearch",
+                                            {
+                                              type : "element",
+                                              field: "appId",
+                                              value: uid
+                                            },
+                                           null);
       // Remove every record found
       results.forEach(function(obj)
                       {
@@ -405,13 +405,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         });
 
       // Issue a query for all category tags
-      categories = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjTags", 
-                                           {
-                                             type  : "element",
-                                             field : "type",
-                                             value : "category"
-                                           },
-                                           null);
+      categories = liberated.dbif.Entity.query("aiagallery.dbif.ObjTags", 
+                                               {
+                                                 type  : "element",
+                                                 field : "type",
+                                                 value : "category"
+                                               },
+                                               null);
       
       // We want to look at only the value field of each category
       categories = categories.map(
@@ -522,7 +522,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         if (sourceData)
         {
           // Save the data and prepend the blob id to the key list
-          key = rpcjs.dbif.Entity.putBlob(sourceData);
+          key = liberated.dbif.Entity.putBlob(sourceData);
           appData.source.unshift(key);
         }
         
@@ -530,7 +530,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         if (apkData)
         {
           // Save the data and prepend the blob id to the key list
-          key = rpcjs.dbif.Entity.putBlob(apkData);
+          key = liberated.dbif.Entity.putBlob(apkData);
           appData.apk.unshift(key);
         }
       }
@@ -618,7 +618,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         appData.apk.forEach(
           function(apkBlobId)
           {
-            rpcjs.dbif.Entity.removeBlob(apkBlobId);
+            liberated.dbif.Entity.removeBlob(apkBlobId);
           });
       }
 
@@ -628,7 +628,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         appData.source.forEach(
           function(sourceBlobId)
           {
-            rpcjs.dbif.Entity.removeBlob(sourceBlobId);
+            liberated.dbif.Entity.removeBlob(sourceBlobId);
           });
       }
 
@@ -731,17 +731,17 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       }
 
       // Issue a query for all apps 
-      appList = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjAppData", 
-                                        criteria,
-                                        resultCriteria);
+      appList = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData", 
+                                            criteria,
+                                            resultCriteria);
 
       // Manipulate each App individually, before returning
       appList.forEach(
           function(app)
           {
             // Replace the owner name with the owner's display name
-            owners = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
-                                              app["owner"]);
+            owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
+                                                  app["owner"]);
 
             // FIXME: should never occur (but does)
             if (true)
@@ -785,15 +785,15 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         };
       
       // Issue a query for category tags
-      categories = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjTags", 
-                                           criteria,
-                                           [
-                                             { 
-                                               type  : "sort",
-                                               field : "value",
-                                               order : "asc"
-                                             }
-                                           ]);
+      categories = liberated.dbif.Entity.query("aiagallery.dbif.ObjTags", 
+                                               criteria,
+                                               [
+                                                 { 
+                                                   type  : "sort",
+                                                   field : "value",
+                                                   order : "asc"
+                                                 }
+                                               ]);
       
       // They want only the tag value to be returned
       categoryNames = categories.map(function() { return arguments[0].value; });
@@ -871,7 +871,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      * @param criteria {Map|Key}
      *   Criteria for selection of which applications to return. This
      *   parameter is in the format described in the 'searchCriteria'
-     *   parameter of rpcjs.dbif.Entity.query().
+     *   parameter of liberated.dbif.Entity.query().
      *
      * @param requestedFields {Map?}
      *   If provided, this is a map containing, as the member names, the
@@ -902,15 +902,16 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             owners;
       var             displayName;
 
-      appList = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjAppData", criteria);
+      appList = 
+        liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData", criteria);
 
       // Manipulate each App individually
       appList.forEach(
         function(app)
         {
           // Issue a query for this visitor
-          owners = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
-                                       app.owner);
+          owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                               app.owner);
 
           // FIXME: should never occur (but does)
           if (true)
@@ -942,15 +943,15 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         };
       
       // Issue a query for all categories
-      categories = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjTags", 
-                                           criteria,
-                                           [
-                                             { 
-                                               type  : "sort",
-                                               field : "value",
-                                               order : "asc"
-                                             }
-                                           ]);
+      categories = liberated.dbif.Entity.query("aiagallery.dbif.ObjTags", 
+                                               criteria,
+                                               [
+                                                 { 
+                                                   type  : "sort",
+                                                   field : "value",
+                                                   order : "asc"
+                                                 }
+                                               ]);
       
       // Tag objects contain the tag value, type, and count of uses. For this
       // procedure, we want to return only the tag value.
@@ -1115,15 +1116,15 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         };
 
       var searchResponseFeatured = 
-          rpcjs.dbif.Entity.query("aiagallery.dbif.ObjAppData",criterion);
+          liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",criterion);
 
       // Manipulate each App individually, before returning
       searchResponseFeatured.forEach(
           function(app)
           {
             // Replace the owner name with the owner's display name
-            owners = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
-                                            app["owner"]);
+            owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
+                                                 app["owner"]);
 
             // FIXME: should never occur (but does)
             if (true)
@@ -1163,17 +1164,17 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         ]; 
 
       var searchResponseLiked = 
-        rpcjs.dbif.Entity.query("aiagallery.dbif.ObjAppData",
-                                criterion,
-                                requestedData);
+        liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                    criterion,
+                                    requestedData);
 
       // Manipulate each App individually, before returning
       searchResponseLiked.forEach(
           function(app)
           {
             // Replace the owner name with the owner's display name
-            owners = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
-                                            app["owner"]);
+            owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
+                                                 app["owner"]);
 
             // FIXME: should never occur (but does)
             if (true)
@@ -1212,17 +1213,17 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         ]; 
 
       var searchResponseNewest = 
-        rpcjs.dbif.Entity.query("aiagallery.dbif.ObjAppData",
-                                criterion,
-                                requestedData);
+        liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                    criterion,
+                                    requestedData);
 
       // Manipulate each App individually, before returning
       searchResponseNewest.forEach(
         function(app)
         {
           // Replace the owner name with the owner's display name
-          owners = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
-                                           app["owner"]);
+          owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
+                                               app["owner"]);
 
           // FIXME: should never occur (but does)
           if (true)
@@ -1283,8 +1284,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       
       uidArr.forEach(function(uid)
           {
-            appList.push(rpcjs.dbif.Entity.query("aiagallery.dbif.ObjAppData",
-                                                 uid)[0]);
+            appList.push(
+              liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData", 
+                                          uid)[0]);
           });
       
       // Manipulate each App individually
@@ -1292,8 +1294,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         function(app)
         {
           // Issue a query for this visitor
-          owners = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
-                                       app.owner);
+          owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                               app.owner);
 
           // FIXME: should never occur (but does)
           if (true)
@@ -1352,7 +1354,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      *       tags   : "tags"
      *     }
      * 
-     * @param error {rpcjs.rpc.error.Error}
+     * @param error {liberated.rpc.error.Error}
      *   All RPCs are passed, as their final argument, an error object. Most
      *   don't use it, but this one does. If the application being requested
      *   is not found (which, since the uid of the specific application is
@@ -1417,8 +1419,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       }
  
       // Issue a query for this visitor
-      owners = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
-                                       app.owner);
+      owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                           app.owner);
 
       // FIXME: should never occur (but does)
       if (true)
@@ -1459,9 +1461,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
         // Query for the likes of this app by the current visitor
         // (an array, which should have length zero or one).
-        likesList = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjLikes",
-                                            criteria,
-                                            null);
+        likesList = liberated.dbif.Entity.query("aiagallery.dbif.ObjLikes",
+                                                criteria,
+                                                null);
 
         // If there were any results, this user has already liked it.
         app.bAlreadyLiked = likesList.length > 0;

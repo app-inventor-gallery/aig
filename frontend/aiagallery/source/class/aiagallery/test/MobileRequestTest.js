@@ -22,7 +22,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       var mobileRequest;
       
       // Need an error object to call RPCs with
-      var error = new rpcjs.rpc.error.Error("2.0");
+      var error = new liberated.rpc.error.Error("2.0");
       
       // testing all
       mobileRequest = dbifSim.mobileRequest("all:0:1:asc:uid", error);
@@ -55,7 +55,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       var mobileRequest;
       
       // Need an error object to call RPCs with
-      var error = new rpcjs.rpc.error.Error("2.0");
+      var error = new liberated.rpc.error.Error("2.0");
 
       // testing tag
       mobileRequest = dbifSim.mobileRequest("tag:Games:0:1", error);
@@ -91,7 +91,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       var mobileRequest;
       
       // Need an error object to call RPCs with
-      var error = new rpcjs.rpc.error.Error("2.0");
+      var error = new liberated.rpc.error.Error("2.0");
 
       // testing featured
       mobileRequest = dbifSim.mobileRequest("featured:0:1:desc:uid", error);
@@ -127,7 +127,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       var developer;
       
       // Need an error object to call RPCs with
-      var error = new rpcjs.rpc.error.Error("2.0");
+      var error = new liberated.rpc.error.Error("2.0");
       
       // testing by_developer
       mobileRequest = dbifSim.mobileRequest("by_developer:Joe Blow:0:1",
@@ -163,7 +163,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       var uid;
       
       // Need an error object to call RPCs with
-      var error = new rpcjs.rpc.error.Error("2.0");
+      var error = new liberated.rpc.error.Error("2.0");
 
       // testing getinfo
      
@@ -210,7 +210,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       var developer;
       
       // Need an error object to call RPCs with
-      var error = new rpcjs.rpc.error.Error("2.0");
+      var error = new liberated.rpc.error.Error("2.0");
       
       //FIXXXXX
             
@@ -324,7 +324,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       var mobileRequest;
       
       // Need an error object to call RPCs with
-      var error = new rpcjs.rpc.error.Error("2.0");
+      var error = new liberated.rpc.error.Error("2.0");
 
       // testing bad parameter type
       

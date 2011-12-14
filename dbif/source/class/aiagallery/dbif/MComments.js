@@ -246,7 +246,7 @@ qx.Mixin.define("aiagallery.dbif.MComments",
      *   An integer value > 0 indicating the maximum number of records to return
      *   in the result set.
      * 
-     * @param error {rpcjs.rpc.error.Error}
+     * @param error {liberated.rpc.error.Error}
      *   All RPCs are passed, as their final argument, an error object. Most
      *   don't use it, but this one does. If the application being requested
      *   is not found (which, since the uid of the specific application is
@@ -279,13 +279,13 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       }
       
       // Issue a query for all comments, with limit and offset settings applied
-      commentList = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjComments", 
-                                        {
-                                          type : "element",
-                                          field: "app",
-                                          value: appId
-                                        },
-                                        resultCriteria);
+      commentList = liberated.dbif.Entity.query("aiagallery.dbif.ObjComments", 
+                                                {
+                                                  type : "element",
+                                                  field: "app",
+                                                  value: appId
+                                                },
+                                                resultCriteria);
 
       try
       {

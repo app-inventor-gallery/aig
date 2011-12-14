@@ -23,7 +23,7 @@ function get()
             if (! this.qx) this.qx = {};
             if (! this.qxvariants) this.qxvariants = {};
             if (! this.aiagallery) this.aiagallery = {};
-            if (! this.rpcjs) this.rpcjs = {};
+            if (! this.liberated) this.liberated = {};
             if (! this.JSON) this.JSON = JSON;
             
             return this;

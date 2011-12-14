@@ -219,8 +219,8 @@ try
   $debugLoad("aiagallery.dbif.MApps");
   new Packages.aiagallery.dbif.MApps();
   
-  $debugLoad("rpcjs.dbif.Entity");
-  new Packages.rpcjs.dbif.Entity();
+  $debugLoad("liberated.dbif.Entity");
+  new Packages.liberated.dbif.Entity();
 
   $debugLoad("aiagallery.dbif.Entity");
   new Packages.aiagallery.dbif.Entity();
@@ -282,11 +282,11 @@ try
   $debugLoad("aiagallery.dbif.Constants");
   new Packages.aiagallery.dbif.Constants();
 
-  $debugLoad("rpcjs.sim.Dbif");
-  new Packages.rpcjs.sim.Dbif();
+  $debugLoad("liberated.sim.Dbif");
+  new Packages.liberated.sim.Dbif();
 
-  $debugLoad("rpcjs.appengine.Dbif");
-  new Packages.rpcjs.appengine.Dbif();
+  $debugLoad("liberated.appengine.Dbif");
+  new Packages.liberated.appengine.Dbif();
   
   $debugLoad("aiagallery.dbif.MDbifCommon");
   new Packages.aiagallery.dbif.MDbifCommon();
@@ -300,17 +300,17 @@ try
   $debugLoad("aiagallery.dbif.MSimData");
   new Packages.aiagallery.dbif.MSimData();
   
-  $debugLoad("rpcjs.AbstractRpcHandler");
-  new Packages.rpcjs.AbstractRpcHandler();
+  $debugLoad("liberated.AbstractRpcHandler");
+  new Packages.liberated.AbstractRpcHandler();
   
-  $debugLoad("rpcjs.appengine.Rpc");
-  new Packages.rpcjs.appengine.Rpc();
+  $debugLoad("liberated.appengine.Rpc");
+  new Packages.liberated.appengine.Rpc();
   
-  $debugLoad("rpcjs.rpc.Server");
-  new Packages.rpcjs.rpc.Server();
+  $debugLoad("liberated.rpc.Server");
+  new Packages.liberated.rpc.Server();
   
-  $debugLoad("rpcjs.rpc.error.Error");
-  new Packages.rpcjs.rpc.error.Error();
+  $debugLoad("liberated.rpc.error.Error");
+  new Packages.liberated.rpc.error.Error();
 }
 catch(e)
 {

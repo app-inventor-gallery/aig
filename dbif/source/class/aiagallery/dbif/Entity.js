@@ -23,7 +23,7 @@
 
 qx.Class.define("aiagallery.dbif.Entity",
 {
-  extend : rpcjs.dbif.Entity,
+  extend : liberated.dbif.Entity,
   
   construct : function(entityType, entityKey)
   {
@@ -42,8 +42,8 @@ qx.Class.define("aiagallery.dbif.Entity",
   {
     // Point our own statics at our superclass' statics
     aiagallery.dbif.Entity.registerEntityType =
-      rpcjs.dbif.Entity.registerEntityType;
+      liberated.dbif.Entity.registerEntityType;
     aiagallery.dbif.Entity.registerPropertyTypes = 
-      rpcjs.dbif.Entity.registerPropertyTypes;
+      liberated.dbif.Entity.registerPropertyTypes;
   }
 });

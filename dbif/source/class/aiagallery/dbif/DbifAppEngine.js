@@ -8,7 +8,7 @@
 
 qx.Class.define("aiagallery.dbif.DbifAppEngine",
 {
-  extend  : rpcjs.appengine.Dbif,
+  extend  : liberated.appengine.Dbif,
   type    : "singleton",
 
   include : 
@@ -22,7 +22,8 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
     this.base(arguments);
     
     // Prepare for remote procedure calls to aiagallery.features.*
-    this.__rpc = new rpcjs.appengine.Rpc([ "aiagallery", "features" ], "/rpc");
+    this.__rpc = 
+      new liberated.appengine.Rpc([ "aiagallery", "features" ], "/rpc");
   },
   
   members :
@@ -95,7 +96,8 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       whoami = String(user.getEmail());
 
       // Try to get this user's display name. Does the visitor exist?
-      visitor = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjVisitors", whoami);
+      visitor =
+        liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", whoami);
       if (visitor.length > 0)
       {
         // Yup, he exists.
@@ -121,12 +123,12 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
   defer : function()
   {
     // Register our put & query functions
-    rpcjs.dbif.Entity.registerDatabaseProvider(
-      rpcjs.appengine.Dbif.query,
-      rpcjs.appengine.Dbif.put,
-      rpcjs.appengine.Dbif.remove,
-      rpcjs.appengine.Dbif.getBlob,
-      rpcjs.appengine.Dbif.putBlob,
-      rpcjs.appengine.Dbif.removeBlob);
+    liberated.dbif.Entity.registerDatabaseProvider(
+      liberated.appengine.Dbif.query,
+      liberated.appengine.Dbif.put,
+      liberated.appengine.Dbif.remove,
+      liberated.appengine.Dbif.getBlob,
+      liberated.appengine.Dbif.putBlob,
+      liberated.appengine.Dbif.removeBlob);
   }
 });

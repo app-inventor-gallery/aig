@@ -24,7 +24,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
   construct : function()
   {
     // Use our authorization function
-    rpcjs.AbstractRpcHandler.authorizationFunction =
+    liberated.AbstractRpcHandler.authorizationFunction =
       aiagallery.dbif.MDbifCommon.authenticate;
   },
 

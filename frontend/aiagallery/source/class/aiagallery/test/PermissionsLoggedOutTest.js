@@ -52,7 +52,7 @@ qx.Class.define("aiagallery.test.PermissionsLoggedOutTest",
       this.dbifSim.setWhoAmI(null);
       
       // Use a personalized database
-      rpcjs.sim.Dbif.setDb(this.__db);
+      liberated.sim.Dbif.setDb(this.__db);
       
       this.currentPermissionsStr = "not logged in";
     },
@@ -60,7 +60,7 @@ qx.Class.define("aiagallery.test.PermissionsLoggedOutTest",
     tearDown: function() 
     {
       // Reset the db for other tests
-      rpcjs.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
+      liberated.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
     },
     
     "test: attempt to getAppList" : function()

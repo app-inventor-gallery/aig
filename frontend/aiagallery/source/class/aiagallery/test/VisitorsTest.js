@@ -24,7 +24,7 @@ qx.Class.define("aiagallery.test.VisitorsTest",
       this.dbifSim = aiagallery.dbif.DbifSim.getInstance();
 
       // We need an error object
-      this.error = new rpcjs.rpc.error.Error("2.0");
+      this.error = new liberated.rpc.error.Error("2.0");
     },
     
     "test: Owner Id and Display Name exchange" : function()
@@ -51,7 +51,7 @@ qx.Class.define("aiagallery.test.VisitorsTest",
       };
 
       // Use our test-specific database
-      rpcjs.sim.Dbif.setDb(db);
+      liberated.sim.Dbif.setDb(db);
 
       this.dbifSim.setWhoAmI(
         {
@@ -74,7 +74,7 @@ qx.Class.define("aiagallery.test.VisitorsTest",
       this.assertEquals(whoAmI.userId, requestDisplayName, "display name");
 
       // Reset the db for other tests
-      rpcjs.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
+      liberated.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
     },
 
     
@@ -95,8 +95,8 @@ qx.Class.define("aiagallery.test.VisitorsTest",
         this.error);
       
       // Retrieve the visitor object for Joe
-      var joe = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
-                                        this.dbifSim.getWhoAmI().email)[0];
+      var joe = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
+                                            this.dbifSim.getWhoAmI().email)[0];
       
       // Ensure that his display name is what it should be
       this.assertEquals("Cokehead", joe.displayName);

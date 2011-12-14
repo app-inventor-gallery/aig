@@ -47,7 +47,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       {
         // Ensure that an error object is passed
         qx.core.Assert.assertInstance(error,
-                                      rpcjs.rpc.error.Error,
+                                      liberated.rpc.error.Error,
                                       "Need error object");
       }
 
@@ -86,7 +86,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     _getVisitorId : function(displayName, error)
     {
       
-      var owners = rpcjs.dbif.Entity.query(
+      var owners = liberated.dbif.Entity.query(
         "aiagallery.dbif.ObjVisitors",
         {
           type  : "element",
@@ -181,7 +181,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       var             visitorList;
       
       // For each visitor...
-      visitorList = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjVisitors");
+      visitorList = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors");
 
       // If we were asked to stringize the values...
       if (bStringize)
@@ -224,7 +224,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       meData = me.getData();
 
       // Get the field names for this entity type
-      propertyTypes = rpcjs.dbif.Entity.propertyTypes;
+      propertyTypes = liberated.dbif.Entity.propertyTypes;
       fields = propertyTypes["visitors"].fields;
 
       // For each of the valid field names...

@@ -24,7 +24,7 @@ qx.Class.define("aiagallery.test.CommentsTest",
       this.dbifSim = aiagallery.dbif.DbifSim.getInstance();
 
       // We need an error object
-      this.error = new rpcjs.rpc.error.Error("2.0");
+      this.error = new liberated.rpc.error.Error("2.0");
     },
     
     "test: Addition, retrieval, and deletion of comment" : function()
@@ -36,7 +36,7 @@ qx.Class.define("aiagallery.test.CommentsTest",
       var             appNumComments = appObj.getData().numComments;
       var             appNumRootComments = appObj.getData().numRootComments;
       var             secondCommentData;
-      var             query = rpcjs.dbif.Entity.query;
+      var             query = liberated.dbif.Entity.query;
 
       this.dbifSim.setWhoAmI(
         {
@@ -48,7 +48,8 @@ qx.Class.define("aiagallery.test.CommentsTest",
       
       var getApp = qx.lang.Function.bind(function(appId)
       {
-        var o = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjAppData", appId);
+        var o =
+          liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData", appId);
         this.assertArray(o, "getApp(" + appId + ")");
         this.assert(o.length === 1, "getApp(" + appId + ") length=" + o.length);
         return o[0];
@@ -57,8 +58,8 @@ qx.Class.define("aiagallery.test.CommentsTest",
 
       var getComment = qx.lang.Function.bind(function(appId, treeId)
       {
-        var o = rpcjs.dbif.Entity.query("aiagallery.dbif.ObjComments",
-                                        [ appId, treeId ]);
+        var o = liberated.dbif.Entity.query("aiagallery.dbif.ObjComments",
+                                            [ appId, treeId ]);
         this.assertArray(o, "getComment(" + appId + ", " + treeId + ")");
         this.assert(o.length === 1,
                     "getComment(" + appId + ", " + treeId + ") " +
@@ -191,7 +192,7 @@ qx.Class.define("aiagallery.test.CommentsTest",
       var             invalidAppId = 23;
     
       // Need an error object to call RPCs with
-      var error = new rpcjs.rpc.error.Error("2.0");
+      var error = new liberated.rpc.error.Error("2.0");
 
       // Add a comment
       this.dbifSim.addComment(validAppId, "Hello world", null, error);

@@ -111,7 +111,7 @@ qx.Class.define("aiagallery.main.Gui",
         simulate.addListener("changeValue",
                              function(e)
                              {
-                               rpcjs.sim.remote.MRpc.SIMULATE = e.getData();
+                               liberated.sim.remote.MRpc.SIMULATE = e.getData();
                              },
                              this);
 

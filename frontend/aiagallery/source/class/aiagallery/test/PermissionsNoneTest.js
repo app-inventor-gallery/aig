@@ -59,7 +59,7 @@ qx.Class.define("aiagallery.test.PermissionsNoneTest",
         });
       
       // Use a personalized database
-      rpcjs.sim.Dbif.setDb(this.__db);
+      liberated.sim.Dbif.setDb(this.__db);
       
       this.currentPermissionsStr = "no permissions";
     },
@@ -67,7 +67,7 @@ qx.Class.define("aiagallery.test.PermissionsNoneTest",
     tearDown: function() 
     {
       // Reset the db for other tests
-      rpcjs.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
+      liberated.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
     },
     
     "test: attempt to getAppList" : function()
