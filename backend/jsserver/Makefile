@@ -12,8 +12,10 @@ classpath := "${classes}"
 
 http_servlet := -extends javax.servlet.http.HttpServlet
 
-
-include Makefile.paths
+# External library paths
+qxroot := ../../../qx/qooxdoo/framework/source/class/
+dbif := ../../dbif/source/class
+liberated := ../../lib/liberated/source/class
 
 qxoo_jar := war/WEB-INF/lib/qxoo.jar
 
