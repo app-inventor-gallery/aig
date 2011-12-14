@@ -1,3 +1,5 @@
+<h2>Traditional client-server development</h2>
+
 Traditional web-based client-server application development has been
 accomplished in two separate pieces: the frontend portion which runs on the
 client machine has been written in HTML and JavaScript; and the backend
