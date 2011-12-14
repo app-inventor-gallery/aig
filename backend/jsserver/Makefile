@@ -13,7 +13,7 @@ classpath := "${classes}"
 http_servlet := -extends javax.servlet.http.HttpServlet
 
 # External library paths
-qxroot := ../../../qx/qooxdoo/framework/source/class/
+qxroot := ../../lib/qooxdoo/framework/source/class/
 dbif := ../../dbif/source/class
 liberated := ../../lib/liberated/source/class
 
