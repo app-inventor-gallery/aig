@@ -3,7 +3,7 @@ var             classname;
 function $debugLoad(name)
 {
   classname = name;
-//  print("Loading " + name);
+  print("Loading " + name);
 }
 
 try
