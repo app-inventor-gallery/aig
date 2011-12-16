@@ -130,10 +130,11 @@ liberated_classes :=					\
 	qxoo_classes/liberated/sim/Dbif.class		\
 	qxoo_classes/liberated/appengine/Dbif.class
 
-server_classes :=				\
-	qxoo_classes/main/Loader.class		\
-	qxoo_classes/main/Window.class		\
-	qxoo_classes/main/GuiServlet.class	\
+server_classes :=					\
+	qxoo_classes/main/Loader.class			\
+	qxoo_classes/main/Window.class			\
+	qxoo_classes/main/ServletContextListener.class	\
+	qxoo_classes/main/GuiServlet.class		\
 	qxoo_classes/main/RpcServlet.class
 
 
@@ -222,6 +223,25 @@ qxoo_classes/%.class : src/%.js
 			    -name '*.jar' -print0 | tr '\0' ':')"	\
 	  org.mozilla.javascript.tools.jsc.Main				\
 	  -extends java.lang.Object					\
+	  -d qxoo_classes						\
+	  -package $(basename $(shell echo $< |				\
+			sed -e s,src/,, -e 's,\.js,,' -e 's,/,.,g'))	\
+	  /tmp/$(notdir $<)
+	rm -f /tmp/$(notdir $<)
+
+qxoo_classes/main/ServletContextListener.class : src/main/ServletContextListener.js
+	echo 'window = Packages.main.Window().get(); '			\
+		'navigator = window.navigator; '			\
+		'qx = window.qx;'					\
+		'qxvariants = window.qxvariants;'			\
+		'aiagallery = window.aiagallery;'			\
+		'liberated = window.liberated;'				\
+			| cat - $< > /tmp/$(notdir $<)
+	java -classpath							\
+	  "$(classpath):$(shell find war/WEB-INF/lib			\
+			    -name '*.jar' -print0 | tr '\0' ':')"	\
+	  org.mozilla.javascript.tools.jsc.Main				\
+	  -implements javax.servlet.ServletContextListener		\
 	  -d qxoo_classes						\
 	  -package $(basename $(shell echo $< |				\
 			sed -e s,src/,, -e 's,\.js,,' -e 's,/,.,g'))	\
