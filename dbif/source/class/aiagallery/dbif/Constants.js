@@ -119,7 +119,12 @@ qx.Class.define("aiagallery.dbif.Constants",
       //
       // MLikes
       //
-      "likesPlusOne"     : "Like an app"
+      "likesPlusOne"     : "Like an app",
+
+      //
+      // MDbMgmt
+      //
+      "getDatabaseEntities" : "Retrieve all database entities of a given type"
     }
   }
 });

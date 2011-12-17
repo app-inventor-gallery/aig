@@ -18,7 +18,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
     aiagallery.dbif.MWhoAmI,
     aiagallery.dbif.MSearch,
     aiagallery.dbif.MLiking,
-    aiagallery.dbif.MFlags
+    aiagallery.dbif.MFlags,
+    aiagallery.dbif.MDbMgmt
   ],
 
   construct : function()
@@ -234,12 +235,17 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       case "keywordSearch":
         return true;          // Anonymous access
 
-
       //
       // MLiking
       //
       case "likesPlusOne":
         return ! bAnonymous;   // Access allowed if logged in
+
+      //
+      // MDbMgmt
+      //
+      case "getDatabaseEntities":
+        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       default:
         // Do not allow access to unrecognized method names
