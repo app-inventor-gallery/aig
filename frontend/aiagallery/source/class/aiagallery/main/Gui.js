@@ -203,7 +203,7 @@ qx.Class.define("aiagallery.main.Gui",
                   module = new aiagallery.main.Module(
                     "Management",
                     "aiagallery/test.png",
-                    "Database Management",
+                    "Database",
                     aiagallery.module.mgmt.db.Db);
 
                   // Start up the new module
@@ -211,7 +211,7 @@ qx.Class.define("aiagallery.main.Gui",
                   {
                     moduleList["Management"] = {};
                   }
-                  moduleList["Management"]["Database Management"] = module;
+                  moduleList["Management"]["Database"] = module;
                   
                   // We've instantiated a new module which needs to be added
                   bAddModules = true;
@@ -241,7 +241,7 @@ qx.Class.define("aiagallery.main.Gui",
                   module = new aiagallery.main.Module(
                     "Management",
                     "aiagallery/module/configure.png",
-                    "User Management",
+                    "Users",
                     aiagallery.module.mgmt.users.Users);
 
                   // Start up the new module
@@ -249,7 +249,7 @@ qx.Class.define("aiagallery.main.Gui",
                   {
                     moduleList["Management"] = {};
                   }
-                  moduleList["Management"]["User Management"] = module;
+                  moduleList["Management"]["Users"] = module;
                   
                   // We've instantiated a new module which needs to be added
                   bAddModules = true;
@@ -279,7 +279,7 @@ qx.Class.define("aiagallery.main.Gui",
                   module = new aiagallery.main.Module(
                     "Management",
                     "aiagallery/test.png",
-                    "Application Management",
+                    "Applications",
                     aiagallery.module.mgmt.applications.Applications);
 
                   // Start up the new module
@@ -287,7 +287,7 @@ qx.Class.define("aiagallery.main.Gui",
                   {
                     moduleList["Management"] = {};
                   }
-                  moduleList["Management"]["Application Management"] = module;
+                  moduleList["Management"]["Applications"] = module;
                   
                   // We've instantiated a new module which needs to be added
                   bAddModules = true;
