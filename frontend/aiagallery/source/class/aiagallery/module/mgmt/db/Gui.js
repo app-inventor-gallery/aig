@@ -27,63 +27,45 @@ qx.Class.define("aiagallery.module.mgmt.db.Gui",
       var             o;
       var             fsm = module.fsm;
       var             canvas = module.canvas;
-      var             rowData;
-
-      // Live mode. Retrieve data from the backend.
-      rowData = [];
+      var             entityType;
+      var             entityTypes;
+      var             selEntityTypes;
 
       // Create a layout for this page
-      canvas.setLayout(new qx.ui.layout.VBox());
+      canvas.setLayout(new qx.ui.layout.VBox(10));
 
       // We'll left-justify some buttons in a button row
       var layout = new qx.ui.layout.HBox();
       layout.setSpacing(10);
       var hBox = new qx.ui.container.Composite(layout);
 
-      // Create an Edit button
-      var edit = new qx.ui.form.Button(this.tr("Edit"));
-      edit.set(
+      // Retrieve all of the entity types
+      entityTypes = liberated.dbif.Entity.getEntityTypes();
+
+      // Create a select box for the entity type
+      hBox.add(new qx.ui.basic.Label("Entity type: "));
+      selEntityTypes = new qx.ui.form.SelectBox();
+      selEntityTypes.set(
         {
-          maxHeight : 24,
-          width     : 100,
-          enabled   : false
+          height : 20
         });
-      hBox.add(edit);
-      fsm.addObject("edit", edit);
+      selEntityTypes.add(new qx.ui.form.ListItem(""));
+      for (entityType in entityTypes)
+      {
+        selEntityTypes.add(new qx.ui.form.ListItem(entityType));
+      }
+      selEntityTypes.addListener("changeSelection", fsm.eventListener, fsm);
+      fsm.addObject("selEntityTypes", 
+                    selEntityTypes,
+                    "main.fsmUtils.disable_during_rpc");
 
-      // Create an Add User button
-      var addUser = new qx.ui.form.Button(this.tr("Add User"));
-      addUser.set(
-        {
-          maxHeight : 24,
-          width     : 100
-        });
-      hBox.add(addUser);
-      addUser.addListener("execute", fsm.eventListener, fsm);
-      
-      // We'll be receiving events on the object so save its friendly name
-      fsm.addObject("addUser", addUser, "main.fsmUtils.disable_during_rpc");
+      // Add the select box to the hbox
+      hBox.add(selEntityTypes);
 
-      // Now right-justify the Delete button
-      hBox.add(new qx.ui.core.Widget(), { flex : 1 });
-
-      // Create a Delete button
-      var deleteUser = new qx.ui.form.Button(this.tr("Delete"));
-      deleteUser.set(
-        {
-          maxHeight : 24,
-          width     : 100,
-          enabled   : false
-        });
-      hBox.add(deleteUser);
-      fsm.addObject("deleteUser", deleteUser);
-
-      // Add the button row to the page
+      // Add the hbox to the page
       canvas.add(hBox);
 
-      // Generate a simple table model
-      var model = new qx.ui.table.model.Simple();
-
+/*
       // Define the table columns
       model.setColumns([ 
                          this.tr("Display Name"),
@@ -188,6 +170,7 @@ qx.Class.define("aiagallery.module.mgmt.db.Gui",
       
       // Add the table to the page
       canvas.add(table, { flex : 1 });
+*/
     },
 
 
@@ -204,11 +187,16 @@ qx.Class.define("aiagallery.module.mgmt.db.Gui",
     handleResponse : function(module, rpcRequest)
     {
       var             fsm = module.fsm;
+      var             canvas = module.canvas;
       var             response = rpcRequest.getUserData("rpc_response");
       var             requestType = rpcRequest.getUserData("requestType");
-      var             cellEditor;
       var             table;
-      var             deletedRow;
+      var             entityType;
+      var             entityTypes;
+      var             propertyTypes;
+      var             model;
+      var             columns;
+      var             field;
 
       if (response.type == "failed")
       {
@@ -221,24 +209,80 @@ qx.Class.define("aiagallery.module.mgmt.db.Gui",
       // Dispatch to the appropriate handler, depending on the request type
       switch(requestType)
       {
-      case "getVisitorList":
-        table = fsm.getObject("table");
+      case "getDatabaseEntities":
+        // Determine which entity type we're dealing with
+        entityType = rpcRequest.getUserData("entityType");
+        alert("Entity type: " + entityType +
+              ", result=" + 
+              qx.dev.Debug.debugObjectToString(response.data.result));
         
-        // Set the entire data model given the result array
-        table.getTableModel().setDataAsMapArray(response.data.result);
+        // Is there already a table displayed?
+        table = canvas.getUserData("table");
+        if (table)
+        {
+          // ... then remove it
+          canvas.remove(table);
+          canvas.setUserData("table", null);
+        }
+        
+        // Retrieve the entity type map
+        entityTypes = liberated.dbif.Entity.getEntityTypes();
+        
+        // Retrieve the property types of this entity type
+        propertyTypes =
+          liberated.dbif.Entity.getPropertyTypes(entityTypes[entityType]);
+
+        // We'll create a new table with the appropriate property types.
+        // Generate a simple table model.
+        model = new qx.ui.table.model.Simple();
+        
+        // Build the column list from the property types
+        columns = [];
+        for (field in propertyTypes.fields)
+        {
+          // Ignore fields of type Long*
+          if (propertyTypes.fields[field] != "LongString")
+          {
+            columns.push(field);
+          }
+        }
+
+        // Define the table columns
+        model.setColumns(columns, columns);
+
+        // Set all columns editable
+        model.setEditable(true);
+
+        // Add the data we just received
+        model.setDataAsMapArray(response.data.result);
+
+        // Customize the table column model.  We want one that automatically
+        // resizes columns.
+        var custom =
+        {
+          tableColumnModel : function(obj) 
+          {
+            return new qx.ui.table.columnmodel.Resize(obj);
+          }
+        };
+
+        // Now that we have a data model, we can use it to create our table.
+        table = new aiagallery.widget.Table(model, custom);
+
+        // We'll be receiving events on the object so save its friendly name
+        fsm.addObject("table", table, "main.fsmUtils.disable_during_rpc");
+
+        // Also save the FSM in the table, for access by cell editors
+        table.setUserData("fsm", fsm);
+
+        // Add the table to the canvas
+        canvas.add(table, { flex : 1 });
+        
+        // Record that it's there so we can delete it when entity type changes
+        canvas.setUserData("table", table);
+
         break;
 
-      case "addOrEditVisitor":
-        // Nothing more to do but close the cell editor
-        break;
-
-      case "deleteVisitor":
-        // Delete the row from the table
-        table = fsm.getObject("table");
-        deletedRow = rpcRequest.getUserData("deletedRow");
-        table.getTableModel().removeRows(deletedRow, 1, false);
-        break;
-        
       default:
         throw new Error("Unexpected request type: " + requestType);
       }

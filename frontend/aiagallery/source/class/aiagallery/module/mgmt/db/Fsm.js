@@ -60,22 +60,61 @@ qx.Class.define("aiagallery.module.mgmt.db.Fsm",
 
         "events" :
         {
-          // When we get an appear event, retrieve the visitor list
-          "appear"    :
+          // Change selection on the entity type select box
+          "changeSelection" :
           {
-            "main.canvas" : "Transition_Idle_to_AwaitRpcResult_via_appear"
-          },
-
-          // When we get a disappear event, stop our timer
-          "disappear" :
-          {
-            "main.canvas" : "Transition_Idle_to_Idle_via_disappear"
+            "selEntityTypes" : 
+              "Transition_Idle_to_AwaitRpcResult_via_entityTypeSelection"
           }
         }
       });
 
       // Replace the initial Idle state with this one
       fsm.replaceState(state, true);
+
+      /*
+       * Transition: Idle to AwaitRpcResult
+       *
+       * Cause: "change selection on Entity Type select box"
+       *
+       * Action:
+       *  Issue RPC call to request all of the entities of the selected type
+       */
+
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_entityTypeSelection",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var             entityType;
+          var             entityTypes;
+          var             request;
+
+          // Determine which entity type was selected
+          entityType = event.getData()[0].getChildControl("label").getValue();
+
+          // Issue the remote procedure call to retrieve all entities of the
+          // specified type.
+          request =
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "getDatabaseEntities",
+                         [ entityType ]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "getDatabaseEntities");
+          
+          // Save the entity type too
+          request.setUserData("entityType", entityType);
+        }
+      });
+
+      state.addTransition(trans);
 
       /*
        * Transition: Idle to AwaitRpcResult
@@ -104,64 +143,6 @@ qx.Class.define("aiagallery.module.mgmt.db.Fsm",
                         userData.method,
                         userData.params,
                         userData);
-        }
-      });
-
-      state.addTransition(trans);
-
-      /*
-       * Transition: Idle to Idle
-       *
-       * Cause: "appear" on canvas
-       *
-       * Action:
-       *  Start our timer
-       */
-
-      trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_appear",
-      {
-        "nextState" : "State_AwaitRpcResult",
-
-        "context" : this,
-
-        "ontransition" : function(fsm, event)
-        {
-          // Issue the remote procedure call to get the visitor list. Request
-          // that the permissions and status be converted to strings for us.
-          var request =
-            this.callRpc(fsm,
-                         "aiagallery.features",
-                         "getVisitorList",
-                         [ true ]);
-
-          // When we get the result, we'll need to know what type of request
-          // we made.
-          request.setUserData("requestType", "getVisitorList");
-        }
-      });
-
-      state.addTransition(trans);
-
-      /*
-       * Transition: Idle to Idle
-       *
-       * Cause: "disappear" on canvas
-       *
-       * Action:
-       *  Stop our timer
-       */
-
-      trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_Idle_via_disappear",
-      {
-        "nextState" : "State_Idle",
-
-        "context" : this,
-
-        "ontransition" : function(fsm, event)
-        {
-//          aiagallery.module.mgmt.db.Fsm._stopTimer(fsm);
         }
       });
 
