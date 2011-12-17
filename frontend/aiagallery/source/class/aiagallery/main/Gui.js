@@ -181,6 +181,42 @@ qx.Class.define("aiagallery.main.Gui",
                 moduleList = {};
                 bAddModules = false;
 
+                // Determine whether they have access to the database
+                // management page.
+                bAllowed = false;
+                [ 
+                  // These permissions allow access to the page
+                  "getDatabaseEntities"
+                ].forEach(
+                  function(rpcFunc)
+                  {
+                    if (qx.lang.Array.contains(e.permissions, rpcFunc))
+                    {
+                      bAllowed = true;
+                    }
+                  });
+
+                // If they're allowed access to the page...
+                if (e.isAdmin || bAllowed)
+                {
+                  // ... then create it
+                  module = new aiagallery.main.Module(
+                    "Management",
+                    "aiagallery/test.png",
+                    "Database Management",
+                    aiagallery.module.mgmt.db.Db);
+
+                  // Start up the new module
+                  if (! moduleList["Management"])
+                  {
+                    moduleList["Management"] = {};
+                  }
+                  moduleList["Management"]["Database Management"] = module;
+                  
+                  // We've instantiated a new module which needs to be added
+                  bAddModules = true;
+                }
+
                 // Determine whether they have access to the user management
                 // page.
                 bAllowed = false;
