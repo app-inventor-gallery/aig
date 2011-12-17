@@ -122,13 +122,17 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
 
   defer : function()
   {
-    // Register our put & query functions
+    // Register our put, query, and remove functions
     liberated.dbif.Entity.registerDatabaseProvider(
       liberated.appengine.Dbif.query,
       liberated.appengine.Dbif.put,
       liberated.appengine.Dbif.remove,
       liberated.appengine.Dbif.getBlob,
       liberated.appengine.Dbif.putBlob,
-      liberated.appengine.Dbif.removeBlob);
+      liberated.appengine.Dbif.removeBlob,
+      { 
+        dbif        : "appengine",
+        initRootKey : liberated.appengine.Dbif.initRootKey
+      });
   }
 });
