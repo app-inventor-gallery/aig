@@ -30,6 +30,8 @@ qx.Class.define("aiagallery.module.mgmt.db.Gui",
       var             entityType;
       var             entityTypes;
       var             selEntityTypes;
+      var             spacer;
+      var             chkUseRootKey;
 
       // Create a layout for this page
       canvas.setLayout(new qx.ui.layout.VBox(10));
@@ -62,115 +64,27 @@ qx.Class.define("aiagallery.module.mgmt.db.Gui",
       // Add the select box to the hbox
       hBox.add(selEntityTypes);
 
+      // Add a spacer
+      spacer = new qx.ui.core.Widget();
+      spacer.set(
+        {
+          minHeight : 1,
+          height    : 1
+        });
+      hBox.add(spacer, { flex : 1 });
+      
+      // Create a checkbox for use of a root key
+      chkUseRootKey = new qx.ui.form.CheckBox("Use root key");
+      chkUseRootKey.setValue(true);
+      hBox.add(chkUseRootKey);
+      fsm.addObject("chkUseRootKey", 
+                    chkUseRootKey,
+                    "main.fsmUtils.disable_during_rpc");
+
+//      chkUseRootKey.hide();
+
       // Add the hbox to the page
       canvas.add(hBox);
-
-/*
-      // Define the table columns
-      model.setColumns([ 
-                         this.tr("Display Name"),
-                         this.tr("Email"),
-                         this.tr("Permissions"),
-                         this.tr("Status")
-                       ],
-                       [
-                         "displayName",
-                         "id",
-                         "permissions",
-                         "status"
-                       ]);
-
-      // Set all columns editable
-      model.setEditable(true);
-
-      // Initialize the table data
-      model.setData(rowData);
-
-      // Customize the table column model.  We want one that automatically
-      // resizes columns.
-      var custom =
-      {
-        tableColumnModel : function(obj) 
-        {
-          return new qx.ui.table.columnmodel.Resize(obj);
-        }
-      };
-
-      // Now that we have a data model, we can use it to create our table.
-      var table = new aiagallery.widget.Table(model, custom);
-      table.addListener("cellEditorOpening", fsm.eventListener, fsm);
-      
-      // We'll be receiving events on the object so save its friendly name
-      fsm.addObject("table", table, "main.fsmUtils.disable_during_rpc");
-      
-      // Also save the FSM in the table, for access by cell editors
-      table.setUserData("fsm", fsm);
-
-      // Get the table column model in order to set cell editer factories
-      var tcm = table.getTableColumnModel();
-
-      // Specify the resize behavior. Obtain the behavior object to manipulate
-      var resizeBehavior = tcm.getBehavior();
-
-      // Set the Permissions and Status fields to nearly fixed widths, and then
-      // let the Name and Email fields take up the remaining space.
-      resizeBehavior.set(0, { width:"1*", minWidth:200 }); // Display Name
-      resizeBehavior.set(1, { width:"1*", minWidth:200 }); // Email
-      resizeBehavior.set(2, { width:200                }); // Permissions
-      resizeBehavior.set(3, { width:60                 }); // Status
-
-      // Listen for changeSelection events so we can enable/disable buttons
-      var selectionModel = table.getSelectionModel();
-      selectionModel.addListener(
-        "changeSelection",
-        function(e)
-        {
-          // The edit and delete buttons are only enabled when the table has
-          // selected rows.
-          var bHasSelection = ! this.isSelectionEmpty();
-          edit.setEnabled(bHasSelection);
-          deleteUser.setEnabled(bHasSelection);
-        });
-
-      // Begin editing when the Edit button is pressed. This will cause a
-      // "cellEditorOpening" event to be issued to the FSM
-      edit.addListener(
-        "execute",
-        function(e)
-        {
-          this.startEditing();
-        },
-        table);
-
-      // Add a confirmation for deletions
-      deleteUser.addListener(
-        "execute",
-        function(e)
-        {
-          // Determine what user is selected for deletion. We're in
-          // single-selection mode, so we can easily reference into the
-          // selection array.
-          var selection = selectionModel.getSelectedRanges()[0].minIndex;
-          var data = model.getData()[selection];
-          var origEvent = e.clone();
-
-          dialog.Dialog.confirm(
-            this.tr("Really delete user ") + data[1] + 
-              " (" + data[0] + ")" + "?",
-            function(result)
-            {
-              // If they confirmed the deletion...
-              if (result)
-              {
-                // ... then pass this event to the fsm
-                fsm.eventListener(origEvent);
-              }
-            });
-        });
-      
-      // Add the table to the page
-      canvas.add(table, { flex : 1 });
-*/
     },
 
 
@@ -212,9 +126,6 @@ qx.Class.define("aiagallery.module.mgmt.db.Gui",
       case "getDatabaseEntities":
         // Determine which entity type we're dealing with
         entityType = rpcRequest.getUserData("entityType");
-        alert("Entity type: " + entityType +
-              ", result=" + 
-              qx.dev.Debug.debugObjectToString(response.data.result));
         
         // Is there already a table displayed?
         table = canvas.getUserData("table");

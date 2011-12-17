@@ -93,9 +93,13 @@ qx.Class.define("aiagallery.module.mgmt.db.Fsm",
           var             entityType;
           var             entityTypes;
           var             request;
+          var             bRootKey;
 
           // Determine which entity type was selected
           entityType = event.getData()[0].getChildControl("label").getValue();
+
+          // Find out whether to use a root key
+          bRootKey = fsm.getObject("chkUseRootKey").getValue();
 
           // Issue the remote procedure call to retrieve all entities of the
           // specified type.
@@ -103,7 +107,7 @@ qx.Class.define("aiagallery.module.mgmt.db.Fsm",
             this.callRpc(fsm,
                          "aiagallery.features",
                          "getDatabaseEntities",
-                         [ entityType ]);
+                         [ entityType, bRootKey ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
