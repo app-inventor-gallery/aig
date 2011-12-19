@@ -158,7 +158,59 @@ qx.Theme.define("aiagallery.theme.Appearance",
           icon : "qx/icon/Oxygen/16/status/dialog-error.png"
         };
       }
-    }
+    },
 
+    "pageselector":
+    {
+      alias : "atom",
+
+      style : function(states)
+      {
+        var textColor, font;
+        var padding = [3, 9]; // default padding css-case
+
+        if (states.checked && states.focused && !states.inner)
+        {
+          textColor = undefined;
+          font = "bold";
+        }
+        else if (states.disabled)
+        {
+          textColor = undefined;
+          font = undefined;
+        }
+        else if (states.pressed)
+        {
+          textColor = "text-hovered";
+          font = "bold";
+        }
+        else if (states.checked)
+        {
+          font = "bold";
+        }
+        else if (states.hovered)
+        {
+          textColor = "text-hovered";
+          font = undefined;
+        }
+        else if (states.focused && !states.inner)
+        {
+          textColor = undefined;
+          font = undefined;
+        }
+        else
+        {
+          textColor = undefined;
+          font = undefined;
+        }
+
+        return {
+          textColor : textColor,
+          font : font,
+          padding : padding,
+          margin : [1, 0]
+        };
+      }
+    }
   }
 });

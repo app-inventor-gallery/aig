@@ -29,6 +29,7 @@ qx.Class.define("aiagallery.main.Gui",
     buildGui : function(moduleList, iconList, functionList)
     {
       var             o;
+      var             hbox;
       var             header;
       var             menuItem;
       var             moduleName;
@@ -38,6 +39,8 @@ qx.Class.define("aiagallery.main.Gui",
       var             canvas;
       var             numModules;
       var             whoAmI;
+      var             pageSelectorGroup;
+      var             pageSelectorBar;
 
       // Retrieve the previously-created top-level tab view
       var mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
@@ -131,8 +134,35 @@ qx.Class.define("aiagallery.main.Gui",
 
         // Add the header to the application
         application.add(header);
+        
+        // Create a horizontal box to right-justify the page selector
+        hbox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+
+        // Right-justify the links
+        o = new qx.ui.core.Widget();
+        o.set(
+          {
+            height    : 1,
+            minHeight : 1
+          });
+        hbox.add(o, { flex : 1 });
+
+
+        // Obtain or create the pageSelectorBar
+        pageSelectorBar = this.getUserData("pageSelectorBar");
+        pageSelectorBar = new qx.ui.form.RadioButtonGroup();
+        pageSelectorBar.setLayout(new qx.ui.layout.HBox(10));
+        this.setUserData("pageSelectorBar", pageSelectorBar);
+        hbox.add(pageSelectorBar);
+
+        // Add the right-justified page selector bar to the application
+        application.add(hbox);
 
         mainTabs = new qx.ui.tabview.TabView();
+        
+        // We're going to control the tab view via the link bar
+        mainTabs.getChildControl("bar").exclude();
+        
         application.add(mainTabs, { flex : 1 });
 
         // Make the tab view globally accessible
@@ -313,6 +343,20 @@ qx.Class.define("aiagallery.main.Gui",
           new qx.ui.tabview.Page(menuItem, iconList[menuItem]);
         page.setLayout(new qx.ui.layout.VBox(4));
         mainTabs.add(page);
+        
+        o = new qx.ui.form.RadioButton(menuItem);
+        o.setUserData("page", page);
+        o.set(
+          {
+            appearance : "pageselector"
+          });
+        o.addListener(
+          "execute",
+          function(e)
+          {
+            mainTabs.setSelection([ this.getUserData("page") ]);
+          });
+        this.getUserData("pageSelectorBar").add(o);
 
         // See how many modules there are associated with this menu item
         numModules = 0;
