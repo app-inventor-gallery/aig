@@ -212,9 +212,8 @@ try
   $debugLoad("qx.util.Serializer");
   new Packages.qx.util.Serializer();
   
-// not yet
-//  $debugLoad("qx.dev.DebugObject");
-//  new Packages.qx.dev.DebugObject();
+  $debugLoad("aiagallery.dbif.Debug");
+  new Packages.aiagallery.dbif.Debug();
 
   $debugLoad("aiagallery.dbif.MApps");
   new Packages.aiagallery.dbif.MApps();
@@ -248,6 +247,9 @@ try
   
   $debugLoad("aiagallery.dbif.MWhoAmI");
   new Packages.aiagallery.dbif.MWhoAmI();
+  
+  $debugLoad("aiagallery.dbif.MDbMgmt");
+  new Packages.aiagallery.dbif.MDbMgmt();
   
   $debugLoad("aiagallery.dbif.MDbifCommon");
   new Packages.aiagallery.dbif.MDbifCommon();

@@ -31,7 +31,8 @@ qx.Class.define("aiagallery.module.mgmt.db.Gui",
       var             entityTypes;
       var             selEntityTypes;
       var             spacer;
-      var             chkUseRootKey;
+      var             cbUseRootKey;
+      var             btnReplaceKeys;
 
       // Create a layout for this page
       canvas.setLayout(new qx.ui.layout.VBox(10));
@@ -73,16 +74,6 @@ qx.Class.define("aiagallery.module.mgmt.db.Gui",
         });
       hBox.add(spacer, { flex : 1 });
       
-      // Create a checkbox for use of a root key
-      chkUseRootKey = new qx.ui.form.CheckBox("Use root key");
-      chkUseRootKey.setValue(true);
-      hBox.add(chkUseRootKey);
-      fsm.addObject("chkUseRootKey", 
-                    chkUseRootKey,
-                    "main.fsmUtils.disable_during_rpc");
-
-//      chkUseRootKey.hide();
-
       // Add the hbox to the page
       canvas.add(hBox);
     },
@@ -128,12 +119,12 @@ qx.Class.define("aiagallery.module.mgmt.db.Gui",
         entityType = rpcRequest.getUserData("entityType");
         
         // Is there already a table displayed?
-        table = canvas.getUserData("table");
+        table = fsm.getObject("table");
         if (table)
         {
           // ... then remove it
           canvas.remove(table);
-          canvas.setUserData("table", null);
+          fsm.removeObject("table");
         }
         
         // Retrieve the entity type map
@@ -183,15 +174,9 @@ qx.Class.define("aiagallery.module.mgmt.db.Gui",
         // We'll be receiving events on the object so save its friendly name
         fsm.addObject("table", table, "main.fsmUtils.disable_during_rpc");
 
-        // Also save the FSM in the table, for access by cell editors
-        table.setUserData("fsm", fsm);
-
         // Add the table to the canvas
         canvas.add(table, { flex : 1 });
         
-        // Record that it's there so we can delete it when entity type changes
-        canvas.setUserData("table", table);
-
         break;
 
       default:

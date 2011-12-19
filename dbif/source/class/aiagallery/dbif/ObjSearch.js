@@ -12,17 +12,20 @@ qx.Class.define("aiagallery.dbif.ObjSearch",
   
   construct : function(keyArr)
   {
-    // All words stored in ObjSearch must be lower case. There is no case
-    // insensitive option for querieing.
-    keyArr[0] = keyArr[0].toLowerCase();
-    
-    // Need all data for the key regardless, so might as well store it
-    this.setData(
-      {
-        "word"     : keyArr[0],
-        "appId"    : keyArr[1],
-        "appField" : keyArr[2]
-      });
+    if (typeof keyArr != "undefined")
+    {
+      // All words stored in ObjSearch must be lower case. There is no case
+      // insensitive option for querieing.
+      keyArr[0] = keyArr[0].toLowerCase();
+
+      // Need all data for the key regardless, so might as well store it
+      this.setData(
+        {
+          "word"     : keyArr[0],
+          "appId"    : keyArr[1],
+          "appField" : keyArr[2]
+        });
+    }
 
     // Use the composite of "word", "appId", and "appField" properties as 
     // the entity key

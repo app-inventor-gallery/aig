@@ -14,16 +14,19 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
   {
     var initialData;
 
-    // Pre-initialize the data
-    this.setData(
-      {
-        "id"             : id,
-        "displayName"    : null,
-        "permissions"    : [],
-        "status"         : aiagallery.dbif.Constants.Status.Active,
-        "recentSearches" : [],
-        "recentViews"    : []
-      });
+    if (typeof id != "undefined")
+    {
+      // Pre-initialize the data
+      this.setData(
+        {
+          "id"             : id,
+          "displayName"    : null,
+          "permissions"    : [],
+          "status"         : aiagallery.dbif.Constants.Status.Active,
+          "recentSearches" : [],
+          "recentViews"    : []
+        });
+    }
 
     // Use the "id" property as the entity key
     this.setEntityKeyProperty("id");

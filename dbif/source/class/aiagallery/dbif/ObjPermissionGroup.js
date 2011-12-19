@@ -12,16 +12,18 @@ qx.Class.define("aiagallery.dbif.ObjPermissionGroup",
  
   construct : function(name)
   {
-    
-    // Give the entity its name, and a simple description
-    this.setData(
-      {
-        "name"        : name,
-        "description" : name
-      });
+    if (typeof name != "undefined")
+    {
+      // Give the entity its name, and a simple description
+      this.setData(
+        {
+          "name"        : name,
+          "description" : name
+        });
+    }
 
     // Use the group's name as the DB key
-    this.setEntityKeyProperty(name);
+    this.setEntityKeyProperty("name");
     
     // Call the superclass constructor
     this.base(arguments, "permissiongroup", name);

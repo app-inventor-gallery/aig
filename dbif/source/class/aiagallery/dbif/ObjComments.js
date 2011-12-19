@@ -15,16 +15,19 @@ qx.Class.define("aiagallery.dbif.ObjComments",
   // an appId and the second a treeId
   construct : function(keyArr)
   {
-    // Pre-initialize the data
-    this.setData(
-      {
-        "timestamp"       : aiagallery.dbif.MDbifCommon.currentTimestamp(),
-        "numChildren"     : 0,
-        "app"             : keyArr[0],
-        "treeId"          : keyArr[1],
-      	"status"          : aiagallery.dbif.Constants.Status.Active,
-        "numCurFlags"     : 0
-      });
+    if (typeof keyArr != "undefined")
+    {
+      // Pre-initialize the data
+      this.setData(
+        {
+          "timestamp"       : aiagallery.dbif.MDbifCommon.currentTimestamp(),
+          "numChildren"     : 0,
+          "app"             : keyArr[0],
+          "treeId"          : keyArr[1],
+          "status"          : aiagallery.dbif.Constants.Status.Active,
+          "numCurFlags"     : 0
+        });
+    }
     
     // Use appId and treeId are a composite key
     this.setEntityKeyProperty([ "app", "treeId" ]);

@@ -94,6 +94,7 @@ qxoo_classes :=							\
 
 
 dbif_classes :=							\
+	qxoo_classes/aiagallery/dbif/Debug.class		\
 	qxoo_classes/aiagallery/dbif/Entity.class		\
 	qxoo_classes/aiagallery/dbif/MApps.class		\
 	qxoo_classes/aiagallery/dbif/MComments.class		\
@@ -105,6 +106,7 @@ dbif_classes :=							\
 	qxoo_classes/aiagallery/dbif/MTags.class		\
 	qxoo_classes/aiagallery/dbif/MVisitors.class		\
 	qxoo_classes/aiagallery/dbif/MWhoAmI.class		\
+	qxoo_classes/aiagallery/dbif/MDbMgmt.class		\
 	qxoo_classes/aiagallery/dbif/ObjAppData.class		\
 	qxoo_classes/aiagallery/dbif/ObjComments.class		\
 	qxoo_classes/aiagallery/dbif/ObjDownloads.class		\
