@@ -12,6 +12,21 @@ qx.Theme.define("aiagallery.theme.Appearance",
 
   appearances :
   {
+    "pagepane" :
+    {
+      alias : "widget",
+
+      style : function(states)
+      {
+        return {
+          decorator : "pagepane-top",
+          backgroundColor : "white",
+          margin : 10
+        };
+      }
+    },
+
+
     //
     // Radio View
     //

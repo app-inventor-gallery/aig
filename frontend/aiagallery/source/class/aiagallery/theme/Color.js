@@ -14,5 +14,6 @@ qx.Theme.define("aiagallery.theme.Color",
 
   colors :
   {
+    "android-green" : "#a5c43c"
   }
 });

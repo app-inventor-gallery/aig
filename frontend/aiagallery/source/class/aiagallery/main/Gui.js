@@ -39,6 +39,7 @@ qx.Class.define("aiagallery.main.Gui",
       var             canvas;
       var             numModules;
       var             whoAmI;
+      var             pagePane;
       var             pageSelectorGroup;
       var             pageSelectorBar;
 
@@ -135,6 +136,14 @@ qx.Class.define("aiagallery.main.Gui",
         // Add the header to the application
         application.add(header);
         
+        // Create the page pane
+        pagePane = new qx.ui.container.Composite(new qx.ui.layout.VBox(10));
+        pagePane.set(
+          {
+            appearance : "pagepane"
+          });
+        application.add(pagePane, { flex : 1 });
+
         // Create a horizontal box to right-justify the page selector
         hbox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
 
@@ -156,14 +165,14 @@ qx.Class.define("aiagallery.main.Gui",
         hbox.add(pageSelectorBar);
 
         // Add the right-justified page selector bar to the application
-        application.add(hbox);
+        pagePane.add(hbox);
 
         mainTabs = new qx.ui.tabview.TabView();
         
         // We're going to control the tab view via the link bar
         mainTabs.getChildControl("bar").exclude();
         
-        application.add(mainTabs, { flex : 1 });
+        pagePane.add(mainTabs, { flex : 1 });
 
         // Make the tab view globally accessible
         qx.core.Init.getApplication().setUserData("mainTabs", mainTabs);
