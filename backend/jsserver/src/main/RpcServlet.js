@@ -10,13 +10,16 @@
 * This is the HTTP Servlet for remote procedure calls.
 */
 
-// Load each of the JavaScript classes
-if (typeof aiagallery == "undefined" || 
-    typeof aiagallery.dbif == "undefined" ||
-    typeof aiagallery.dbif.DbifAppEngine == "undefined")
+/**
+ * Invoked as part of a warmup request, or the first user request if no
+ * warmup request was invoked.
+ */
+function init()
 {
   new Packages.main.Loader();
+  java.lang.System.out.println("Initialized context");
 }
+
 
 /**
  * Process a POST request. These are the standard GUI-initiated remote
