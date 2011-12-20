@@ -28,6 +28,7 @@
     <servlet>
         <servlet-name>RpcServlet</servlet-name>
         <servlet-class>main.RpcServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>RpcServlet</servlet-name>
