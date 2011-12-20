@@ -189,6 +189,7 @@ qx.Class.define("aiagallery.dbif.DbifSim",
       liberated.sim.Dbif.getBlob,
       liberated.sim.Dbif.putBlob,
       liberated.sim.Dbif.removeBlob,
+      liberated.sim.Dbif.beginTransaction,
       { 
         dbif        : "sim"
       });

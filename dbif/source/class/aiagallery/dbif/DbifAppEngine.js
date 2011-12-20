@@ -130,6 +130,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       liberated.appengine.Dbif.getBlob,
       liberated.appengine.Dbif.putBlob,
       liberated.appengine.Dbif.removeBlob,
+      liberated.appengine.Dbif.beginTransaction,
       { 
         dbif        : "appengine",
         initRootKey : liberated.appengine.Dbif.initRootKey
