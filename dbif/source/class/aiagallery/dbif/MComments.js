@@ -100,85 +100,90 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       
       parentAppData = parentAppObj.getData();
 
-      // Was the parent comment's treeId provided?
-      if (typeof(parentTreeId) === "undefined" || parentTreeId === null)
-      {
-        // No, we're going to use the root parent id, ""
-        parentTreeId = "";
-        
-        // Get what we need
-        parentNumChildren = parentAppData.numRootComments || 0;         
-
-        // Increment parent app's # of children
-        parentAppData.numRootComments = parentNumChildren + 1;
-      }
-      else
-      {
-        // Yes, use it to get the parent comment object.
-        parentCommentObj = 
-          new aiagallery.dbif.ObjComments([appId, parentTreeId]);
-        
-        parentCommentData = parentCommentObj.getData();
-        
-        // Was our parentUID invalid, resulting in a new ObjComments?
-        if (parentCommentObj.getBrandNew())
+      // Begin a transaction so all or no comments' changes are recorded
+      return liberated.dbif.Entity.asTransaction(
+        function()
         {
-          // We can't use an invalid UID as our parent UID!
-          error.setCode(1);
-          error.setMessage("Unrecognized parent treeId");
-          return error;
-        }
-        
-        // Get what we came for.
-        parentNumChildren = parentCommentData.numChildren;
-        parentTreeId = parentCommentData.treeId;
-        
-        // Increment parent comment's # of children
-        parentCommentData.numChildren = parentNumChildren + 1;
-        
-        // Save the new # children in the parent comment
-        parentCommentObj.put();
-      }
-      
-      // Increment the total number of comments on the App
-      parentAppData.numComments++;
-      
-      // Update the parent app and/or comment object. 
-      // Congrats! a new baby comment!
-      parentAppObj.put();
+          // Was the parent comment's treeId provided?
+          if (typeof(parentTreeId) === "undefined" || parentTreeId === null)
+          {
+            // No, we're going to use the root parent id, ""
+            parentTreeId = "";
 
-      // Append our parent's number of children, base160 encoded, to parent's
-      //   treeId
-      myTreeId = parentTreeId + this._numToBase160(parentNumChildren);
-      
-      // Get a new ObjComments object, with our appId and newly generated
-      // treeId.
-      commentObj = new aiagallery.dbif.ObjComments([appId, myTreeId]);
-      
-      // Was a comment with this key already in the DB?
-      if (!commentObj.getBrandNew())
-      {
-        // That's an error
-        error.setCode(3);
-        error.setMessage("Attempted to overwrite existing comment");
-        return error;
-      }
-      
-      // Retrieve a data object to manipulate.
-      commentObjData = commentObj.getData();
-      
-      // Set up all the rest of the data
-      commentObjData.visitor     = whoami.email;
-      commentObjData.text        = text;
+            // Get what we need
+            parentNumChildren = parentAppData.numRootComments || 0;         
 
-      // Save this in the database
-      commentObj.put();
+            // Increment parent app's # of children
+            parentAppData.numRootComments = parentNumChildren + 1;
+          }
+          else
+          {
+            // Yes, use it to get the parent comment object.
+            parentCommentObj = 
+              new aiagallery.dbif.ObjComments([appId, parentTreeId]);
 
-      // Replace the visitor id with his display name.
-      commentObjData.visitor     = whoami.userId;
-      
-      // This includes newly-created key
-      return commentObjData;  
+            parentCommentData = parentCommentObj.getData();
+
+            // Was our parentUID invalid, resulting in a new ObjComments?
+            if (parentCommentObj.getBrandNew())
+            {
+              // We can't use an invalid UID as our parent UID!
+              error.setCode(1);
+              error.setMessage("Unrecognized parent treeId");
+              return error;
+            }
+
+            // Get what we came for.
+            parentNumChildren = parentCommentData.numChildren;
+            parentTreeId = parentCommentData.treeId;
+
+            // Increment parent comment's # of children
+            parentCommentData.numChildren = parentNumChildren + 1;
+
+            // Save the new # children in the parent comment
+            parentCommentObj.put();
+          }
+
+          // Increment the total number of comments on the App
+          parentAppData.numComments++;
+
+          // Update the parent app and/or comment object. 
+          // Congrats! a new baby comment!
+          parentAppObj.put();
+
+          // Append our parent's number of children, base160 encoded, to
+          // parent's treeId
+          myTreeId = parentTreeId + this._numToBase160(parentNumChildren);
+
+          // Get a new ObjComments object, with our appId and newly generated
+          // treeId.
+          commentObj = new aiagallery.dbif.ObjComments([appId, myTreeId]);
+
+          // Was a comment with this key already in the DB?
+          if (!commentObj.getBrandNew())
+          {
+            // That's an error
+            error.setCode(3);
+            error.setMessage("Attempted to overwrite existing comment");
+            return error;
+          }
+
+          // Retrieve a data object to manipulate.
+          commentObjData = commentObj.getData();
+
+          // Set up all the rest of the data
+          commentObjData.visitor     = whoami.email;
+          commentObjData.text        = text;
+
+          // Save this in the database
+          commentObj.put();
+
+          // Replace the visitor id with his display name.
+          commentObjData.visitor     = whoami.userId;
+
+          // This includes newly-created key
+          return commentObjData;  
+        });
     },
     
     /**
@@ -221,11 +226,15 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       // Decrement the number of comments attached to this App.
       parentAppData["numComments"]--;
 
-      // Save this change
-      parentAppObj.put();
+      liberated.dbif.Entity.asTransaction(
+        function()
+        {
+          // Save this change
+          parentAppObj.put();
       
-      // Delete the app
-      commentObj.removeSelf();
+          // Delete the app
+          commentObj.removeSelf();
+        });
       
       // We were successful
       return true;

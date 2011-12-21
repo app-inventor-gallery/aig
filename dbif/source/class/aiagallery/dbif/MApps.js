@@ -137,62 +137,69 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      */
     _populateSearch : function(dataObj)
     {
-      var appDataField;
-      var wordsToAdd;
-      var searchObj;
-      var appId = dataObj["uid"];
-      
-      for (appDataField in dataObj)
-      {
-        // Go through each field in the App Data Object
-        switch (appDataField)
+      liberated.dbif.Entity.asTransaction(
+        function(dataObj)
         {
-        // If it's one of the text fields...
-        case "title":
-        case "description":
-          // Split up the words and...
-          wordsToAdd = dataObj[appDataField].split(" ");
-          wordsToAdd.forEach(function(word)
-              {
-                // Make sure to only add lower case words to the search
-                // database
-                var wordLC = word.toLowerCase();
-                
-                // If the word is a stop word, discard it
-                if (qx.lang.Array.contains(aiagallery.dbif.MSearch.stopWordArr,
-                                           word))
-                {
-                  return;
-                }
+          var appDataField;
+          var wordsToAdd;
+          var searchObj;
+          var appId = dataObj["uid"];
 
-                // Add each one to the db                
-                searchObj = new aiagallery.dbif.ObjSearch([wordLC,
-                                                          appId,
-                                                         appDataField]);
-                // Save the record in the DB.
-                searchObj.put();
-              });
-          break;
+          for (appDataField in dataObj)
+          {
+            // Go through each field in the App Data Object
+            switch (appDataField)
+            {
+            // If it's one of the text fields...
+            case "title":
+            case "description":
+              // Split up the words and...
+              wordsToAdd = dataObj[appDataField].split(" ");
+              wordsToAdd.forEach(function(word)
+                  {
+                    // Make sure to only add lower case words to the search
+                    // database
+                    var wordLC = word.toLowerCase();
 
-        case "tags":
-          wordsToAdd = dataObj[appDataField];
-          wordsToAdd.forEach(function(word)
-              {
-                
-                // Make sure to only add lower case words to the search database
-                var wordLC = word.toLowerCase();
-                
-                // Add each one to the db                
-                searchObj = new aiagallery.dbif.ObjSearch([wordLC,
-                                                          appId,
-                                                         appDataField]);
-                // Save the record in the DB.
-                searchObj.put();
-              });
-          break;
-          
-        }
-      }
+                    // If the word is a stop word, discard it
+                    if (qx.lang.Array.contains(
+                          aiagallery.dbif.MSearch.stopWordArr,
+                          word))
+                    {
+                      return;
+                    }
+
+                    // Add each one to the db                
+                    searchObj = new aiagallery.dbif.ObjSearch([wordLC,
+                                                              appId,
+                                                              appDataField]);
+                    // Save the record in the DB.
+                    searchObj.put();
+                  });
+              break;
+
+            case "tags":
+              wordsToAdd = dataObj[appDataField];
+              wordsToAdd.forEach(function(word)
+                  {
+
+                    // Make sure to only add lower case words to the search
+                    // database
+                    var wordLC = word.toLowerCase();
+
+                    // Add each one to the db                
+                    searchObj = new aiagallery.dbif.ObjSearch([wordLC,
+                                                              appId,
+                                                             appDataField]);
+                    // Save the record in the DB.
+                    searchObj.put();
+                  });
+              break;
+
+            }
+          }
+        },
+        [ dataObj ]);
     },
     
     /**
@@ -203,26 +210,31 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      */
     _removeAppFromSearch : function(uid)
     {
-      var results;
-      var resultObj;
-      var searchObj;
-      
-      // Get all Search Objects with this uid then...
-      results = liberated.dbif.Entity.query("aiagallery.dbif.ObjSearch",
-                                            {
-                                              type : "element",
-                                              field: "appId",
-                                              value: uid
-                                            },
-                                           null);
-      // Remove every record found
-      results.forEach(function(obj)
-                      {
-                        searchObj = new aiagallery.dbif.ObjSearch([obj["word"],
-                                                      obj["appId"],
-                                                      obj["appField"]]);
-                        searchObj.removeSelf();
-                      });
+      liberated.dbif.Entity.asTransaction(
+        function()
+        {
+          var results;
+          var resultObj;
+          var searchObj;
+
+          // Get all Search Objects with this uid then...
+          results = liberated.dbif.Entity.query("aiagallery.dbif.ObjSearch",
+                                                {
+                                                  type : "element",
+                                                  field: "appId",
+                                                  value: uid
+                                                },
+                                               null);
+          // Remove every record found
+          results.forEach(
+            function(obj)
+            {
+              searchObj = new aiagallery.dbif.ObjSearch([obj["word"],
+                                                         obj["appId"],
+                                                         obj["appField"]]);
+              searchObj.removeSelf();
+            });
+        });
     }
   },
   
@@ -461,96 +473,95 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         appData.uploadTime = aiagallery.dbif.MDbifCommon.currentTimestamp();
       }
 
-      // FIXME: Begin a transaction here
-
-      // Add new tags to the database, and update counts of formerly-existing
-      // tags. Remove "normal" tags with a count of 0.
-      appData.tags.forEach(
-        function(tag)
+      return liberated.dbif.Entity.asTransaction(
+        function()
         {
-          // If the tag existed previously, ignore it.
-          if (qx.lang.Array.contains(oldTags, tag))
+          // Add new tags to the database, and update counts of formerly-
+          // existing tags. Remove "normal" tags with a count of 0.
+          appData.tags.forEach(
+            function(tag)
+            {
+              // If the tag existed previously, ignore it.
+              if (qx.lang.Array.contains(oldTags, tag))
+              {
+                // Remove it from oldTags
+                qx.lang.Array.remove(oldTags, tag);
+                return;
+              }
+
+              // It didn't exist. Create or retrieve existing tag.
+              tagObj = new aiagallery.dbif.ObjTags(tag);
+              tagData = tagObj.getData();
+
+              // If we created it, data is initialized. Otherwise...
+              if (! tagObj.getBrandNew())
+              {
+                // ... it existed, so we need to increment its count
+                ++tagData.count;
+              }
+
+              // Save the tag object
+              tagObj.put();
+            });
+
+          // Anything left in oldTags are those which were removed.
+          oldTags.forEach(
+            function(tag)
+            {
+              tagObj = new aiagallery.dbif.ObjTags(tag);
+              tagData = tagObj.getData();
+
+              // The record has to exist already. Decrement this tag's count.
+              --tagData.count;
+
+              // Ensure it's a "normal" tag
+              if (tagData.type != "normal")
+              {
+                // It's not, so we have nothing more we need to do.
+                return;
+              }
+
+              // If the count is less than 1...
+              if (tagData.count < 1)
+              {
+                // ... then we can remove the tag
+                tagObj.removeSelf();
+              }
+            });
+
+          try
           {
-            // Remove it from oldTags
-            qx.lang.Array.remove(oldTags, tag);
-            return;
+            // Save the new source data (if there is any)
+            if (sourceData)
+            {
+              // Save the data and prepend the blob id to the key list
+              key = liberated.dbif.Entity.putBlob(sourceData);
+              appData.source.unshift(key);
+            }
+
+            // Similarly for apk data
+            if (apkData)
+            {
+              // Save the data and prepend the blob id to the key list
+              key = liberated.dbif.Entity.putBlob(apkData);
+              appData.apk.unshift(key);
+            }
           }
-          
-          // It didn't exist. Create or retrieve existing tag.
-          tagObj = new aiagallery.dbif.ObjTags(tag);
-          tagData = tagObj.getData();
-          
-          // If we created it, data is initialized. Otherwise...
-          if (! tagObj.getBrandNew())
+          catch(e)
           {
-            // ... it existed, so we need to increment its count
-            ++tagData.count;
+            error.setCode(5);
+            error.setMessage(e.toString());
+            return error;
           }
-          
-          // Save the tag object
-          tagObj.put();
+
+          // Save this record in the database
+          appObj.put();
+
+          // Add all words in text fields to word Search record
+          aiagallery.dbif.MApps._populateSearch(appObj.getData());
+
+          return appObj.getData();// This includes newly-created key (if adding)
         });
-      
-      // Anything left in oldTags are those which were removed.
-      oldTags.forEach(
-        function(tag)
-        {
-          tagObj = new aiagallery.dbif.ObjTags(tag);
-          tagData = tagObj.getData();
-
-          // The record has to exist already. Decrement this tag's count.
-          --tagData.count;
-
-          // Ensure it's a "normal" tag
-          if (tagData.type != "normal")
-          {
-            // It's not, so we have nothing more we need to do.
-            return;
-          }
-          
-          // If the count is less than 1...
-          if (tagData.count < 1)
-          {
-            // ... then we can remove the tag
-            tagObj.removeSelf();
-          }
-        });
-
-      try
-      {
-        // Save the new source data (if there is any)
-        if (sourceData)
-        {
-          // Save the data and prepend the blob id to the key list
-          key = liberated.dbif.Entity.putBlob(sourceData);
-          appData.source.unshift(key);
-        }
-        
-        // Similarly for apk data
-        if (apkData)
-        {
-          // Save the data and prepend the blob id to the key list
-          key = liberated.dbif.Entity.putBlob(apkData);
-          appData.apk.unshift(key);
-        }
-      }
-      catch(e)
-      {
-        error.setCode(5);
-        error.setMessage(e.toString());
-        // FIXME: roll back transaction here
-        return error;
-      }
-
-      // Save this record in the database
-      appObj.put();
-      
-      // Add all words in text fields to word Search record
-      aiagallery.dbif.MApps._populateSearch(appObj.getData());
-      
-      // FIXME: Commit the transaction here
-
-      return appObj.getData();  // This includes newly-created key (if adding)
     },
     
     deleteApp : function(uid, error)
@@ -586,56 +597,60 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         return error;
       }
 
-      // Decrement counts for tags used by this application.
-      appData.tags.forEach(
-        function(tag)
+      liberated.dbif.Entity.asTransaction(
+        function()
         {
-          // Get this tag object
-          tagObj = new aiagallery.dbif.ObjTags(tag);
-          tagData = tagObj.getData();
+          // Decrement counts for tags used by this application.
+          appData.tags.forEach(
+            function(tag)
+            {
+              // Get this tag object
+              tagObj = new aiagallery.dbif.ObjTags(tag);
+              tagData = tagObj.getData();
 
-          // The record has to exist already. Decrement this tag's count.
-          --tagData.count;
+              // The record has to exist already. Decrement this tag's count.
+              --tagData.count;
 
-          // Ensure it's a "normal" tag
-          if (tagData.type != "normal")
+              // Ensure it's a "normal" tag
+              if (tagData.type != "normal")
+              {
+                // It's not, so we have nothing more we need to do.
+                return;
+              }
+
+              // If the count is less than 1...
+              if (tagData.count < 1)
+              {
+                // ... then we can remove the tag
+                tagObj.removeSelf();
+              }
+            });
+
+          // Remove any apk blobs associated with this app
+          if (appData.apk)
           {
-            // It's not, so we have nothing more we need to do.
-            return;
+            appData.apk.forEach(
+              function(apkBlobId)
+              {
+                liberated.dbif.Entity.removeBlob(apkBlobId);
+              });
           }
-          
-          // If the count is less than 1...
-          if (tagData.count < 1)
+
+          // Similarly for any source blobs
+          if (appData.source)
           {
-            // ... then we can remove the tag
-            tagObj.removeSelf();
+            appData.source.forEach(
+              function(sourceBlobId)
+              {
+                liberated.dbif.Entity.removeBlob(sourceBlobId);
+              });
           }
+
+          // Delete the app
+          appObj.removeSelf();
+
+          aiagallery.dbif.MApps._removeAppFromSearch(uid);
         });
-
-      // Remove any apk blobs associated with this app
-      if (appData.apk)
-      {
-        appData.apk.forEach(
-          function(apkBlobId)
-          {
-            liberated.dbif.Entity.removeBlob(apkBlobId);
-          });
-      }
-
-      // Similarly for any source blobs
-      if (appData.source)
-      {
-        appData.source.forEach(
-          function(sourceBlobId)
-          {
-            liberated.dbif.Entity.removeBlob(sourceBlobId);
-          });
-      }
-
-      // Delete the app
-      appObj.removeSelf();
-      
-      aiagallery.dbif.MApps._removeAppFromSearch(uid);
       
       // We were successful
       return true;

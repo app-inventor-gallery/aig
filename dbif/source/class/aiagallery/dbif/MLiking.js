@@ -98,12 +98,16 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
         likesDataObj.app = appId;
         likesDataObj.visitor = myEmail;
 
-        // Write it back to the database
-        likesObj.put();
-
         // And increment the like count in the DB
         appDataObj.numLikes++;
-        appObj.put();
+
+        // Write it back to the database
+        liberated.dbif.Entity.asTransaction(
+          function()
+          {
+            likesObj.put();
+            appObj.put();
+          });
       }
 
       // Return number of likes (which may or may not have changed)

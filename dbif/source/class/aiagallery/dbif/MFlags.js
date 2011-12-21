@@ -161,8 +161,12 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
             }
           }
           // put the apps new data and the new flag on the database
-          appObj.put();
-          newFlag.put();
+          liberated.dbif.Entity.asTransaction(
+            function()
+            {
+              appObj.put();
+              newFlag.put();
+            });
         }
 
         return appDataObj.status;
@@ -264,8 +268,12 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
             }
           }
           // put the comments new data and the new flag on the database
-          commentObj.put();
-          newFlag.put();
+          liberated.dbif.Entity.asTransaction(
+            function()
+            {
+              commentObj.put();
+              newFlag.put();
+            });
         }
 
         return commentDataObj.status;
