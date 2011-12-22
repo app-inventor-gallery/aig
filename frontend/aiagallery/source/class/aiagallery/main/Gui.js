@@ -86,7 +86,15 @@ qx.Class.define("aiagallery.main.Gui",
         header.add(o);
 
         // Add a label to the header
-        o = new qx.ui.basic.Label(this.tr("App Inventor Community Gallery"));
+        o = new qx.ui.basic.Label(
+          "<div>" +
+          "<center>" +
+          "App Inventor" +
+          "<br />" +
+          "Community Gallery" +
+          "</center>" +
+          "</div>");
+        o.setRich(true);
         o.setFont(new qx.bom.Font(22, [ "sans-serif" ]));
         header.add(o);
 
