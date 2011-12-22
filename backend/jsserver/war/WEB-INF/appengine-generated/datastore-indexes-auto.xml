@@ -1,4 +1,4 @@
-<!-- Indices written at Wed, 21 Dec 2011 01:30:13 UTC -->
+<!-- Indices written at Thu, 22 Dec 2011 21:17:27 UTC -->
 
 <datastore-indexes>
 
@@ -14,7 +14,7 @@
         <property name="uploadTime" direction="desc"/>
     </datastore-index>
 
-    <!-- Used 6 times in query history -->
+    <!-- Used 1 time in query history -->
     <datastore-index kind="tags" ancestor="true" source="auto">
         <property name="type" direction="asc"/>
         <property name="value" direction="asc"/>
