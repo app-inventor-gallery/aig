@@ -39,6 +39,7 @@ qx.Class.define("aiagallery.main.Gui",
       var             canvas;
       var             numModules;
       var             whoAmI;
+      var             hierarchy;
       var             pagePane;
       var             pageSelectorGroup;
       var             pageSelectorBar;
@@ -152,8 +153,18 @@ qx.Class.define("aiagallery.main.Gui",
           });
         application.add(pagePane, { flex : 1 });
 
-        // Create a horizontal box to right-justify the page selector
+        // Create a horizontal box for the page hierarchy and right-justified
+        // page selector
         hbox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+
+        // Add a spacer to remove the hierarchy from the pane edig
+        o = new qx.ui.core.Spacer(20);
+        hbox.add(o);
+
+        // Create the hierarchy label to show where in the site we are
+        hierarchy = new aiagallery.widget.PageHierarchy([ "Home" ]);
+        hbox.add(hierarchy);
+        this.setUserData("hierarchy", hierarchy);
 
         // Right-justify the links
         o = new qx.ui.core.Widget();
@@ -218,7 +229,7 @@ qx.Class.define("aiagallery.main.Gui",
                 _this.whoAmI.setIsAdmin(e.isAdmin);
                 _this.whoAmI.setEmail(e.email);
                 _this.whoAmI.setDisplayName(e.userId);
-                _this.whoAmI.setPermissions(e.permissions.join(", "));
+                _this.whoAmI.setHasSetDisplayName(e.hasSetDisplayName);
                 _this.whoAmI.setLogoutUrl(e.logoutUrl);
                 
                 qx.core.Init.getApplication().setUserData(
@@ -367,11 +378,15 @@ qx.Class.define("aiagallery.main.Gui",
           {
             appearance : "pageselector"
           });
+        hierarchy = this.getUserData("hierarchy");
         o.addListener(
           "execute",
           function(e)
           {
+            var             page = this.getUserData("page");
+            var             label = page.getChildControl("button").getLabel();
             mainTabs.setSelection([ this.getUserData("page") ]);
+            hierarchy.setHierarchy([ label ]);
           });
         this.getUserData("pageSelectorBar").add(o);
 
@@ -604,6 +619,7 @@ qx.Class.define("aiagallery.main.Gui",
               {
                 // Set the display name in the application header
                 _this.whoAmI.setDisplayName(win._displayName.getValue());
+                _this.whoAmI.setHasSetDisplayName(true);
                 
                 // Close the window
                 win.close();
