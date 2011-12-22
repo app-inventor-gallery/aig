@@ -35,11 +35,12 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
       {
         // Nope.
         return({
-                 email       : "anonymous",
-                 userId      : "",
-                 isAdmin     : false,
-                 logoutUrl   : "",
-                 permissions : []
+                 email             : "anonymous",
+                 userId            : "",
+                 isAdmin           : false,
+                 logoutUrl         : "",
+                 permissions       : [],
+                 hasSetDisplayName : true
                });
       }
       
@@ -50,13 +51,14 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
       // permissions from the database.
       ret =
         {
-          email       : String(whoami.email),
-          userId      : String(whoami.userId),
-          isAdmin     : whoami.isAdmin,
-          logoutUrl   : (qx.lang.Type.isArray(whoami.logoutUrl)
-                         ? whoami.logoutUrl
-                         : String(whoami.logoutUrl)),
-          permissions : me.getData().permissions.slice(0)
+          email             : String(whoami.email),
+          userId            : String(whoami.userId),
+          isAdmin           : whoami.isAdmin,
+          logoutUrl         : (qx.lang.Type.isArray(whoami.logoutUrl)
+                               ? whoami.logoutUrl
+                               : String(whoami.logoutUrl)),
+          permissions       : whoami.permissions,
+          hasSetDisplayName : whoami.hasSetDisplayName
         };
 
       return ret;

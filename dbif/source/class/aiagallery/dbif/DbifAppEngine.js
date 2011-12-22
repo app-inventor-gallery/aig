@@ -72,6 +72,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       var             whoami;
       var             userId;
       var             visitor;
+      var             googleUserId;
 
       // Find out who is logged in
       UserServiceFactory =
@@ -84,16 +85,18 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       {
         this.setWhoAmI(
           {
-            email       : "anonymous",
-            userId      : "",
-            isAdmin     : false,
-            logoutUrl   : "",
-            permissions : []
+            email             : "anonymous",
+            userId            : "",
+            isAdmin           : false,
+            logoutUrl         : "",
+            permissions       : [],
+            hasSetDisplayName : true
           });
         return;
       }
 
       whoami = String(user.getEmail());
+      googleUserId = String(user.getUserId());
 
       // Try to get this user's display name. Does the visitor exist?
       visitor =
@@ -101,21 +104,23 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       if (visitor.length > 0)
       {
         // Yup, he exists.
-        userId = visitor[0].displayName || String(user.getUserId());
+        userId = visitor[0].displayName || googleUserId;
       }
       else
       {
         // He doesn't exist. Just use the unique number.
-        userId = String(user.getUserId());
+        userId = googleUserId;
       }
 
       // Save the logged-in user. The whoAmI property is in MDbifCommon.
       this.setWhoAmI(
         {
-          email     : whoami,
-          userId    : userId,
-          isAdmin   : userService.isUserAdmin(),
-          logoutUrl : userService.createLogoutURL("/")
+          email             : whoami,
+          userId            : userId,
+          isAdmin           : userService.isUserAdmin(),
+          logoutUrl         : userService.createLogoutURL("/"),
+          permissions       : visitor[0].permissions,
+          hasSetDisplayName : userId != googleUserId
         });
     }
   },

@@ -28,10 +28,16 @@ qx.Class.define("aiagallery.dbif.DbifSim",
     // Save the logged-in user. The whoAmI property is in MDbifCommon.
     this.setWhoAmI(
       {
-        email     : "jarjar@binks.org",
-        userId    : "obnoxious",
-        isAdmin   : true,
-        logoutUrl : "javascript:aiagallery.dbif.DbifSim.changeWhoAmI();"
+        email             : "jarjar@binks.org",
+        userId            : "obnoxious",
+        isAdmin           : true,
+        logoutUrl         : 
+          [
+            "javascript:",
+            "aiagallery.dbif.DbifSim.changeWhoAmI();"
+          ].join(""),
+        permissions       : [],
+        hasSetDisplayName : true
       });
   },
   
@@ -106,30 +112,40 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           var             visitor;
           var             displayName;
           var             guiWhoAmI;
+          var             bHasSetDisplayName;
+          var             permissions;
 
           // Try to get this user's display name. Does the visitor exist?
           visitor = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
                                                 result.username);
-          if (visitor.length > 0)
+          if (visitor.length > 0 && visitor[0].displayName)
           {
-            // Yup, he exists.
-            displayName =
-              visitor[0].displayName ||
-              "User #" + aiagallery.dbif.DbifSim.__userNumber++;
+            // Yup, he exists and has a known display name.
+            displayName = visitor[0].displayName;
+            bHasSetDisplayName = true;
+            permissions = visitor[0].permissions;
           }
           else
           {
             // He doesn't exist. Just use the unique number.
             displayName = "User #" + aiagallery.dbif.DbifSim.__userNumber++;
+            bHasSetDisplayName = false;
+            permissions = [];
           }
 
           // Save the backend whoAmI information
           aiagallery.dbif.DbifSim.getInstance().setWhoAmI(
           {
-            email     : result.username,
-            userId    : displayName,
-            isAdmin   : true,
-            logoutUrl : "javascript:aiagallery.dbif.DbifSim.changeWhoAmI();"
+            email             : result.username,
+            userId            : displayName,
+            isAdmin           : true,
+            logoutUrl         :
+              [
+                "javascript:",
+                "aiagallery.dbif.DbifSim.changeWhoAmI();"
+              ].join(""),
+            permissions       : permissions,
+            hasSetDisplayName : bHasSetDisplayName
           });
           
           // Update the gui too
@@ -137,7 +153,7 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           guiWhoAmI.setIsAdmin(result.isAdmin);
           guiWhoAmI.setEmail(result.username);
           guiWhoAmI.setDisplayName(displayName);
-          guiWhoAmI.setPermissions("");
+          guiWhoAmI.setHasSetDisplayName(bHasSetDisplayName);
           guiWhoAmI.setLogoutUrl(
             "javascript:aiagallery.dbif.DbifSim.changeWhoAmI();");
         }

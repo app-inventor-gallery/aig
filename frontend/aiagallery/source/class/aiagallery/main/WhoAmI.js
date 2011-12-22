@@ -25,6 +25,9 @@ qx.Class.define("aiagallery.main.WhoAmI",
     layout = new qx.ui.layout.Grid();
     layout.setSpacingX(2);
     this._setLayout(layout);
+    
+    // Initialize display of the Set Display Name message
+    this.initHasSetDisplayName();
   },
 
   properties :
@@ -50,11 +53,12 @@ qx.Class.define("aiagallery.main.WhoAmI",
       apply : "_applyIsAdmin"
     },
     
-    /** This user's permissions, as a comma-separated string */
-    permissions :
+    /** Whether this user has set his display name */
+    hasSetDisplayName :
     {
-      check : "String",
-      apply : "_applyPermissions"
+      check : "Boolean",
+      init  : true,
+      apply : "_applyHasSetDisplayName"
     },
     
     /** The logout URL */
@@ -84,9 +88,9 @@ qx.Class.define("aiagallery.main.WhoAmI",
       if (control) 
       {
         control.setValue(
-          "(<a href='javascript:editProfile();'>" +
-          value +
-          "</a>)");
+          "<a href='javascript:editProfile();'>" +
+          "(" + value + ")" +
+          "</a>");
       }
     },
 
@@ -96,22 +100,24 @@ qx.Class.define("aiagallery.main.WhoAmI",
       var control = this.getChildControl("isAdmin");
       if (control) 
       {
-        control.setValue(value ? "Welcome, Administrator" : "Welcome,");
+        control.setValue(value ? "*" : "");
       }
     },
 
     // apply function
-    _applyPermissions : function(value, old)
+    _applyHasSetDisplayName : function(value, old)
     {
-      var control = this.getChildControl("permissions");
+      var control = this.getChildControl("hasSetDisplayName");
       if (control) 
       {
-        control.setValue((this.getIsAdmin()
-                          ? "Explicit permissions: " 
-                          : "Permissions: ") +
-                         (value.length === 0 
-                          ?  "None" 
-                          : value));
+        if (! value)
+        {
+          control.show();
+        }
+        else
+        {
+          control.exclude();
+        }
       }
     },
 
@@ -133,8 +139,7 @@ qx.Class.define("aiagallery.main.WhoAmI",
       switch(id)
       {
       case "isAdmin" :
-        control =
-          new qx.ui.basic.Label(this.getIsAdmin() ? "Administrator" : "");
+        control = new qx.ui.basic.Label();
         control.setAnonymous(true);
         this._add(control, { row : 0, column : 0 });
         break;
@@ -147,25 +152,27 @@ qx.Class.define("aiagallery.main.WhoAmI",
 
       case "displayName":
         control = new qx.ui.basic.Label(
-          "(<a href='javascript:editProfile();'>" +
+          "<a href='javascript:editProfile();'>" +
           this.getDisplayName() +
-          "</a>)");
+          "</a>");
         control.setAnonymous(true);
         control.setRich(true);
         this._add(control, { row : 0, column : 2 });
         break;
         
-      case "permissions":
-        control = new qx.ui.basic.Label(this.getPermissions());
+      case "hasSetDisplayName":
+        control = new qx.ui.basic.Label(
+          "<a href='javascript:editProfile();'>Set your display name</a>");
         control.setAnonymous(true);
-        this._add(control, { row : 1, column : 0, colSpan : 4 });
+        control.setRich(true);
+        this._add(control, { row : 1, column : 1 });
         break;
         
       case "logoutUrl":
         control = new qx.ui.basic.Label(this.getLogoutUrl());
         control.setRich(true);
         control.setAnonymous(true);
-        this._add(control, { row : 2, column : 0, colSpan : 4 });
+        this._add(control, { row : 2, column : 1 });
         break;
       }
 
