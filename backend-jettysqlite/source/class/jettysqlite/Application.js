@@ -33,7 +33,6 @@ qx.Class.define("jettysqlite.Application",
      */
     doPost : function(request, response)
     {
-      var             dbif;
       var             rpcResult;
       var             out;
       var             reader;
@@ -79,28 +78,6 @@ qx.Class.define("jettysqlite.Application",
      */
     doGet : function(request, response)
     {
-/*
-      var             out;
-      var             queryString = request.getQueryString();
-      var             jsonInput = decodeURIComponent(queryString);
-      var             rpcResult;
-
-      // Process this request
-      rpcResult = jettysqlite.Application.dbif.processRequest(jsonInput);
-
-      // Ignore null results, which occur if the request is a notification.
-      if (rpcResult !== null)
-      {
-        // Generate the response.
-        response.setContentType("application/json");
-        out = response.getWriter();
-        out.println(rpcResult);
-      }
-      else
-      {
-        this.debug("Ignoring notification output");
-      }
-*/
       var             dbif;
       var             entry;
       var             entity;
@@ -109,7 +86,6 @@ qx.Class.define("jettysqlite.Application",
       var             argSplit;
       var             jsonInput;
       var             rpcResult;
-      var             decoder;
       var             decodeResult;
       var             out;
       var             Db;
@@ -389,8 +365,6 @@ qx.Class.define("jettysqlite.Application",
         qx.Class.include(jettysqlite.DbifJettySqlite,
                          aiagallery.dbif.MSimData);
         Db = aiagallery.dbif.MSimData.Db;
-        var dbField;
-
 
         for (entry in Db.visitors)
         {
