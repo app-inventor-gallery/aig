@@ -3,4 +3,4 @@
 java \
   -Djava.library.path=. \
   -classpath 'jars/*' \
-  org.mozilla.javascript.tools.debugger.Main source/script/jettysqlite.js $*
+  org.mozilla.javascript.tools.debugger.Main build/script/jettysqlite.js $*
