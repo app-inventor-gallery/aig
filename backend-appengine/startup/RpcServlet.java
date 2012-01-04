@@ -163,9 +163,9 @@ public class RpcServlet extends HttpServlet
                 // ... then do so now.
                 context = Context.enter();
             }
-            
+
             // Call the function
-            f.call(this.__context, this.__scope, this.__scope, args);
+            f.call(context, this.__scope, this.__scope, args);
         }
     }
 }

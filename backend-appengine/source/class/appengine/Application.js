@@ -33,6 +33,7 @@ qx.Class.define("appengine.Application",
      */
     doPost : function(request, response)
     {
+      var             dbif=  aiagallery.dbif.DbifAppEngine.getInstance();
       var             rpcResult;
       var             out;
       var             reader;
@@ -54,7 +55,7 @@ qx.Class.define("appengine.Application",
       jsonInput = String(input.join("\n"));
 
       // Process this request
-      rpcResult = appengine.Application.dbif.processRequest(jsonInput);
+      rpcResult = dbif.processRequest(jsonInput);
 
       // Ignore null results, which occur if the request is a notification.
       if (rpcResult !== null)
@@ -78,7 +79,7 @@ qx.Class.define("appengine.Application",
      */
     doGet : function(request, response)
     {
-      var             dbif;
+      var             dbif=  aiagallery.dbif.DbifAppEngine.getInstance();
       var             entry;
       var             entity;
       var             queryString = request.getQueryString();
@@ -106,10 +107,7 @@ qx.Class.define("appengine.Application",
       case "ls":               // File listing
         var             entities;
 
-        // Get the database interface instance
-        dbif = appengine.Application.dbif;
-
-        if (false)
+        if (true)
         {
           // Identify ourself (find out who's logged in)
           dbif.identify();
@@ -150,10 +148,7 @@ qx.Class.define("appengine.Application",
       case "flushDB":               // flush the entire database
         var             entities;
 
-        // Get the database interface instance
-        dbif = appengine.Application.dbif;
-
-        if (false)
+        if (true)
         {
           // Identify ourself (find out who's logged in)
           dbif.identify();
@@ -254,10 +249,7 @@ qx.Class.define("appengine.Application",
         // Add the simulation data to the App Engine database
         //
 
-        // Get the database interface instance
-        dbif = appengine.Application.dbif;
-
-        if (false)
+        if (true)
         {
           // Identify ourself (find out who's logged in)
           dbif.identify();
@@ -341,10 +333,7 @@ qx.Class.define("appengine.Application",
         // Remove ALL data sitting in simulation database.
         //
 
-        // Get the database interface instance
-        dbif = appengine.Application.dbif;
-
-        if (false)
+        if (true)
         {
           // Identify ourself (find out who's logged in)
           dbif.identify();
@@ -420,7 +409,6 @@ qx.Class.define("appengine.Application",
           '}';
 
         // Process this request
-        dbif = aiagallery.dbif.DbifAppEngine.getInstance();
         rpcResult = dbif.processRequest(jsonInput);
 
         // Generate the response.
@@ -484,8 +472,6 @@ qx.Class.define("appengine.Application",
       {
         qx.log.Logger.register(qx.log.appender.NodeConsole);
       }
-      
-      this.debug("main() complete");
     }
   },
   

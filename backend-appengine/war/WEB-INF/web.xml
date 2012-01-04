@@ -6,11 +6,10 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
 
     <welcome-file-list>
-        <welcome-file>RpcServlet</welcome-file>
+        <welcome-file>GuiServlet</welcome-file>
     </welcome-file-list>
 
     <!--  The graphical user interface is accessed via the url /gui -->
-<!--
     <servlet>
         <servlet-name>GuiServlet</servlet-name>
         <servlet-class>startup.GuiServlet</servlet-class>
@@ -19,7 +18,6 @@
         <servlet-name>GuiServlet</servlet-name>
         <url-pattern>/gui</url-pattern>
     </servlet-mapping>
--->
 
 
     <!-- Remote procedure calls are issued to this servlet via url /rpc  -->
