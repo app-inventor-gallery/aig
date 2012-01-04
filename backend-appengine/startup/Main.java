@@ -22,6 +22,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Derrell Lipman, 2011
  *
  * Alternatively, the contents of this file may be used under the terms of
  * the GNU General Public License Version 2 or later (the "GPL"), in which
@@ -77,14 +78,20 @@ public class Main extends ScriptableObject
 
             Object result = cx.evaluateString(
               main,
-              "window =" +
+              "navigator = " +
               "{" +
-              "  hello : 'world'," +
-              "  environment : " +
-              "  {" +
-              "    'java.version' : 'unknown'" +
-              "  }" +
-              "}",
+              " userAgent:" +
+              " 'Mozilla/5.0" +
+              " (Macintosh; U; Intel Mac OS X 10_6_4; de-de)" +
+              " AppleWebKit/533.17.8 (KHTML, like Gecko)" +
+              " Version/5.0.1 Safari/533.17.8', " +
+              " product: '*DJSS*'," +  // Derrell's JavaScript Server
+              " cpuClass: ''" +
+              "};" +
+              "window = " +
+              "{" +
+              "  navigator : navigator" +
+              "};",
               "<stdin>",
               1,
               null);
@@ -100,10 +107,12 @@ public class Main extends ScriptableObject
 
             args = processOptions(cx, args);
 
-/*
-            Scriptable window = cx.newObject(main, "Object");
-            main.defineProperty("window", window, ScriptableObject.DONTENUM);
-*/
+            // Set up "environment" in the global scope to provide access to the
+            // System environment variables.
+            Environment.defineClass(main);
+            Environment environment = new Environment(main);
+            main.defineProperty("environment", environment,
+                                ScriptableObject.DONTENUM);
 
             // Set up "arguments" in the global scope to contain the command
             // line arguments after the name of the script to execute
@@ -119,8 +128,8 @@ public class Main extends ScriptableObject
             main.defineProperty("arguments", argsObj,
                                  ScriptableObject.DONTENUM);
 
-            main.processSource(cx, args.length == 0 ? null : args[0]);
-//            main.processSource(cx, "build/script/appenginesqlite.js");
+//            main.processSource(cx, args.length == 0 ? null : args[0]);
+            main.processSource(cx, "build/script/appenginesqlite.js");
         } finally {
             Context.exit();
         }

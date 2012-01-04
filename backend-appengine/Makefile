@@ -1,17 +1,25 @@
-war/WEB-INF/classes/startup/Main.class : startup/Main.java
-	mkdir -p war/WEB-INF/classes
-	javac -classpath	$(shell find war/WEB-INF/lib		\
-			    -name '*.jar' -print0 | tr '\0' ':')	\
-	  -d war/WEB-INF/classes					\
-	  startup/Main.java
+DESTDIR = war/WEB-INF/classes
 
-#war/WEB-INF/classes/Main.class : startup/Main.js
-#	mkdir -p war/WEB-INF/classes
-#	java -classpath	$(shell find war/WEB-INF/lib			\
-#			    -name '*.jar' -print0 | tr '\0' ':')	\
-#	  org.mozilla.javascript.tools.jsc.Main				\
-#	  -d war/WEB-INF/classes					\
-#	  -package startup						\
-#	  -extends javax.servlet.http.HttpServlet			\
-#	  startup/Main.js
-#
+CLASSES =					\
+  $(DESTDIR)/startup/Main.class			\
+  $(DESTDIR)/startup/Environment.class
+
+
+all : $(CLASSES)
+
+clean :
+	find $(DESTDIR) -type f -exec rm {} \;
+
+$(DESTDIR)/startup/Main.class : startup/Main.java
+	mkdir -p $(DESTDIR)
+	javac -classpath $(shell find war/WEB-INF/lib			\
+			    -name '*.jar' -print0 | tr '\0' ':')	\
+	  -d $(DESTDIR)							\
+	  $<
+
+$(DESTDIR)/startup/Environment.class : startup/Environment.java
+	mkdir -p $(DESTDIR)
+	javac -classpath $(shell find war/WEB-INF/lib			\
+			    -name '*.jar' -print0 | tr '\0' ':')	\
+	  -d $(DESTDIR)							\
+	  $<
