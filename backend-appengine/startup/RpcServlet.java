@@ -41,6 +41,17 @@ public class RpcServlet extends HttpServlet
         this.__scope = new Main();
         context.initStandardObjects(this.__scope);
 
+        // Set up "window" to be the global scope.
+        this.__scope.defineProperty("window", this.__scope,
+                                    ScriptableObject.DONTENUM);
+
+        // Set up "environment" in the global scope to provide access to the
+        // System environment variables.
+        Environment.defineClass(this.__scope);
+        Environment environment = new Environment(this.__scope);
+        this.__scope.defineProperty("environment", environment,
+                                    ScriptableObject.DONTENUM);
+
         // Set up the browser-typical globals
         Object result = context.evaluateString(
           this.__scope,
@@ -53,6 +64,10 @@ public class RpcServlet extends HttpServlet
           " Version/5.0.1 Safari/533.17.8', " +
           " product: '*DJSS*'," +  // Derrell's JavaScript Server
           " cpuClass: ''" +
+          "};" +
+          "window.setTimeout = function() " +
+          "{" +
+          "  print('setTimeout is not available');" +
           "};",
           "<stdin>",
           1,
@@ -69,19 +84,8 @@ public class RpcServlet extends HttpServlet
         this.__scope.defineFunctionProperties(names, Main.class,
                                               ScriptableObject.DONTENUM);
 
-        // Set up "window" to be the global scope.
-        this.__scope.defineProperty("window", this.__scope,
-                                    ScriptableObject.DONTENUM);
-
-        // Set up "environment" in the global scope to provide access to the
-        // System environment variables.
-        Environment.defineClass(this.__scope);
-        Environment environment = new Environment(this.__scope);
-        this.__scope.defineProperty("environment", environment,
-                                    ScriptableObject.DONTENUM);
-
         this.__scope.processSource(context,
-                                   "build/script/appengine.js");
+                                   "./build/script/appengine.js");
     }
 
 

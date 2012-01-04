@@ -355,24 +355,25 @@ public class Main extends ScriptableObject
                 cx.evaluateReader(this, in, filename, 1, null);
             }
             catch (WrappedException we) {
-                System.err.println(we.getWrappedException().toString());
+                System.err.println("we: " +
+                                   we.getWrappedException().toString());
                 we.printStackTrace();
             }
             catch (EvaluatorException ee) {
-                System.err.println("js: " + ee.getMessage());
+                System.err.println("ee: " + ee.getMessage());
             }
             catch (JavaScriptException jse) {
-                System.err.println("js: " + jse.getMessage());
+                System.err.println("jse: " + jse.getMessage());
             }
             catch (IOException ioe) {
-                System.err.println(ioe.toString());
+                System.err.println("ioe: " + ioe.toString());
             }
             finally {
                 try {
                     in.close();
                 }
-                catch (IOException ioe) {
-                    System.err.println(ioe.toString());
+                catch (IOException ce) {
+                    System.err.println("ce: " + ce.toString());
                 }
             }
         }
