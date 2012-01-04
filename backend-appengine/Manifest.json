@@ -1,7 +1,7 @@
 {
   "info" : 
   {
-    "name" : "appenginesqlite",
+    "name" : "appengine",
 
     "summary" : "Custom Application",
     "description" : "This is a skeleton for a custom application with qooxdoo.",
@@ -23,7 +23,7 @@
   
   "provides" : 
   {
-    "namespace"   : "appenginesqlite",
+    "namespace"   : "appengine",
     "encoding"    : "utf-8",
     "class"       : "source/class",
     "resource"    : "source/resource",

@@ -19,7 +19,7 @@ import org.mozilla.javascript.*;
 
 public class RpcServlet extends HttpServlet
 {
-    private Context     __context;
+    private Context     __context = null;
     private Main        __scope;
 
     /**
@@ -28,19 +28,21 @@ public class RpcServlet extends HttpServlet
      */
     public void init()
     {
+        Context             context;
+
         // Get a new context
-        this.__context = Context.enter();
+        context = Context.enter();
 
         // Use interpreted mode
-        this.__context.setOptimizationLevel(-1);
+        context.setOptimizationLevel(-1);
 
         // Initialize the standard objects (Object, Function, etc.)
         // This must be done before scripts can be executed.
         this.__scope = new Main();
-        this.__context.initStandardObjects(this.__scope);
+        context.initStandardObjects(this.__scope);
 
         // Set up the browser-typical globals
-        Object result = this.__context.evaluateString(
+        Object result = context.evaluateString(
           this.__scope,
           "navigator = " +
           "{" +
@@ -71,7 +73,6 @@ public class RpcServlet extends HttpServlet
         this.__scope.defineProperty("window", this.__scope,
                                     ScriptableObject.DONTENUM);
 
-
         // Set up "environment" in the global scope to provide access to the
         // System environment variables.
         Environment.defineClass(this.__scope);
@@ -79,23 +80,28 @@ public class RpcServlet extends HttpServlet
         this.__scope.defineProperty("environment", environment,
                                     ScriptableObject.DONTENUM);
 
-        this.__scope.processSource(this.__context,
-                                   "build/script/appenginesqlite.js");
-
-        java.lang.System.out.println("Initialized context");
+        this.__scope.processSource(context,
+                                   "build/script/appengine.js");
     }
 
+
+    /**
+     * Process a GET request. These are used for ancillary requests.
+     *
+     * @param request {javax.servlet.http.HttpServletRequest}
+     *   The object containing the request parameters.
+     *
+     * @param response {javax.servlet.http.HttpServletResponse}
+     *   The object to be used for returning the response.
+     */
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response)
         throws IOException
     {
         Object          fObj;
 
-        java.lang.System.out.println("doGet");
-
         // Retrieve the function object
-        fObj = this.__scope.get("appenginesqlite.Application.doGet",
-                                this.__scope);
+        fObj = this.__scope.get("doGet", this.__scope);
         if (! (fObj instanceof Function))
         {
             // Failed to retrieve it
@@ -105,11 +111,61 @@ public class RpcServlet extends HttpServlet
         {
             Object              args[] = { request, response };
             Function            f = (Function) fObj;
+            Context             context;
+            
+            // If we haven't received a context for this thread...
+            context = Context.getCurrentContext();
+            if (context == null)
+            {
+                // ... then do so now.
+                context = Context.enter();
+            }
+
+            // Call the function
+            f.call(context, this.__scope, this.__scope, args);
+        }
+    }
+
+
+    /**
+     * Process a POST request. These are the standard GUI-initiated remote
+     * procedure calls.
+     *
+     * @param request {javax.servlet.http.HttpServletRequest}
+     *   The object containing the request parameters.
+     *
+     * @param response {javax.servlet.http.HttpServletResponse}
+     *   The object to be used for returning the response.
+     */
+    public void doPost(HttpServletRequest request,
+                       HttpServletResponse response)
+        throws IOException
+    {
+        Object          fObj;
+
+        // Retrieve the function object
+        fObj = this.__scope.get("doPost", this.__scope);
+        if (! (fObj instanceof Function))
+        {
+            // Failed to retrieve it
+            java.lang.System.out.println("Could not retrieve function doPost");
+        }
+        else
+        {
+            Object              args[] = { request, response };
+            Function            f = (Function) fObj;
+            Context             context;
+            
+            // If we haven't received a context for this thread...
+            context = Context.getCurrentContext();
+            if (context == null)
+            {
+                // ... then do so now.
+                context = Context.enter();
+            }
             
             // Call the function
             f.call(this.__context, this.__scope, this.__scope, args);
-            
-            java.lang.System.out.println("doPost complete");
         }
     }
 }

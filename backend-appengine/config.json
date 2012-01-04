@@ -1,5 +1,5 @@
 {
-  "name"    : "appenginesqlite",
+  "name"    : "appengine",
 
   "include" :
   [
@@ -32,7 +32,7 @@
 
   "let" :
   {
-    "APPLICATION"  : "appenginesqlite",
+    "APPLICATION"  : "appengine",
     "QOOXDOO_PATH" : "../lib/qooxdoo",
     "LOCALES"      : [ "en" ],
     "CACHE"        : "${TMPDIR}/qx${QOOXDOO_VERSION}/cache",
@@ -145,7 +145,7 @@
     "run" : 
     {
       "shell" : {
-        "command" : "java -cp js.jar org.mozilla.javascript.tools.shell.Main ${BUILD}/script/appenginesqlite.js"
+        "command" : "java -cp js.jar org.mozilla.javascript.tools.shell.Main ${BUILD}/script/appengine.js"
       }
     },
 
