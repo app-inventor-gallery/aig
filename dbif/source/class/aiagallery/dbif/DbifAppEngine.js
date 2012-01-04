@@ -73,6 +73,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       var             userId;
       var             visitor;
       var             googleUserId;
+      var             permissions;
 
       // Find out who is logged in
       UserServiceFactory =
@@ -105,11 +106,13 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       {
         // Yup, he exists.
         userId = visitor[0].displayName || googleUserId;
+        permissions = visitor[0].permissions || [];
       }
       else
       {
         // He doesn't exist. Just use the unique number.
         userId = googleUserId;
+        permissions = [];
       }
 
       // Save the logged-in user. The whoAmI property is in MDbifCommon.
@@ -119,7 +122,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
           userId            : userId,
           isAdmin           : userService.isUserAdmin(),
           logoutUrl         : userService.createLogoutURL("/"),
-          permissions       : visitor[0].permissions,
+          permissions       : permissions,
           hasSetDisplayName : userId != googleUserId
         });
     }

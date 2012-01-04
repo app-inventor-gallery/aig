@@ -41,6 +41,9 @@ qx.Class.define("appengine.Application",
       var             input = [];
       var             jsonInput;
 
+      // Identify ourself (find out who's logged in)
+      dbif.identify();
+
       // Retrieve the JSON input from the POST request. First, get the input
       // stream (the POST data)
       reader = request.getReader();
@@ -79,7 +82,7 @@ qx.Class.define("appengine.Application",
      */
     doGet : function(request, response)
     {
-      var             dbif=  aiagallery.dbif.DbifAppEngine.getInstance();
+      var             dbif =  aiagallery.dbif.DbifAppEngine.getInstance();
       var             entry;
       var             entity;
       var             queryString = request.getQueryString();
