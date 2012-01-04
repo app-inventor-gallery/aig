@@ -2,7 +2,8 @@ DESTDIR = war/WEB-INF/classes
 
 CLASSES =					\
   $(DESTDIR)/startup/Main.class			\
-  $(DESTDIR)/startup/Environment.class
+  $(DESTDIR)/startup/Environment.class		\
+  $(DESTDIR)/startup/RpcServlet.class
 
 
 all : $(CLASSES)
@@ -23,3 +24,11 @@ $(DESTDIR)/startup/Environment.class : startup/Environment.java
 			    -name '*.jar' -print0 | tr '\0' ':')	\
 	  -d $(DESTDIR)							\
 	  $<
+
+$(DESTDIR)/startup/RpcServlet.class : startup/RpcServlet.java
+	mkdir -p $(DESTDIR)
+	javac -classpath $(shell find war/WEB-INF/lib			\
+			    -name '*.jar' -print0 | tr '\0' ':')	\
+	  -d $(DESTDIR)							\
+	  $<
+

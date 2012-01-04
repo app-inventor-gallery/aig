@@ -67,7 +67,7 @@ public class Main extends ScriptableObject
      * Then set up the execution environment and begin to
      * execute scripts.
      */
-    public static void main(String args[]) {
+    public static Context init(String args[]) {
         // Associate a new Context with this thread
         Context cx = Context.enter();
         try {
@@ -131,8 +131,10 @@ public class Main extends ScriptableObject
 //            main.processSource(cx, args.length == 0 ? null : args[0]);
             main.processSource(cx, "build/script/appenginesqlite.js");
         } finally {
-            Context.exit();
+//            Context.exit();
         }
+
+        return cx;
     }
 
     /**
@@ -270,7 +272,7 @@ public class Main extends ScriptableObject
      * @param filename the name of the file to compile, or null
      *                 for interactive mode.
      */
-    private void processSource(Context cx, String filename)
+    void processSource(Context cx, String filename)
     {
         if (filename == null) {
             BufferedReader in = new BufferedReader
