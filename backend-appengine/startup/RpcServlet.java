@@ -65,7 +65,7 @@ public class RpcServlet extends HttpServlet
 
         // Define some global functions particular to the shell. Note
         // that these functions are not part of ECMA.
-        String[] names = { "print", "quit", "version", "load", "help" };
+        String[] names = { "print" /*, "quit", "version", "load", "help" */ };
         this.__scope.defineFunctionProperties(names, Main.class,
                                               ScriptableObject.DONTENUM);
 
