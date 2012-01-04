@@ -19,3 +19,6 @@ $(DESTDIR)/startup/%.class : startup/%.java
 	  -d $(DESTDIR)							\
 	  $<
 
+.PHONY: upload
+upload :	all
+	../appengine-java-sdk-1.5.0.1/bin/appcfg.sh update war

@@ -34,6 +34,7 @@
   {
     "APPLICATION"  : "appengine",
     "QOOXDOO_PATH" : "../lib/qooxdoo",
+    "BUILD_PATH"   : "./war/build",
     "LOCALES"      : [ "en" ],
     "CACHE"        : "${TMPDIR}/qx${QOOXDOO_VERSION}/cache",
     "ROOT"         : "."
