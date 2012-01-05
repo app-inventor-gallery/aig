@@ -139,7 +139,14 @@
 
     "build-files" : 
     {
-      "extend" : [ "basic-common" ]
+      "extend" : [ "basic-common" ],
+      "shell" :
+      {
+        "command"   :
+        [
+          "make"
+        ]
+      }
     },
 
 
