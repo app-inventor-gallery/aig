@@ -64,10 +64,6 @@ public class RpcServlet extends HttpServlet
           " Version/5.0.1 Safari/533.17.8', " +
           " product: '*DJSS*'," +  // Derrell's JavaScript Server
           " cpuClass: ''" +
-          "};" +
-          "window.setTimeout = function() " +
-          "{" +
-          "  print('setTimeout is not available');" +
           "};",
           "<stdin>",
           1,
