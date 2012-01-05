@@ -183,7 +183,9 @@ qx.Mixin.define("aiagallery.dbif.MComments",
 
           // This includes newly-created key
           return commentObjData;  
-        });
+        },
+        [],
+        this);
     },
     
     /**
