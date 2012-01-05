@@ -99,7 +99,7 @@
         "paths" :
         {
           "app-root" : ".",
-          "loader-template" : "${QOOXDOO_PATH}/tool/data/generator/basic.loader.js"
+          "loader-template" : "appengine.loader.js"
         },
         "uris" :
         {
