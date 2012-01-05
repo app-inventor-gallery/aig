@@ -110,22 +110,15 @@ qx.Class.define("appengine.Application",
       case "ls":               // File listing
         var             entities;
 
-        if (true)
-        {
-          // Identify ourself (find out who's logged in)
-          dbif.identify();
+        // Identify ourself (find out who's logged in)
+        dbif.identify();
 
-          // Only an administrator can do this
-          if (! aiagallery.dbif.MDbifCommon.__whoami ||
-              ! aiagallery.dbif.MDbifCommon.__whoami.isAdmin)
-          {
-            java.lang.System.out.println("not administrator");    
-            return;
-          }
-        }
-        else
+        // Only an administrator can do this
+        if (! aiagallery.dbif.MDbifCommon.__whoami ||
+            ! aiagallery.dbif.MDbifCommon.__whoami.isAdmin)
         {
-          qx.log.Logger.warn("ALLOWING ALL USERS!");
+          java.lang.System.out.println("not administrator");    
+          return;
         }
 
         // Gain easy access to our output writer
@@ -151,22 +144,15 @@ qx.Class.define("appengine.Application",
       case "flushDB":               // flush the entire database
         var             entities;
 
-        if (true)
-        {
-          // Identify ourself (find out who's logged in)
-          dbif.identify();
+        // Identify ourself (find out who's logged in)
+        dbif.identify();
 
-          // Only an administrator can do this
-          if (! aiagallery.dbif.MDbifCommon.__whoami ||
-              ! aiagallery.dbif.MDbifCommon.__whoami.isAdmin)
-          {
-            java.lang.System.out.println("not administrator");    
-            return;
-          }
-        }
-        else
+        // Only an administrator can do this
+        if (! aiagallery.dbif.MDbifCommon.__whoami ||
+            ! aiagallery.dbif.MDbifCommon.__whoami.isAdmin)
         {
-          qx.log.Logger.warn("ALLOWING ALL USERS!");
+          java.lang.System.out.println("not administrator");    
+          return;
         }
 
         // AppData
@@ -252,22 +238,15 @@ qx.Class.define("appengine.Application",
         // Add the simulation data to the App Engine database
         //
 
-        if (true)
-        {
-          // Identify ourself (find out who's logged in)
-          dbif.identify();
+        // Identify ourself (find out who's logged in)
+        dbif.identify();
 
-          // Only an administrator can do this
-          if (! aiagallery.dbif.MDbifCommon.__whoami ||
-              ! aiagallery.dbif.MDbifCommon.__whoami.isAdmin)
-          {
-            java.lang.System.out.println("not administrator");    
-            return;
-          }
-        }
-        else
+        // Only an administrator can do this
+        if (! aiagallery.dbif.MDbifCommon.__whoami ||
+            ! aiagallery.dbif.MDbifCommon.__whoami.isAdmin)
         {
-          qx.log.Logger.warn("ALLOWING ALL USERS!");
+          java.lang.System.out.println("not administrator");    
+          return;
         }
 
         qx.Class.include(aiagallery.dbif.DbifAppEngine,
@@ -336,22 +315,15 @@ qx.Class.define("appengine.Application",
         // Remove ALL data sitting in simulation database.
         //
 
-        if (true)
-        {
-          // Identify ourself (find out who's logged in)
-          dbif.identify();
+        // Identify ourself (find out who's logged in)
+        dbif.identify();
 
-          // Only an administrator can do this
-          if (! aiagallery.dbif.MDbifCommon.__whoami ||
-              ! aiagallery.dbif.MDbifCommon.__whoami.isAdmin)
-          {
-            java.lang.System.out.println("not administrator");    
-            return;
-          }
-        }
-        else
+        // Only an administrator can do this
+        if (! aiagallery.dbif.MDbifCommon.__whoami ||
+            ! aiagallery.dbif.MDbifCommon.__whoami.isAdmin)
         {
-          qx.log.Logger.warn("ALLOWING ALL USERS!");
+          java.lang.System.out.println("not administrator");    
+          return;
         }
 
         qx.Class.include(aiagallery.dbif.DbifAppEngine,
