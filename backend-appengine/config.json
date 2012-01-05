@@ -144,7 +144,8 @@
       {
         "command"   :
         [
-          "make"
+          "make",
+          "(cd ../frontend/aiagallery && ./generate.py build)"
         ]
       }
     },
