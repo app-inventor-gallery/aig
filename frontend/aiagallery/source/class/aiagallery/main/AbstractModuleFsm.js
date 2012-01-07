@@ -352,7 +352,7 @@ qx.Class.define("aiagallery.main.AbstractModuleFsm",
       var rpc = fsm.getObject("main.rpc");
 
       // Use standard JSON-RPC Version 2
-//      rpc.setProtocol("2.0");
+      rpc.setProtocol("2.0");
 
       // Set the service name
       rpc.setServiceName(rpcRequest.service);
