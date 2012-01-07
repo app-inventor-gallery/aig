@@ -73,6 +73,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       var             userId;
       var             visitor;
       var             googleUserId;
+      var             googleNickname;
       var             permissions;
 
       // Find out who is logged in
@@ -97,6 +98,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       }
 
       whoami = String(user.getEmail());
+      googleNickname = String(user.getNickname());
       googleUserId = String(user.getUserId());
 
       // Try to get this user's display name. Does the visitor exist?
@@ -105,13 +107,13 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       if (visitor.length > 0)
       {
         // Yup, he exists.
-        userId = visitor[0].displayName || googleUserId;
+        userId = visitor[0].displayName || googleNickname || googleUserId;
         permissions = visitor[0].permissions || [];
       }
       else
       {
         // He doesn't exist. Just use the unique number.
-        userId = googleUserId;
+        userId = googleNickname || googleUserId;
         permissions = [];
       }
 
