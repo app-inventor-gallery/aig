@@ -154,12 +154,10 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MApps
       //
       case "getAppList":
+        return ! bAnonymous;    // Access is allowed if they're logged in
+
       case "addOrEditApp":
-        return ! bAnonymous;    // Access is allowed if they're logged in
-
       case "deleteApp":
-        return ! bAnonymous;    // Access is allowed if they're logged in
-
       case "getAppListAll":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
@@ -174,8 +172,6 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MComments
       //
       case "addComment":
-        return ! bAnonymous;    // Access is allowed if they're logged in
-
       case "deleteComment":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
@@ -186,7 +182,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MFlags
       //
       case "flagIt":
-        return ! bAnonymous;    // Access is allowed if they're logged in
+        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       //
       // MMobile
@@ -204,8 +200,6 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MVisitors
       //
       case "addOrEditVisitor":
-        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
-
       case "deleteVisitor":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
@@ -217,6 +211,9 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         else
         {
           // At present, do not allow access to visitor list on App Engine
+          // except to administrator. Once we know the deepPermissionCheck is
+          // functioning entirely correctly, this can be changed to that
+          // check.
           return false;
         }
 
