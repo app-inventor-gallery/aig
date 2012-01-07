@@ -129,77 +129,73 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     
     /**
      * Add or confirm existence of each word in each field of given App Data
-     * 
-     *@param dataObj {Object}
+     *
+     * @param dataObj {Object}
      *  The result of getData() on the app object. Contains all the info in the
      *  database recorded for this App
-     * 
+     *
+     * ASSUMPTION: There is already a transaction in progress!
      */
     _populateSearch : function(dataObj)
     {
-      liberated.dbif.Entity.asTransaction(
-        function(dataObj)
+      var appDataField;
+      var wordsToAdd;
+      var searchObj;
+      var appId = dataObj["uid"];
+
+      for (appDataField in dataObj)
+      {
+        // Go through each field in the App Data Object
+        switch (appDataField)
         {
-          var appDataField;
-          var wordsToAdd;
-          var searchObj;
-          var appId = dataObj["uid"];
+        // If it's one of the text fields...
+        case "title":
+        case "description":
+          // Split up the words and...
+          wordsToAdd = dataObj[appDataField].split(" ");
+          wordsToAdd.forEach(function(word)
+              {
+                // Make sure to only add lower case words to the search
+                // database
+                var wordLC = word.toLowerCase();
 
-          for (appDataField in dataObj)
-          {
-            // Go through each field in the App Data Object
-            switch (appDataField)
-            {
-            // If it's one of the text fields...
-            case "title":
-            case "description":
-              // Split up the words and...
-              wordsToAdd = dataObj[appDataField].split(" ");
-              wordsToAdd.forEach(function(word)
-                  {
-                    // Make sure to only add lower case words to the search
-                    // database
-                    var wordLC = word.toLowerCase();
+                // If the word is a stop word, discard it
+                if (qx.lang.Array.contains(
+                      aiagallery.dbif.MSearch.stopWordArr,
+                      word))
+                {
+                  return;
+                }
 
-                    // If the word is a stop word, discard it
-                    if (qx.lang.Array.contains(
-                          aiagallery.dbif.MSearch.stopWordArr,
-                          word))
-                    {
-                      return;
-                    }
+                // Add each one to the db                
+                searchObj = new aiagallery.dbif.ObjSearch([wordLC,
+                                                          appId,
+                                                          appDataField]);
+                // Save the record in the DB.
+                searchObj.put();
+              });
+          break;
 
-                    // Add each one to the db                
-                    searchObj = new aiagallery.dbif.ObjSearch([wordLC,
-                                                              appId,
-                                                              appDataField]);
-                    // Save the record in the DB.
-                    searchObj.put();
-                  });
-              break;
+        case "tags":
+          wordsToAdd = dataObj[appDataField];
+          wordsToAdd.forEach(function(word)
+              {
 
-            case "tags":
-              wordsToAdd = dataObj[appDataField];
-              wordsToAdd.forEach(function(word)
-                  {
+                // Make sure to only add lower case words to the search
+                // database
+                var wordLC = word.toLowerCase();
 
-                    // Make sure to only add lower case words to the search
-                    // database
-                    var wordLC = word.toLowerCase();
+                // Add each one to the db                
+                searchObj = new aiagallery.dbif.ObjSearch([wordLC,
+                                                          appId,
+                                                         appDataField]);
+                // Save the record in the DB.
+                searchObj.put();
+              });
+          break;
 
-                    // Add each one to the db                
-                    searchObj = new aiagallery.dbif.ObjSearch([wordLC,
-                                                              appId,
-                                                             appDataField]);
-                    // Save the record in the DB.
-                    searchObj.put();
-                  });
-              break;
-
-            }
-          }
-        },
-        [ dataObj ]);
+        }
+      }
     },
     
     /**
