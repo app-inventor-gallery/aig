@@ -201,35 +201,33 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     /**
      * Ensure that there are no Search records from App with this uid
      * 
-     *@param uid {Integer}
-     * This is the app's uid whose Search records are to be wiped
+     * @param uid {Integer}
+     *   This is the app's uid whose Search records are to be wiped
+     *
+     * ASSUMPTION: There is already a transaction in progress!
      */
     _removeAppFromSearch : function(uid)
     {
-      liberated.dbif.Entity.asTransaction(
-        function()
-        {
-          var results;
-          var resultObj;
-          var searchObj;
+      var results;
+      var resultObj;
+      var searchObj;
 
-          // Get all Search Objects with this uid then...
-          results = liberated.dbif.Entity.query("aiagallery.dbif.ObjSearch",
-                                                {
-                                                  type : "element",
-                                                  field: "appId",
-                                                  value: uid
-                                                },
-                                               null);
-          // Remove every record found
-          results.forEach(
-            function(obj)
-            {
-              searchObj = new aiagallery.dbif.ObjSearch([obj["word"],
-                                                         obj["appId"],
-                                                         obj["appField"]]);
-              searchObj.removeSelf();
-            });
+      // Get all Search Objects with this uid then...
+      results = liberated.dbif.Entity.query("aiagallery.dbif.ObjSearch",
+                                            {
+                                              type : "element",
+                                              field: "appId",
+                                              value: uid
+                                            },
+                                           null);
+      // Remove every record found
+      results.forEach(
+        function(obj)
+        {
+          searchObj = new aiagallery.dbif.ObjSearch([obj["word"],
+                                                     obj["appId"],
+                                                     obj["appField"]]);
+          searchObj.removeSelf();
         });
     }
   },
@@ -261,7 +259,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             missing = [];
       var             sourceData;
       var             apkData;
-      var             key;
+      var             sourceKey = null;
+      var             apkKey = null;
       var             allowableFields =
         [
           "uid",
@@ -469,95 +468,109 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         appData.uploadTime = aiagallery.dbif.MDbifCommon.currentTimestamp();
       }
 
-      return liberated.dbif.Entity.asTransaction(
-        function()
+      // Save the new source data (if there is any)
+      if (sourceData)
+      {
+        // Save the data and prepend the blob id to the key list
+        sourceKey = liberated.dbif.Entity.putBlob(sourceData);
+        appData.source.unshift(sourceKey);
+      }
+
+      // Similarly for apk data
+      if (apkData)
+      {
+        // Save the data and prepend the blob id to the key list
+        apkKey = liberated.dbif.Entity.putBlob(apkData);
+        appData.apk.unshift(apkKey);
+      }
+
+      try
+      {
+        return liberated.dbif.Entity.asTransaction(
+          function()
+          {
+            // Add new tags to the database, and update counts of formerly-
+            // existing tags. Remove "normal" tags with a count of 0.
+            appData.tags.forEach(
+              function(tag)
+              {
+                // If the tag existed previously, ignore it.
+                if (qx.lang.Array.contains(oldTags, tag))
+                {
+                  // Remove it from oldTags
+                  qx.lang.Array.remove(oldTags, tag);
+                  return;
+                }
+
+                // It didn't exist. Create or retrieve existing tag.
+                tagObj = new aiagallery.dbif.ObjTags(tag);
+                tagData = tagObj.getData();
+
+                // If we created it, data is initialized. Otherwise...
+                if (! tagObj.getBrandNew())
+                {
+                  // ... it existed, so we need to increment its count
+                  ++tagData.count;
+                }
+
+                // Save the tag object
+                tagObj.put();
+              });
+
+            // Anything left in oldTags are those which were removed.
+            oldTags.forEach(
+              function(tag)
+              {
+                tagObj = new aiagallery.dbif.ObjTags(tag);
+                tagData = tagObj.getData();
+
+                // The record has to exist already. Decrement this tag's count.
+                --tagData.count;
+
+                // Ensure it's a "normal" tag
+                if (tagData.type != "normal")
+                {
+                  // It's not, so we have nothing more we need to do.
+                  return;
+                }
+
+                // If the count is less than 1...
+                if (tagData.count < 1)
+                {
+                  // ... then we can remove the tag
+                  tagObj.removeSelf();
+                }
+              });
+
+            // Save this record in the database
+            appObj.put();
+
+            // Add all words in text fields to word Search record
+            aiagallery.dbif.MApps._populateSearch(appObj.getData());
+
+            // Return entity data including newly-created key (if adding)
+            return appObj.getData();
+          });
+      }
+      catch (e)
+      {
+        // If we'd added a source blob...
+        if (sourceKey !== null)
         {
-          // Add new tags to the database, and update counts of formerly-
-          // existing tags. Remove "normal" tags with a count of 0.
-          appData.tags.forEach(
-            function(tag)
-            {
-              // If the tag existed previously, ignore it.
-              if (qx.lang.Array.contains(oldTags, tag))
-              {
-                // Remove it from oldTags
-                qx.lang.Array.remove(oldTags, tag);
-                return;
-              }
+          // ... then remove it
+          liberated.dbif.Entity.removeBlob(sourceKey);
+        }
 
-              // It didn't exist. Create or retrieve existing tag.
-              tagObj = new aiagallery.dbif.ObjTags(tag);
-              tagData = tagObj.getData();
+        // If we'd added an apk blob...
+        if (apkKey !== null)
+        {
+          // ... then remove it
+          liberated.dbif.Entity.removeBlob(apkKey);
+        }
 
-              // If we created it, data is initialized. Otherwise...
-              if (! tagObj.getBrandNew())
-              {
-                // ... it existed, so we need to increment its count
-                ++tagData.count;
-              }
-
-              // Save the tag object
-              tagObj.put();
-            });
-
-          // Anything left in oldTags are those which were removed.
-          oldTags.forEach(
-            function(tag)
-            {
-              tagObj = new aiagallery.dbif.ObjTags(tag);
-              tagData = tagObj.getData();
-
-              // The record has to exist already. Decrement this tag's count.
-              --tagData.count;
-
-              // Ensure it's a "normal" tag
-              if (tagData.type != "normal")
-              {
-                // It's not, so we have nothing more we need to do.
-                return;
-              }
-
-              // If the count is less than 1...
-              if (tagData.count < 1)
-              {
-                // ... then we can remove the tag
-                tagObj.removeSelf();
-              }
-            });
-
-          try
-          {
-            // Save the new source data (if there is any)
-            if (sourceData)
-            {
-              // Save the data and prepend the blob id to the key list
-              key = liberated.dbif.Entity.putBlob(sourceData);
-              appData.source.unshift(key);
-            }
-
-            // Similarly for apk data
-            if (apkData)
-            {
-              // Save the data and prepend the blob id to the key list
-              key = liberated.dbif.Entity.putBlob(apkData);
-              appData.apk.unshift(key);
-            }
-          }
-          catch(e)
-          {
-            error.setCode(5);
-            error.setMessage(e.toString());
-            return error;
-          }
-
-          // Save this record in the database
-          appObj.put();
-
-          // Add all words in text fields to word Search record
-          aiagallery.dbif.MApps._populateSearch(appObj.getData());
-
-          return appObj.getData();// This includes newly-created key (if adding)
-        });
+        // Rethrow the error
+        throw e;
+      }
     },
     
     deleteApp : function(uid, error)
@@ -596,6 +609,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       liberated.dbif.Entity.asTransaction(
         function()
         {
+          var             results;
+
           // Decrement counts for tags used by this application.
           appData.tags.forEach(
             function(tag)
@@ -622,32 +637,124 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               }
             });
 
-          // Remove any apk blobs associated with this app
-          if (appData.apk)
-          {
-            appData.apk.forEach(
-              function(apkBlobId)
+          // Remove all Likes objects referencing this application
+          liberated.dbif.Entity.query("aiagallery.dbif.ObjLikes", 
+                                      {
+                                        type  : "element",
+                                        field : "app",
+                                        value : appData.uid
+                                      }).forEach(
+            function(result)
+            {
+              var             obj;
+              
+              // Get this Likes object
+              obj = new aiagallery.dbif.ObjLikes(result.uid);
+              
+              // Assuming it exists (it had better!)...
+              if (! obj.getBrandNew())
               {
-                liberated.dbif.Entity.removeBlob(apkBlobId);
-              });
-          }
-
-          // Similarly for any source blobs
-          if (appData.source)
-          {
-            appData.source.forEach(
-              function(sourceBlobId)
+                // ... then remove this object
+                obj.removeSelf();
+              }
+            });
+      
+          // Remove all Flags objects referencing this application
+          liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags", 
+                                      {
+                                        type  : "element",
+                                        field : "app",
+                                        value : appData.uid
+                                      }).forEach(
+            function(result)
+            {
+              var             obj;
+              
+              // Get this Flags object
+              obj = new aiagallery.dbif.ObjFlags(result.uid);
+              
+              // Assuming it exists (it had better!)...
+              if (! obj.getBrandNew())
               {
-                liberated.dbif.Entity.removeBlob(sourceBlobId);
-              });
-          }
-
+                // ... then remove this object
+                obj.removeSelf();
+              }
+            });
+      
+          // Remove all comments referencing this application
+          liberated.dbif.Entity.query("aiagallery.dbif.ObjComments", 
+                                      {
+                                        type  : "element",
+                                        field : "app",
+                                        value : appData.uid
+                                      }).forEach(
+            function(result)
+            {
+              var             obj;
+              
+              // Get this Comments object
+              obj = new aiagallery.dbif.ObjComments( [
+                                                       result.app,
+                                                       result.treeId
+                                                     ]);
+              
+              // Assuming it exists (it had better!)...
+              if (! obj.getBrandNew())
+              {
+                // ... then remove this object
+                obj.removeSelf();
+              }
+            });
+      
+          // Remove all Downloads referencing this application
+          liberated.dbif.Entity.query("aiagallery.dbif.ObjDownloads", 
+                                      {
+                                        type  : "element",
+                                        field : "app",
+                                        value : appData.uid
+                                      }).forEach(
+            function(result)
+            {
+              var             obj;
+              
+              // Get this Comments object
+              obj = new aiagallery.dbif.ObjDownloads(result.uid);
+              
+              // Assuming it exists (it had better!)...
+              if (! obj.getBrandNew())
+              {
+                // ... then remove this object
+                obj.removeSelf();
+              }
+            });
+      
           // Delete the app
           appObj.removeSelf();
 
+          // Remove any search entries that map to only this app
           aiagallery.dbif.MApps._removeAppFromSearch(uid);
         });
       
+      // Remove any apk blobs associated with this app
+      if (appData.apk)
+      {
+        appData.apk.forEach(
+          function(apkBlobId)
+          {
+            liberated.dbif.Entity.removeBlob(apkBlobId);
+          });
+      }
+
+      // Similarly for any source blobs
+      if (appData.source)
+      {
+        appData.source.forEach(
+          function(sourceBlobId)
+          {
+            liberated.dbif.Entity.removeBlob(sourceBlobId);
+          });
+      }
+
       // We were successful
       return true;
     },
