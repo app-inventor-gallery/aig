@@ -122,6 +122,7 @@ qx.Class.define("aiagallery.main.AbstractModule",
       // Create an RPC object for use by this module
       module.rpc = new qx.io.remote.Rpc();
       module.rpc.setUrl(aiagallery.main.Constant.SERVICES_URL);
+      module.rpc.setProtocol("2.0");
       module.rpc.setTimeout(90000);
       module.rpc.setCrossDomain(false);
       module.rpc.addListener("completed", fsm.eventListener, fsm);

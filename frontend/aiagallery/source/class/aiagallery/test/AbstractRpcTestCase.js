@@ -18,6 +18,7 @@ qx.Class.define("aiagallery.test.AbstractRpcTestCase",
       this.dbif = aiagallery.dbif.DbifSim.getInstance();
 
       this.rpc = new qx.io.remote.Rpc();
+      this.rpc.setProtocol("2.0");
       this.rpc.setUrl(aiagallery.main.Constant.SERVICES_URL);
       this.rpc.setTimeout(10000);
       this.rpc.setCrossDomain(false);
@@ -51,7 +52,7 @@ qx.Class.define("aiagallery.test.AbstractRpcTestCase",
       var rpc = this.rpc;
 
       // Use standard JSON-RPC Version 2
-//      rpc.setProtocol("2.0");
+      rpc.setProtocol("2.0");
 
       // Set the service name
       rpc.setServiceName(rpcRequest.service);

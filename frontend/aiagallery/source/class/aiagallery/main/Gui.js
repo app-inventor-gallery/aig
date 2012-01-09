@@ -204,6 +204,7 @@ qx.Class.define("aiagallery.main.Gui",
             var             rpc;
 
             rpc = new qx.io.remote.Rpc();
+            rpc.setProtocol("2.0");
             rpc.set(
               {
                 url         : aiagallery.main.Constant.SERVICES_URL,
@@ -605,6 +606,7 @@ qx.Class.define("aiagallery.main.Gui",
 
             // Get and configure a new RPC object
             rpc = new qx.io.remote.Rpc();
+            rpc.setProtocol("2.0");
             rpc.set(
               {
                 url         : aiagallery.main.Constant.SERVICES_URL,
