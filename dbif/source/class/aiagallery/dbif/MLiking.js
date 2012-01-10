@@ -45,73 +45,76 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
       var            likesObj;
       var            likesDataObj;
 
-      appObj = new aiagallery.dbif.ObjAppData(appId);
-
-      // If there's no such app, return error
-      if (appObj.getBrandNew())
-      {
-        error.setCode(1);
-        error.setMessage("App with that ID not found. Unable to like.");
-        return error;
-      }
-
-      // Get the application data
-      appDataObj = appObj.getData();
-      
-      // Retrieve my email address (my visitor id)
-      myEmail = this.getWhoAmI().email;
-
-      // Construct query criteria for "likes of this app by current visitor"
-      criteria = 
+      // Return number of likes (which may or may not have changed)
+      return liberated.dbif.Entity.asTransaction(
+        function()
         {
-          type : "op",
-          method : "and",
-          children : 
-          [
-            {
-              type: "element",
-              field: "app",
-              value: appId
-            },
-            {
-              type: "element",
-              field: "visitor",
-              value: myEmail
-            }
-          ]
-        };
+          appObj = new aiagallery.dbif.ObjAppData(appId);
 
-      // Query for the likes of this app by the current visitor
-      // (an array, which should have length zero or one).
-      likesList = liberated.dbif.Entity.query("aiagallery.dbif.ObjLikes",
-                                              criteria,
-                                              null);
-
-      // Only change things if the visitor hasn't already liked this app
-      if (likesList.length === 0)
-      {
-        // Create a new likes object to prevent future re-likes
-        likesObj = new aiagallery.dbif.ObjLikes();
-        likesDataObj = likesObj.getData();
-
-        // Put app and visitor info into it
-        likesDataObj.app = appId;
-        likesDataObj.visitor = myEmail;
-
-        // And increment the like count in the DB
-        appDataObj.numLikes++;
-
-        // Write it back to the database
-        liberated.dbif.Entity.asTransaction(
-          function()
+          // If there's no such app, return error
+          if (appObj.getBrandNew())
           {
+            error.setCode(1);
+            error.setMessage("App with that ID not found. Unable to like.");
+            return error;
+          }
+
+          // Get the application data
+          appDataObj = appObj.getData();
+
+          // Retrieve my email address (my visitor id)
+          myEmail = this.getWhoAmI().email;
+
+          // Construct query criteria for "likes of this app by current
+          // visitor"
+          criteria = 
+            {
+              type : "op",
+              method : "and",
+              children : 
+              [
+                {
+                  type: "element",
+                  field: "app",
+                  value: appId
+                },
+                {
+                  type: "element",
+                  field: "visitor",
+                  value: myEmail
+                }
+              ]
+            };
+
+          // Query for the likes of this app by the current visitor
+          // (an array, which should have length zero or one).
+          likesList = liberated.dbif.Entity.query("aiagallery.dbif.ObjLikes",
+                                                  criteria,
+                                                  null);
+
+          // Only change things if the visitor hasn't already liked this app
+          if (likesList.length === 0)
+          {
+            // Create a new likes object to prevent future re-likes
+            likesObj = new aiagallery.dbif.ObjLikes();
+            likesDataObj = likesObj.getData();
+
+            // Put app and visitor info into it
+            likesDataObj.app = appId;
+            likesDataObj.visitor = myEmail;
+
+            // And increment the like count in the DB
+            appDataObj.numLikes++;
+
+            // Write it back to the database
             likesObj.put();
             appObj.put();
-          });
-      }
+          }
 
-      // Return number of likes (which may or may not have changed)
-      return appDataObj.numLikes;
+          return appDataObj.numLikes;
+        },
+        [],
+        this);
     }
   }
 });
