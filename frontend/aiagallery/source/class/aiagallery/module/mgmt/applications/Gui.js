@@ -24,8 +24,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
      */
     buildGui : function(module)
     {
-      var             o;
-      var             col;
       var             fsm = module.fsm;
       var             canvas = module.canvas;
       var             rowData;
@@ -85,6 +83,10 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
       // Generate a simple table model
       var model = new qx.ui.table.model.Simple();
 
+      // Column info.  Width parameters 1*, 2* indicate flex; see docs for
+      // qx.ui.table.columnmodel.resizebehavior.Default.setWidth()
+      // Re-titled image columns "Image <n>" to "I<n>", and widened 24 to 30 px,
+      // to make title visible.
       var columns =
         [
           {
@@ -125,21 +127,21 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
             colSet  : { width : 50 }
           },
           {
-            heading : this.tr("Image 1"),
+            heading : this.tr("I1"),
             id      : "image1",
-            colSet  : { width : 24 },
+            colSet  : { width : 30 },
             type    : "image"
           },
           {
-            heading : this.tr("Image 2"),
+            heading : this.tr("I2"),
             id      : "image2",
-            colSet  : { width : 24 },
+            colSet  : { width : 30 },
             type    : "image"
           },
           {
-            heading : this.tr("Image 3"),
+            heading : this.tr("I3"),
             id      : "image3",
-            colSet  : { width : 24 },
+            colSet  : { width : 30 },
             type    : "image"
           }
         ];
@@ -242,7 +244,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
         "execute",
         function(e)
         {
-          // Determine what user is selected for deletion. We're in
+          // Determine what app is selected for deletion. We're in
           // single-selection mode, so we can easily reference into the
           // selection array.
           var selection = selectionModel.getSelectedRanges()[0].minIndex;
@@ -250,8 +252,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
           var origEvent = e.clone();
 
           dialog.Dialog.confirm(
-            this.tr("Really delete user ") + data[1] +
-              " (" + data[0] + ")" + "?",
+            this.tr("Really delete app ") + data[2] + "?",
             function(result)
             {
               // If they confirmed the deletion...
