@@ -1,13 +1,13 @@
 /**
  * Copyright (c) 2011 Derrell Lipman
- * 
+ *
  * License:
- *   LGPL: http://www.gnu.org/licenses/lgpl.html 
+ *   LGPL: http://www.gnu.org/licenses/lgpl.html
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
 /**
- * The graphical user interface for application management 
+ * The graphical user interface for application management
  */
 qx.Class.define("aiagallery.module.mgmt.applications.Gui",
 {
@@ -61,7 +61,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
         });
       hBox.add(addApp);
       addApp.addListener("execute", fsm.eventListener, fsm);
-      
+
       // We'll be receiving events on the object so save its friendly name
       fsm.addObject("addApp", addApp, "main.fsmUtils.disable_during_rpc");
 
@@ -87,56 +87,56 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
 
       var columns =
         [
-          { 
+          {
             heading : this.tr("Owner"),
             id      : "owner",
             colSet  : { width : 90 }
           },
 
-          { 
+          {
             heading : this.tr("Email"),
             id      : "email",
             colSet  : { width : 90 }
           },
 
-          { 
+          {
             heading : this.tr("Display Name"),
             id      : "displayName",
             colSet  : { width : 90 }
           },
-          { 
+          {
             heading : this.tr("Title"),
             id      : "title",
             colSet  : { width : "1*" }
           },
-          { 
+          {
             heading : this.tr("Description"),
             id      : "description",
             colSet  : { width : "2*" }
           },
-          { 
+          {
             heading : this.tr("Tags"),
             id      : "tags",
             colSet  : { width : 120 }
           },
-          { 
+          {
             heading : this.tr("Status"),
             id      : "status",
             colSet  : { width : 50 }
           },
-          { 
+          {
             heading : this.tr("Image 1"),
             id      : "image1",
             colSet  : { width : 24 },
             type    : "image"
           },
-          { 
+          {
             heading : this.tr("Image 2"),
             id      : "image2",
             colSet  : { width : 24 },
             type    : "image"
           },
-          { 
+          {
             heading : this.tr("Image 3"),
             id      : "image3",
             colSet  : { width : 24 },
@@ -147,7 +147,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
       // Define the table columns
       model.setColumns(columns.map(function(elem)
                                    {
-                                     return elem.heading; 
+                                     return elem.heading;
                                    }),
                        columns.map(function(elem)
                                    {
@@ -164,7 +164,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
       // resizes columns.
       var custom =
       {
-        tableColumnModel : function(obj) 
+        tableColumnModel : function(obj)
         {
           return new qx.ui.table.columnmodel.Resize(obj);
         }
@@ -173,10 +173,10 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
       // Now that we have a data model, we can use it to create our table.
       var table = new aiagallery.widget.Table(model, custom);
       table.addListener("cellEditorOpening", fsm.eventListener, fsm);
-      
+
       // We'll be receiving events on the object so save its friendly name
       fsm.addObject("table", table, "main.fsmUtils.disable_during_rpc");
-      
+
       // Also save the FSM in the table, for access by cell editors
       table.setUserData("fsm", fsm);
 
@@ -195,10 +195,10 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
         {
           // Set the same cell editor factory for all columns
           tcm.setCellEditorFactory(col, editor);
-          
+
           // Apply the column-specific settings
           resizeBehavior.set(col, elem.colSet);
-          
+
           // If this is an image column...
           if (elem.type && elem.type == "image")
           {
@@ -250,7 +250,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
           var origEvent = e.clone();
 
           dialog.Dialog.confirm(
-            this.tr("Really delete user ") + data[1] + 
+            this.tr("Really delete user ") + data[1] +
               " (" + data[0] + ")" + "?",
             function(result)
             {
@@ -262,7 +262,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
               }
             });
         });
-      
+
       // Add the table to the page
       canvas.add(table, { flex : 1 });
     },
@@ -315,7 +315,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
         deletedRow = rpcRequest.getUserData("deletedRow");
         table.getTableModel().removeRows(deletedRow, 1, false);
         break;
-        
+
       default:
         throw new Error("Unexpected request type: " + requestType);
       }
