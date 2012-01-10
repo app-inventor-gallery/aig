@@ -201,7 +201,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
       state.addTransition(trans);
 
       /*
-       * Transition: Idle to AddOrEditUser
+       * Transition: Idle to AddOrEditApp
        *
        * Cause: "cellEditorOpening" on the Table. This can occur as a result
        * of either a press of the "Edit" button, or by double-clicking on the
@@ -212,9 +212,9 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
        */
 
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AddOrEditUser_via_cellEditorOpening",
+        "Transition_Idle_to_AddOrEditApp_via_cellEditorOpening",
       {
-        "nextState" : "State_AddOrEditUser",
+        "nextState" : "State_AddOrEditApp",
 
         "context" : this,
 
