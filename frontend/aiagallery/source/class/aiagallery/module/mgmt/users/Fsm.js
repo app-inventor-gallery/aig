@@ -1,8 +1,8 @@
 /**
  * Copyright (c) 2011 Derrell Lipman
- * 
+ *
  * License:
- *   LGPL: http://www.gnu.org/licenses/lgpl.html 
+ *   LGPL: http://www.gnu.org/licenses/lgpl.html
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
@@ -56,7 +56,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
               rpcRequest.request = null;
             }
           }
-          
+
           // Be sure that edit and delete buttons enable status is correct
           var selectionModel = fsm.getObject("table").getSelectionModel();
           var bHasSelection = ! selectionModel.isSelectionEmpty();
@@ -141,7 +141,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           // When we get the result, we'll need to know what type of request
           // we made.
           request.setUserData("requestType", "deleteVisitor");
-          
+
           // We also need to know what row got deleted
           request.setUserData("deletedRow", selection);
         }
@@ -175,28 +175,28 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           // Get the cell editor factory for all columns of the table
           var cellEditorFactory =
             table.getTableColumnModel().getCellEditorFactory(0);
-          
+
           // Generate a simple cellInfo object
           var cellInfo = { table : table };
 
           // Get a cell editor
           cellEditor = cellEditorFactory.createCellEditor(cellInfo);
-          
+
           // Make it modal
           cellEditor.setModal(true);
-          
+
           // Disallow the window's close button
           cellEditor.setShowClose(false);
-          
+
           // Open the cell editor
           cellEditor.open();
-          
+
           // Save the cell editor and cell info
           this.setUserData("cellEditor", cellEditor);
           this.setUserData("cellInfo", cellInfo);
         }
       });
-        
+
       state.addTransition(trans);
 
       /*
@@ -222,13 +222,13 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           var data = event.getData();
           var cellEditor = data.cellEditor;
           var cellInfo = data.cellInfo;
-          
+
           // Save the cell editor and information of which row we're editing
           this.setUserData("cellEditor", cellEditor);
           this.setUserData("cellInfo", cellInfo);
         }
       });
-        
+
       state.addTransition(trans);
 
       /*
@@ -355,7 +355,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
             // response objects.
             rpcRequest = this.popRpcRequest();
             response = rpcRequest.getUserData("rpc_response");
-            
+
             // Did it fail?
             if (response.type == "failed")
             {
@@ -367,7 +367,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
             {
               // It succeeded. Resubmit the event to move us back to Idle
               fsm.eventListener(event);
-              
+
               // Push the RPC request back on the stack so it's available for
               // the next transition.
               this.pushRpcRequest(rpcRequest);
@@ -381,10 +381,10 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           {
             // When the Ok button is pressed in the cell editor
             "ok" : "Transition_AddOrEditUser_to_AwaitRpcResult_via_ok",
-            
+
             "cancel" : "Transition_AddOrEditUser_to_Idle_via_cancel"
           },
-          
+
           // When we received a "completed" event on RPC
           "completed" : "Transition_AddOrEditUser_to_Idle_via_completed"
         }
@@ -417,11 +417,11 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           var             email;
           var             selection;
           var             pGroups;
-          var             internal = 
-                          { 
-                            permissions : [], 
-                            permissionGroups : [], 
-                            status : null 
+          var             internal =
+                          {
+                            permissions : [],
+                            permissionGroups : [],
+                            status : null
                           };
 
           var             request;
@@ -439,27 +439,27 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
             {
               // Add to our permission list the "internal" (English) permission
               internal.permissions.push(item.getUserData("internal"));
-            
+
             });
-          //Add permissionGroup data 
+          //Add permissionGroup data
           selection = cellEditor.getUserData("pgroups").getSelection();
           selection.forEach(
             function(item)
             {
               // Add to our pGroup list the "internal" (English) permission
               internal.permissionGroups.push(item.getUserData("internal"));
-            
+
             });
           selection = cellEditor.getUserData("status").getSelection()[0];
           internal.status = selection.getUserData("internal");
-          
+
           // Save the request data
-          var requestData = 
+          var requestData =
             {
               displayName : displayName,
               permissions : internal.permissions,
-              permissionGroups : internal.permissionGroups, 
-              status      : internal.status 
+              permissionGroups : internal.permissionGroups,
+              status      : internal.status
             };
 
           // Issue a Add Or Edit Visitor call.
@@ -509,16 +509,16 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           // Retrieve the cell editor and cell info
           cellEditor = this.getUserData("cellEditor");
           cellInfo = this.getUserData("cellInfo");
-          
+
           // Retrieve the table object
           var table = fsm.getObject("table");
-          
+
           // Tell the table we're no longer editing
           table.cancelEditing();
 
           // close the cell editor
           cellEditor.close();
-          
+
           // If we created this cell editor (cellInfo has only 'table')...
           if (typeof(cellInfo.row) == "undefined")
           {
@@ -562,12 +562,12 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           var             table;
           var             dataModel;
           var             permissions;
-          var             permissionGroups
+          var             permissionGroups;
           var             rowData = [];
 
           // Retrieve the RPC request
           rpcRequest = this.popRpcRequest();
-          
+
           // Get the cell editor and the request data from the RPC request
           cellEditor = this.getUserData("cellEditor");
           cellInfo = this.getUserData("cellInfo");
@@ -576,10 +576,10 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
 
           // We'll also need the Table object, from the FSM
           table = fsm.getObject("table");
-          
+
           // Get the table's data model
           dataModel = table.getTableModel();
-          
+
           // Create the row data for the table
           rowData.push(requestData.displayName);
           rowData.push(requestData.email);
@@ -589,10 +589,11 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           permissions = internal.permissions.join(", ");
           rowData.push(permissions);
 
-          // Add permission group info 
+          // Add permission group info
           permissionGroups = internal.permissionGroups.join(", ");
           rowData.push(permissionGroups);
-          
+
+
           // Add the status to the row data
           rowData.push(internal.status);
 
@@ -601,7 +602,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           {
             // ... then save the data in the row being edited.
             dataModel.setRows( [ rowData ], cellInfo.row, false);
-            
+
             // Save the data so that the cell editor's getCellEditorValue()
             // method can retrieve it.
             cellEditor.setUserData("newData", rowData);
@@ -611,10 +612,10 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
             // Otherwise, add a new row. Do not clear sorting.
             dataModel.addRows( [ rowData ], null, false);
           }
-          
+
           // close the cell editor
           cellEditor.close();
-          
+
           // We can remove the cell editor and cell info from our own user
           // data now.
           this.setUserData("cellEditor", null);

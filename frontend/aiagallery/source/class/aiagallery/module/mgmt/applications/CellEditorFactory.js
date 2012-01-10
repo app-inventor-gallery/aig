@@ -2,9 +2,9 @@
  * Cell editor for all cells of the Users table
  *
  * Copyright (c) 2011 Derrell Lipman
- * 
+ *
  * License:
- *   LGPL: http://www.gnu.org/licenses/lgpl.html 
+ *   LGPL: http://www.gnu.org/licenses/lgpl.html
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
@@ -47,7 +47,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
         title = this.tr("Add New App");
         rowData = [ "", "", "", "", "", "", "", "", "" ];
       }
-      
+
       var layout = new qx.ui.layout.Grid(9, 2);
       layout.setColumnAlign(0, "right", "top");
       layout.setColumnWidth(0, 80);
@@ -100,15 +100,15 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       var displayName = new qx.ui.form.TextField("");
       displayName.setValue(rowData[0]);
       cellEditor.add(displayName, { row : 0, column : 1 });
-      
+
       // Create the editor field for the email address
       var email = new qx.ui.form.TextField("");
       email.setValue(rowData[1]);
       cellEditor.add(email, { row : 1, column : 1 });
-      
+
       // If we're editing, don't allow them to change the email (userId) value
       bEditing && email.setEnabled(false);
-      
+
       // Create the editor field for permissions
       var permissions = new qx.ui.form.List();
       permissions.setHeight(140);
@@ -119,8 +119,8 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
 
       // Add each of the permission values
       qx.lang.Object.getKeys(aiagallery.dbif.Constants.Permissions).forEach(
-        function(perm) 
-        {          
+        function(perm)
+        {
           // Pull the permission description into the variable description
           var description = aiagallery.dbif.Constants.Permissions[perm];
 
@@ -130,18 +130,18 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
           // Set the internal name of the permission to equal the display name
           item.setUserData("internal", perm);
 
-          // Set "description" in userdata of the permission to be the 
+          // Set "description" in userdata of the permission to be the
           // description of the permission.
-          item.setUserData("description", description); 
+          item.setUserData("description", description);
 
-          // Create a tooltip that describes the permission, then attach it to 
+          // Create a tooltip that describes the permission, then attach it to
           // the List Item
           var tooltip = new qx.ui.tooltip.ToolTip(description);
           item.setToolTip(tooltip);
 
           // Add the list item with the attached tool tip to the list
           permissions.add(item);
-          
+
           // Is this permission currently assigned to the user being edited?
           if (qx.lang.Array.contains(permissionList, perm))
           {
@@ -149,7 +149,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
             permissions.addToSelection(item);
           }
         });
-      
+
       cellEditor.add(permissions, { row : 2, column : 1 });
 
       var status = new qx.ui.form.SelectBox();
@@ -161,26 +161,26 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
         //  { i8n: this.tr("Active"),  internal: "Active" },
         //  { i8n: this.tr("Pending"), internal: "Pending" },
         //  { i8n: this.tr("Banned"),  internal: "Banned" }
-        //].forEach(function(stat) 
+        //].forEach(function(stat)
         {
           // Create a new list item with the current status' name
           var item = new qx.ui.form.ListItem(stat);
-          
+
           // Set the internal name of the status to the display name for now
           item.setUserData("internal", stat);
 
           // Add this item to the selectbox
           status.add(item);
-          
+
           // Is this the current status?
           if (stat == rowData[3])
           {
             status.setSelection( [ item ] );
           }
         });
-      
+
       cellEditor.add(status, { row : 3, column : 1 });
-      
+
       // Save the input fields for access by getCellEditorValue() and the FSM
       cellEditor.setUserData("displayName", displayName);
       cellEditor.setUserData("email", email);
@@ -225,7 +225,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
     {
       // The new row data was saved by the FSM. Retrieve it.
       var newData = cellEditor.getUserData("newData");
-      
+
       // Return the appropriate column data.
       return newData[cellEditor.getUserData("cellInfo").col];
     }

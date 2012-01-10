@@ -1,13 +1,13 @@
 /**
  * Copyright (c) 2011 Derrell Lipman
- * 
+ *
  * License:
- *   LGPL: http://www.gnu.org/licenses/lgpl.html 
+ *   LGPL: http://www.gnu.org/licenses/lgpl.html
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
 /**
- * The graphical user interface for the user management 
+ * The graphical user interface for the user management
  */
 qx.Class.define("aiagallery.module.mgmt.users.Gui",
 {
@@ -60,7 +60,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
         });
       hBox.add(addUser);
       addUser.addListener("execute", fsm.eventListener, fsm);
-      
+
       // We'll be receiving events on the object so save its friendly name
       fsm.addObject("addUser", addUser, "main.fsmUtils.disable_during_rpc");
 
@@ -85,7 +85,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       var model = new qx.ui.table.model.Simple();
 
       // Define the table columns
-      model.setColumns([ 
+      model.setColumns([
                          this.tr("Display Name"),
                          this.tr("Email"),
                          this.tr("Permissions"),
@@ -110,7 +110,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       // resizes columns.
       var custom =
       {
-        tableColumnModel : function(obj) 
+        tableColumnModel : function(obj)
         {
           return new qx.ui.table.columnmodel.Resize(obj);
         }
@@ -119,10 +119,10 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       // Now that we have a data model, we can use it to create our table.
       var table = new aiagallery.widget.Table(model, custom);
       table.addListener("cellEditorOpening", fsm.eventListener, fsm);
-      
+
       // We'll be receiving events on the object so save its friendly name
       fsm.addObject("table", table, "main.fsmUtils.disable_during_rpc");
-      
+
       // Also save the FSM in the table, for access by cell editors
       table.setUserData("fsm", fsm);
 
@@ -183,7 +183,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
           var origEvent = e.clone();
 
           dialog.Dialog.confirm(
-            this.tr("Really delete user ") + data[1] + 
+            this.tr("Really delete user ") + data[1] +
               " (" + data[0] + ")" + "?",
             function(result)
             {
@@ -195,7 +195,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
               }
             });
         });
-      
+
       // Add the table to the page
       canvas.add(table, { flex : 1 });
     },
@@ -233,14 +233,15 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       {
       case "getVisitorList":
         table = fsm.getObject("table");
-        
+
         // Split out the data from the map
         // Save the pgroup info for the cellEditorWindow
-        var pGroups = response.data.result.pGroups; 
+        var pGroups = response.data.result.pGroups;
         table.setUserData("pGroups", pGroups);
-        
-        var vistors = response.data.result.visitors; 
-        
+
+        var vistors = response.data.result.visitors;
+
+
         // Set the entire data model given the result array
         table.getTableModel().setDataAsMapArray(vistors);
         break;
@@ -255,7 +256,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
         deletedRow = rpcRequest.getUserData("deletedRow");
         table.getTableModel().removeRows(deletedRow, 1, false);
         break;
-        
+
       default:
         throw new Error("Unexpected request type: " + requestType);
       }
