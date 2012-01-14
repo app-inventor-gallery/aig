@@ -13,7 +13,7 @@ qx.Class.define("aiagallery.test.AppsTest",
 
   members :
   {
-    "test: App addition and deletion" : function()
+    "test 01: App addition and deletion" : function()
     {
       
       // Get access to the RPC implementations. This includes the mixins for
@@ -60,7 +60,7 @@ qx.Class.define("aiagallery.test.AppsTest",
       this.assert(dbifSim.deleteApp(myAppData.uid), "removing app");
       
       // Was the ObjSearch correctly cleared?
-      var searchObj = new aiagallery.dbif.ObjSearch(["awesome",
+      searchObj = new aiagallery.dbif.ObjSearch(["awesome",
                                                      myAppData.uid,
                                                      "description"]);
       // Now this should be "brand new", because it was deleted w/ the app
@@ -69,7 +69,7 @@ qx.Class.define("aiagallery.test.AppsTest",
       
     },
     
-    "test: MApps.getAppListAll()" : function()
+    "test 02: MApps.getAppListAll()" : function()
     {
       // Get access to the RPC implementations. This includes the mixins for
       // all RPCs.
@@ -80,7 +80,7 @@ qx.Class.define("aiagallery.test.AppsTest",
       this.assertInteger(appList.apps[0].uid, "retrieving list of all apps");
     },
     
-    "test: MApps._requestedFields()" : function()
+    "test 03: MApps._requestedFields()" : function()
     {
       // Get access to the RPC implementations. This includes the mixins for
       // all RPCs.
@@ -119,7 +119,7 @@ qx.Class.define("aiagallery.test.AppsTest",
       this.assertJsonEquals(myApp, expectedResult, "requested fields");
     },
     
-    "test: MApps.getAppInfo()" : function()
+    "test 04: MApps.getAppInfo()" : function()
     {
       // Get access to the RPC implementations. This includes the mixins for
       // all RPCs.
@@ -161,7 +161,7 @@ qx.Class.define("aiagallery.test.AppsTest",
       
     },
     
-    "test: MApps.getAppListByList()" : function()
+    "test 05: MApps.getAppListByList()" : function()
     {
       // Get access to the RPC implementations. This includes the mixins for
       // all RPCs.

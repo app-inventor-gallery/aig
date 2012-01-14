@@ -1,0 +1,2 @@
+# 'test' is globally ignored from above. Stop ignoring it here
+!test
