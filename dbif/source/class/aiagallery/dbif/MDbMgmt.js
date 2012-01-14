@@ -10,7 +10,7 @@ qx.Mixin.define("aiagallery.dbif.MDbMgmt",
 {
   construct : function()
   {
-    this.registerService("getDatabaseEntities",
+    this.registerService("aiagallery.features.getDatabaseEntities",
                          this.getDatabaseEntities,
                          [ "entityType" ]);
   },

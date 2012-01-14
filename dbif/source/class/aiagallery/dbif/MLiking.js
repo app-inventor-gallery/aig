@@ -10,7 +10,7 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
 {
   construct : function()
   {
-    this.registerService("likesPlusOne",
+    this.registerService("aiagallery.features.likesPlusOne",
                          this.likesPlusOne,
                          [ "appId" ]);
   },

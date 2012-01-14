@@ -23,7 +23,7 @@ qx.Class.define("aiagallery.dbif.DbifSim",
     this.base(arguments);
     
     // Prepare for remote procedure calls to aiagallery.features.*
-    this.__rpc = new liberated.sim.Rpc([ "aiagallery", "features" ], "/rpc");
+    this.__rpc = new liberated.sim.Rpc("/rpc");
         
     // Save the logged-in user. The whoAmI property is in MDbifCommon.
     this.setWhoAmI(

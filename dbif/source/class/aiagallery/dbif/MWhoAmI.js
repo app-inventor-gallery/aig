@@ -10,7 +10,7 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
 {
   construct : function()
   {
-    this.registerService("whoAmI",
+    this.registerService("aiagallery.features.whoAmI",
                          this.whoAmI,
                          []);
   },

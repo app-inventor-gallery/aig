@@ -11,15 +11,15 @@ qx.Mixin.define("aiagallery.dbif.MComments",
 {
   construct : function()
   {
-    this.registerService("addComment",
+    this.registerService("aiagallery.features.addComment",
                          this.addComment,
                          [ "appId", "text", "parentTreeId" ]);
 
-    this.registerService("deleteComment",
+    this.registerService("aiagallery.features.deleteComment",
                          this.deleteComment,
                          [ "appId", "treeId" ]);
 
-    this.registerService("getComments",
+    this.registerService("aiagallery.features.getComments",
                          this.getComments,
                          [ "appId", "offset", "limit" ]);
   },

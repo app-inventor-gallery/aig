@@ -11,7 +11,7 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
 {
   construct : function()
   {
-    this.registerService("mobileRequest",
+    this.registerService("aiagallery.features.mobileRequest",
                          this.mobileRequest,
                          [ "command" ]);
   },

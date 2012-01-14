@@ -11,7 +11,7 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
   construct : function()
   {
     
-    this.registerService("keywordSearch",
+    this.registerService("aiagallery.features.keywordSearch",
                          this.editProfile,
                          [ "keywordString",
                            "queryFields",

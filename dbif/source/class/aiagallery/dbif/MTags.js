@@ -10,7 +10,7 @@ qx.Mixin.define("aiagallery.dbif.MTags",
 {
   construct : function()
   {
-    this.registerService("getCategoryTags",
+    this.registerService("aiagallery.features.getCategoryTags",
                          this.getCategoryTags,
                          []);
   },

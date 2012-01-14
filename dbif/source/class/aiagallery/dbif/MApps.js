@@ -11,40 +11,40 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 {
   construct : function()
   {
-    this.registerService("addOrEditApp",
+    this.registerService("aiagallery.features.addOrEditApp",
                          this.addOrEditApp,
                          [ "uid", "attributes" ]);
 
-    this.registerService("deleteApp",
+    this.registerService("aiagallery.features.deleteApp",
                          this.deleteApp,
                          [ "uid" ]);
 
-    this.registerService("getAppList",
+    this.registerService("aiagallery.features.getAppList",
                          this.getAppList,
                          [ "bStringize", "sortCriteria", "offset", "limit" ]);
 
-    this.registerService("getAppListAll",
+    this.registerService("aiagallery.features.getAppListAll",
                          this.getAppListAll,
                          [ "bStringize", "sortCriteria", "offset", "limit" ]);
 
-    this.registerService("getHomeRibbonData",
+    this.registerService("aiagallery.features.getHomeRibbonData",
                          this.getHomeRibbonData); 
 
-    this.registerService("appQuery",
+    this.registerService("aiagallery.features.appQuery",
                          this.appQuery,
                          [ "criteria", "requestedFields" ]);
     
-    this.registerService("intersectKeywordAndQuery",
+    this.registerService("aiagallery.features.intersectKeywordAndQuery",
                          this.intersectKeywordAndQuery,
                          [ "queryArgs" ]);
 
 
-    this.registerService("getAppListByList",
+    this.registerService("aiagallery.features.getAppListByList",
                          this.getAppListByList,
                          [ "uidArr", "requestedFields" ]);
 
     
-    this.registerService("getAppInfo",
+    this.registerService("aiagallery.features.getAppInfo",
                          this.getAppInfo,
                          [ "uid", "bStringize", "requestedFields" ]);
   },

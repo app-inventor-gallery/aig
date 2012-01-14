@@ -10,19 +10,19 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
 {
   construct : function()
   {
-    this.registerService("addOrEditVisitor",
+    this.registerService("aiagallery.features.addOrEditVisitor",
                          this.addOrEditVisitor,
                          [ "userId", "attributes" ]);
 
-    this.registerService("deleteVisitor",
+    this.registerService("aiagallery.features.deleteVisitor",
                          this.deleteVisitor,
                          [ "userId" ]);
 
-    this.registerService("getVisitorList",
+    this.registerService("aiagallery.features.getVisitorList",
                          this.getVisitorList,
                          [ "bStringize" ]);
     
-    this.registerService("editProfile",
+    this.registerService("aiagallery.features.editProfile",
                          this.editProfile,
                          [ "profileParams" ]);
   },

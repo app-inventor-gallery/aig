@@ -14,7 +14,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
 {
   construct : function()
   {
-    this.registerService("flagIt",
+    this.registerService("aiagallery.features.flagIt",
                          this.flagIt,
                          [ "flagType", 
                            "explanationInput", 
