@@ -48,6 +48,7 @@ qx.Class.define("aiagallery.main.Gui",
       var             thisPage;
       var             lookingAt;
       var             displayedHierarchy;
+      var             _this = this;
 
       // Retrieve the previously-created top-level tab view
       var mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
@@ -407,7 +408,7 @@ qx.Class.define("aiagallery.main.Gui",
               var             label = page.getChildControl("button").getLabel();
 
               // Remove any ephemeral pages
-              aiagallery.main.Gui._removeEphemeralPages();
+              _this.removeEphemeralPages();
               
               // Set this page to be the selected (visible) one
               mainTabs.setSelection([ this.getUserData("page") ]);
@@ -537,7 +538,7 @@ qx.Class.define("aiagallery.main.Gui",
      * that begins with a dash. (Ephemeral pages do not have buttons created
      * for them, so the dash is never visible to the user.
      */
-    _removeEphemeralPages : function()
+    removeEphemeralPages : function()
     {
       var             i;
       var             mainTabs;
