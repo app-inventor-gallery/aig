@@ -107,6 +107,7 @@ qx.Class.define("aiagallery.main.Gui",
 
         // Add a flexible spacer to take up the whole middle
         o = new qx.ui.core.Widget();
+        o.setMinWidth(1);
         header.add(o, { flex : 1 });
 
         // Create a label to hold the user's login info and a logout button
@@ -123,6 +124,7 @@ qx.Class.define("aiagallery.main.Gui",
 
         // Add a flexible spacer to take up the whole middle
         o = new qx.ui.core.Widget();
+        o.setMinWidth(1);
         header.add(o, { flex : 1 });
 
         // Add a checkbox to enable/disable RPC simulation.
