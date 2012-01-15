@@ -46,7 +46,20 @@ qx.Class.define("aiagallery.widget.PageHierarchy",
   {
     _applyHierarchy : function(value, old)
     {
-      this.setValue("&raquo; " + value.join(" &raquo; "));
+      var             stripEphemeral = [];
+      
+      // Scan each element of the hierarchy and strip off the '-' at the
+      // beginning of any ephemeral entry.
+      value.forEach(
+        function(name)
+        {
+          stripEphemeral.push(name.charAt(0) == "-" 
+                              ? name.substring(1)
+                              : name);
+        });
+      
+      // Now join the names together to meaningfully display the hierarchy
+      this.setValue("&raquo; " + stripEphemeral.join(" &raquo; "));
     }
   }
 });

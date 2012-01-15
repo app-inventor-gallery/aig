@@ -28,8 +28,10 @@ qx.Class.define("aiagallery.main.Gui",
 
     buildGui : function(moduleList, iconList, functionList)
     {
+      var             i;
       var             o;
       var             hbox;
+      var             label;
       var             header;
       var             menuItem;
       var             moduleName;
@@ -43,6 +45,9 @@ qx.Class.define("aiagallery.main.Gui",
       var             pagePane;
       var             pageSelectorGroup;
       var             pageSelectorBar;
+      var             thisPage;
+      var             lookingAt;
+      var             displayedHierarchy;
 
       // Retrieve the previously-created top-level tab view
       var mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
@@ -364,6 +369,9 @@ qx.Class.define("aiagallery.main.Gui",
           });
       }
       
+      // Get the page hierarchy
+      hierarchy = this.getUserData("hierarchy");
+
       // for each menu button...
       for (menuItem in moduleList)
       {
@@ -373,23 +381,42 @@ qx.Class.define("aiagallery.main.Gui",
         page.setLayout(new qx.ui.layout.VBox(4));
         mainTabs.add(page);
         
-        o = new qx.ui.form.RadioButton(menuItem);
-        o.setUserData("page", page);
-        o.set(
-          {
-            appearance : "pageselector"
-          });
-        hierarchy = this.getUserData("hierarchy");
-        o.addListener(
-          "execute",
-          function(e)
-          {
-            var             page = this.getUserData("page");
-            var             label = page.getChildControl("button").getLabel();
-            mainTabs.setSelection([ this.getUserData("page") ]);
-            hierarchy.setHierarchy([ label ]);
-          });
-        this.getUserData("pageSelectorBar").add(o);
+        // If this is an ephemeral page...
+        if (menuItem.charAt(0) == "-")
+        {
+          // ... then add it to the hierarchy without adding a button for it
+          displayedHierarchy = qx.lang.Array.clone(hierarchy.getHierarchy());
+          displayedHierarchy.push(menuItem);
+          hierarchy.setHierarchy(displayedHierarchy);
+        }
+        else
+        {
+          // It's not ephemeral. Add it to the page hierarchy
+          o = new qx.ui.form.RadioButton(menuItem);
+          o.setUserData("page", page);
+          o.set(
+            {
+              appearance : "pageselector"
+            });
+
+          o.addListener(
+            "execute",
+            function(e)
+            {
+              var             page = this.getUserData("page");
+              var             label = page.getChildControl("button").getLabel();
+
+              // Remove any ephemeral pages
+              aiagallery.main.Gui._removeEphemeralPages();
+              
+              // Set this page to be the selected (visible) one
+              mainTabs.setSelection([ this.getUserData("page") ]);
+              
+              // Reinitialize the hierarchy to show only this page
+              hierarchy.setHierarchy([ label ]);
+            });
+          this.getUserData("pageSelectorBar").add(o);
+        }
 
         // See how many modules there are associated with this menu item
         numModules = 0;
@@ -501,6 +528,52 @@ qx.Class.define("aiagallery.main.Gui",
             }
           }
 
+        }
+      }
+    },
+
+    /**
+     * Remove any ephemeral pages. Ephemeral pages are identified by a label
+     * that begins with a dash. (Ephemeral pages do not have buttons created
+     * for them, so the dash is never visible to the user.
+     */
+    _removeEphemeralPages : function()
+    {
+      var             i;
+      var             mainTabs;
+      var             children;
+      var             thisPage;
+      var             lookingAt;
+      var             hierarchy;
+
+      // Make the tab view globally accessible
+      mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
+
+      // Get the page hierarchy
+      hierarchy = this.getUserData("hierarchy");
+
+      // Remove any ephemeral page
+      for (children = mainTabs.getChildren(), i = 0;
+           i < children.length;
+           i++)
+      {
+        thisPage = children[i];
+        lookingAt = thisPage.getChildControl("button").getLabel();
+        if (lookingAt.charAt(0) == "-")
+        {
+          // We found an ephemeral page. Remove it.
+          mainTabs.remove(thisPage);
+          thisPage.dispose();
+          
+          // Retrieve the displayed hierarchy and pop the ephemeral page
+          hierarchy.getHierarchy().pop();
+          
+          // Clone the new hierarchy and re-set it for display
+          hierarchy.setHierarchy(
+            qx.lang.Array.clone(hierarchy.getHierarchy()));
+          
+          // There can only ever be one ephemeral page. See ya!
+          break;
         }
       }
     },
