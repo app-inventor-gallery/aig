@@ -257,8 +257,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             bNew;
       var             whoami;
       var             missing = [];
+      var             addedBlobs = [];
+      var             removeBlobs = [];
       var             sourceData;
       var             apkData;
+      var             image1Key;
+      var             image2Key;
+      var             image3Key;
       var             sourceKey = null;
       var             apkKey = null;
       var             allowableFields =
@@ -294,196 +299,290 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           "image1"
         ];
       
-      // Don't let the caller override the owner
-      delete attributes["owner"];
-
-      // Determine who the logged-in user is
-      whoami = this.getWhoAmI();
-
-      // Get an AppData object. If uid is non-null, retrieve the prior data.
-      appObj = new aiagallery.dbif.ObjAppData(uid);
-
-      // Retrieve the data
-      appData = appObj.getData();
-
-      // If we were given a record identifier...
-      if (uid !== null)
+      try
       {
-        // ... it must have already existed or it's an error
-        if (appObj.getBrandNew())
-        {
-          // It didn't!
-          error.setCode(1);
-          error.setMessage("Unrecognized UID");
-          return error;
-        }
+        // Don't let the caller override the owner
+        delete attributes["owner"];
 
-        // Ensure that the logged-in user owns this application.
-        if (appData.owner != whoami.email)
-        {
-          // He doesn't. Someone's doing something nasty!
-          error.setCode(2);
-          error.setMessage("Not owner");
-          return error;
-        }
-      }
-      else
-      {
-        // Initialize the owner field
-        appData.owner = whoami.email;
-      }
+        // Determine who the logged-in user is
+        whoami = this.getWhoAmI();
 
-      // Save the existing tags list
-      oldTags = appData.tags;
+        // Get an AppData object. If uid is non-null, retrieve the prior data.
+        appObj = new aiagallery.dbif.ObjAppData(uid);
 
-      // If there's no image1 value...
-      if (! attributes.image1)
-      {
-        // ... then move image3 or image2 to image1
-        if (attributes.image3)
+        // Retrieve the data
+        appData = appObj.getData();
+
+        // If we were given a record identifier...
+        if (uid !== null)
         {
-          attributes.image1 = attributes.image3;
-          attributes.image3 = null;
+          // ... it must have already existed or it's an error
+          if (appObj.getBrandNew())
+          {
+            // It didn't!
+            error.setCode(1);
+            error.setMessage("Unrecognized UID");
+            return error;
+          }
+
+          // Ensure that the logged-in user owns this application.
+          if (appData.owner != whoami.email)
+          {
+            // He doesn't. Someone's doing something nasty!
+            error.setCode(2);
+            error.setMessage("Not owner");
+            return error;
+          }
         }
         else
         {
-          // image2 may not exist either, which will be caught in the
-          // code that detects missing fields.
-          attributes.image1 = attributes.image2;
-          attributes.image2 = null;
+          // Initialize the owner field
+          appData.owner = whoami.email;
         }
-      }
-      
-      // Similarly, if there's no image2 value...
-      if (! attributes.image2)
-      {
-        // ... then move image3 to image2. (Again, it may not exist.)
-        attributes.image2 = attributes.image3;
-        attributes.image3 = null;
-      }
 
-      // Copy fields from the attributes parameter into this db record
-      allowableFields.forEach(
-        function(field)
+        // Save the existing tags list
+        oldTags = appData.tags;
+
+        // If there's no image1 value...
+        if (! attributes.image1)
         {
-          // Was this field provided in the parameter attributes?
-          if (attributes[field])
+          // ... then move image3 or image2 to image1
+          if (attributes.image3)
           {
-            // Handle source and apk fields specially
-            switch(field)
+            attributes.image1 = attributes.image3;
+            attributes.image3 = null;
+          }
+          else
+          {
+            // image2 may not exist either, which will be caught in the
+            // code that detects missing fields.
+            attributes.image1 = attributes.image2;
+            attributes.image2 = null;
+          }
+        }
+
+        // Similarly, if there's no image2 value...
+        if (! attributes.image2)
+        {
+          // ... then move image3 to image2. (Again, it may not exist.)
+          attributes.image2 = attributes.image3;
+          attributes.image3 = null;
+        }
+
+        // If we're on App Engine...
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+          // ... then prepare to retrieve scalable image URLs
+          var Images = Packages.com.google.appengine.api.images;
+          var ImagesServiceFactory = Images.ImagesServiceFactory;
+          var imagesService = ImagesServiceFactory.getImagesService();
+          var BlobKey = Packages.com.google.appengine.api.blobstore.BlobKey;
+          var blobKey;
+
+          //
+          // Now, for each image that exists, put it in a blob
+          //
+          [ "1", "2", "3" ].forEach(
+            function(num)
             {
-            case "source":
-              // Save the field data
-              sourceData = attributes.source;
+              var             imageId = "image" + num;
+              var             blobId = imageId + "blob";
+              var             contents;
+              var             mimeType;
+              var             imageData;
+              var             image;
+              var             blobKey;
 
-              // Ensure that we have an array of keys. The most recent key is
-              // kept at the top of the stack.
-              if (! appData.source)
+              if (attributes[imageId])
               {
-                appData.source = [];
+                // Parse out the actual url
+                imageData = attributes[imageId];
+                contents = imageData.substring(imageData.indexOf(",") + 1);
+
+                // Parse out the mimeType. This always starts at index 5 and
+                // ends with a semicolon
+                mimeType = imageData.substring(5, imageData.indexOf(";"));
+
+                // Base64-decode the image data
+                imageData = aiagallery.dbif.Decoder64.decode(contents);
+
+                // Save the image data as a blob
+                attributes[blobId] =
+                  liberated.dbif.Entity.putBlob(imageData, mimeType);
+                
+
+                // Save the blob id to remove it, in case something fails
+                addedBlobs.push(attributes[blobId]);
+
+                // Use App Engine's Image API to retrieve the URL to a
+                // (possibly) scaled image
+                blobKey = new BlobKey(attributes[blobId]);
+                attributes[imageId] = 
+                  String(imagesService.getServingUrl(blobKey));
               }
-              break;
-              
-            case "apk":
-              // Save the field data
-              apkData = attributes.apk;
+            });
+        }
 
-              // Ensure that we have an array of keys. The most recent key is
-              // kept at the top of the stack.
-              if (! appData.apk)
-              {
-                appData.apk = [];
-              }
-              break;
-
-            default:
-              // Replace what's in the db entry
-              appData[field] = attributes[field];
-              break;
-            }
-          }
-
-          // If this field is required and not available...
-          if (qx.lang.Array.contains(requiredFields, field) && ! appData[field])
+        // Copy fields from the attributes parameter into this db record
+        allowableFields.forEach(
+          function(field)
           {
-            // then mark it as missing
-            missing.push(field);
+            // Was this field provided in the parameter attributes?
+            if (attributes[field])
+            {
+              // Handle source and apk fields specially
+              switch(field)
+              {
+              case "source":
+                // Save the field data
+                sourceData = attributes.source;
+
+                // Ensure that we have an array of keys. The most recent key is
+                // kept at the top of the stack.
+                if (! appData.source)
+                {
+                  appData.source = [];
+                }
+                break;
+
+              case "apk":
+                // Save the field data
+                apkData = attributes.apk;
+
+                // Ensure that we have an array of keys. The most recent key is
+                // kept at the top of the stack.
+                if (! appData.apk)
+                {
+                  appData.apk = [];
+                }
+                break;
+
+              case "image1":
+              case "image2":
+              case "image3":
+                // Replace what's in the db entry
+                appData[field] = attributes[field];
+
+                // If there's already a blob...
+                if (appData[field + "blob"])
+                {
+                  // ... then add that blob ID to the list of ones to be removed
+                  removeBlobs.push(appData[field + "blob"]);
+                }
+
+                // Save the blob ID too
+                appData[field + "blob"] = attributes[field + "blob"];
+                break;
+
+              default:
+                // Replace what's in the db entry
+                appData[field] = attributes[field];
+                break;
+              }
+            }
+
+            // If this field is required and not available...
+            if (qx.lang.Array.contains(requiredFields, field) &&
+                ! appData[field])
+            {
+              // then mark it as missing
+              missing.push(field);
+            }
+          });
+
+        // Issue a query for all category tags
+        categories = liberated.dbif.Entity.query("aiagallery.dbif.ObjTags", 
+                                                 {
+                                                   type  : "element",
+                                                   field : "type",
+                                                   value : "category"
+                                                 },
+                                                 null);
+
+        // We want to look at only the value field of each category
+        categories = categories.map(
+          function(o)
+          {
+            return o.value;
+          });
+
+        // Ensure that at least one of the specified tags is a category
+        bHasCategory = false;
+        tags = appData.tags;
+        for (i = 0; i < tags.length; i++)
+        {
+          // Is this tag a category?
+          if (qx.lang.Array.contains(categories, tags[i]))
+          {
+            // Yup. Mark it.
+            bHasCategory = true;
+
+            // No need to look further.
+            break;
           }
-        });
+        }
 
-      // Issue a query for all category tags
-      categories = liberated.dbif.Entity.query("aiagallery.dbif.ObjTags", 
-                                               {
-                                                 type  : "element",
-                                                 field : "type",
-                                                 value : "category"
-                                               },
-                                               null);
-      
-      // We want to look at only the value field of each category
-      categories = categories.map(
-        function(o)
+        // Were there any missing, required fields?
+        if (missing.length > 0)
         {
-          return o.value;
-        });
+          // Yup. Let 'em know.
+          error.setCode(4);
+          error.setMessage("Please make sure to provide: " +
+                           missing.join(", "));
+          return error;
+        }
 
-      // Ensure that at least one of the specified tags is a category
-      bHasCategory = false;
-      tags = appData.tags;
-      for (i = 0; i < tags.length; i++)
-      {
-        // Is this tag a category?
-        if (qx.lang.Array.contains(categories, tags[i]))
+        // Did we find at least one category tag?
+        if (! bHasCategory)
         {
-          // Yup. Mark it.
-          bHasCategory = true;
-          
-          // No need to look further.
-          break;
+          // Nope. Let 'em know.
+          error.setCode(3);
+          error.setMessage("At least one category is required");
+          return error;
+        }
+
+        // If a new source file was uploaded...
+        if (sourceData)
+        {
+          // ... then update the upload time to now
+          appData.uploadTime = aiagallery.dbif.MDbifCommon.currentTimestamp();
+        }
+
+        // Save the new source data (if there is any)
+        if (sourceData)
+        {
+          // Save the data and prepend the blob id to the key list
+          sourceKey = liberated.dbif.Entity.putBlob(sourceData);
+          appData.source.unshift(sourceKey);
+
+          // Save the blob id to remove it, in case something fails
+          addedBlobs.push(sourceKey);
+        }
+
+        // Similarly for apk data
+        if (apkData)
+        {
+          // Save the data and prepend the blob id to the key list
+          apkKey = liberated.dbif.Entity.putBlob(apkData);
+          appData.apk.unshift(apkKey);
+
+          // Save the blob id to remove it, in case something fails
+          addedBlobs.push(apkKey);
         }
       }
-      
-      // Were there any missing, required fields?
-      if (missing.length > 0)
+      catch(e)
       {
-        // Yup. Let 'em know.
-        error.setCode(4);
-        error.setMessage("Please make sure to provide: " + missing.join(", "));
-        return error;
+        // Something failed. Remove any blobs we added.
+        addedBlobs.forEach(
+          function(blobId)
+          {
+            liberated.dbif.Entity.removeBlob(blobId);
+          });
+        
+        // Rethrow the error
+        throw e;
       }
       
-      // Did we find at least one category tag?
-      if (! bHasCategory)
-      {
-        // Nope. Let 'em know.
-        error.setCode(3);
-        error.setMessage("At least one category is required");
-        return error;
-      }
-
-      // If a new source file was uploaded...
-      if (sourceData)
-      {
-        // ... then update the upload time to now
-        appData.uploadTime = aiagallery.dbif.MDbifCommon.currentTimestamp();
-      }
-
-      // Save the new source data (if there is any)
-      if (sourceData)
-      {
-        // Save the data and prepend the blob id to the key list
-        sourceKey = liberated.dbif.Entity.putBlob(sourceData);
-        appData.source.unshift(sourceKey);
-      }
-
-      // Similarly for apk data
-      if (apkData)
-      {
-        // Save the data and prepend the blob id to the key list
-        apkKey = liberated.dbif.Entity.putBlob(apkData);
-        appData.apk.unshift(apkKey);
-      }
-
       try
       {
         return liberated.dbif.Entity.asTransaction(
@@ -554,23 +653,23 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       }
       catch (e)
       {
-        // If we'd added a source blob...
-        if (sourceKey !== null)
-        {
-          // ... then remove it
-          liberated.dbif.Entity.removeBlob(sourceKey);
-        }
-
-        // If we'd added an apk blob...
-        if (apkKey !== null)
-        {
-          // ... then remove it
-          liberated.dbif.Entity.removeBlob(apkKey);
-        }
-
+        // The transaction failed. Remove any blobs we added.
+        addedBlobs.forEach(
+          function(blobId)
+          {
+            liberated.dbif.Entity.removeBlob(blobId);
+          });
+        
         // Rethrow the error
         throw e;
       }
+      
+      // There was no error, so remove any old, no-longer-in-use blobs
+      removeBlobs.forEach(
+        function(blobId)
+        {
+          liberated.dbif.Entity.removeBlob(blobId);
+        });
     },
     
     deleteApp : function(uid, error)
@@ -735,6 +834,27 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           aiagallery.dbif.MApps._removeAppFromSearch(uid);
         });
       
+      // If we've added an image1 blob...
+      if (appData.image1 !== null)
+      {
+        // ... then remove it
+        liberated.dbif.Entity.removeBlob(appData.image1);
+      }
+
+      // If we've added an image2 blob...
+      if (appData.image2 !== null)
+      {
+        // ... then remove it
+        liberated.dbif.Entity.removeBlob(appData.image2);
+      }
+
+      // If we've added an image3 blob...
+      if (appData.image3 !== null)
+      {
+        // ... then remove it
+        liberated.dbif.Entity.removeBlob(appData.image3);
+      }
+
       // Remove any apk blobs associated with this app
       if (appData.apk)
       {
