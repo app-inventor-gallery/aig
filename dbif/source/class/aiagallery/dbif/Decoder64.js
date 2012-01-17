@@ -79,7 +79,7 @@ qx.Class.define("aiagallery.dbif.Decoder64",
       contents = fieldContent.substring(fieldContent.indexOf(",") + 1);
       
       // Send the url to the decoder function
-      decodedContents = aiagallery.dbif.Decoder64.__decode(contents);
+      decodedContents = aiagallery.dbif.Decoder64.decode(contents);
       
       // Give 'em what they want
       ret =
@@ -108,7 +108,7 @@ qx.Class.define("aiagallery.dbif.Decoder64",
      *   - Sept. 2011, Derrell Lipman
      *     Converted to static method in qooxdoo class
      */
-    __decode : function(encStr)
+    decode : function(encStr)
     {
       var             i;
       var             l;
