@@ -93,6 +93,10 @@ qx.Class.define("appengine.Application",
       var             decodeResult;
       var             out;
       var             Db;
+      var             blobstoreService;
+      var             blobKey;
+      var             BlobKey;
+      var             BlobstoreServiceFactory;
 
       // We likely received something like:
       //   tag=by_developer%3AJoe%20Blow%3A0%3A10%3AuploadTime
@@ -107,6 +111,25 @@ qx.Class.define("appengine.Application",
       // See what was requested.
       switch(querySplit[0])
       {
+/*
+      case "blob":              // Retrieve blob data
+        BlobKey =
+          Packages.com.google.appengine.api.blobstore.BlobKey;
+        BlobstoreServiceFactory = 
+          Packages.com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+
+        // Get a blobstore service
+        blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+
+        // Convert the (string) blobId to a blob key
+        blobKey = new BlobKey(querySplit[1]);
+        
+        // Serve the blob
+        blobstoreService.serve(blobKey, response);
+        break;
+*/
+
+/*
       case "ls":               // File listing
         var             entities;
 
@@ -140,6 +163,7 @@ qx.Class.define("appengine.Application",
         }
 
         break;
+*/
 
       case "flushDB":               // flush the entire database
         var             entities;
