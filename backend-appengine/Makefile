@@ -22,3 +22,5 @@ $(DESTDIR)/startup/%.class : startup/%.java
 .PHONY: upload
 upload :	all
 	appengine-java-sdk-1.5.0.1/bin/appcfg.sh update war
+	@echo -n "Completed at "
+	@date
