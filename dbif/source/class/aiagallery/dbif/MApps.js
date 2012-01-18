@@ -254,6 +254,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             statusIndex;
       var             appData;
       var             appObj;
+      var             hTask = null;
+      var             queue;
+      var             options;
       var             bNew;
       var             whoami;
       var             missing = [];
@@ -585,7 +588,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       
       try
       {
-        return liberated.dbif.Entity.asTransaction(
+        appData = liberated.dbif.Entity.asTransaction(
           function()
           {
             // Add new tags to the database, and update counts of formerly-
@@ -647,6 +650,28 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             // Add all words in text fields to word Search record
             aiagallery.dbif.MApps._populateSearch(appObj.getData());
 
+            // If we're on App Engine...
+            if (liberated.dbif.Entity.getCurrentDatabaseProvider() ==
+                "appengine")
+            {
+              // ... then create a task to clean up the data for this app
+              var TaskQueue = Packages.com.google.appengine.api.taskqueue;
+              var Queue = TaskQueue.Queue;
+              var QueueFactory = TaskQueue.QueueFactory;
+              var TaskOptions = TaskQueue.TaskOptions;
+              var requestData =
+                {
+                  type : "postAppUpload",
+                  uid  : appData.uid
+                };
+              var jsonRequest = qx.lang.Json.stringify(requestData);
+
+              queue = QueueFactory.getDefaultQueue();
+              options = TaskOptions.Builder.withUrl("/task");
+              options.payload(jsonRequest);
+              hTask = queue.add(options);
+            }
+
             // Return entity data including newly-created key (if adding)
             return appObj.getData();
           });
@@ -660,6 +685,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             liberated.dbif.Entity.removeBlob(blobId);
           });
         
+        // If we had started the postprocessing task...
+        if (hTask !== null)
+        {
+          // ... then delete it
+          queue.deleteTask(hTask);
+        }
+
         // Rethrow the error
         throw e;
       }
@@ -670,8 +702,18 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         {
           liberated.dbif.Entity.removeBlob(blobId);
         });
+
+      return appData;
     },
     
+    
+    _postAppUpload : function(requestData)
+    {
+      java.lang.System.out.println(
+        liberated.dbif.Debug.debugObjectToString(requestData, "postAppUpload"));
+    },
+
+
     deleteApp : function(uid, error)
     {
       var             appObj;

@@ -31,4 +31,29 @@
         <url-pattern>/rpc</url-pattern>
     </servlet-mapping>
 
+
+    <!-- Task requests calls are issued to this servlet via url /task  -->
+    <servlet>
+        <servlet-name>TaskServlet</servlet-name>
+        <servlet-class>startup.TaskServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TaskServlet</servlet-name>
+        <url-pattern>/task</url-pattern>
+    </servlet-mapping>
+
+    <!--
+        Restrict task requests to being issued by the administrator,
+        i.e. from within RPC requests, not directly by a normal user.
+    -->
+    <security-constraint>
+        <web-resource-collection>
+            <url-pattern>/task/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+
 </web-app>

@@ -452,6 +452,68 @@ qx.Class.define("appengine.Application",
         }
         break;
       }
+    },
+
+    /**
+     * Process a task request.
+     *
+     * @param request {Packages.javax.servlet.http.HttpServletRequest}
+     *   The object containing the request parameters.
+     *
+     * @param response {Packages.javax.servlet.http.HttpServletResponse}
+     *   The object to be used for returning the response.
+     */
+    doTask : function(request, response)
+    {
+      var             dbif =  aiagallery.dbif.DbifAppEngine.getInstance();
+      var             reader;
+      var             line;
+      var             input = [];
+      var             jsonInput;
+      var             requestType = request.getParameter("type");
+      var             requestData;
+
+      try
+      {
+        // Retrieve the JSON input from the POST request. First, get the input
+        // stream (the POST data)
+        reader = request.getReader();
+
+        // Read the request data, line by line.
+        for (line = reader.readLine(); line != null; line = reader.readLine())
+        {
+          input.push(String(line));
+        }
+
+        // Convert the input lines to a single string
+        jsonInput = String(input.join("\n"));
+
+        // Parse the JSON
+        requestData = qx.lang.Json.parse(jsonInput);
+        
+        if (! qx.lang.Type.isObject(requestData) ||
+            typeof requestData.type != "string")
+        {
+          throw { code : 298, message : "Invalid task request" };
+        }
+
+        // Process this task
+        aiagallery.dbif.Task.process(requestData);
+      }
+      catch (e)
+      {
+        // An error was thrown. Was it thrown intentionally?
+        if (e && e["code"] && e["message"])
+        {
+          // Yup. Use the specified code and message
+          response.sendError(e.code, e.message);
+        }
+        else
+        {
+          // It was not an intentionally-generated error.
+          response.sendError(299, "Unexpected error: " + e);
+        }
+      }
     }
   },
 
@@ -478,5 +540,6 @@ qx.Class.define("appengine.Application",
   {
     window.doPost = appengine.Application.doPost;
     window.doGet = appengine.Application.doGet;
+    window.doTask = appengine.Application.doTask;
   }
 });

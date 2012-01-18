@@ -17,7 +17,7 @@ import javax.servlet.http.*;
 import org.mozilla.javascript.*;
 
 
-public class RpcServlet extends HttpServlet
+public class TaskServlet extends HttpServlet
 {
     private Context     __context = null;
     private Main        __scope;
@@ -88,7 +88,7 @@ public class RpcServlet extends HttpServlet
 
 
     /**
-     * Process a GET request. These are used for ancillary requests.
+     * Process a GET request. This is a request to process a task
      *
      * @param request {javax.servlet.http.HttpServletRequest}
      *   The object containing the request parameters.
@@ -100,32 +100,7 @@ public class RpcServlet extends HttpServlet
                       HttpServletResponse response)
         throws IOException
     {
-        Object          fObj;
-
-        // Retrieve the function object
-        fObj = this.__scope.get("doGet", this.__scope);
-        if (! (fObj instanceof Function))
-        {
-            // Failed to retrieve it
-            java.lang.System.out.println("Could not retrieve function doGet");
-        }
-        else
-        {
-            Object              args[] = { request, response };
-            Function            f = (Function) fObj;
-            Context             context;
-            
-            // If we haven't received a context for this thread...
-            context = Context.getCurrentContext();
-            if (context == null)
-            {
-                // ... then do so now.
-                context = Context.enter();
-            }
-
-            // Call the function
-            f.call(context, this.__scope, this.__scope, args);
-        }
+      response.sendError(404, "Tasks not available via GET");
     }
 
 
@@ -145,12 +120,14 @@ public class RpcServlet extends HttpServlet
     {
         Object          fObj;
 
+java.lang.System.out.println("\nGot Task request\n");
+
         // Retrieve the function object
-        fObj = this.__scope.get("doPost", this.__scope);
+        fObj = this.__scope.get("doTask", this.__scope);
         if (! (fObj instanceof Function))
         {
             // Failed to retrieve it
-            java.lang.System.out.println("Could not retrieve function doPost");
+            java.lang.System.err.println("Could not retrieve function doTask");
         }
         else
         {
