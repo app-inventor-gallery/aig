@@ -19,9 +19,6 @@ qx.Class.define("aiagallery.dbif.Task",
     {
       var             dbif =  aiagallery.dbif.DbifAppEngine.getInstance();
 
-      java.lang.System.out.println(
-        liberated.dbif.Debug.debugObjectToString(requestData, "Task"));
-      
       switch(requestData.type)
       {
       case "postAppUpload":

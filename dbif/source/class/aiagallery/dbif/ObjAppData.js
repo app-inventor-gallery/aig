@@ -47,19 +47,19 @@ qx.Class.define("aiagallery.dbif.ObjAppData",
         "description" : "String",
 
         /** Image #1 (data: or real URL) */
-        "image1" : "String",
+        "image1" : "LongString",
 
         /** Image #1 blob id */
         "image1blob" : "String",
 
         /** Image #2 (data: or real URL) */
-        "image2" : "String",
+        "image2" : "LongString",
 
         /** Image #2 blob id */
         "image2blob" : "String",
 
         /** Image #3 (data: or real URL) */
-        "image3" : "String",
+        "image3" : "LongString",
 
         /** Image #3 blob id */
         "image3blob" : "String",

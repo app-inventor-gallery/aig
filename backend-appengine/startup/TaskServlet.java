@@ -120,8 +120,6 @@ public class TaskServlet extends HttpServlet
     {
         Object          fObj;
 
-java.lang.System.out.println("\nGot Task request\n");
-
         // Retrieve the function object
         fObj = this.__scope.get("doTask", this.__scope);
         if (! (fObj instanceof Function))
