@@ -25,12 +25,23 @@ qx.Class.define("aiagallery.dbif.Constants",
     RIBBON_NUM_MOST_LIKED : 20,
     
 
+    //
+    // DEVELOPER NOTE:
+    //
+    //   Never change values associated with existing status entries. When
+    //   adding new entries, add them at the end of the list, with previously 
+    //   unused values. The database contains numeric values that would all
+    //   otherwise need to be updated.
+    //
+
     /** Mapping of status names to values */
     Status      : 
     {
-      Banned  : 0,
-      Pending : 1,
-      Active  : 2
+      Banned      : 0,
+      Pending     : 1,
+      Active      : 2,
+      Processing  : 3,
+      Unpublished : 4
     },
     
     /** Reverse mapping of status: values to names */
@@ -38,7 +49,9 @@ qx.Class.define("aiagallery.dbif.Constants",
     [
       "Banned", 
       "Pending",
-      "Active"
+      "Active",
+      "Processing",
+      "Unpublished"
     ],
 
     /** Mapping of FlagType names to values */
