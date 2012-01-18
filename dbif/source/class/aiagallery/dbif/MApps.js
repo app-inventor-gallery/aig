@@ -1009,7 +1009,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               // ... then send each App to the Stringizer
               aiagallery.dbif.MApps.__stringizeAppInfo(app);
             }
-            
           });
         
   
@@ -1377,6 +1376,25 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             // Replace his visitor id with his display name
             app["owner"] = displayName || owners[0].displayName || "<>";
                       
+            // Do special App Engine processing to scale images
+            if (liberated.dbif.Entity.getCurrentDatabaseProvider() ==
+                "appengine")
+            {
+              // Scale images
+              [ "1", "2", "3" ].forEach(
+                function(num)
+                {
+                  var             imageId = "image" + num;
+                  var             url = app[imageId];
+
+                  // Is this image URL provided and is it real (not data:)?
+                  if (url && url.substring(0, 4) == "http")
+                  {
+                    // Request App Engine to scale to 100px longest side
+                    app[imageId] += "=s100";
+                  }
+                });
+            }
           });
 
       //Create and execute query for "Most Liked" apps. 
@@ -1548,6 +1566,25 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           // Replace the (private) owner id with his display name
           app.owner = displayName || owners[0].displayName || "<>";
           
+          // Do special App Engine processing to scale images
+          if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+          {
+            // Scale images
+            [ "1", "2", "3" ].forEach(
+              function(num)
+              {
+                var             imageId = "image" + num;
+                var             url = app[imageId];
+
+                // Is this image URL provided and is it real (not data:)?
+                if (url && url.substring(0, 4) == "http")
+                {
+                  // Request App Engine to scale to 100px longest side
+                  app[imageId] += "=s100";
+                }
+              });
+          }
+
           // If there were requested fields specified...
           if (requestedFields)
           {
@@ -1729,6 +1766,26 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         aiagallery.dbif.MApps._requestedFields(app, requestedFields);
       }
       
+
+      // Do special App Engine processing to scale images
+      if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+      {
+        // Scale images
+        [ "1", "2", "3" ].forEach(
+          function(num)
+          {
+            var             imageId = "image" + num;
+            var             url = app[imageId];
+
+            // Is this image URL provided and is it real (not data:)?
+            if (url && url.substring(0, 4) == "http")
+            {
+              // Request App Engine to scale to 100px longest side
+              app[imageId] += "=s200";
+            }
+          });
+      }
+
       // Give 'em what they came for
       return app;
     }    
