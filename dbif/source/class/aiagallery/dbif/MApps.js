@@ -234,6 +234,130 @@ qx.Mixin.define("aiagallery.dbif.MApps",
   
   members :
   {
+    /**
+     * Do post processing of an uploaded app. This function base64-decodes the
+     * data url values, saves the images as blobs, and replaces each data url
+     * with an http: url for retrieving the image (with scaling).
+     *
+     * @param requestData {Map}
+     *   Map which includes a uid member that uniquely identifies the app to
+     *   be post-processed.
+     */
+    _postAppUpload : function(requestData)
+    {
+      var         app;
+      var         appData;
+      var         addedBlobs = [];
+      var         Images = Packages.com.google.appengine.api.images;
+      var         ImagesServiceFactory = Images.ImagesServiceFactory;
+      var         imagesService = ImagesServiceFactory.getImagesService();
+      var         BlobKey = Packages.com.google.appengine.api.blobstore.BlobKey;
+
+      // Ensure we have the requisite UID
+      if (typeof requestData.uid == "undefined" || requestData.uid == null)
+      {
+        throw (
+          {
+            code    : 301,
+            message : "Missing UID"
+          });
+      }
+      
+      // Retrieve this app
+      app = new aiagallery.dbif.ObjAppData(requestData.uid);
+      
+      // Get the app property data from the app object
+      appData = app.getData();
+
+      // If it's indicating as brand new, the user may have deleted it. If
+      // it's already active, there's nothing to be done.
+      if (app.getBrandNew() ||
+          appData.status == aiagallery.dbif.Constants.Status.Active)
+      {
+        // Nothing to do in that case
+        return;
+      }
+      
+      //
+      // Now, for each image that exists, put it in a blob
+      //
+      [ "1", "2", "3" ].forEach(
+        function(num)
+        {
+          var             imageId = "image" + num;
+          var             blobId = imageId + "blob";
+          var             contents;
+          var             mimeType;
+          var             imageData;
+          var             image;
+          var             blobKey;
+
+          if (appData[imageId])
+          {
+            java.lang.System.out.println(
+              appData.uid + "Processing image " + num);
+
+            // Parse out the actual url
+            imageData = appData[imageId];
+            
+            // Ensure it's still a data url, and we aren't retrying work done
+            if (imageData.substring(0, 4) != "data")
+            {
+              return;
+            }
+            
+            // Get the contents of the base64-encoded photo
+            contents = imageData.substring(imageData.indexOf(",") + 1);
+
+            // Parse out the mimeType. This always starts at index 5 and
+            // ends with a semicolon
+            mimeType = imageData.substring(5, imageData.indexOf(";"));
+
+            // Base64-decode the image data
+            imageData = aiagallery.dbif.Decoder64.decode(contents);
+
+            // Save the image data as a blob
+            appData[blobId] =
+              liberated.dbif.Entity.putBlob(imageData, mimeType);
+
+            // Save the blob id to remove it, in case something fails
+            addedBlobs.push(appData[blobId]);
+
+            // Use App Engine's Image API to retrieve the URL to a
+            // (possibly) scaled image
+            blobKey = new BlobKey(appData[blobId]);
+            appData[imageId] = 
+              String(imagesService.getServingUrl(blobKey));
+          }
+        });
+      
+      // Application processing has been completed (once the object is saved)
+      appData.status = aiagallery.dbif.Constants.Status.Active;
+
+      // Save the app object with the updates
+      try
+      {
+        app.put();
+      }
+      catch (e)
+      {
+        // We failed to write the database. Remove any blobs we added
+        addedBlobs.forEach(
+          function(blobId)
+          {
+            liberated.dbif.Entity.removeBlob(blobId);
+          });
+        
+        // Throw an error that will cause this function to be retried
+        throw (
+          {
+            code    : 302,
+            message : "Rewrite of app object failed"
+          });
+      }
+    },
+
+
     addOrEditApp : function(uid, attributes, error)
     {
       var             i;
@@ -718,126 +842,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     },
     
     
-    /**
-     * Do post processing of an uploaded app. This function base64-decodes the
-     * data url values, saves the images as blobs, and replaces each data url
-     * with an http: url for retrieving the image (with scaling).
-     *
-     * @param requestData {Map}
-     *   Map which includes a uid member that uniquely identifies the app to
-     *   be post-processed.
-     */
-    _postAppUpload : function(requestData)
-    {
-      var         app;
-      var         appData;
-      var         addedBlobs = [];
-      var         Images = Packages.com.google.appengine.api.images;
-      var         ImagesServiceFactory = Images.ImagesServiceFactory;
-      var         imagesService = ImagesServiceFactory.getImagesService();
-      var         BlobKey = Packages.com.google.appengine.api.blobstore.BlobKey;
-
-      // Ensure we have the requisite UID
-      if (typeof requestData.uid == "undefined" || requestData.uid == null)
-      {
-        throw (
-          {
-            code    : 301,
-            message : "Missing UID"
-          });
-      }
-      
-      // Retrieve this app
-      app = new aiagallery.dbif.ObjAppData(requestData.uid);
-      
-      // Get the app property data from the app object
-      appData = app.getData();
-
-      // If it's indicating as brand new, the user may have deleted it. If
-      // it's already active, there's nothing to be done.
-      if (app.getBrandNew() ||
-          appData.status == aiagallery.dbif.Constants.Status.Active)
-      {
-        // Nothing to do in that case
-        return;
-      }
-      
-      //
-      // Now, for each image that exists, put it in a blob
-      //
-      [ "1", "2", "3" ].forEach(
-        function(num)
-        {
-          var             imageId = "image" + num;
-          var             blobId = imageId + "blob";
-          var             contents;
-          var             mimeType;
-          var             imageData;
-          var             image;
-          var             blobKey;
-
-          if (appData[imageId])
-          {
-            // Parse out the actual url
-            imageData = appData[imageId];
-            
-            // Ensure it's still a data url, and we aren't retrying work done
-            if (imageData.substring(0, 4) != "data")
-            {
-              return;
-            }
-            
-            // Get the contents of the base64-encoded photo
-            contents = imageData.substring(imageData.indexOf(",") + 1);
-
-            // Parse out the mimeType. This always starts at index 5 and
-            // ends with a semicolon
-            mimeType = imageData.substring(5, imageData.indexOf(";"));
-
-            // Base64-decode the image data
-            imageData = aiagallery.dbif.Decoder64.decode(contents);
-
-            // Save the image data as a blob
-            appData[blobId] =
-              liberated.dbif.Entity.putBlob(imageData, mimeType);
-
-            // Save the blob id to remove it, in case something fails
-            addedBlobs.push(appData[blobId]);
-
-            // Use App Engine's Image API to retrieve the URL to a
-            // (possibly) scaled image
-            blobKey = new BlobKey(appData[blobId]);
-            appData[imageId] = 
-              String(imagesService.getServingUrl(blobKey));
-          }
-        });
-      
-      // Application processing has been completed (once the object is saved)
-      appData.status = aiagallery.dbif.Constants.Status.Active;
-
-      // Save the app object with the updates
-      try
-      {
-        app.put();
-      }
-      catch (e)
-      {
-        // We failed to write the database. Remove any blobs we added
-        addedBlobs.forEach(
-          function(blobId)
-          {
-            liberated.dbif.Entity.removeBlob(blobId);
-          });
-        
-        // Throw an error that will cause this function to be retried
-        throw (
-          {
-            code    : 302,
-            message : "Rewrite of app object failed"
-          });
-      }
-    },
-
 
     deleteApp : function(uid, error)
     {
