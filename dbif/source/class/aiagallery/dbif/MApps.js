@@ -250,14 +250,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var         sourceBlobId;
       var         destBlobId;
       var         fileData;
+      var         mimeType;
       var         addedBlobs = [];
       var         removeBlobs = [];
       var         Images = Packages.com.google.appengine.api.images;
       var         ImagesServiceFactory = Images.ImagesServiceFactory;
       var         imagesService = ImagesServiceFactory.getImagesService();
       var         BlobKey = Packages.com.google.appengine.api.blobstore.BlobKey;
-
-java.lang.System.out.println("_postAppUpload: uid=" + requestData.uid);
 
       // Ensure we have the requisite UID
       if (typeof requestData.uid == "undefined" || requestData.uid == null)
@@ -279,7 +278,6 @@ java.lang.System.out.println("_postAppUpload: uid=" + requestData.uid);
       if (app.getBrandNew())
       {
         // Nothing to do in that case
-java.lang.System.out.println("_postAppUpload: app was brand new!");
         return;
       }
       
@@ -303,8 +301,6 @@ java.lang.System.out.println("_postAppUpload: app was brand new!");
 
             if (appData[newImageId])
             {
-java.lang.System.out.println(appData.uid + "Processing image " + num);
-
               // Parse out the actual url
               imageData = appData[newImageId];
 
@@ -376,11 +372,18 @@ java.lang.System.out.println(appData.uid + "Processing image " + num);
           // Retrieve the blob
           fileData = liberated.dbif.Entity.getBlob(sourceBlobId);
           
+          // Parse out the mimeType. This always starts at index 5 and ends
+          // with a semicolon
+          mimeType = fileData.substring(5, fileData.indexOf(";"));
+
+          // Parse out the actual url
+          fileData = fileData.substring(fileData.indexOf(",") + 1);
+      
           // Decode the data
           fileData = aiagallery.dbif.Decoder64.decode(fileData);
           
           // Write it to a new blob
-          destBlobId = liberated.dbif.Entity.putBlob(fileData);
+          destBlobId = liberated.dbif.Entity.putBlob(fileData, mimeType);
           
           // Remember that we added this blob, in case of later error
           addedBlobs.push(destBlobId);
@@ -402,11 +405,19 @@ java.lang.System.out.println(appData.uid + "Processing image " + num);
           // Retrieve the blob
           fileData = liberated.dbif.Entity.getBlob(sourceBlobId);
           
+          // Disregard the MIME type of the uploaded APK file and use one that
+          // the phone knows how to translate into a request ot open the Install
+          // Application app.
+          mimeType = "application/vnd.android.package-archive";
+
+          // Parse out the actual url
+          fileData = fileData.substring(fileData.indexOf(",") + 1);
+      
           // Decode the data
           fileData = aiagallery.dbif.Decoder64.decode(fileData);
           
           // Write it to a new blob
-          destBlobId = liberated.dbif.Entity.putBlob(fileData);
+          destBlobId = liberated.dbif.Entity.putBlob(fileData, mimeType);
           
           // Remember that we added this blob, in case of later error
           addedBlobs.push(destBlobId);
@@ -431,7 +442,6 @@ java.lang.System.out.println(appData.uid + "Processing image " + num);
         throw e;
       }
       
-java.lang.System.out.println(liberated.dbif.Debug.debugObjectToString(appData, "postProcess testing for status"));
       // Conform that this app has all necessary data, and that all changes
       // have been processed.
       if (appData.newsource.length === 0 &&
@@ -867,7 +877,6 @@ java.lang.System.out.println(liberated.dbif.Debug.debugObjectToString(appData, "
               var TaskOptions = TaskQueue.TaskOptions;
               var jsonRequest = qx.lang.Json.stringify(requestData);
 
-java.lang.System.out.println("Adding task for uid=" + appData.uid);
               queue = QueueFactory.getDefaultQueue();
               options = TaskOptions.Builder.withUrl("/task");
               options.payload(jsonRequest);
@@ -1021,6 +1030,7 @@ java.lang.System.out.println("Adding task for uid=" + appData.uid);
       var             tagObj;
       var             tagData;
       var             whoami;
+      var             title;
 
       // Retrieve an instance of this application entity
       appObj = new aiagallery.dbif.ObjAppData(uid);
@@ -1046,6 +1056,9 @@ java.lang.System.out.println("Adding task for uid=" + appData.uid);
         error.setMessage("Not owner");
         return error;
       }
+
+      // Save the title
+      title = appData.title;
 
       liberated.dbif.Entity.asTransaction(
         function()
@@ -1176,46 +1189,41 @@ java.lang.System.out.println("Adding task for uid=" + appData.uid);
           aiagallery.dbif.MApps._removeAppFromSearch(uid);
         });
       
-      // If we've added an image1 blob...
-      if (appData.image1 !== null)
-      {
-        // ... then remove it
-        liberated.dbif.Entity.removeBlob(appData.image1);
-      }
-
-      // If we've added an image2 blob...
-      if (appData.image2 !== null)
-      {
-        // ... then remove it
-        liberated.dbif.Entity.removeBlob(appData.image2);
-      }
-
-      // If we've added an image3 blob...
-      if (appData.image3 !== null)
-      {
-        // ... then remove it
-        liberated.dbif.Entity.removeBlob(appData.image3);
-      }
-
-      // Remove any apk blobs associated with this app
-      if (appData.apk)
-      {
-        appData.apk.forEach(
-          function(apkBlobId)
+      // Remove all blobs
+      [
+        appData.image1blob,
+        appData.image2blob,
+        appData.image3blob
+      ].forEach(
+        function(blobId)
+        {
+          // If we've added this blob...
+          if (blobId != null)
           {
-            liberated.dbif.Entity.removeBlob(apkBlobId);
-          });
-      }
+            // ... then remove it
+            liberated.dbif.Entity.removeBlob(blobId);
+          }
+        });
 
-      // Similarly for any source blobs
-      if (appData.source)
-      {
-        appData.source.forEach(
-          function(sourceBlobId)
-          {
-            liberated.dbif.Entity.removeBlob(sourceBlobId);
-          });
-      }
+      // Remove source and apk blobs, whether yet processed or not. These are
+      // all arrays of blob IDs.
+      [
+        appData.apk,
+        appData.newapk,
+        appData.source,
+        appData.newsource
+      ].forEach(
+        function(blobIdArr)
+        {
+          blobIdArr.forEach(
+            function(blobId)
+            {
+              liberated.dbif.Entity.removeBlob(blobId);
+            });
+        });
+
+      // Let the user know something failed
+      this.logMessage(appData.owner, "App removed", appData.title);
 
       // We were successful
       return true;
