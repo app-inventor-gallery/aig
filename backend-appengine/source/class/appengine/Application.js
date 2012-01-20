@@ -111,8 +111,7 @@ qx.Class.define("appengine.Application",
       // See what was requested.
       switch(querySplit[0])
       {
-/*
-      case "blob":              // Retrieve blob data
+      case "getblob":              // Retrieve blob data
         BlobKey =
           Packages.com.google.appengine.api.blobstore.BlobKey;
         BlobstoreServiceFactory = 
@@ -127,7 +126,6 @@ qx.Class.define("appengine.Application",
         // Serve the blob
         blobstoreService.serve(blobKey, response);
         break;
-*/
 
 /*
       case "ls":               // File listing
@@ -417,17 +415,18 @@ qx.Class.define("appengine.Application",
         break;
 
 
+/* Replaced by getblob, above
       case "getdata":            // Request for a base 64 encoded URL
 
-        /* 
-         * The call here looked like this to begin with:
-         * 
-         * getdata=appId:urlField
-         * 
-         * Above, we split this by the equal sign to determine which call was
-         * made, and now we split the second part of that by colons, to get
-         * our parameters.
-         */
+         //
+         // The call here looked like this to begin with:
+         // 
+         // getdata=appId:urlField
+         // 
+         // Above, we split this by the equal sign to determine which call was
+         // made, and now we split the second part of that by colons, to get
+         // our parameters.
+         //
         argSplit = querySplit[1].split(":");
 
         // Call the (static) decoder method, which takes an appId and a field
@@ -451,6 +450,7 @@ qx.Class.define("appengine.Application",
           out.print(decodeResult.content);
         }
         break;
+*/
       }
     },
 
