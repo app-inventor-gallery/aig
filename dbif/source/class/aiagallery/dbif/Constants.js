@@ -155,7 +155,10 @@ qx.Class.define("aiagallery.dbif.Constants",
       "Unknown app error" : "An unexpected error occurred while processing app",
       
       // [ title ]
-      "App available" : "The application is now available"
+      "App available" : "The application is now available",
+      
+      // [ title]
+      "App removed" : "The application has been removed"
     }
   }
 });
