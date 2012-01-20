@@ -82,6 +82,19 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
   
   members :
   {
+	
+		/**
+		 * Helper function for populating the search database.
+		 *
+		 *
+		 *
+		 **/
+		addSearchData : function(keywordStringOrArray)
+		{
+		
+		},
+		
+		
     /**
      * Returns an array of App Info objects, which contain a word or words from
      * the keyword string. 
