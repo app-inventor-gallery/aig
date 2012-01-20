@@ -41,7 +41,8 @@ qx.Class.define("aiagallery.dbif.Constants",
       Pending     : 1,
       Active      : 2,
       Processing  : 3,
-      Unpublished : 4
+      Invalid     : 4,
+      Unpublished : 5
     },
     
     /** Reverse mapping of status: values to names */
@@ -51,6 +52,7 @@ qx.Class.define("aiagallery.dbif.Constants",
       "Pending",
       "Active",
       "Processing",
+      "Invalid",
       "Unpublished"
     ],
 
@@ -138,6 +140,22 @@ qx.Class.define("aiagallery.dbif.Constants",
       // MDbMgmt
       //
       "getDatabaseEntities" : "Retrieve all database entities of a given type"
+    },
+    
+    // Log messages. Comments above each are required parameters
+    LogMessage :
+    {
+      // [ title ]
+      "App submitted" : "Application submitted, being processed",
+      
+      // [ title, imageNumber ]
+      "Invalid image" : "An invalid image was uploaded",
+      
+      // [ title ]
+      "Unknown app error" : "An unexpected error occurred while processing app",
+      
+      // [ title ]
+      "App available" : "The application is now available"
     }
   }
 });

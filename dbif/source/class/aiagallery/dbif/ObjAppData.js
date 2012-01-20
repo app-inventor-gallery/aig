@@ -15,6 +15,17 @@ qx.Class.define("aiagallery.dbif.ObjAppData",
     // Pre-initialize the data
     this.setData(
       {
+        "newimage1"       : null,
+        "image1"          : null,
+        "newimage2"       : null,
+        "image2"          : null,
+        "newimage3"       : null,
+        "image3"          : null,
+        "previousAuthors" : [],
+        "newsource"       : [],
+        "source"          : [],
+        "newapk"          : [],
+        "apk"             : [],
         "tags"            : [],
         "numLikes"        : 0,
         "numDownloads"    : 0,
@@ -46,17 +57,26 @@ qx.Class.define("aiagallery.dbif.ObjAppData",
         /** Description of the application */
         "description" : "String",
 
+        /** New (to be processed) image #1 (data: or real URL) */
+        "newimage1" : "LongString",
+
         /** Image #1 (data: or real URL) */
         "image1" : "LongString",
 
         /** Image #1 blob id */
         "image1blob" : "String",
 
+        /** New (to be processed) image #2 (data: or real URL) */
+        "newimage2" : "LongString",
+
         /** Image #2 (data: or real URL) */
         "image2" : "LongString",
 
         /** Image #2 blob id */
         "image2blob" : "String",
+
+        /** New (to be processed) image #3 (data: or real URL) */
+        "newimage3" : "LongString",
 
         /** Image #3 (data: or real URL) */
         "image3" : "LongString",
@@ -68,15 +88,18 @@ qx.Class.define("aiagallery.dbif.ObjAppData",
         "previousAuthors" : "StringArray",
 
         /** Blob ids of source ZIP file (base64-encoded), newest first */
+        "newsource" : "StringArray",
+
+        /** Blob ids of source ZIP file (raw), newest first */
         "source" : "StringArray",
 
-        /** Blob ids of executable APK file (base64-encoded), newest first */
-        "apk" : "StringArray",
-        
         /** File Name of Source File */
         "sourceFileName" : "String",
 
         /** Blob ids of executable APK file (base64-encoded), newest first */
+        "newapk" : "StringArray",
+
+        /** Blob ids of executable APK file (raw), newest first */
         "apk" : "StringArray",
 
         /** File Name of APK File */

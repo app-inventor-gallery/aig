@@ -247,11 +247,17 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     {
       var         app;
       var         appData;
+      var         sourceBlobId;
+      var         destBlobId;
+      var         fileData;
       var         addedBlobs = [];
+      var         removeBlobs = [];
       var         Images = Packages.com.google.appengine.api.images;
       var         ImagesServiceFactory = Images.ImagesServiceFactory;
       var         imagesService = ImagesServiceFactory.getImagesService();
       var         BlobKey = Packages.com.google.appengine.api.blobstore.BlobKey;
+
+java.lang.System.out.println("_postAppUpload: uid=" + requestData.uid);
 
       // Ensure we have the requisite UID
       if (typeof requestData.uid == "undefined" || requestData.uid == null)
@@ -269,74 +275,197 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // Get the app property data from the app object
       appData = app.getData();
 
-      // If it's indicating as brand new, the user may have deleted it. If
-      // it's already active, there's nothing to be done.
-      if (app.getBrandNew() ||
-          appData.status == aiagallery.dbif.Constants.Status.Active)
+      // If it's indicating as brand new, the user may have deleted it.
+      if (app.getBrandNew())
       {
         // Nothing to do in that case
+java.lang.System.out.println("_postAppUpload: app was brand new!");
         return;
       }
       
-      //
-      // Now, for each image that exists, put it in a blob
-      //
-      [ "1", "2", "3" ].forEach(
-        function(num)
-        {
-          var             imageId = "image" + num;
-          var             blobId = imageId + "blob";
-          var             contents;
-          var             mimeType;
-          var             imageData;
-          var             image;
-          var             blobKey;
-
-          if (appData[imageId])
+      try
+      {
+        //
+        // Now, for each image that exists, put it in a blob
+        //
+        [ "1", "2", "3" ].forEach(
+          function(num)
           {
-            java.lang.System.out.println(
-              appData.uid + "Processing image " + num);
+            var             imageId = "image" + num;
+            var             newImageId = "new" + imageId;
+            var             blobId = imageId + "blob";
+            var             contents;
+            var             mimeType;
+            var             imageData;
+            var             image;
+            var             blobKey;
+            var             oldBlobId;
 
-            // Parse out the actual url
-            imageData = appData[imageId];
-            
-            // Ensure it's still a data url, and we aren't retrying work done
-            if (imageData.substring(0, 4) != "data")
+            if (appData[newImageId])
             {
-              return;
+java.lang.System.out.println(appData.uid + "Processing image " + num);
+
+              // Parse out the actual url
+              imageData = appData[newImageId];
+
+              // Ensure we have a data url
+              if (imageData.substring(0, 5) != "data:")
+              {
+                // Let the user know the image was invalid
+                this.logMessage(appData.owner, 
+                                "Invalid image",
+                                appData.title,
+                                num);
+                
+                // Delete the invalid data
+                appData[newImageId] = null;
+                
+                // See ya!
+                return;
+              }
+
+              // Get the contents of the base64-encoded photo
+              contents = imageData.substring(imageData.indexOf(",") + 1);
+
+              // Parse out the mimeType. This always starts at index 5 and
+              // ends with a semicolon
+              mimeType = imageData.substring(5, imageData.indexOf(";"));
+
+              // Base64-decode the image data
+              imageData = aiagallery.dbif.Decoder64.decode(contents);
+
+              // If there's already a blob...
+              if (appData[blobId])
+              {
+                // ... then add that blob ID to the list of ones to be removed
+                oldBlobId = appData[blobId];
+              }
+
+              // Save the image data as a blob
+              appData[blobId] =
+                liberated.dbif.Entity.putBlob(imageData, mimeType);
+
+              // Note that we need to remove the old blob
+              removeBlobs.push(oldBlobId);
+              
+              // Save the blob id to remove it if something fails
+              addedBlobs.push(appData[blobId]);
+
+              // Use App Engine's Image API to retrieve the URL to a
+              // dynamically scalable image
+              blobKey = new BlobKey(appData[blobId]);
+              appData[imageId] = 
+                String(imagesService.getServingUrl(blobKey));
+
+              // This image no longer requires processing
+              appData[newImageId] = null;
             }
-            
-            // Get the contents of the base64-encoded photo
-            contents = imageData.substring(imageData.indexOf(",") + 1);
+          },
+          this);
 
-            // Parse out the mimeType. This always starts at index 5 and
-            // ends with a semicolon
-            mimeType = imageData.substring(5, imageData.indexOf(";"));
+        // See if there are any source files to process.
+        while (appData.newsource.length > 0)
+        {
+           // There are. They were unshifted() onto their array, so pop() them
+           // off to get them in FIFO order.
+          sourceBlobId = appData.newsource.pop();
+          
+          // Note that we need to remove the old blob
+          removeBlobs.push(sourceBlobId);
 
-            // Base64-decode the image data
-            imageData = aiagallery.dbif.Decoder64.decode(contents);
+          // Retrieve the blob
+          fileData = liberated.dbif.Entity.getBlob(sourceBlobId);
+          
+          // Decode the data
+          fileData = aiagallery.dbif.Decoder64.decode(fileData);
+          
+          // Write it to a new blob
+          destBlobId = liberated.dbif.Entity.putBlob(fileData);
+          
+          // Remember that we added this blob, in case of later error
+          addedBlobs.push(destBlobId);
+          
+          // Add the new blob id to the source blob list
+          appData.source.unshift(destBlobId);
+        }
 
-            // Save the image data as a blob
-            appData[blobId] =
-              liberated.dbif.Entity.putBlob(imageData, mimeType);
+        // See if there are any apk files to process.
+        if (appData.newapk.length > 0)
+        {
+           // There are. They were unshifted() onto their array, so pop() them
+           // off to get them in FIFO order.
+          sourceBlobId = appData.newapk.pop();
+          
+          // Note that we need to remove the old blob
+          removeBlobs.push(sourceBlobId);
 
-            // Save the blob id to remove it, in case something fails
-            addedBlobs.push(appData[blobId]);
+          // Retrieve the blob
+          fileData = liberated.dbif.Entity.getBlob(sourceBlobId);
+          
+          // Decode the data
+          fileData = aiagallery.dbif.Decoder64.decode(fileData);
+          
+          // Write it to a new blob
+          destBlobId = liberated.dbif.Entity.putBlob(fileData);
+          
+          // Remember that we added this blob, in case of later error
+          addedBlobs.push(destBlobId);
+          
+          // Add the new blob id to the source blob list
+          appData.apk.unshift(destBlobId);
+        }
+      }
+      catch (e)
+      {
+        // Remove any blobs that we had added
+        addedBlobs.forEach(
+          function(blobId)
+          {
+            liberated.dbif.Entity.removeBlob(blobId);
+          });
+        
+        // Let the user know something failed
+        this.logMessage(appData.owner, "Unknown app error", appData.title);
 
-            // Use App Engine's Image API to retrieve the URL to a
-            // (possibly) scaled image
-            blobKey = new BlobKey(appData[blobId]);
-            appData[imageId] = 
-              String(imagesService.getServingUrl(blobKey));
-          }
-        });
+        // Rethrow the error
+        throw e;
+      }
       
-      // Application processing has been completed (once the object is saved)
-      appData.status = aiagallery.dbif.Constants.Status.Active;
+java.lang.System.out.println(liberated.dbif.Debug.debugObjectToString(appData, "postProcess testing for status"));
+      // Conform that this app has all necessary data, and that all changes
+      // have been processed.
+      if (appData.newsource.length === 0 &&
+          appData.newapk.length === 0 &&
+          appData.newimage1 === null &&
+          appData.newimage2 === null &&
+          appData.newimage3 === null)
+      {
+        // If the image has all necessary data (new or prior), ...
+        if (appData.image1 !== null &&
+            appData.source.length !== 0 &&
+            appData.apk.length !== 0)
+        {
+          // ... then we can set the application status to Active.
+          appData.status = aiagallery.dbif.Constants.Status.Active;
+        }
+        else
+        {
+          // Otherwise set it to Invalid so the user can deal with it
+          appData.status = aiagallery.dbif.Constants.Status.Invalid;
+        }
+      }
+
+      // If we didn't add or remove anything, ...
+      if (addedBlobs.length == 0 && removeBlobs.length == 0)
+      {
+        // ... then we're all done
+        return;
+      }
 
       // Save the app object with the updates
       try
       {
+        // Write the app object
         app.put();
       }
       catch (e)
@@ -351,10 +480,29 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         // Throw an error that will cause this function to be retried
         throw (
           {
-            code    : 302,
+            code    : 303,
             message : "Rewrite of app object failed"
           });
       }
+
+      // Success
+      if (appData.status == aiagallery.dbif.Constants.Status.Active)
+      {
+        this.logMessage(appData.owner, "App available", appData.title);
+      }
+      else
+      {
+        this.logMessage(appData.owner, "Unknown app error", appData.title);
+      }
+      
+      // We succeeded, so now we can remove obsolete blobs
+      // Do this after the catch() above, so that added blobs aren't removed
+      // if the put() succeeded.
+      removeBlobs.forEach(
+        function(blobId)
+        {
+          liberated.dbif.Entity.removeBlob(blobId);
+        });
     },
 
 
@@ -379,6 +527,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             appData;
       var             appObj;
       var             hTask = null;
+      var             fTask = null;
       var             queue;
       var             options;
       var             bNew;
@@ -393,6 +542,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             image3Key;
       var             sourceKey = null;
       var             apkKey = null;
+      var             requestData;
       var             allowableFields =
         [
           "uid",
@@ -467,6 +617,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           appData.owner = whoami.email;
         }
 
+        // Set the application owner
+        attributes.owner = whoami.email;
+
         // Save the existing tags list
         oldTags = appData.tags;
 
@@ -496,62 +649,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           attributes.image3 = null;
         }
 
-/*
-        // If we're on App Engine...
-        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
-        {
-          // ... then prepare to retrieve scalable image URLs
-          var Images = Packages.com.google.appengine.api.images;
-          var ImagesServiceFactory = Images.ImagesServiceFactory;
-          var imagesService = ImagesServiceFactory.getImagesService();
-          var BlobKey = Packages.com.google.appengine.api.blobstore.BlobKey;
-          var blobKey;
-
-          //
-          // Now, for each image that exists, put it in a blob
-          //
-          [ "1", "2", "3" ].forEach(
-            function(num)
-            {
-              var             imageId = "image" + num;
-              var             blobId = imageId + "blob";
-              var             contents;
-              var             mimeType;
-              var             imageData;
-              var             image;
-              var             blobKey;
-
-              if (attributes[imageId])
-              {
-                // Parse out the actual url
-                imageData = attributes[imageId];
-                contents = imageData.substring(imageData.indexOf(",") + 1);
-
-                // Parse out the mimeType. This always starts at index 5 and
-                // ends with a semicolon
-                mimeType = imageData.substring(5, imageData.indexOf(";"));
-
-                // Base64-decode the image data
-                imageData = aiagallery.dbif.Decoder64.decode(contents);
-
-                // Save the image data as a blob
-                attributes[blobId] =
-                  liberated.dbif.Entity.putBlob(imageData, mimeType);
-                
-
-                // Save the blob id to remove it, in case something fails
-                addedBlobs.push(attributes[blobId]);
-
-                // Use App Engine's Image API to retrieve the URL to a
-                // (possibly) scaled image
-                blobKey = new BlobKey(attributes[blobId]);
-                attributes[imageId] = 
-                  String(imagesService.getServingUrl(blobKey));
-              }
-            });
-        }
-*/
-
         // Copy fields from the attributes parameter into this db record
         allowableFields.forEach(
           function(field)
@@ -565,42 +662,19 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               case "source":
                 // Save the field data
                 sourceData = attributes.source;
-
-                // Ensure that we have an array of keys. The most recent key is
-                // kept at the top of the stack.
-                if (! appData.source)
-                {
-                  appData.source = [];
-                }
                 break;
 
               case "apk":
                 // Save the field data
                 apkData = attributes.apk;
-
-                // Ensure that we have an array of keys. The most recent key is
-                // kept at the top of the stack.
-                if (! appData.apk)
-                {
-                  appData.apk = [];
-                }
                 break;
 
               case "image1":
               case "image2":
               case "image3":
-                // Replace what's in the db entry
+                // Indicate that this is a new image. It will be processed later
                 appData[field] = attributes[field];
-
-                // If there's already a blob...
-                if (appData[field + "blob"])
-                {
-                  // ... then add that blob ID to the list of ones to be removed
-                  removeBlobs.push(appData[field + "blob"]);
-                }
-
-                // Save the blob ID too
-                appData[field + "blob"] = attributes[field + "blob"];
+                appData["new" + field] = attributes[field];
                 break;
 
               default:
@@ -609,12 +683,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                 break;
               }
             }
-
-            // If this field is required and not available...
-            if (qx.lang.Array.contains(requiredFields, field) &&
-                ! appData[field])
+            else if (qx.lang.Array.contains(requiredFields, field))
             {
-              // then mark it as missing
+              // Mark the required field as missing
               missing.push(field);
             }
           });
@@ -675,14 +746,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         {
           // ... then update the upload time to now
           appData.uploadTime = aiagallery.dbif.MDbifCommon.currentTimestamp();
-        }
 
-        // Save the new source data (if there is any)
-        if (sourceData)
-        {
-          // Save the data and prepend the blob id to the key list
+          // Save the data
           sourceKey = liberated.dbif.Entity.putBlob(sourceData);
-          appData.source.unshift(sourceKey);
+
+          // Prepend the blob id to the key list of new source files
+          appData.newsource.unshift(sourceKey);
 
           // Save the blob id to remove it, in case something fails
           addedBlobs.push(sourceKey);
@@ -691,9 +760,11 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         // Similarly for apk data
         if (apkData)
         {
-          // Save the data and prepend the blob id to the key list
+          // Save the data
           apkKey = liberated.dbif.Entity.putBlob(apkData);
-          appData.apk.unshift(apkKey);
+          
+          // Prepend the blob id to the key list of new apk files
+          appData.newapk.unshift(apkKey);
 
           // Save the blob id to remove it, in case something fails
           addedBlobs.push(apkKey);
@@ -770,14 +841,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                 }
               });
 
-            // If we're on App Engine...
-            if (liberated.dbif.Entity.getCurrentDatabaseProvider() ==
-                "appengine")
-            {
-              // ... then set the status to "PENDING" until the task queue is
-              // processed and the app data is cleaned up
-              appData.status = aiagallery.dbif.Constants.Status.Processing;
-            }
+            // Set the status to "PROCESSING" until the post-processing is done.
+            appData.status = aiagallery.dbif.Constants.Status.Processing;
 
             // Save this record in the database
             appObj.put();
@@ -785,31 +850,131 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             // Add all words in text fields to word Search record
             aiagallery.dbif.MApps._populateSearch(appObj.getData());
 
+            requestData =
+              {
+                type : "postAppUpload",
+                uid  : appData.uid
+              };
+
             // If we're on App Engine...
-            if (liberated.dbif.Entity.getCurrentDatabaseProvider() ==
-                "appengine")
+            switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
             {
+            case "appengine":
               // ... then create a task to clean up the data for this app
               var TaskQueue = Packages.com.google.appengine.api.taskqueue;
               var Queue = TaskQueue.Queue;
               var QueueFactory = TaskQueue.QueueFactory;
               var TaskOptions = TaskQueue.TaskOptions;
-              var requestData =
-                {
-                  type : "postAppUpload",
-                  uid  : appData.uid
-                };
               var jsonRequest = qx.lang.Json.stringify(requestData);
 
+java.lang.System.out.println("Adding task for uid=" + appData.uid);
               queue = QueueFactory.getDefaultQueue();
               options = TaskOptions.Builder.withUrl("/task");
               options.payload(jsonRequest);
               hTask = queue.add(options);
+              break;
+              
+            default:
+              fTask = qx.lang.Function.bind(
+                function(uid)
+                {
+                  var             appObj;
+                  var             appData;
+                  var             sourceBlobId;
+                  var             destBlobId;
+                  var             fileData;
+
+                  // Retrieve the app object
+                  appObj = new aiagallery.dbif.ObjAppData(requestData.uid);
+
+                  // Get the app property data from the app object
+                  appData = appObj.getData();
+
+                  // In the simulator we don't actually munge the data
+                  // urls. We can therefore just move them to their proper
+                  // resting place.
+                  [ "1", "2", "3" ].forEach(
+                    function(num)
+                    {
+                      var             imageId = "image" + num;
+                      var             newImageId = "new" + imageId;
+
+                      if (appData[newImageId])
+                      {
+                        appData[imageId] = appData[newImageId];
+                        appData[newImageId] = null;
+                      }
+                    });
+
+                  // Post-processing is now complete.
+                  appData.status = aiagallery.dbif.Constants.Status.Active;
+
+                  // Write out the resulting data
+                  appObj.put();
+
+                  // Success
+                  this.logMessage(appData.owner,
+                                  "App available",
+                                  appData.title);
+
+                  // See if there are any source files to process.
+                  while (appData.newsource.length > 0)
+                  {
+                     // There are. They were unshifted() onto their array, so
+                     // pop() them off to get them in FIFO order.
+                    sourceBlobId = appData.newsource.pop();
+
+                    // Retrieve the blob
+                    fileData = liberated.dbif.Entity.getBlob(sourceBlobId);
+
+                    // Decode the data
+                    fileData = aiagallery.dbif.Decoder64.decode(fileData);
+
+                    // Write it to a new blob
+                    destBlobId = liberated.dbif.Entity.putBlob(fileData);
+
+                    // Add the new blob id to the source blob list
+                    appData.source.unshift(destBlobId);
+
+                    // Remove the old blob
+                    liberated.dbif.Entity.removeBlob(sourceBlobId);
+                  }
+
+                  // See if there are any apk files to process.
+                  if (appData.newapk.length > 0)
+                  {
+                     // There are. They were unshifted() onto their array, so
+                     // pop() them off to get them in FIFO order.
+                    sourceBlobId = appData.newapk.pop();
+
+                    // Retrieve the blob
+                    fileData = liberated.dbif.Entity.getBlob(sourceBlobId);
+
+                    // Decode the data
+                    fileData = aiagallery.dbif.Decoder64.decode(fileData);
+
+                    // Write it to a new blob
+                    destBlobId = liberated.dbif.Entity.putBlob(fileData);
+
+                    // Add the new blob id to the source blob list
+                    appData.apk.unshift(destBlobId);
+
+                    // Remove the old blob
+                    liberated.dbif.Entity.removeBlob(sourceBlobId);
+                  }
+                },
+                this);
+              break;
             }
+            
+            // Add a log entry so they know the app has been submitted
+            this.logMessage(appData.owner, "App submitted", appData.title);
 
             // Return entity data including newly-created key (if adding)
             return appObj.getData();
-          });
+          },
+          [],
+          this);
       }
       catch (e)
       {
@@ -838,6 +1003,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           liberated.dbif.Entity.removeBlob(blobId);
         });
 
+      // If we'd created a post-processing task, run it now
+      if (fTask)
+      {
+        fTask(appData.uid);
+      }
+      
       return appData;
     },
     

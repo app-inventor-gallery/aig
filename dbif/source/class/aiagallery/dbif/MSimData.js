@@ -2454,6 +2454,9 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
       "search" : 
       {
 
+      },
+      "logentry" :
+      {
       }
     }
   }

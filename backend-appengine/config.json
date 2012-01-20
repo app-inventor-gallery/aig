@@ -37,6 +37,7 @@
     "BUILD_PATH"   : "./war/build",
     "LOCALES"      : [ "en" ],
     "CACHE"        : "${TMPDIR}/qx${QOOXDOO_VERSION}/cache",
+    "OPTIMIZE"     : [],
     "ROOT"         : "."
   },
 

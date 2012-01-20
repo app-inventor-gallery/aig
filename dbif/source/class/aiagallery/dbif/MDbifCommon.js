@@ -46,6 +46,38 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
 
   members :
   {
+    /**
+     * Add a log message for the specified visitor.
+     * 
+     * @param visitor {String}
+     *   The email address identifying a specific existing visitor
+     * 
+     * @param messageCode {String}
+     *   A key from the aiagallery.dbif.Constants.LogMessage map
+     * 
+     * @param varargs {Any}
+     *   Additional parameters to be added to the log message
+     */
+    logMessage : function(visitor, messageCode, varargs)
+    {
+      var             logEntry;
+      var             data;
+      
+      // Get a new log entry object
+      logEntry = new aiagallery.dbif.ObjLogEntry();
+      
+      // Retrieve the data map
+      data = logEntry.getData();
+
+      // Set the property values
+      data.visitor = visitor;
+      data.code = messageCode;
+      data.params = qx.lang.Array.fromArguments(arguments, 2);
+      
+      // Save the log message
+      logEntry.put();
+    },
+
     _applyWhoAmI : function(value, old)
     {
       aiagallery.dbif.MDbifCommon.__whoami = value;
