@@ -12,6 +12,7 @@ qx.Class.define("aiagallery.dbif.Decoder64",
 
   statics :
   {
+/*
     getDecodedURL : function(appId, base64field)
     {
       var           myObj;
@@ -74,8 +75,8 @@ qx.Class.define("aiagallery.dbif.Decoder64",
         // a semicolon
         mimeType = fieldContent.substring(5, fieldContent.indexOf(";"));
       }
-      
-      // Parse out the actual url
+       
+     // Parse out the actual url
       contents = fieldContent.substring(fieldContent.indexOf(",") + 1);
       
       // Send the url to the decoder function
@@ -98,6 +99,7 @@ qx.Class.define("aiagallery.dbif.Decoder64",
       // Give 'em what they came for
       return ret;
     },
+*/
 
     /**
      * Copyright: Dr Alexander J Turner - all rights reserved.
