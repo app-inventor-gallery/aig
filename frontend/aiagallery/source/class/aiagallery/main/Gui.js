@@ -8,6 +8,7 @@
 
 /*
 #asset(aiagallery/*)
+#ignore(goog.*)
  */
 
 /**
@@ -35,6 +36,7 @@ qx.Class.define("aiagallery.main.Gui",
       var             header;
       var             menuItem;
       var             moduleName;
+      var             application;
       var             page;
       var             subTabs;
       var             subPage;
@@ -204,8 +206,9 @@ qx.Class.define("aiagallery.main.Gui",
         // Make the tab view globally accessible
         qx.core.Init.getApplication().setUserData("mainTabs", mainTabs);
 
-        // Issue a side-band RPC to find out who we are, and a logout URL
-        var _this = this;
+        // Issue a pair of side-band RPCs:
+        //  - find out who we are, and a logout URL
+        //  - get a channel for server push
         qx.util.TimerManager.getInstance().start(
           function(userData, timerId)
           {
@@ -220,6 +223,8 @@ qx.Class.define("aiagallery.main.Gui",
                 crossDomain : false,
                 serviceName : "aiagallery.features"
               });
+            
+            // Issue the request to find out who we are
             rpc.callAsync(
               function(e)
               {
@@ -241,9 +246,10 @@ qx.Class.define("aiagallery.main.Gui",
                 _this.whoAmI.setHasSetDisplayName(e.hasSetDisplayName);
                 _this.whoAmI.setLogoutUrl(e.logoutUrl);
                 
-                qx.core.Init.getApplication().setUserData(
-                  "permissions", e.permissions);
-
+                // Save the user's permissions
+                application = qx.core.Init.getApplication();
+                application.setUserData("permissions", e.permissions);
+                
                 // Prepare to add management modules if permissions allow it.
                 moduleList = {};
                 bAddModules = false;
@@ -369,6 +375,91 @@ qx.Class.define("aiagallery.main.Gui",
               },
               "whoAmI",
               []);
+
+            // Load the Channel API. If we're on App Engine, it'll succeed
+            var loader = new qx.io.ScriptLoader();
+            loader.load(
+              "/_ah/channel/jsapi", 
+              function(status)
+              {
+                // Did we successfully load the Channel API?
+                switch(status)
+                {
+                case "success":
+                  // Found the Channel API. Reqest a server push channel
+                  rpc.callAsync(
+                    function(e)
+                    {
+                      var             channel;
+                      var             socket;
+                      var             channelMessage;
+
+                      // Did we get a channel token?
+                      if (! e)
+                      {
+                        // Nope. Nothing to do.
+                        _this.warn("getChannelToken: " +
+                                   "Received no channel token");
+                        return;
+                      }
+
+                      channelMessage = function(type, data)
+                      {
+                        if (typeof data == "undefined")
+                        {
+                          _this.debug("Channel Message (" + type + ")");
+                        }
+                        else
+                        {
+                          data = liberated.dbif.Debug.debugObjectToString(
+                            data,
+                            "Channel Message (" + type + ")");
+                          _this.debug(data);
+                        }
+                      };
+
+                      // If there was a prior channel open...
+                      socket = application.getUserData("channelSocket");
+                      if (socket)
+                      {
+                        // ... then close it
+                        socket.close();
+                      }
+
+                      // Open a channel for server push
+                      channel = new goog.appengine.Channel(e);
+                      socket = channel.open();
+                      socket.onopen = function(data)
+                      {
+                        channelMessage("open", data);
+                      };
+                      socket.onmessage = function(data)
+                      {
+                        channelMessage("message", data);
+                      };
+                      socket.onerror = function(data)
+                      {
+                        channelMessage("error", data);
+                      };
+                      socket.onclose = function(data)
+                      {
+                        channelMessage("close", data);
+                      };
+
+                      // Save the channel token (if provided)
+                      application.setUserData("channelSocket", socket);
+                    },
+                    "getChannelToken",
+                    []);
+                  break;
+
+                  default:
+                    // Nope.
+                  _this.warn(status + ": Failed to load Channel API");
+                  break;
+
+                }
+            });
           });
       }
       

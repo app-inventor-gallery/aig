@@ -513,6 +513,15 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         {
           liberated.dbif.Entity.removeBlob(blobId);
         });
+
+      // Push a message to the client to let 'em know the change of status
+      this._messageToClient(appData.owner,
+                            {
+                              type   : "postupload",
+                              title  : appData.title,
+                              appId  : appData.uid,
+                              status : appData.status
+                            });
     },
 
 

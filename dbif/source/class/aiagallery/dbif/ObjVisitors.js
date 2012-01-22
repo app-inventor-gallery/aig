@@ -23,6 +23,7 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
           "displayName"    : null,
           "permissions"    : [],
           "status"         : aiagallery.dbif.Constants.Status.Active,
+          "channelTokens"  : [],
           "recentSearches" : [],
           "recentViews"    : []
         });
@@ -56,6 +57,9 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
 
         /** Active, Pending, or Banned (by their numeric values) */
         "status" : "Integer",
+
+        /** Channel tokens for server push. One entry per this user's clients */
+        "channelTokens" : "StringArray",
 
         /** A list of the user's recent searches */
         "recentSearches" : "StringArray",
