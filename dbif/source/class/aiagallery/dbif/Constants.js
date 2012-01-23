@@ -49,7 +49,7 @@ qx.Class.define("aiagallery.dbif.Constants",
     StatusToName :
     [
       "Banned", 
-      "Pending",
+      "Under review",
       "Active",
       "Processing",
       "Invalid",

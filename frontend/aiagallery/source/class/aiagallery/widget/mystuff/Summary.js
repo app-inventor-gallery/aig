@@ -17,12 +17,23 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
     // Set a reasonable height so the image isn't tiny
     this.set(
       {
-        height    : 32,
-        minHeight : 32
+        height    : this.__height,
+        minHeight : this.__height,
+        maxHeight : this.__height
       });
     
     // Create a layout. Summary is always an HBox
     this.setLayout(new qx.ui.layout.HBox(10));
+    
+    // Create each of the child controls
+    this.getChildControl("icon");
+    this.getChildControl("image1");
+    this.getChildControl("title");
+    this.getChildControl("status");
+    this.getChildControl("numLikes");
+    this.getChildControl("numDownloads");
+    this.getChildControl("numViewed");
+    this.getChildControl("numComments");
   },
   
   properties :
@@ -39,60 +50,160 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
     
     image1 :
     {
-      check : "String"
+      check : "String",
+      apply : "_applyImage1"
     },
 
     title :
     {
-      check : "String"
+      check : "String",
+      apply : "_applyTitle"
     },
     
     status :
     {
-      check : "Number"
+      check : "Number",
+      apply : "_applyStatus"
     },
     
     numLikes :
     {
-      check : "Number"
+      check : "Number",
+      apply : "_applyNumLikes"
     },
     
     numDownloads :
     {
-      check : "Number"
+      check : "Number",
+      apply : "_applyNumDownloads"
     },
     
     numViewed :
     {
-      check : "Number"
+      check : "Number",
+      apply : "_applyNumViewed"
     },
     
     numComments :
     {
-      check : "Number"
+      check : "Number",
+      apply : "_applyNumComments"
     }
   },
 
   members :
   {
+    /** Height of this summary widget */
+    __height : 32,
+
     // overridden
     _createChildControlImpl : function(id, hash)
     {
-      var control;
+      var             control;
+      var             width;
 
       switch(id)
       {
-        case "icon":
-          control = new qx.ui.basic.Image(this.getIcon());
-          control.setAnonymous(true);
-          this._addAt(control, 0);
-          break;
+      case "icon":
+        control = new qx.ui.basic.Image(this.getIcon());
+        control.setAnonymous(true);
+        this._addAt(control, 0);
+        break;
 
-        case "title":
-          control = new qx.ui.basic.Label(this.getTitle());
-          control.setAnonymous(true);
-          this._add(control);
-          break;
+      case "image1":
+        control = new qx.ui.basic.Image();
+        control.setAnonymous(true);
+        width = this.__height;
+        control.set(
+          {
+            anonymous : true,
+            scale     : true,
+            width     : width,
+            minWidth  : width,
+            maxWidth  : width,
+            maxHeight : this.__height
+          });
+        this._addAt(control, 1);
+        break;
+
+      case "title":
+        control = new qx.ui.basic.Label();
+        width = 200;
+        control.set(
+          {
+            anonymous : true,
+            width     : width,
+            minWidth  : width,
+            maxWidth  : width
+          });
+        this._addAt(control, 2);
+        break;
+
+      case "status":
+        control = new qx.ui.basic.Label();
+        width = 120;
+        control.set(
+          {
+            anonymous : true,
+            rich      : true,
+            width     : width,
+            minWidth  : width,
+            maxWidth  : width
+          });
+        this._addAt(control, 3);
+        break;
+
+      case "numLikes":
+        control = new qx.ui.basic.Label();
+        width = 50;
+        control.set(
+          {
+            anonymous : true,
+            width     : width,
+            minWidth  : width,
+            maxWidth  : width
+          });
+        this._addAt(control, 4);
+        break;
+
+      case "numDownloads":
+        control = new qx.ui.basic.Label();
+        width = 50;
+        control.set(
+          {
+            anonymous : true,
+            width     : width,
+            minWidth  : width,
+            maxWidth  : width
+          });
+        this._addAt(control, 5);
+        break;
+
+      case "numViewed":
+        control = new qx.ui.basic.Label();
+        width = 50;
+        control.set(
+          {
+            anonymous : true,
+            width     : width,
+            minWidth  : width,
+            maxWidth  : width
+          });
+        this._addAt(control, 6);
+        break;
+
+      case "numComments":
+        control = new qx.ui.basic.Label();
+        width = 50;
+        control.set(
+          {
+            anonymous : true,
+            width     : width,
+            minWidth  : width,
+            maxWidth  : width
+          });
+        this._addAt(control, 7);
+        break;
       }
 
       return control || this.base(arguments, id);
@@ -101,11 +212,89 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
     // property apply
     _applyIcon : function(value, old)
     {
-      var icon = this.getChildControl("icon");
-      if (icon) 
+      this.getChildControl("icon").setSource(value);
+    },
+
+    // property apply
+    _applyImage1 : function(value, old)
+    {
+      this.getChildControl("image1").setSource(value);
+    },
+    
+    // property apply
+    _applyTitle : function(value, old)
+    {
+      this.getChildControl("title").setValue(value);
+    },
+
+    // property apply
+    _applyStatus : function(value, old)
+    {
+      var             control = this.getChildControl("status");
+      var             Status = aiagallery.dbif.Constants.Status;
+      var             StatusToName = aiagallery.dbif.Constants.StatusToName;
+      var             color;
+      var             bgColor;
+      
+      switch(value)
       {
-        icon.setSource(value);
+      case Status.Banned:
+        color = "white";
+        bgColor = "red";
+        break;
+      case Status.Pending:
+        color = "black";
+        bgColor = "yellow";
+        break;
+      case Status.Active:
+        color = "green";
+        bgColor = null;
+        break;
+      case Status.Processing:
+        color = "black";
+        bgColor = "yellow";
+        break;
+      case Status.Invalid:
+        color = "white";
+        bgColor = "red";
+        break;
+      case Status.Unpublished:
+        color = "darkgray";
+        bgColor = null;
+        break;
       }
+      control.setValue(
+          "<span style='" +
+          " padding:4px;" +
+          " color:" + color + ";" +
+          " background-color:" + bgColor + ";" +
+          "'>" +
+          StatusToName[value] +
+          "</span>");
+    },
+
+    // property apply
+    _applyNumLikes : function(value, old)
+    {
+      this.getChildControl("numLikes").setValue(String(value));
+    },
+
+    // property apply
+    _applyNumDownloads : function(value, old)
+    {
+      this.getChildControl("numDownloads").setValue(String(value));
+    },
+
+    // property apply
+    _applyNumViewed : function(value, old)
+    {
+      this.getChildControl("numViewed").setValue(String(value));
+    },
+
+    // property apply
+    _applyNumComments : function(value, old)
+    {
+      this.getChildControl("numComments").setValue(String(value));
     }
   }
 });
