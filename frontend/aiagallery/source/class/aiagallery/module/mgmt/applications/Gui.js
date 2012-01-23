@@ -248,11 +248,11 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
           // single-selection mode, so we can easily reference into the
           // selection array.
           var selection = selectionModel.getSelectedRanges()[0].minIndex;
-          var data = model.getData()[selection];
+          var data = model.getDataAsMapArray()[selection];
           var origEvent = e.clone();
 
           dialog.Dialog.confirm(
-            this.tr("Really delete app ") + data[2] + "?",
+            this.tr("Really delete app ") + data.title + "?",
             function(result)
             {
               // If they confirmed the deletion...
@@ -303,7 +303,11 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
         table = fsm.getObject("table");
 
         // Set the entire data model given the result array
-        table.getTableModel().setDataAsMapArray(response.data.result.apps);
+//        table.getTableModel().setDataAsMapArray(response.data.result.apps);
+table.getTableModel().setDataAsMapArray(response.data.result.apps, true, false);
+// DEBUG: Set 2nd parameter "rememberMaps" to true (from default of false).
+// When this change is made, columns not in the model become accessible (such as uid, e.g. when deleting an app)
+// (less important: 3rd param, "clearSorting", changed from T default to F so sorting preserved)
         break;
 
       case "addOrEditApp":
