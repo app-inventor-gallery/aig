@@ -405,16 +405,17 @@ qx.Class.define("aiagallery.main.Gui",
 
                       channelMessage = function(type, data)
                       {
+                        var             messageBus;
+
                         if (typeof data == "undefined")
                         {
                           _this.debug("Channel Message (" + type + ")");
                         }
                         else
                         {
-                          data = liberated.dbif.Debug.debugObjectToString(
-                            data,
-                            "Channel Message (" + type + ")");
-                          _this.debug(data);
+                          _this.debug(liberated.dbif.Debug.debugObjectToString(
+                                        data,
+                                        "Channel Message (" + type + ")"));
                         }
                       };
 
@@ -429,18 +430,35 @@ qx.Class.define("aiagallery.main.Gui",
                       // Open a channel for server push
                       channel = new goog.appengine.Channel(e);
                       socket = channel.open();
+                      
+                      // When we receive a message on the channel, post a
+                      // message on the message bus.
+                      socket.onmessage = function(data)
+                      {
+                        var             messageBus;
+
+                        // Parse the JSON message
+                        data = qx.lang.Json.parse(data.data);
+
+                        // Dispatch a message for any subscribers to
+                        // this type.
+                        messageBus = qx.event.message.Bus.getInstance();
+                        messageBus.dispatchByName(data.type, data);
+                      };
+
+                      // Display a message when the channel is open
                       socket.onopen = function(data)
                       {
                         channelMessage("open", data);
                       };
-                      socket.onmessage = function(data)
-                      {
-                        channelMessage("message", data);
-                      };
+
+                      // Display a message upon error
                       socket.onerror = function(data)
                       {
                         channelMessage("error", data);
                       };
+
+                      // Display a message when the channel is closed
                       socket.onclose = function(data)
                       {
                         channelMessage("close", data);

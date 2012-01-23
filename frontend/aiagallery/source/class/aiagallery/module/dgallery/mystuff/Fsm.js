@@ -66,6 +66,9 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
 
         "events" :
         {
+          // Messages pushed by the server, e.g. app status changes
+          "serverPush" : "Transition_Idle_to_Idle_via_serverPush",
+
           "execute" :
           {
             // When the Delete App button is pressed
@@ -102,6 +105,59 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
 
       // Replace the initial Idle state with this one
       fsm.replaceState(state, true);
+
+      /*
+       * Transition: Idle to Idle
+       *
+       * Cause: A server push message arrived, indicating, generally, a change
+       * of status of an app.
+       *
+       * Action:
+       *  Update the GUI
+       */
+
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_Idle_via_serverPush",
+      {
+        "nextState" : "State_Idle",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var data;
+            
+          // Retrieve the serverPush event
+          data = event.getData();
+          
+          // The serverPush event contains the data we care about
+          data = data.getData();
+          
+          //
+          // Simulate that this is an RPC response
+          //
+          var rpcRequest = new qx.core.Object();
+          rpcRequest.setUserData("requestType", "serverPush");
+          rpcRequest.setUserData("rpc_response", 
+                                 {
+                                   type : "success",
+                                   data : data
+                                 });
+
+          // Call the standard result handler
+          var gui = aiagallery.module.dgallery.mystuff.Gui.getInstance();
+          gui.handleResponse(module, rpcRequest);
+
+          // Dispose of the request
+          if (rpcRequest.request)
+          {
+            rpcRequest.request.dispose();
+            rpcRequest.request = null;
+          }
+        }
+      });
+        
+      state.addTransition(trans);
 
       /*
        * Transition: Idle to AwaitRpcResult
@@ -766,7 +822,8 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           var             dataModel;
           var             permissions;
           var             rowData = {};
-          var             statusCodes = [ "Banned", "Pending", "Active" ];
+          var             whoami;
+          var             statusCodes = aiagallery.dbif.Constants.StatusToName;
 
           // Retrieve the RPC request
           rpcRequest = this.popRpcRequest();
@@ -784,8 +841,12 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           // Get the table's data model
           dataModel = table.getTableModel();
           
+          // Find out who we are
+          whoami = aiagallery.main.Gui.getInstance().whoAmI.getEmail();
+
           // Create the row data for the table
           rowData.uid          = result.uid;
+          rowData.owner        = whoami;
           rowData.title        = result.title;
           rowData.description  = result.description;
           rowData.image1       = result.image1;
@@ -1024,7 +1085,12 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
       // ------------------------------------------------------------ //
 
       // Add the AwaitRpcResult state and all of its transitions
-      this.addAwaitRpcResultState(module);
+      this.addAwaitRpcResultState(
+        module,
+        {
+          // Block serverPush as we'll handle it when back in Idle state
+          "serverPush" : qx.util.fsm.FiniteStateMachine.EventHandling.BLOCKED
+        });
 
 
       // ------------------------------------------------------------ //

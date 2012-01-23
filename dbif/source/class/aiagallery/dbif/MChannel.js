@@ -46,13 +46,23 @@ qx.Mixin.define("aiagallery.dbif.MChannel",
       var             clientId;
       var             json;
       var             channelService;
+      var             messageBus;
       var             ChannelServiceFactory;
       var             ChannelMessage;
       
       // At present, only the App Engine backend supports channels
       if (liberated.dbif.Entity.getCurrentDatabaseProvider() != "appengine")
       {
-        // Not App Engine, so nothing to do
+        // Not App Engine. In the debug environment, with the backend running
+        // in the browser, dispatch the same message on the message bus that
+        // receiving it on the channel would have done.
+        if (qx.core.Environment.get("qx.debug"))
+        {
+          // Dispatch a message for any subscribers of the type
+          messageBus = qx.event.message.Bus.getInstance();
+          messageBus.dispatchByName(message.type, message);
+        }
+
         return;
       }
 

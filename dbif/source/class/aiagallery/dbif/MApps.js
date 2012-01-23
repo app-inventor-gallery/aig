@@ -517,7 +517,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // Push a message to the client to let 'em know the change of status
       this._messageToClient(appData.owner,
                             {
-                              type   : "postupload",
+                              type   : "app.postupload",
                               title  : appData.title,
                               appId  : appData.uid,
                               status : appData.status
@@ -979,6 +979,17 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
                     // Remove the old blob
                     liberated.dbif.Entity.removeBlob(sourceBlobId);
+
+                    // Push a message to the client to let 'em know the change
+                    // of status
+                    this._messageToClient(
+                      appData.owner,
+                      {
+                        type   : "app.postupload",
+                        title  : appData.title,
+                        appId  : appData.uid,
+                        status : appData.status
+                      });
                   }
                 },
                 this);

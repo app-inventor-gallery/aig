@@ -14,6 +14,12 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Gui",
   type : "singleton",
   extend : qx.ui.core.Widget,
 
+  events :
+  {
+    /** A message was pushed from the server */
+    "serverPush" : "qx.event.type.Data"
+  },
+
   members :
   {
     /**
@@ -28,8 +34,23 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Gui",
       var             fsm = module.fsm;
       var             canvas = module.canvas;
       var             rowData;
+      var             messageBus;
 
-      // Live mode. Retrieve data from the backend.
+      // Let the FSM handle server push events
+      this.addListener("serverPush", fsm.eventListener, fsm);
+
+      // Subscribe to receive server push messages of type "app.postupload"
+      messageBus = qx.event.message.Bus.getInstance();
+      messageBus.subscribe(
+        "app.postupload", 
+        function(e)
+        {
+          // Generate an event to the FSM
+          this.fireDataEvent("serverPush", e);
+        },
+        this);
+
+      // Retrieve data from the backend.
       rowData = [];
 
       // Create a layout for this page
@@ -247,6 +268,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Gui",
      */
     handleResponse : function(module, rpcRequest)
     {
+      var             i;
       var             fsm = module.fsm;
       var             response = rpcRequest.getUserData("rpc_response");
       var             requestType = rpcRequest.getUserData("requestType");
@@ -254,6 +276,8 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Gui",
       var             table;
       var             model;
       var             deletedRow;
+      var             data;
+      var             appId;
 
       if (response.type == "failed")
       {
@@ -290,6 +314,32 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Gui",
         model.removeRows(deletedRow, 1, false);
         break;
         
+      case "serverPush":
+        // Update the app's status
+        table = fsm.getObject("table");
+        model = table.getTableModel();
+        data = model.getDataAsMapArray();
+        appId = response.data.appId;
+        
+        // Search for the 
+        for (i = 0; i < data.length; i++)
+        {
+          if (data[i].uid == appId)
+          {
+            break;
+          }
+        }
+        
+        // Did we find it?
+        if (i < data.length)
+        {
+          // Yup. Update the row
+          data[i].status =
+            aiagallery.dbif.Constants.StatusToName[response.data.status];
+          model.setRowsAsMapArray([ data[i] ], i, true, false);
+        }
+        break;
+
       default:
         throw new Error("Unexpected request type: " + requestType);
       }
