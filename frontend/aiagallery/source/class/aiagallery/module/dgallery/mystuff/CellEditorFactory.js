@@ -2,9 +2,9 @@
  * Cell editor for all cells of the Users table
  *
  * Copyright (c) 2011 Derrell Lipman
- * 
+ *
  * License:
- *   LGPL: http://www.gnu.org/licenses/lgpl.html 
+ *   LGPL: http://www.gnu.org/licenses/lgpl.html
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
@@ -75,7 +75,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.CellEditorFactory",
           status       : ""
         };
       }
-      
+
       var layout = new qx.ui.layout.Grid(10, 2);
       layout.setColumnAlign(0, "right", "top");
       layout.setColumnWidth(0, 220);
@@ -109,7 +109,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.CellEditorFactory",
       // field is mandatory
 
       // Make a map for each label with the label-text and
-      // a boolean mandatory value 
+      // a boolean mandatory value
       row = 0;
       [
         {str : this.tr("Title"), mandatory : true},
@@ -133,11 +133,11 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.CellEditorFactory",
               });
             cellEditor.add(o, {row: row++, column : 0});
           }
-          
+
           // if field required, add label and red asterisk using html
           if(str.mandatory)
           {
-            o = new qx.ui.basic.Label('<font color=red>' + "*" + 
+            o = new qx.ui.basic.Label('<font color=red>' + "*" +
                                       '</font>' + str.str);
             o.set(
               {
@@ -154,17 +154,17 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.CellEditorFactory",
 
       // Reset the row number
       row = 0;
-      
+
       // Create the editor field for the title
       var appTitle = new qx.ui.form.TextField("");
       appTitle.setValue(rowData.title);
       cellEditor.add(appTitle, { row : row++, column : 1, colSpan : 2 });
-      
+
       // Create the editor field for the description
       var description = new qx.ui.form.TextField("");
       description.setValue(rowData.description);
       cellEditor.add(description, { row : row++, column : 1, colSpan : 2 });
-      
+
       // Add upload buttons for each of the three images
       for (i = 1; i <= 3; i++)
       {
@@ -193,7 +193,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.CellEditorFactory",
           new uploadwidget.UploadButton("image" + i, this.tr("Add image"));
         fsm.addObject("image" + i, imageButton);
         imageButton.setWidth(50);
-        
+
         // Save the image object with this upload button so we can update it
         // when new image data is loaded.
         imageButton.setUserData("image", image);
@@ -219,13 +219,13 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.CellEditorFactory",
           enabled : false,
           value   : "<not yet implemented>"
         });
-      
+
       // Create the editor field for "category" (required) tags which have
       // been stored in the table's user data.
-      
+
       // Get the list of currently-selected tags
       var currentTags = rowData.tags.split(new RegExp(", *"));
-      
+
       // Get the list of possible tags, at least one of which must be selected.
       categoryList =
         qx.core.Init.getApplication().getRoot().getUserData("categories");
@@ -234,11 +234,11 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.CellEditorFactory",
       var categories = new qx.ui.form.List();
       categories.setHeight(100);
       categories.setSelectionMode("multi"); // allow multiple selections
-      categoryList.forEach(function(tagName) 
+      categoryList.forEach(function(tagName)
         {
           var item = new qx.ui.form.ListItem(tagName);
           categories.add(item);
-          
+
           // Is this a current tag of the app being edited?
           if (qx.lang.Array.contains(currentTags, tagName))
           {
@@ -246,13 +246,13 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.CellEditorFactory",
             categories.addToSelection(item);
           }
         });
-      
+
       cellEditor.add(categories, { row :row++, column : 1, colSpan : 1 });
 
       //
       // Add a list for editing additional tags
       //
-     
+
 
       // Create a grid layout for it
       layout = new qx.ui.layout.Grid(4, 4);
@@ -268,7 +268,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.CellEditorFactory",
       additionalTags.setHeight(75);
       grid.add(additionalTags, { row : 0, column : 0, colSpan : 4});
 
-      
+
       // Add those tags that are not also categories
       currentTags.forEach(function(tag)
         {
@@ -281,11 +281,11 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.CellEditorFactory",
       // Create the button to delete the selected tag
       var tagDelete = new qx.ui.form.Button(this.tr("Delete"));
       grid.add(tagDelete, { row : 1, column : 3 });
-      
+
       // Create an input field and button to add a new tag
       var newTag = new qx.ui.form.TextField();
       newTag.setFilter(/[- a-zA-Z0-9]/); // only allow these characters in tags
-      
+
       // Text placeholder for tags field
       newTag.setPlaceholder("add tags");
 
@@ -322,26 +322,26 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.CellEditorFactory",
         {
           additionalTags.remove(additionalTags.getSelection()[0]);
         });
-      
+
 
       // Create a box where we'll put the two upload buttons
       var hBox = new qx.ui.container.Composite(new qx.ui.layout.HBox(20));
       cellEditor.add(hBox, { row : row++, column : 1, colSpan : 2 });
-      
+
       //
-      // Create the Source upload button. 
+      // Create the Source upload button.
       //
       // BUG ALERT: We wrap it in its own container because not doing so
       // causes the 'apk' UploadButton to receive the changeFileName events
       // which actually occur on 'source'.
       //
       var bugWrapper = new qx.ui.container.Composite(new qx.ui.layout.HBox());
-      var source = 
+      var source =
         new uploadwidget.UploadButton("source", this.tr("Source .zip File"));
       fsm.addObject("source", source);
       bugWrapper.add(source);
       hBox.add(bugWrapper);
-        
+
       // When the file name changes, begin retrieving the file data
       source.addListener("changeFileName", fsm.eventListener, fsm);
 
@@ -349,12 +349,12 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.CellEditorFactory",
       // Create the Apk upload button.
       // See BUG ALERT, above.
       bugWrapper = new qx.ui.container.Composite(new qx.ui.layout.HBox());
-      var apk = 
+      var apk =
         new uploadwidget.UploadButton("apk", this.tr("Application .apk File"));
       fsm.addObject("apk", apk);
       bugWrapper.add(apk);
       hBox.add(bugWrapper);
-        
+
       // When the file name changes, begin retrieving the file data
       apk.addListener("changeFileName", fsm.eventListener, fsm);
 
@@ -368,7 +368,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.CellEditorFactory",
       cellEditor.setUserData("additionalTags", additionalTags);
       cellEditor.setUserData("source", source);
       cellEditor.setUserData("apk", apk);
-      
+
       // Save the uid
       cellEditor.setUserData("uid", rowData.uid);
 
@@ -405,17 +405,17 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.CellEditorFactory",
       fsm.addObject("cancel", cancelButton);
       cancelButton.addListener("execute", fsm.eventListener, fsm);
       buttonPane.add(cancelButton);
-      
+
       // Create lable for required field
       var requiredField = new qx.ui.basic.Label('* = required field');
-      
+
       // Makes lable red
       requiredField.set(
         {
           rich : true,
           TextColor : "#FF0000"
         });
-      
+
       // Adds lable in bottom right corner
       cellEditor.add(requiredField, {row : 9, column : 3});
 
@@ -430,14 +430,14 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.CellEditorFactory",
     {
       // The new row data was saved by the FSM. Retrieve it.
       var newData = cellEditor.getUserData("newData");
-      
+
       // Retrieve the table object and the data model
       var table = cellEditor.getUserData("table");
       var model = table.getTableModel();
 
       // Determine the column id associated with the edited column
       var id = model.getColumnId(cellEditor.getUserData("cellInfo").col);
-      
+
       // Return the appropriate column data.
       return newData[id];
     }

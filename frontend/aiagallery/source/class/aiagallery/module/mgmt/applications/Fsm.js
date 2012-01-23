@@ -107,10 +107,10 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
       /*
        * Transition: Idle to AwaitRpcResult
        *
-       * Cause: "execute" on "Delete User" button
+       * Cause: "execute" on "Delete App" button
        *
        * Action:
-       *  Issue a remote procedure call to delete the selected user
+       *  Issue a remote procedure call to delete the selected app
        */
 
       trans = new qx.util.fsm.Transition(
@@ -130,13 +130,17 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var selection = selectionModel.getSelectedRanges()[0].minIndex;
           var data = table.getTableModel().getData()[selection];
 
+//console.log("mgmt/apps--Transition_Idle_to_AwaitRpcResult_via_deleteApp -- data[]: " + data); // DEBUG
+//console.log("\n\nfoo");
           // Issue a Delete App call
+console.log("data.uid = " + data.uid);
+//console.log("data.uid = ");
           var request =
             this.callRpc(fsm,
                           "aiagallery.features",
                           "deleteApp",
                           [
-                            data[1] // the email address is their user id
+                            data[1] // ** NEED UID HERE! **
                           ]);
 
           // When we get the result, we'll need to know what type of request

@@ -1,8 +1,8 @@
 /**
  * Copyright (c) 2011 Derrell Lipman
- * 
+ *
  * License:
- *   LGPL: http://www.gnu.org/licenses/lgpl.html 
+ *   LGPL: http://www.gnu.org/licenses/lgpl.html
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
@@ -56,7 +56,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
               rpcRequest.request = null;
             }
           }
-          
+
           // Be sure that edit and delete buttons enable status is correct
           var selectionModel = fsm.getObject("table").getSelectionModel();
           var bHasSelection = ! selectionModel.isSelectionEmpty();
@@ -126,19 +126,19 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
         "ontransition" : function(fsm, event)
         {
           var data;
-            
+
           // Retrieve the serverPush event
           data = event.getData();
-          
+
           // The serverPush event contains the data we care about
           data = data.getData();
-          
+
           //
           // Simulate that this is an RPC response
           //
           var rpcRequest = new qx.core.Object();
           rpcRequest.setUserData("requestType", "serverPush");
-          rpcRequest.setUserData("rpc_response", 
+          rpcRequest.setUserData("rpc_response",
                                  {
                                    type : "success",
                                    data : data
@@ -156,7 +156,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           }
         }
       });
-        
+
       state.addTransition(trans);
 
       /*
@@ -185,6 +185,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           var selection = selectionModel.getSelectedRanges()[0].minIndex;
           var data = table.getTableModel().getDataAsMapArray()[selection];
 
+console.log("My Stuff--Transition_Idle_to_AwaitRpcResult_via_deleteApp -- data[]: " + qx.lang.Json.stringify(data)); // DEBUG
           // Issue a Delete App call
           var request =
             this.callRpc(fsm,
@@ -197,13 +198,13 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           // When we get the result, we'll need to know what type of request
           // we made.
           request.setUserData("requestType", "deleteApp");
-          
+
           // We also need to know what row got deleted
           request.setUserData("deletedRow", selection);
         }
       });
 
-      state.addTransition(trans);
+          state.addTransition(trans);
 
       /*
        * Transition: Idle to AddOrEditApp
@@ -231,28 +232,28 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           // Get the cell editor factory for all columns of the table
           var cellEditorFactory =
             table.getTableColumnModel().getCellEditorFactory(0);
-          
+
           // Generate a simple cellInfo object
           var cellInfo = { table : table };
 
           // Get a cell editor
           cellEditor = cellEditorFactory.createCellEditor(cellInfo);
-          
+
           // Make it modal
           cellEditor.setModal(true);
-          
+
           // Disallow the window's close button
           cellEditor.setShowClose(false);
-          
+
           // Open the cell editor
           cellEditor.open();
-          
+
           // Save the cell editor and cell info
           this.setUserData("cellEditor", cellEditor);
           this.setUserData("cellInfo", cellInfo);
         }
       });
-        
+
       state.addTransition(trans);
 
       /*
@@ -278,13 +279,13 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           var data = event.getData();
           var cellEditor = data.cellEditor;
           var cellInfo = data.cellInfo;
-          
+
           // Save the cell editor and information of which row we're editing
           this.setUserData("cellEditor", cellEditor);
           this.setUserData("cellInfo", cellInfo);
         }
       });
-        
+
       state.addTransition(trans);
 
       /*
@@ -414,7 +415,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
             // response objects.
             rpcRequest = this.popRpcRequest();
             response = rpcRequest.getUserData("rpc_response");
-            
+
             // Did it fail?
             if (response.type == "failed")
             {
@@ -426,7 +427,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
             {
               // It succeeded. Resubmit the event to move us back to Idle
               fsm.eventListener(event);
-              
+
               // Push the RPC request back on the stack so it's available for
               // the next transition.
               this.pushRpcRequest(rpcRequest);
@@ -437,18 +438,18 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
         "events" :
         {
           // When an image is selected for upload.
-          "changeFileName" : 
+          "changeFileName" :
             qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE,
 
           "execute" :
           {
             // When the Ok button is pressed in the cell editor
             "ok" : "Transition_AddOrEditApp_to_AwaitRpcResult_via_ok",
-            
+
             // When the Cancel button is pressed in the cell editor
             "cancel" : "Transition_AddOrEditApp_to_Idle_via_cancel"
           },
-          
+
           // When we received a "completed" event on RPC
           "completed" : "Transition_AddOrEditApp_to_Idle_via_completed"
         }
@@ -493,7 +494,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
             uploadReader = new qx.bom.FileReader();
             uploadReader.dispose();
             uploadReader = null;
-            
+
           }
           catch(e)
           {
@@ -508,7 +509,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
 
           //Get the image
           uploadButton = event.getTarget();
-          
+
           // Find out which purpose (button) this upload is for
           purpose = fsm.getFriendlyName(uploadButton);
 
@@ -523,40 +524,40 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           case "image3":
             // Specify the maximum image size
             maxSize = aiagallery.main.Constant.MAX_IMAGE_FILE_SIZE;
-            
+
             // Generate a message for image too large
-            message = 
+            message =
               "The image you attempted to upload was " +
               fileSize +
-              " bytes, which is larger than the limit of " + 
+              " bytes, which is larger than the limit of " +
               aiagallery.main.Constant.MAX_IMAGE_FILE_SIZE +
-              " bytes.";              
+              " bytes.";
             break;
-            
+
           case "source":
             // Specify the maximum source file size
             maxSize = aiagallery.main.Constant.MAX_SOURCE_FILE_SIZE;
-            
+
             // Generate a message for file too large
-            message = 
+            message =
               "The file you attempted to upload was " +
               fileSize +
-              " bytes, which is larger than the limit of " + 
+              " bytes, which is larger than the limit of " +
               aiagallery.main.Constant.MAX_SOURCE_FILE_SIZE +
-              " bytes.";              
+              " bytes.";
             break;
-            
+
           case "apk":
             // Specify the maximum apk file size
             maxSize = aiagallery.main.Constant.MAX_APK_FILE_SIZE;
-            
+
             // Generate a message for file too large
-            message = 
+            message =
               "The file you attempted to upload was " +
               fileSize +
-              " bytes, which is larger than the limit of " + 
+              " bytes, which is larger than the limit of " +
               aiagallery.main.Constant.MAX_APK_FILE_SIZE +
-              " bytes.";              
+              " bytes.";
             break;
           }
 
@@ -568,12 +569,12 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
             // Clean up
             uploadReader.dispose();
             uploadReader = null;
-         
+
             return null;
           }
 
           // FileReader available and file under size. Accept this transition.
-          return true; 
+          return true;
         },
 
         "ontransition" : function(fsm, event)
@@ -671,17 +672,17 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           sourceFileName = cellEditor.getUserData("source").getFileName();
           apk    = cellEditor.getUserData("apk").getUserData("fileData");
           apkFileName = cellEditor.getUserData("apk").getFileName();
-          
+
           // Strip paths out from filenames if not null or empty
-          if (sourceFileName) 
+          if (sourceFileName)
           {
             sourceFileName = sourceFileName.replace(/^.*[\/\\]/, "");
           }
-            
-          if (apkFileName) 
+
+          if (apkFileName)
           {
             apkFileName = apkFileName.replace(/^.*[\/\\]/, "");
-          }  
+          }
 
           // Create the tags list out of a combination of the categories and
           // additionalTags lists.
@@ -705,9 +706,9 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
               tags.push(item.getLabel());
             });
 
-          
+
           // Save the request data
-          var requestData = 
+          var requestData =
             {
               title           : appTitle,
               description     : description,
@@ -766,16 +767,16 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           // Retrieve the cell editor and cell info
           cellEditor = this.getUserData("cellEditor");
           cellInfo = this.getUserData("cellInfo");
-          
+
           // Retrieve the table object
           var table = fsm.getObject("table");
-          
+
           // Tell the table we're no longer editing
           table.cancelEditing();
 
           // close the cell editor
           cellEditor.close();
-          
+
           // If we created this cell editor (cellInfo has only 'table')...
           if (typeof(cellInfo.row) == "undefined")
           {
@@ -826,20 +827,20 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
 
           // Retrieve the RPC request
           rpcRequest = this.popRpcRequest();
-          
+
           // Get the cell editor and the request data from the RPC request
           cellEditor = this.getUserData("cellEditor");
           cellInfo = this.getUserData("cellInfo");
           requestData = rpcRequest.getUserData("requestData");
           response = rpcRequest.getUserData("rpc_response");
           result = response.data.result;
-          
+
           // We'll also need the Table object, from the FSM
           table = fsm.getObject("table");
-          
+
           // Get the table's data model
           dataModel = table.getTableModel();
-          
+
           // Create the row data for the table
           rowData.uid          = result.uid;
           rowData.title        = result.title;
@@ -862,7 +863,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           {
             // ... then save the data in the row being edited.
             dataModel.setRowsAsMapArray([ rowData ], cellInfo.row, true, false);
-            
+
             // Save the data so that the cell editor's getCellEditorValue()
             // method can retrieve it.
             cellEditor.setUserData("newData", rowData);
@@ -872,10 +873,10 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
             // Otherwise, add a new row. Remember map data. Don't clear sorting.
             dataModel.addRowsAsMapArray([ rowData ], null, true, false);
           }
-          
+
           // close the cell editor
           cellEditor.close();
-          
+
           // We can remove the cell editor and cell info from our own user
           // data now.
           this.setUserData("cellEditor", null);
@@ -913,12 +914,12 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           "error" :
           {
             // When an error occurred retrieving upload file content
-            "uploadReader" : 
+            "uploadReader" :
               "Transition_ReadyingUpload_to_AddOrEditApp_via_error"
           },
-          
+
           // Block (enqueue) other file retrieval while this one is in progress
-          "changeFileName" : 
+          "changeFileName" :
             qx.util.fsm.FiniteStateMachine.EventHandling.BLOCKED,
 
           // Block (enqueue) clicks on Ok or Cancel while in this state
@@ -956,13 +957,13 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
 
           // Get the currently-in-use upload button
           var uploadButton = fsm.getUserData("uploadButton");
-          
+
           // Find out the purpose of this button
           purpose = fsm.getFriendlyName(uploadButton);
-          
+
           // Retrieve the data URL from the upload button, and save it.
           var content = event.getData().content;
-          
+
           // Extract the MIME type
           var semiPos = content.indexOf(";");
           var mimeType = semiPos > 5 ? content.substring(5, semiPos) : "";
@@ -975,28 +976,28 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           case "image3":
             // Specify the valid MIME types
             validTypes = aiagallery.main.Constant.VALID_IMAGE_TYPES;
-            
+
             // Generate an error message for invalid type
-            message = 
+            message =
               "You have selected an invalid image file. " +
               "Valid file types are:\n" +
               aiagallery.main.Constant.VALID_IMAGE_TYPES.join(", ");
             break;
-            
+
           case "source":
             // Specify the valid MIME types
             validTypes = aiagallery.main.Constant.VALID_SOURCE_TYPES;
-            
+
             // Generate an error message for invalid type
             message =
               "The file you selected is not a valid '.zip' source file " +
               "(found " + debugStr + ")";
             break;
-            
+
           case "apk":
             // Specify the valid MIME types
             validTypes = aiagallery.main.Constant.VALID_APK_TYPES;
-            
+
             // Generate an error message for invalid type
             message = "The file you selected is not a valid '.apk' file" +
               "(found " + debugStr + ")";
@@ -1004,14 +1005,14 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           }
 
           // Test for image types
-          if(qx.lang.Array.contains(validTypes, mimeType)) 
+          if(qx.lang.Array.contains(validTypes, mimeType))
           {
               // Do work updating image on "Add Application" dialog
               uploadButton.setUserData("fileData", content);
-   
+
               // Update the image too (if this was an image upload)
               var image = uploadButton.getUserData("image");
-              if (image) 
+              if (image)
               {
                 image.setSource(content);
               }
@@ -1064,7 +1065,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           alert("ERROR: " + event.progress +
                 " (" + event.progress.getMessage() + ")");
 
-          
+
           // We no longer have a currently-in-use upload button or reader
           fsm.removeObject("uploadButton");
           fsm.removeObject("uploadReader");

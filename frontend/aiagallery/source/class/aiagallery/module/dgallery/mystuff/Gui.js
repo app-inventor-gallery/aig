@@ -1,8 +1,8 @@
 /**
  * Copyright (c) 2011 Derrell Lipman
- * 
+ *
  * License:
- *   LGPL: http://www.gnu.org/licenses/lgpl.html 
+ *   LGPL: http://www.gnu.org/licenses/lgpl.html
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
@@ -42,7 +42,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Gui",
       // Subscribe to receive server push messages of type "app.postupload"
       messageBus = qx.event.message.Bus.getInstance();
       messageBus.subscribe(
-        "app.postupload", 
+        "app.postupload",
         function(e)
         {
           // Generate an event to the FSM
@@ -81,7 +81,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Gui",
         });
       hBox.add(addApp);
       addApp.addListener("execute", fsm.eventListener, fsm);
-      
+
       // We'll be receiving events on the object so save its friendly name
       fsm.addObject("addApp", addApp, "main.fsmUtils.disable_during_rpc");
 
@@ -106,7 +106,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Gui",
       var model = new qx.ui.table.model.Simple();
 
       // Define the table columns
-      model.setColumns([ 
+      model.setColumns([
                          this.tr("Title"),
                          this.tr("Description"),
                          this.tr(""),
@@ -149,7 +149,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Gui",
       // resizes columns.
       var custom =
       {
-        tableColumnModel : function(obj) 
+        tableColumnModel : function(obj)
         {
           return new qx.ui.table.columnmodel.Resize(obj);
         }
@@ -159,17 +159,17 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Gui",
       var table = new aiagallery.widget.Table(model, custom);
       table.setRowHeight(64);
       table.addListener("cellEditorOpening", fsm.eventListener, fsm);
-      
+
       // We'll be receiving events on the object so save its friendly name
       fsm.addObject("table", table, "main.fsmUtils.disable_during_rpc");
-      
+
       // Also save the FSM in the table, for access by cell editors
       table.setUserData("fsm", fsm);
 
       // Get the table column model in order to set cell renderers and cell
       // editer factories.
       var tcm = table.getTableColumnModel();
-      
+
       // The image columns require an image cell renderer
       for (var i = 3; i <= 5; i++)
       {
@@ -248,7 +248,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Gui",
               }
             });
         });
-      
+
       // Add the table to the page
       canvas.add(table, { flex : 1 });
     },
@@ -291,19 +291,19 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Gui",
       case "getAppList":
         table = fsm.getObject("table");
         model = table.getTableModel();
-        
+
         // Set the entire data model given the result array
         model.setDataAsMapArray(response.data.result.apps, true, false);
-        
+
         // Save the category list in a known place, for later access
         this.getApplicationRoot().setUserData("categories",
                                               response.data.result.categories);
         break;
-        
+
       case "addOrEditApp":
         // Nothing more to do but close the cell editor
         break;
-        
+
       case "deleteApp":
         // Delete the row from the table
         table = fsm.getObject("table");
@@ -311,15 +311,15 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Gui",
         deletedRow = rpcRequest.getUserData("deletedRow");
         model.removeRows(deletedRow, 1, false);
         break;
-        
+
       case "serverPush":
         // Update the app's status
         table = fsm.getObject("table");
         model = table.getTableModel();
         data = model.getDataAsMapArray();
         appId = response.data.appId;
-        
-        // Search for the 
+
+        // Search for the
         for (i = 0; i < data.length; i++)
         {
           if (data[i].uid == appId)
@@ -327,7 +327,7 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Gui",
             break;
           }
         }
-        
+
         // Did we find it?
         if (i < data.length)
         {

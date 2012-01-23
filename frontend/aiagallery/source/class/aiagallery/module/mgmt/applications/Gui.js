@@ -303,6 +303,8 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
         table = fsm.getObject("table");
         // Set the entire data model given the result array
         table.getTableModel().setDataAsMapArray(response.data.result.apps);
+// DEBUG -- still can't get uid
+//table.getTableModel().setDataAsMapArray(response.data.result.apps, true, false);
         break;
 
       case "addOrEditApp":
