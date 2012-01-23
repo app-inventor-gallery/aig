@@ -208,14 +208,13 @@ if (qx.core.Environment.get("qx.debug"))
 {
   new aiagallery.main.Module(
     "Testing",
-    "aiagallery/test.png",
-    "Mobile",
-    aiagallery.module.testing.mobile.Mobile);
-
-  new aiagallery.main.Module(
-    "Testing",
     null,
     "Temporary",
     aiagallery.module.testing.temp.Temp);
-}
 
+  new aiagallery.main.Module(
+    "Testing",
+    "aiagallery/test.png",
+    "Mobile",
+    aiagallery.module.testing.mobile.Mobile);
+}
