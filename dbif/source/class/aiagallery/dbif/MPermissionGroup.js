@@ -12,18 +12,18 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
   {
     this.registerService("aiagallery.features.addPermissionGroup",
                          this.addPermissionGroup,
-                         [ "appId" ]);
+                         [ "name" ]);
 
     this.registerService("aiagallery.features.updatePermissionGroup",
                          this.updatePermissionGroup,
-                         []); 
+                         [ "name" ]); 
 
     this.registerService("aiagallery.features.getPermissionGroup",
                          this.getPermissionGroups);
 
     this.registerService("aiagallery.features.getPermissionGroup",
                          this.getPermissionGroup,
-                         [ "uid" ]);
+                         [ "name" ]);
   },
 
   members :

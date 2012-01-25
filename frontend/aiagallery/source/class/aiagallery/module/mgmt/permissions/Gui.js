@@ -73,13 +73,13 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       fsm.addObject("pGroupName", textField);
 
       // Create a set of finder-style multi-level browsing lists
-      groupbox = new qx.ui.groupbox.GroupBox("Permission Groups");
+      var groupbox = new qx.ui.groupbox.GroupBox("Permission Groups");
       groupbox.setLayout(new qx.ui.layout.HBox());
       groupbox.setContentPadding(0);
       hBox.add(groupbox);
 
       // create and add the lists. Store them in an array.
-      list = new qx.ui.form.List();
+      var list = new qx.ui.form.List();
       list.setWidth(150);
       list.addListener("changeSelection", fsm.eventListener, fsm);
       groupbox.add(list);
@@ -140,6 +140,19 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       // Dispatch to the appropriate handler, depending on the request type
       switch(requestType)
       {
+ 
+      case "pGroupNameAdded" : 
+        if (response.data.result == "false") 
+        {
+          //Permission group name already exists
+          //Fail silently for now
+          return ;
+        }
+        
+        //Creation was a success add to list. 
+        list1.append(response.data.result);
+        break; 
+
       default:
         throw new Error("Unexpected request type: " + requestType);
       }

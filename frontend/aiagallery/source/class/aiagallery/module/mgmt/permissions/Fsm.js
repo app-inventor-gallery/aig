@@ -153,7 +153,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
         {
 
           // Issue the remote procedure call to execute the query
-          request =
+          var request =
             this.callRpc(fsm,
                          "aiagallery.features",
                          "addPermissionGroup",
