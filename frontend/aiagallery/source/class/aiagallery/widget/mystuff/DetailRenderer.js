@@ -30,6 +30,9 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
     layout.setColumnAlign(3, "left", "top");
     layout.setColumnAlign(4, "right", "top");
     layout.setColumnAlign(5, "left", "top");
+
+    layout.setRowFlex(5, 1);    // make row 5 flexible
+
     this._setLayout(layout);
   },
   
@@ -119,8 +122,10 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
     {
       var             position = {};
 
-      if (! options)
+      // Is this an explicitly-placed widget?
+      if (! options || ! options.row)
       {
+        // Nope. Let the superclass handle it.
         this.base(arguments, button, options);
       }
 
