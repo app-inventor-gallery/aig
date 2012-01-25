@@ -6,12 +6,8 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
-/*
-require(aiagallery.module.dgallery.appinfo.AppInfo)
- */
-
 /**
- * Permission assignment Finite State Machine
+ * Permission management Finite State Machine
  */
 qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
 {
@@ -50,7 +46,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
             var rpcRequest = this.popRpcRequest();
 
             // Call the standard result handler
-            var gui = aiagallery.module.testing.temp.Gui.getInstance();
+            var gui = aiagallery.module.mgmt.permissions.Gui.getInstance();
             gui.handleResponse(module, rpcRequest);
 
             // Dispose of the request
@@ -68,7 +64,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
           "execute" :
           {
             
-            "queryBtn" : "Transition_Idle_to_AwaitRpcResult_via_query"
+            "addBtn" : "Transition_Idle_to_AwaitRpcResult_via_add"
             
           },
           
@@ -136,17 +132,18 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
       state.addTransition(trans);
 
 
-        /*
+      /*
        * Transition: Idle to Awaiting RPC Result
        *
-       * Cause: "Search" button pressed
+       * Cause: "Add Permission Group" button pressed
        *
        * Action:
-       *  Initiate a request for the list of  matching applications.
+       *  Take the string in the textfield. Create a default 
+       *  permission group with the name from the textfield.
        */
         
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_query",
+        "Transition_Idle_to_AwaitRpcResult_via_add",
       {
         "nextState" : "State_AwaitRpcResult",
 
@@ -154,27 +151,21 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          var             criteria;
-          var             criterium;
-          var             request;
-          var             selection;
-
-
 
           // Issue the remote procedure call to execute the query
           request =
             this.callRpc(fsm,
                          "aiagallery.features",
-                         "mobileRequest",
+                         "addPermissionGroup",
                          [
 
-                          fsm.getObject("queryField").getValue()
+                          fsm.getObject("pGroupName").getValue()
                            
                         ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "mobileRequest");
+          request.setUserData("requestType", "pGroupNameAdded");
 
         }
       });

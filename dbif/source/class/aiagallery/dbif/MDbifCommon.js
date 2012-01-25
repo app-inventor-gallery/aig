@@ -20,7 +20,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
     aiagallery.dbif.MSearch,
     aiagallery.dbif.MLiking,
     aiagallery.dbif.MFlags,
-    aiagallery.dbif.MDbMgmt
+    aiagallery.dbif.MDbMgmt,
+    aiagallery.dbif.MPermissionGroup
   ],
 
   construct : function()

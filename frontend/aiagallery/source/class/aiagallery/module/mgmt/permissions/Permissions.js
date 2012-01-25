@@ -29,10 +29,10 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Permissions",
     initialAppear : function(module)
     {
       // Replace existing (temporary) finite state machine with the real one.
-      aiagallery.module.testing.temp.Fsm.getInstance().buildFsm(module);
+      aiagallery.module.mgmt.permissions.Fsm.getInstance().buildFsm(module);
 
       // Create the real gui.
-      aiagallery.module.testing.temp.Gui.getInstance().buildGui(module);
+      aiagallery.module.mgmt.permissions.Gui.getInstance().buildGui(module);
     }
   }
 });
