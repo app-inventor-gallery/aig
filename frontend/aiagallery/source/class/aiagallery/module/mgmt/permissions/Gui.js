@@ -56,18 +56,18 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       // We'll be receiving events on the object so save its friendly name
       fsm.addObject("addPerm", addPermissionGroup, "main.fsmUtils.disable_during_rpc");
 
-      // Create an Edit Permission button
-      var editPermissionGroup = new qx.ui.form.Button(this.tr("Edit"));
-      addPermissionGroup.set(
+      // Create an Update Permission Group button
+      var savePermissionGroup = new qx.ui.form.Button(this.tr("Save"));
+      savePermissionGroup.set(
         {
           maxHeight : 24,
           width     : 100
         });
-      hBox.add(editPermissionGroup);
-      addPermissionGroup.addListener("execute", fsm.eventListener, fsm);
+      hBox.add(savePermissionGroup);
+      savePermissionGroup.addListener("execute", fsm.eventListener, fsm);
 
       // We'll be receiving events on the object so save its friendly name
-      fsm.addObject("editPerm", editPermissionGroup, "main.fsmUtils.disable_during_rpc");
+      fsm.addObject("savePerm", savePermissionGroup, "main.fsmUtils.disable_during_rpc");
 
       // Create a Delete button
       var deletePermissionGroup = new qx.ui.form.Button(this.tr("Delete"));
@@ -120,6 +120,23 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       list = new qx.ui.form.List();
       list.setWidth(150);
       list.addListener("changeSelection", fsm.eventListener, fsm);
+
+      //Allow user to select multiple items
+      list.setSelectionMode("multi");
+
+      //Populate the list with all the permission types
+      list.add(new qx.ui.form.ListItem("addOrEditApp"));
+      list.add(new qx.ui.form.ListItem("deleteApp"));
+      list.add(new qx.ui.form.ListItem("getAppListAll"));
+      list.add(new qx.ui.form.ListItem("addComment"));
+      list.add(new qx.ui.form.ListItem("deleteComment"));
+      list.add(new qx.ui.form.ListItem("flagIt"));
+      list.add(new qx.ui.form.ListItem("addOrEditVisitor"));
+      list.add(new qx.ui.form.ListItem("deleteVisitor"));
+      list.add(new qx.ui.form.ListItem("getVisitorList"));
+      list.add(new qx.ui.form.ListItem("likesPlusOne"));
+      list.add(new qx.ui.form.ListItem("getDatabaseEntities"));
+
       groupbox.add(list);
       fsm.addObject("permissions", list, "main.fsmUtils.disable_during_rpc");
 

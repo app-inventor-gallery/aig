@@ -17,11 +17,11 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
     this.registerService("aiagallery.features.deletePermissionGroup",
                          this.deletePermissionGroup,
                          [ "name" ]);
-/*
+
     this.registerService("aiagallery.features.updatePermissionGroup",
                          this.updatePermissionGroup,
                          [ "name" ]); 
-
+/*
     this.registerService("aiagallery.features.getPermissionGroup",
                          this.getPermissionGroups);
 
@@ -116,7 +116,7 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
      updatePermissionGroup : function(pName, pArray)
      {
         //Get the permission group
-        var pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
+        var pGroup = new aiagallery.dbif.ObjPermissionGroup(pName);   
 
         if (pGroup.getBrandNew() == true)
         {
