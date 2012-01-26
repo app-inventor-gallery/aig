@@ -64,7 +64,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
           "execute" :
           {
             
-            "addBtn" : "Transition_Idle_to_AwaitRpcResult_via_add"
+            "addPerm" : "Transition_Idle_to_AwaitRpcResult_via_add"
             
           },
           

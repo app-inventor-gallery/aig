@@ -50,6 +50,10 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       hBox.add(addPermissionGroup);
       addPermissionGroup.addListener("execute", fsm.eventListener, fsm);
 
+      
+      // We'll be receiving events on the object so save its friendly name
+      fsm.addObject("addPerm", addPermissionGroup, "main.fsmUtils.disable_during_rpc");
+
       // Create a Delete button
       var deletePGroup = new qx.ui.form.Button(this.tr("Delete"));
       deletePGroup.set(
@@ -148,9 +152,11 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
           //Fail silently for now
           return ;
         }
-        
+
         //Creation was a success add to list. 
-        list1.append(response.data.result);
+        var item = new qx.ui.form.ListItem(response.data.result.name);        
+        list1.add(item);
+
         break; 
 
       default:

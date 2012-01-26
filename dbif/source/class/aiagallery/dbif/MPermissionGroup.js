@@ -13,7 +13,7 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
     this.registerService("aiagallery.features.addPermissionGroup",
                          this.addPermissionGroup,
                          [ "name" ]);
-
+/*
     this.registerService("aiagallery.features.updatePermissionGroup",
                          this.updatePermissionGroup,
                          [ "name" ]); 
@@ -24,11 +24,11 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
     this.registerService("aiagallery.features.getPermissionGroup",
                          this.getPermissionGroup,
                          [ "name" ]);
+*/
   },
 
   members :
-
-{
+  {
 
     /**
      * Create a new permission group
@@ -36,7 +36,7 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
      * @param pGroupName {String}
      *   This is a string to identify the name of the permission group
      *
-     * @return {Boolean || Error}
+     * @return {PermissionGroup || Error}
      *   This returns the actual permission group object, or an error if
      *   something went wrong
      *
@@ -65,6 +65,92 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
 
         return pGroupData; 
 
-      }
-   }
+    },
+
+    /**
+     * Update a permission group
+     *
+     * @param pName {String}
+     *   This is a string to identify the name of the permission group
+     *
+     * @param pArray {Array}
+     *   This is an array of strings with the updated permissions
+     *
+     * @return {PermissionGroup || Error}
+     *   This returns the actual permission group object, or an error if
+     *   something went wrong
+     *
+     */
+     updatePermissionGroup : function(pName, pArray)
+     {
+        //Get the permission group
+        var pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
+
+        if (pGroup.getBrandNew() == true)
+        {
+           //Object does not exist return error
+           return false;
+        }
+
+        //Get the data
+        var pGroupData = pGroup.getData();
+
+        //Update Permisssions
+        pGroupData.permissions = pArray;
+
+        //Put this on the databse   
+        pGroup.put(); 
+
+        //Return updated permission
+        return pGroupData; 
+
+     },
+
+    /**
+     * Get all the permission groups
+     *
+     *
+     * @return {Array || Error}
+     *   This returns an array of permission groups, or an error if
+     *   something went wrong
+     *
+     */
+     getPermissionGroups : function()
+     {
+        //Get the permission group
+        var pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
+
+        return pGroupData; 
+
+     },
+
+ /**
+     * Get a specific permission group
+     *
+     * @param pGroupName {String}
+     *   This is a string to identify the name of the permission group
+     *
+     * @return {PermissionGroup || Error}
+     *   This returns the actual permission group object, or an error if
+     *   something went wrong
+     *
+     */
+     getPermissionGroup : function(pGroupName)
+     {
+        //Create a new permission group
+        //Use default permissions
+        var pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
+
+        if (pGroup.getBrandNew() == true)
+        {
+           //Object does not exist return error
+           return false;
+        } else {
+           //Object did exist so return it
+           return pGroup; 
+        }
+
+    }
+
+  }
 }); 

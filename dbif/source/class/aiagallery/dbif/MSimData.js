@@ -12,6 +12,10 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
   {
     Db : 
     {
+      "permissiongroup" :
+      {
+
+      },
       "visitors" : 
       {
         "jane@uphill.org" : 
