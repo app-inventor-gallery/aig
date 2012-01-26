@@ -274,6 +274,10 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
         color = "green";
         bgColor = null;
         break;
+      case Status.Incomplete:
+        color = "red";
+        bgColor = null;
+        break;
       case Status.Processing:
         color = "black";
         bgColor = "yellow";

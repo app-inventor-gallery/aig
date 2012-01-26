@@ -168,7 +168,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     
     tempContainer.add(o, { edge : 1 });
     
-    form.addButton(tempContainer, { row : 2, column : 6, rowSpan : 5 });
+    form.addButton(tempContainer, { row : 3, column : 6, rowSpan : 4 });
 
     // Change image
     o = new qx.ui.form.Button("Change Image");
@@ -177,10 +177,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     //
     // Add the buttons at the end
     //
-    
-    // Save
-    o = new qx.ui.form.Button("Save");
-    form.addButton(o);
     
     // Publish
     o = new qx.ui.form.Button("Publish");
@@ -221,20 +217,38 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       apply : "_applySourceFileName"
     },
     
-    creationTime :
+    image1 :
     {
-      check : "Date",
-      apply : "_applyCreationTime"
-    },
-    
-    uploadTime :
-    {
-      check : "Date",
-      apply : "_applyUploadTime"
+      check : "String",
+      apply : "_applyImage1"
     }
   },
 
   members :
   {
+    _applyTitle : function(value, old)
+    {
+      
+    },
+    
+    _applyDescription : function(value, old)
+    {
+      
+    },
+    
+    _applyTags : function(value, old)
+    {
+      
+    },
+    
+    _applySourceFileName : function(value, old)
+    {
+      
+    },
+
+    _applyImage1 : function(value, old)
+    {
+      
+    }
   }
 });

@@ -27,7 +27,7 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
     layout.setColumnAlign(3, "left", "top");
     layout.setColumnAlign(4, "right", "top");
     layout.setColumnAlign(5, "left", "top");
-    layout.setColumnAlign(6, "left", "top");
+    layout.setColumnAlign(6, "left", "bottom");
 
     // make rows flexible so buttons are right height
     layout.setRowFlex(3, 1);
