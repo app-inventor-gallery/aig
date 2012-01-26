@@ -159,6 +159,7 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
         control.set(
           {
             anonymous : true,
+            textAlign : "right",
             width     : width,
             minWidth  : width,
             maxWidth  : width
@@ -172,6 +173,7 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
         control.set(
           {
             anonymous : true,
+            textAlign : "right",
             width     : width,
             minWidth  : width,
             maxWidth  : width
@@ -185,6 +187,7 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
         control.set(
           {
             anonymous : true,
+            textAlign : "right",
             width     : width,
             minWidth  : width,
             maxWidth  : width
@@ -198,6 +201,7 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
         control.set(
           {
             anonymous : true,
+            textAlign : "right",
             width     : width,
             minWidth  : width,
             maxWidth  : width
