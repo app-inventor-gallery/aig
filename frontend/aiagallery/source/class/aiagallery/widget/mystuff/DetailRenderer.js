@@ -14,9 +14,6 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
   {
     var             layout;
 
-    // Save the form
-    this.__form = form;
-
     // Call the superclass constructor
     this.base(arguments, form);
 
@@ -30,16 +27,17 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
     layout.setColumnAlign(3, "left", "top");
     layout.setColumnAlign(4, "right", "top");
     layout.setColumnAlign(5, "left", "top");
+    layout.setColumnAlign(6, "left", "top");
 
-    layout.setRowFlex(5, 1);    // make row 5 flexible
-
+    // make rows flexible so buttons are right height
+    layout.setRowFlex(3, 1);
+    layout.setRowFlex(6, 1);
+    
     this._setLayout(layout);
   },
   
   members :
   {
-    __form : null,
-
     /**
      * Add a group of form items with the corresponding names. The names are
      * displayed as labels.
@@ -123,7 +121,7 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
       var             position = {};
 
       // Is this an explicitly-placed widget?
-      if (! options || ! options.row)
+      if (! options || typeof options.row == "undefined")
       {
         // Nope. Let the superclass handle it.
         this.base(arguments, button, options);

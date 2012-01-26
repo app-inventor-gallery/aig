@@ -56,7 +56,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         placeholder : "Enter a brief description"
       });
     form.add(o, "Description", null, "description", null,
-             { row : 1, column : 0, colSpan : 6 });
+             { row : 1, column : 0, colSpan : 6, rowSpan : 2 });
 
     // Create a temporary container for a spacer, a label, and a spacer
     tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
@@ -71,7 +71,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     // Add the right spacer
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
 
-    form.addButton(tempContainer, { row : 2, column : 2, colSpan : 4 });
+    form.addButton(tempContainer, { row : 3, column : 2, colSpan : 4 });
 
     // Categories, one of which must be selected
     categoryList =
@@ -102,7 +102,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         }
       });
     form.add(o, "Categories", null, "categories", null,
-             { row : 2, column : 0, rowSpan : 5 });
+             { row : 3, column : 0, rowSpan : 5 });
     
     // Tag to add
     o = new qx.ui.form.TextField();
@@ -111,7 +111,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         placeholder : "Enter a new tag"
       });
     form.add(o, "", null, null, null,
-             { row : 3, column : 2 });
+             { row : 4, column : 2 });
 
 
     // Button to add a tag
@@ -121,7 +121,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         height    : 24,
         maxHeight : 24
       });
-    form.addButton(o, { row : 4, column : 3 });
+    form.addButton(o, { row : 5, column : 3 });
 
     // Button to delete selected tag(s)
     o = new qx.ui.form.Button("Delete");
@@ -130,7 +130,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         height    : 24,
         maxHeight : 24
       });
-    form.addButton(o, { row : 6, column : 5 });
+    form.addButton(o, { row : 7, column : 5 });
 
     // Application-specific tags
     o = new qx.ui.form.List();
@@ -141,9 +141,39 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         required      : false
       });
     form.add(o, "", null, "tags", null,
-             { row : 3, column : 4, rowSpan : 3 });
+             { row : 4, column : 4, rowSpan : 3 });
     
 
+    // Source file name
+    o = new qx.ui.basic.Label("Source: SpaceInvaders.zip");
+    form.addButton(o, { row : 0, column : 6 });
+    
+    // Change file name
+    o = new qx.ui.form.Button("Change Source File");
+    form.addButton(o, { row : 1, column : 6 });
+    
+    // Image1
+    // Create a temporary container for the image with a border
+    tempContainer = new qx.ui.container.Composite(new qx.ui.layout.Canvas());
+    tempContainer.set(
+      {
+        backgroundColor : "black"
+      });
+    
+    o = new qx.ui.basic.Image();
+    o.set(
+      {
+        scale     : true
+      });
+    
+    tempContainer.add(o, { edge : 1 });
+    
+    form.addButton(tempContainer, { row : 2, column : 6, rowSpan : 5 });
+
+    // Change image
+    o = new qx.ui.form.Button("Change Image");
+    form.addButton(o, { row : 7, column : 6 });
+    
     // Create the rendered form and add it to the HBox
     formRendered = new aiagallery.widget.mystuff.DetailRenderer(form);
     hBox.add(formRendered);
