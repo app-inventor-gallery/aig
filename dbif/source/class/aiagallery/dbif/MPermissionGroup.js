@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Reed Spool
+ * Copyright (c) 2011 Paul Geromini 
  *
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html
@@ -12,6 +12,10 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
   {
     this.registerService("aiagallery.features.addPermissionGroup",
                          this.addPermissionGroup,
+                         [ "name" ]);
+
+    this.registerService("aiagallery.features.deletePermissionGroup",
+                         this.deletePermissionGroup,
                          [ "name" ]);
 /*
     this.registerService("aiagallery.features.updatePermissionGroup",
@@ -57,13 +61,41 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
         var pGroupData = pGroup.getData();
 
         pGroupData.name = pGroupName;
-        pGroupData.permissions = ["addOrEditApp", "deleteApp", "addComment", 
-                                  "deleteComment", "flagIt", "likesPlusOne"]; 
+        //Empty permission array
+        pGroupData.permissions = []; 
 
         //Put this on the databse   
         pGroup.put(); 
 
         return pGroupData; 
+
+    },
+
+    /**
+     * Delete a permission group.
+     *
+     * @param pGroupName {String}
+     *   This is a string to identify the name of the permission group
+     *
+     * @return {Boolean || Error}
+     *   Returns true if delete was succesful, or an error if
+     *   something went wrong
+     *
+     */
+     deletePermissionGroup : function(pGroupName)
+     {
+        //Get permission group data
+        var pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
+
+        if (pGroup.getBrandNew() == true)
+        {
+           //Object does not exists return error
+           return false;
+        }
+      
+        pGroup.removeSelf(); 
+
+        return true; 
 
     },
 
@@ -95,6 +127,8 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
         //Get the data
         var pGroupData = pGroup.getData();
 
+        //FIXME Ensure permissions exist
+ 
         //Update Permisssions
         pGroupData.permissions = pArray;
 

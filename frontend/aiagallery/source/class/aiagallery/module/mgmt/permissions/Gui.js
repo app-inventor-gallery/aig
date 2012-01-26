@@ -50,20 +50,38 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       hBox.add(addPermissionGroup);
       addPermissionGroup.addListener("execute", fsm.eventListener, fsm);
 
+      //Disable button on startup since textfield will be empty
+      addPermissionGroup.setEnabled(false);
       
       // We'll be receiving events on the object so save its friendly name
       fsm.addObject("addPerm", addPermissionGroup, "main.fsmUtils.disable_during_rpc");
 
+      // Create an Edit Permission button
+      var editPermissionGroup = new qx.ui.form.Button(this.tr("Edit"));
+      addPermissionGroup.set(
+        {
+          maxHeight : 24,
+          width     : 100
+        });
+      hBox.add(editPermissionGroup);
+      addPermissionGroup.addListener("execute", fsm.eventListener, fsm);
+
+      // We'll be receiving events on the object so save its friendly name
+      fsm.addObject("editPerm", editPermissionGroup, "main.fsmUtils.disable_during_rpc");
+
       // Create a Delete button
-      var deletePGroup = new qx.ui.form.Button(this.tr("Delete"));
-      deletePGroup.set(
+      var deletePermissionGroup = new qx.ui.form.Button(this.tr("Delete"));
+      deletePermissionGroup.set(
         {
           maxHeight : 24,
           width     : 100,
           enabled   : false
         });
-      hBox.add(deletePGroup);
-      fsm.addObject("deletePGroup", deletePGroup);
+      hBox.add(deletePermissionGroup);
+      deletePermissionGroup.addListener("execute", fsm.eventListener, fsm);
+
+      // We'll be receiving events on the object so save its friendly name
+      fsm.addObject("deletePerm", deletePermissionGroup, "main.fsmUtils.disable_during_rpc");
       
       //Create textfield
       var textField = new qx.ui.form.TextField;
@@ -73,8 +91,15 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         });
       hBox.add(textField);
 
+      //Only enable add button if there is something in the textfield
+      textField.addListener("input", function(e) 
+      {
+        var value = e.getData();
+        addPermissionGroup.setEnabled(value.length > 0);
+      }, this); 
+
       //Create friendly name to get it from the FSM
-      fsm.addObject("pGroupName", textField);
+      fsm.addObject("pGroupName", textField,"main.fsmUtils.disable_during_rpc");
 
       // Create a set of finder-style multi-level browsing lists
       var groupbox = new qx.ui.groupbox.GroupBox("Permission Groups");
@@ -86,20 +111,17 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       var list = new qx.ui.form.List();
       list.setWidth(150);
       list.addListener("changeSelection", fsm.eventListener, fsm);
+
+      //FIXME add listener to turn delete button only when something is selected
+
       groupbox.add(list);
-      fsm.addObject("pgroups", list);
+      fsm.addObject("pgroups", list, "main.fsmUtils.disable_during_rpc");     
 
       list = new qx.ui.form.List();
       list.setWidth(150);
       list.addListener("changeSelection", fsm.eventListener, fsm);
       groupbox.add(list);
-      fsm.addObject("permissions", list);
-
-      list = new qx.ui.form.List();
-      list.setWidth(150);
-      list.addListener("changeSelection", fsm.eventListener, fsm);
-      groupbox.add(list);
-      fsm.addObject("users", list);
+      fsm.addObject("permissions", list, "main.fsmUtils.disable_during_rpc");
 
       // Add to the page
       canvas.add(hBox);
@@ -122,7 +144,6 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       var             fsm = module.fsm;
       var             list1 = fsm.getObject("pgroups");
       var             list2 = fsm.getObject("permissions");
-      var             list3 = fsm.getObject("users");
       var             response = rpcRequest.getUserData("rpc_response");
       var             requestType = rpcRequest.getUserData("requestType");
       var             result;
@@ -150,12 +171,29 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         {
           //Permission group name already exists
           //Fail silently for now
-          return ;
+          break;
         }
 
         //Creation was a success add to list. 
-        var item = new qx.ui.form.ListItem(response.data.result.name);        
-        list1.add(item);
+        var pName = new qx.ui.form.ListItem(response.data.result.name);        
+        list1.add(pName);
+
+        break; 
+
+      case "pGroupNameDeleted" :
+        if (response.data.result == "false") 
+        {
+          //Delete failed
+          //Fail silently for now
+          break;
+        }
+        
+        //Permission group was deleted remove it from the list
+        list1.remove(list1.getSelection()[0]);
+
+         break; 
+
+      case "pGroupChanged" :
 
         break; 
 

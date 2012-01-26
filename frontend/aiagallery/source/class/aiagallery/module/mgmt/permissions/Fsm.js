@@ -63,8 +63,14 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
           // On the clicking of a button, execute is fired
           "execute" :
           {
-            
-            "addPerm" : "Transition_Idle_to_AwaitRpcResult_via_add"
+            //When a user clicks the add Permission Group button
+            "addPerm" : "Transition_Idle_to_AwaitRpcResult_via_add",
+
+            //When a user clicks the edit button
+            "savePerm" : "Transition_Idle_to_AwaitRpcResult_via_save",
+
+            //When a user clicks the delete button
+            "deletePerm" : "Transition_Idle_to_AwaitRpcResult_via_delete"
             
           },
           
@@ -172,6 +178,76 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
 
       state.addTransition(trans);
 
+      /*
+       * Transition: Idle to Awaiting RPC Result
+       *
+       * Cause: "Delete" button pressed
+       *
+       * Action:
+       *  Take the string name currently selected and delete the corresponding
+       *  permission group
+       */
+        
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_delete",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+
+          var pName = fsm.getObject("pgroups");
+          pName = pName.getSelection()[0].getLabel();
+
+          // Issue the remote procedure call to execute the query
+          var request =
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "deletePermissionGroup",
+                         [
+
+                          pName
+                           
+                        ]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "pGroupNameDeleted");
+
+        }
+      });
+
+      state.addTransition(trans);
+
+      /*
+       * Transition: Idle to Awaiting RPC Result
+       *
+       * Cause: "Save" button pressed
+       *
+       * Action:
+       *  Take the string name currently selected and take the corresponding
+       *  selected permissions and update them on the DB.
+       */
+        
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_edit",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          //Get selected name 
+          //Get selected permissions
+          //Update on DB
+
+        }
+      });
+
+      state.addTransition(trans);
 
       /*
        * Transition: Idle to Idle
