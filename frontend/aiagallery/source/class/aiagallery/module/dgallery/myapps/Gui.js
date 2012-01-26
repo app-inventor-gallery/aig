@@ -28,11 +28,51 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       var             app;
       var             fsm = module.fsm;
       var             canvas = module.canvas;
+      var             header;
+      var             group;
 
-      var group = new qx.ui.form.RadioGroup();
+      group = new qx.ui.form.RadioGroup();
       group.setAllowEmptySelection(true);
 
       canvas.setLayout(new qx.ui.layout.VBox());
+
+      // Create a header
+      header = new qx.ui.container.Composite(new qx.ui.layout.HBox(0));
+      
+      // Create the header based on the widths of the summary fields
+      o = new qx.ui.core.Spacer(); // no label for icon
+      o.setWidth(aiagallery.widget.mystuff.Summary.Width.icon);
+      header.add(o);
+
+      o = new qx.ui.core.Spacer(); // no label for image
+      o.setWidth(aiagallery.widget.mystuff.Summary.Width.image1);
+      header.add(o);
+
+      o = new qx.ui.basic.Label("Title");
+      o.setWidth(aiagallery.widget.mystuff.Summary.Width.title);
+      header.add(o);
+
+      o = new qx.ui.basic.Label("Status");
+      o.setWidth(aiagallery.widget.mystuff.Summary.Width.status);
+      header.add(o);
+
+      o = new qx.ui.basic.Label("Likes");
+      o.setWidth(aiagallery.widget.mystuff.Summary.Width.numLikes);
+      header.add(o);
+
+      o = new qx.ui.basic.Label("Downloads");
+      o.setWidth(aiagallery.widget.mystuff.Summary.Width.numDownloads);
+      header.add(o);
+
+      o = new qx.ui.basic.Label("Viewed");
+      o.setWidth(aiagallery.widget.mystuff.Summary.Width.numViewed);
+      header.add(o);
+
+      o = new qx.ui.basic.Label("Comments");
+      o.setWidth(aiagallery.widget.mystuff.Summary.Width.numComments);
+      header.add(o);
+      
+      canvas.add(header);
 
       app = new aiagallery.widget.mystuff.App();
       app.setGroup(group);
