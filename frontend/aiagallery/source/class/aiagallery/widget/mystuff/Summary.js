@@ -104,10 +104,10 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
       image1       : 0,         // set in defer: function
       title        : 200,
       status       : 120,
-      numLikes     : 50,
-      numDownloads : 50,
-      numViewed    : 50,
-      numComments  : 50
+      numLikes     : 60,
+      numDownloads : 60,
+      numViewed    : 60,
+      numComments  : 60
     }
   },
 
@@ -123,13 +123,9 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
       {
       case "icon":
         control = new qx.ui.basic.Image(this.getIcon());
-        width = aiagallery.widget.mystuff.Summary.Width.icon;
         control.set(
           {
-            anonymous : true,
-            width     : width,
-            minWidth  : width,
-            maxWidth  : width
+            anonymous : true
           });
         this._addAt(control, 0);
         break;

@@ -37,39 +37,62 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       canvas.setLayout(new qx.ui.layout.VBox());
 
       // Create a header
-      header = new qx.ui.container.Composite(new qx.ui.layout.HBox(0));
+      header = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
       
+      function setWidth(o, width, otherOptions)
+      {
+        o.set(
+          {
+            width    : width,
+            minWidth : width,
+            maxWidth : width
+          });
+        
+        if (otherOptions)
+        {
+          o.set(otherOptions);
+        }
+      }
+
       // Create the header based on the widths of the summary fields
       o = new qx.ui.core.Spacer(); // no label for icon
-      o.setWidth(aiagallery.widget.mystuff.Summary.Width.icon);
+      setWidth(o, aiagallery.widget.mystuff.Summary.Width.icon);
       header.add(o);
 
       o = new qx.ui.core.Spacer(); // no label for image
-      o.setWidth(aiagallery.widget.mystuff.Summary.Width.image1);
+      setWidth(o, aiagallery.widget.mystuff.Summary.Width.image1);
       header.add(o);
 
       o = new qx.ui.basic.Label("Title");
-      o.setWidth(aiagallery.widget.mystuff.Summary.Width.title);
+      setWidth(o, aiagallery.widget.mystuff.Summary.Width.title);
       header.add(o);
 
       o = new qx.ui.basic.Label("Status");
-      o.setWidth(aiagallery.widget.mystuff.Summary.Width.status);
+      setWidth(o, aiagallery.widget.mystuff.Summary.Width.status);
       header.add(o);
 
       o = new qx.ui.basic.Label("Likes");
-      o.setWidth(aiagallery.widget.mystuff.Summary.Width.numLikes);
+      setWidth(o,
+               aiagallery.widget.mystuff.Summary.Width.numLikes,
+               { textAlign : "right" });
       header.add(o);
 
       o = new qx.ui.basic.Label("Downloads");
-      o.setWidth(aiagallery.widget.mystuff.Summary.Width.numDownloads);
+      setWidth(o,
+               aiagallery.widget.mystuff.Summary.Width.numDownloads,
+               { textAlign : "right" });
       header.add(o);
 
-      o = new qx.ui.basic.Label("Viewed");
-      o.setWidth(aiagallery.widget.mystuff.Summary.Width.numViewed);
+      o = new qx.ui.basic.Label("Views");
+      setWidth(o,
+               aiagallery.widget.mystuff.Summary.Width.numViewed,
+               { textAlign : "right" });
       header.add(o);
 
       o = new qx.ui.basic.Label("Comments");
-      o.setWidth(aiagallery.widget.mystuff.Summary.Width.numComments);
+      setWidth(o,
+               aiagallery.widget.mystuff.Summary.Width.numComments,
+               { textAlign : "right" });
       header.add(o);
       
       canvas.add(header);

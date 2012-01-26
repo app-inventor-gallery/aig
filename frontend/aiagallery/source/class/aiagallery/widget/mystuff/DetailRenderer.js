@@ -38,6 +38,9 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
   
   members :
   {
+    __maxRow : -1,
+    __maxCol : -1,
+
     /**
      * Add a group of form items with the corresponding names. The names are
      * displayed as labels.
@@ -119,12 +122,37 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
     addButton : function(button, options) 
     {
       var             position = {};
+      var             hBox;
 
       // Is this an explicitly-placed widget?
       if (! options || typeof options.row == "undefined")
       {
-        // Nope. Let the superclass handle it.
-        this.base(arguments, button, options);
+        if (this._buttonRow == null) 
+        {
+          // create button row
+          this._buttonRow = new qx.ui.container.Composite();
+          this._buttonRow.setMarginTop(5);
+
+          hBox = new qx.ui.layout.HBox();
+          hBox.set(
+            {
+              alignX  : "right",
+              spacing : 5
+            });
+          this._buttonRow.setLayout(hBox);
+
+          // add the button row
+          this._add(this._buttonRow,
+                    {
+                      row     : this.__maxRow + 1,
+                      column  : 0,
+                      colSpan : this.__maxCol
+                    });
+        }
+
+        // add the button
+        this._buttonRow.add(button);
+        return;
       }
 
       // Begin to specify the position
@@ -150,6 +178,18 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
       
       // add the button
       this._add(button, position);
+      
+      // Keep track of the largest column number used
+      if (position.column + (position.colSpan || 0) > this.__maxCol)
+      {
+        this.__maxCol = position.column + (position.colSpan || 0);
+      }
+      
+      // Keep track of the largest row number used
+      if (position.row + (position.rowSpan || 0) > this.__maxRow)
+      {
+        this.__maxRow = position.row + (position.rowSpan || 0);
+      }
     }
   }
 });

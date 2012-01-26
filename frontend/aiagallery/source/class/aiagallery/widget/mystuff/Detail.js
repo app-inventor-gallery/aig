@@ -174,6 +174,22 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.Button("Change Image");
     form.addButton(o, { row : 7, column : 6 });
     
+    //
+    // Add the buttons at the end
+    //
+    
+    // Save
+    o = new qx.ui.form.Button("Save");
+    form.addButton(o);
+    
+    // Publish
+    o = new qx.ui.form.Button("Publish");
+    form.addButton(o);
+    
+    // Delete
+    o = new qx.ui.form.Button("Delete");
+    form.addButton(o);
+
     // Create the rendered form and add it to the HBox
     formRendered = new aiagallery.widget.mystuff.DetailRenderer(form);
     hBox.add(formRendered);
