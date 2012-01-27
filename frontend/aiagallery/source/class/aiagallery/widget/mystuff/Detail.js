@@ -20,6 +20,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     var             currentTags;
     var             tempContainer;
     var             required;
+//    var             controller;
+//    var             model;
 
     this.base(arguments);
 
@@ -43,6 +45,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     // Create a form
     form = new qx.ui.form.Form();
+    
+    // Specify the message to display for required fields
+    form.getValidationManager().setRequiredFieldMessage(
+      "This field is required");
     
     //
     // Add the fields
@@ -181,6 +187,24 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     
     // Save
     o = new qx.ui.form.Button("Save");
+    o.addListener(
+      "execute",
+      function(e)
+      {
+        var             controller;
+        var             model;
+
+        if (! form.validate())
+        {
+          return;
+        }
+
+        // Prepare for data binding
+        controller = new qx.data.controller.Form(null, form);
+        model = controller.createModel();
+        this.debug("model=" + qx.util.Serializer.toJson(model));
+      },
+      this);
     form.addButton(o);
     fsm.addObject("but_saveApp", o);
     
