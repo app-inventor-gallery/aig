@@ -7,7 +7,7 @@
  */
 
 /**
- * User management finite state machine
+ * Application management finite state machine
  */
 qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
 {
@@ -128,19 +128,26 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var table = fsm.getObject("table");
           var selectionModel = table.getSelectionModel();
           var selection = selectionModel.getSelectedRanges()[0].minIndex;
-          var data = table.getTableModel().getData()[selection];
+//          var data = table.getTableModel().getData()[selection];
+var data = table.getTableModel().getDataAsMapArray()[selection];
+// DEBUG:
+// Replaced getData with getDataAsMapArray in preceding line.
+// With this change, and the change to the Gui's getAppListAll handleResponse case (rememberMaps -> True),
+// we can now access the uid (as data.uid, not data[1]).
+// On sim data, there are a couple error messages because there's no apk blob, but the app's gone on reload.
+// NEXT STEPS: - Add more columns?
+//             - Implement cell editor
+//
+console.log("mgmt/apps--Transition_Idle_to_AwaitRpcResult_via_deleteApp -- data[]: " + qx.lang.Json.stringify(data));
 
-//console.log("mgmt/apps--Transition_Idle_to_AwaitRpcResult_via_deleteApp -- data[]: " + data); // DEBUG
-//console.log("\n\nfoo");
           // Issue a Delete App call
-console.log("data.uid = " + data.uid);
-//console.log("data.uid = ");
           var request =
             this.callRpc(fsm,
                           "aiagallery.features",
                           "deleteApp",
                           [
-                            data[1] // ** NEED UID HERE! **
+//                            data[1] // ** NEED UID HERE! **
+data.uid
                           ]);
 
           // When we get the result, we'll need to know what type of request
