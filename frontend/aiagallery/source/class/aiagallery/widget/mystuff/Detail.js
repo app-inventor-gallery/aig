@@ -26,6 +26,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     // Save the finite state machine reference
     this.__fsm = fsm;
 
+    // Retrieve the list of categories, at least one of which must be selected
+    categoryList =
+      qx.core.Init.getApplication().getRoot().getUserData("categories");
+
     // Use the canvas layout for ourself (which will contain only the hBox)
     this.setLayout(new qx.ui.layout.Canvas());
 
@@ -83,13 +87,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     form.addButton(tempContainer, { row : 3, column : 2, colSpan : 4 });
 
-    // Categories, one of which must be selected
-    categoryList =
-      qx.core.Init.getApplication().getRoot().getUserData("categories");
-
-    // Get the list of currently-selected tags
-//    currentTags = rowData.tags.split(new RegExp(", *"));
-
     // Create a multi-selection list and add the categories to it.
     o = new qx.ui.form.List();
     o.set(
@@ -103,13 +100,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         var item = new qx.ui.form.ListItem(tagName);
         o.add(item);
-
-        // Is this a current tag of the app being edited?
-//        if (qx.lang.Array.contains(currentTags, tagName))
-        {
-          // Yup. Select it.
-//          o.addToSelection(item);
-        }
       });
     form.add(o, "Categories", null, "categories", null,
              { row : 3, column : 0, rowSpan : 5 });
@@ -256,7 +246,26 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     
     _applyTags : function(value, old)
     {
-      
+      var             categoryList;
+      var             lst_category = this.__fsm.getObject("lst_categories");
+
+/*
+      // Retrieve the list of categories
+      categoryList =
+        qx.core.Init.getApplication().getRoot().getUserData("categories");
+
+      // For each tag...
+      value.forEach(
+        function(tagName)
+        {
+        });
+          // Is this a current tag of the app being edited?
+          if (qx.lang.Array.contains(currentTags, tagName))
+          {
+            // Yup. Select it.
+            categories.addToSelection(item);
+          }
+*/      
     },
     
     _applySourceFileName : function(value, old)
