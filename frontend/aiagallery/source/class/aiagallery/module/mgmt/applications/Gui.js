@@ -127,6 +127,31 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
             colSet  : { width : 50 }
           },
           {
+            heading : this.tr("Flags"),
+            id      : "numCurFlags",
+            colSet  : { width : 40 }
+          },
+          {
+            heading : this.tr("Views"),
+            id      : "numViewed",
+            colSet  : { width : 40 }
+          },
+          {
+            heading : this.tr("DLs"),
+            id      : "numDownloads",
+            colSet  : { width : 40 }
+          },
+          {
+            heading : this.tr("Likes"),
+            id      : "numLikes",
+            colSet  : { width : 40 }
+          },
+          {
+            heading : this.tr("Coms"),
+            id      : "numComments",
+            colSet  : { width : 40 }
+          },
+          {
             heading : this.tr("I1"),
             id      : "image1",
             colSet  : { width : 30 },
