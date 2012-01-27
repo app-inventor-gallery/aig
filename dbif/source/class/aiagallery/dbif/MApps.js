@@ -134,6 +134,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      *  The result of getData() on the app object. Contains all the info in the
      *  database recorded for this App
      *
+     * FIXME: This functionality should be handled by MSearch!!
+     *
      * ASSUMPTION: There is already a transaction in progress!
      */
     _populateSearch : function(dataObj)
@@ -1914,7 +1916,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                           uid)[0]);
           });
       
-      // Manipulate each App individually
+      // FIXME: Manipulate each App individually (AAAAAH!!!!)
       appList.forEach(
         function(app)
         {
