@@ -160,15 +160,16 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
         break;
 
       case "status":
-        control = new qx.ui.basic.Label();
+        control = new qx.ui.basic.Atom();
         width = aiagallery.widget.mystuff.Summary.Width.status;
         control.set(
           {
-            anonymous : true,
-            rich      : true,
-            width     : width,
-            minWidth  : width,
-            maxWidth  : width
+            iconPosition : "right",
+            anonymous    : true,
+            rich         : true,
+            width        : width,
+            minWidth     : width,
+            maxWidth     : width
           });
         this._addAt(control, 3);
         break;
@@ -259,6 +260,7 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
       var             StatusToName = aiagallery.dbif.Constants.StatusToName;
       var             color;
       var             bgColor;
+      var             icon = null;
       
       switch(value)
       {
@@ -266,32 +268,45 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
         color = "white";
         bgColor = "red";
         break;
+
       case Status.Pending:
         color = "black";
-        bgColor = "yellow";
+        bgColor = "orange";
         break;
+
       case Status.Active:
         color = "green";
         bgColor = null;
         break;
+
       case Status.Incomplete:
         color = "red";
         bgColor = null;
         break;
+
+      case Status.Uploading:
+        color = "black";
+        bgColor = null;
+        icon = "aiagallery/ajax-loader.gif";
+        break;
+
       case Status.Processing:
         color = "black";
         bgColor = "yellow";
         break;
+
       case Status.Invalid:
         color = "white";
         bgColor = "red";
         break;
+
       case Status.Unpublished:
         color = "darkgray";
         bgColor = null;
         break;
       }
-      control.setValue(
+
+      control.setLabel(
           "<span style='" +
           " padding:4px;" +
           " color:" + color + ";" +
@@ -299,6 +314,8 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
           "'>" +
           StatusToName[value] +
           "</span>");
+      
+      control.setIcon(icon);
     },
 
     // property apply

@@ -10,7 +10,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 {
   extend : qx.ui.container.Composite,
 
-  construct : function()
+  construct : function(fsm)
   {
     var             o;
     var             hBox;
@@ -19,8 +19,12 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     var             categoryList;
     var             currentTags;
     var             tempContainer;
+    var             required;
 
     this.base(arguments);
+
+    // Save the finite state machine reference
+    this.__fsm = fsm;
 
     // Use the canvas layout for ourself (which will contain only the hBox)
     this.setLayout(new qx.ui.layout.Canvas());
@@ -28,6 +32,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     // Create a HBox which will be the container for the form
     hBox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
     this.add(hBox, { edge : 20 });
+
+    // Text to add to buttons (which don't provide the 'required' property) to
+    // indicate that they are required.
+    required = " <span style='color:red'>*</span> ";
 
     // Create a form
     form = new qx.ui.form.Form();
@@ -45,18 +53,20 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       });
     form.add(o, "Title", null, "title", null,
              { row : 0, column : 0, colSpan : 6 });
+    fsm.addObject("txt_title", o);
 
     // Description
     o = new qx.ui.form.TextArea();
     o.set(
       {
         width       : 200,
-        height      : 50,
+        height      : 60,
         required    : true,
         placeholder : "Enter a brief description"
       });
     form.add(o, "Description", null, "description", null,
              { row : 1, column : 0, colSpan : 6, rowSpan : 2 });
+    fsm.addObject("txt_description", o);
 
     // Create a temporary container for a spacer, a label, and a spacer
     tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
@@ -103,6 +113,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       });
     form.add(o, "Categories", null, "categories", null,
              { row : 3, column : 0, rowSpan : 5 });
+    fsm.addObject("lst_categories", o);
     
     // Tag to add
     o = new qx.ui.form.TextField();
@@ -112,6 +123,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       });
     form.add(o, "", null, null, null,
              { row : 4, column : 2 });
+    fsm.addObject("txt_newTag", o);
 
 
     // Button to add a tag
@@ -122,6 +134,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         maxHeight : 24
       });
     form.addButton(o, { row : 5, column : 3 });
+    fsm.addObject("but_addTag", o);
 
     // Button to delete selected tag(s)
     o = new qx.ui.form.Button("Delete");
@@ -131,6 +144,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         maxHeight : 24
       });
     form.addButton(o, { row : 7, column : 5 });
+    fsm.addObject("but_deleteTag", o);
 
     // Application-specific tags
     o = new qx.ui.form.List();
@@ -142,49 +156,53 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       });
     form.add(o, "", null, "tags", null,
              { row : 4, column : 4, rowSpan : 3 });
+    fsm.addObject("lst_tags", o);
     
 
-    // Source file name
-    o = new qx.ui.basic.Label("Source: SpaceInvaders.zip");
-    form.addButton(o, { row : 0, column : 6 });
-    
     // Change file name
-    o = new qx.ui.form.Button("Change Source File");
+    o = new qx.ui.form.Button("Select Source File" + required);
+    o.getChildControl("label").setRich(true);
+    form.addButton(o, { row : 0, column : 6 });
+    fsm.addObject("but_selectSourceFile", o);
+    
+    // Source file name
+    o = new qx.ui.basic.Label();
     form.addButton(o, { row : 1, column : 6 });
+    fsm.addObject("lbl_sourceFileName", o);
+    
+    // Select image
+    o = new qx.ui.form.Button("Select Image" + required);
+    o.getChildControl("label").setRich(true);
+    form.addButton(o, { row : 3, column : 6 });
+    fsm.addObject("but_selectImage", o);
     
     // Image1
-    // Create a temporary container for the image with a border
-    tempContainer = new qx.ui.container.Composite(new qx.ui.layout.Canvas());
-    tempContainer.set(
-      {
-        backgroundColor : "black"
-      });
-    
     o = new qx.ui.basic.Image();
     o.set(
       {
         scale     : true
       });
-    
-    tempContainer.add(o, { edge : 1 });
-    
-    form.addButton(tempContainer, { row : 3, column : 6, rowSpan : 4 });
+    form.addButton(o, { row : 4, column : 6, rowSpan : 4 });
+    fsm.addObject("img_image1", o);
 
-    // Change image
-    o = new qx.ui.form.Button("Change Image");
-    form.addButton(o, { row : 7, column : 6 });
-    
     //
     // Add the buttons at the end
     //
     
+    // Save
+    o = new qx.ui.form.Button("Save");
+    form.addButton(o);
+    fsm.addObject("but_saveApp", o);
+    
     // Publish
     o = new qx.ui.form.Button("Publish");
     form.addButton(o);
+    fsm.addObject("but_publishApp", o);
     
     // Delete
     o = new qx.ui.form.Button("Delete");
     form.addButton(o);
+    fsm.addObject("but_deleteApp", o);
 
     // Create the rendered form and add it to the HBox
     formRendered = new aiagallery.widget.mystuff.DetailRenderer(form);
@@ -228,12 +246,12 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
   {
     _applyTitle : function(value, old)
     {
-      
+      this.__fsm.getObject("txt_title").setValue(value);
     },
     
     _applyDescription : function(value, old)
     {
-      
+      this.__fsm.getObject("txt_description").setValue(value);
     },
     
     _applyTags : function(value, old)
@@ -243,12 +261,12 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     
     _applySourceFileName : function(value, old)
     {
-      
+      this.__fsm.getObject("lbl_sourceFileName").setValue(value);
     },
 
     _applyImage1 : function(value, old)
     {
-      
+      this.__fsm.getObject("img_image1").setSource(value);
     }
   }
 });

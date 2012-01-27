@@ -41,9 +41,10 @@ qx.Class.define("aiagallery.dbif.Constants",
       Pending     : 1,
       Active      : 2,
       Incomplete  : 3,
-      Processing  : 4,
-      Invalid     : 5,
-      Unpublished : 6
+      Uploading   : 4,
+      Processing  : 5,
+      Invalid     : 6,
+      Unpublished : 7
     },
     
     /** Reverse mapping of status: values to names */
@@ -53,6 +54,7 @@ qx.Class.define("aiagallery.dbif.Constants",
       "Under review",
       "Active",
       "Incomplete",
+      "Uploading",
       "Processing",
       "Invalid",
       "Unpublished"

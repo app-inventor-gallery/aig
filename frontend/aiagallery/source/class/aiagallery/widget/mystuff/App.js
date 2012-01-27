@@ -10,8 +10,13 @@ qx.Class.define("aiagallery.widget.mystuff.App",
 {
   extend : collapsablepanel.Panel,
 
-  construct : function()
+  construct : function(fsm)
   {
+    // Save the finite state machine reference. This must be done before the
+    // superclass constructor is called because the superclass construcor will
+    // call this.getChildControl() which uses this.__fsm.
+    this.__fsm = fsm;
+
     // Don't pass label to superclass constructor. It's unused here.
     this.base(arguments);
   },
@@ -28,6 +33,12 @@ qx.Class.define("aiagallery.widget.mystuff.App",
     {
       check : "String",
       apply : "_applyTitle"
+    },
+    
+    description :
+    {
+      check : "String",
+      apply : "_applyDescription"
     },
     
     status :
@@ -58,11 +69,26 @@ qx.Class.define("aiagallery.widget.mystuff.App",
     {
       check : "Number",
       apply : "_applyNumComments"
+    },
+    
+    tags :
+    {
+      check : "Array",
+      apply : "_applyTags"
+    },
+    
+    sourceFileName :
+    {
+      check : "String",
+      apply : "_applySourceFileName"
     }
   },
 
   members :
   {
+    /** Reference to the finite state machine for the module */
+    __fsm : null,
+
     // overridden
     _createChildControlImpl : function(id)
     {
@@ -71,13 +97,13 @@ qx.Class.define("aiagallery.widget.mystuff.App",
       switch(id)
       {
       case "bar":
-        control = new aiagallery.widget.mystuff.Summary();
+        control = new aiagallery.widget.mystuff.Summary(this.__fsm);
         control.addListener("click", this.toggleValue, this);
         this._add(control, {flex : 1});
         break;
 
       case "container":
-        control = new aiagallery.widget.mystuff.Detail();
+        control = new aiagallery.widget.mystuff.Detail(this.__fsm);
         this._add(control, {flex : 1});
         break;
       }
@@ -89,12 +115,20 @@ qx.Class.define("aiagallery.widget.mystuff.App",
     _applyImage1 : function(value, old)
     {
       this.getChildControl("bar").setImage1(value);
+      this.getChildControl("container").setImage1(value);
     },
     
     // property apply
     _applyTitle : function(value, old)
     {
       this.getChildControl("bar").setTitle(value);
+      this.getChildControl("container").setTitle(value);
+    },
+    
+    // property apply
+    _applyDescription : function(value, old)
+    {
+      this.getChildControl("container").setDescription(value);
     },
     
     // property apply
@@ -125,6 +159,18 @@ qx.Class.define("aiagallery.widget.mystuff.App",
     _applyNumComments : function(value, old)
     {
       this.getChildControl("bar").setNumComments(value);
+    },
+    
+    // property apply
+    _applyTags : function(value, old)
+    {
+      this.getChildControl("container").setTags(value);
+    },
+    
+    // property apply
+    _applySourceFileName : function(value, old)
+    {
+      this.getChildControl("container").setSourceFileName(value);
     }
   }
 });
