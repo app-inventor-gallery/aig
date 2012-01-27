@@ -93,6 +93,12 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
 		 *     else trash it 
 		 * NOTE: Should stop words be considered on add instead of search?
 		 **/
+		
+		/* This work is being done in MApps._populateSearch(), WRONGLY.
+		   The code in MApps._populateSearch() should be refactored to below.
+		   As in, MApps._populateSearch() should just call this function.
+		 
+		 
 		addSearchData : function(keywordStringArray)
 		{
 			
@@ -106,7 +112,7 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
 		
 		
 		},
-		
+		*/
 		
     /**
      * Returns an array of App Info objects, which contain a word or words from

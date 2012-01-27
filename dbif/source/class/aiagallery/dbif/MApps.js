@@ -134,7 +134,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      *  The result of getData() on the app object. Contains all the info in the
      *  database recorded for this App
      *
-     * FIXME: This functionality should be handled by MSearch!!
+     * FIXME: This functionality should be handled by MSearch.addSearchData()!!
      *
      * ASSUMPTION: There is already a transaction in progress!
      */
@@ -145,6 +145,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var searchObj;
       var appId = dataObj["uid"];
 
+
+			// This matches all strings of numbers or letters, case insensitive,
+			// of length greater than 2.
+			// This filter should be improved and maintained.
+			var acceptable_word = /[0-9a-z]{2,}/gi
+			
       for (appDataField in dataObj)
       {
         // Go through each field in the App Data Object
@@ -154,8 +160,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         case "title":
         case "description":
           // Split up the words and...
-          wordsToAdd = dataObj[appDataField].split(" ");
-          wordsToAdd.forEach(function(word)
+          wordsToAdd = dataObj[appDataField].match(acceptable_word);
+          wordsToAdd.forEachfunction(word)
               {
                 // Make sure to only add lower case words to the search
                 // database
