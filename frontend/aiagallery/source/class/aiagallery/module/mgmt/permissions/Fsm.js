@@ -73,7 +73,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
             "addPerm" : "Transition_Idle_to_AwaitRpcResult_via_add",
 
             //When a user clicks the save button
-            "savePerm" : qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE,
+            "savePerm" : "Transition_Idle_to_AwaitRpcResult_via_save",
 
             //When a user clicks the delete button
             "deletePerm" : "Transition_Idle_to_AwaitRpcResult_via_delete"
@@ -313,10 +313,12 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
           pSelected = pSelected.getSelection();
 
           var pList = new Array();
-          for each (var item in pSelected) 
+		  
+          for each(var item in pSelected)
           {
             pList.push(item.getLabel());
           }
+		   
 
           //Update on DB
           // Issue the remote procedure call to execute the query
@@ -324,7 +326,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
             this.callRpc(fsm,
                          "aiagallery.features",
                          "updatePermissionGroup",
-                         [
+                        [
 
                           pName, pList
                            

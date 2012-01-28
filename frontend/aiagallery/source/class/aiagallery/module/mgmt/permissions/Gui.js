@@ -117,8 +117,15 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       var list = new qx.ui.form.List();
       list.setWidth(150);
       list.addListener("changeSelection", fsm.eventListener, fsm);
+	  
+	  //Disable delete/save button unless something is selected
+	  list.addListener("changeSelection", function(e) 
+      {
+		var label = e.getData()[0].getLabel(); 
+        savePermissionGroup.setEnabled(label != "");
+		deletePermissionGroup.setEnabled(label != "")
+      }, this); 
 
-      //FIXME add listener to turn delete button only when something is selected
 
       groupbox.add(list);
       fsm.addObject("pgroups", list, "main.fsmUtils.disable_during_rpc");     
@@ -172,6 +179,10 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       var             requestType = rpcRequest.getUserData("requestType");
       var             result;
 
+	  //Set both buttons as disabled
+	  deleteBtn.setEnabled(false);
+	  saveBtn.setEnabled(false);
+	  
       // We can ignore aborted requests.
       if (response.type == "aborted")
       {
@@ -200,13 +211,11 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
 
         //Creation was a success add to list. 
         var pName = new qx.ui.form.ListItem(response.data.result.name);        
-        list1.add(pName);
+        list1.add(pName);		
 		
-		//Enable delete button
-		deleteBtn.setEnabled(true); 
-		
-		//Enable save button
-		saveBtn.setEnabled(true); 		
+		//Enable buttons
+		deleteBtn.setEnabled(true);
+		saveBtn.setEnabled(true); 	
 
         break; 
 
@@ -226,12 +235,11 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
 		if (list1.getChildren().length == 0) 
 		{
 		  deleteBtn.setEnabled(false);
-		  saveBtn.setEnabled(false); 
-		  
-		  //Clear all current selections on list 2 (the list of permissions)
-		  list2.resetSelection(); 
-		  
+		  saveBtn.setEnabled(false); 		  
 		}
+		
+		//Clear all current selections on list 2 (the list of permissions)
+		list2.resetSelection(); 
 		
          break; 
 
@@ -255,6 +263,10 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
 		
 		//Set Selectiong using controller
 		this.permissionController.setSelection(dataArray); 
+		
+		//Enable buttons
+		deleteBtn.setEnabled(true);
+		saveBtn.setEnabled(true); 	
 		
         break; 
 

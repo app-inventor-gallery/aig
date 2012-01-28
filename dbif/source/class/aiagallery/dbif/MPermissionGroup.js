@@ -150,8 +150,32 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
      */
      getPermissionGroups : function()
      {
-        //Conduct a query to get all DB objects that are permission groups
-
+        // Construct query criteria for permission groups
+        criteria = 
+          {
+            type : "op",
+            method : "and",
+            children : 
+            [
+              {
+                type: "element",
+                field: "permissiongroup"
+              },
+              {
+                type: "element",
+                field: "permissions"
+              }
+            ]
+          };
+		  
+		  //Execute the query
+		  permissionGroupsList = liberated.dbif.Entity.query(
+		                            "aiagallery.dbif.ObjPermissionGroup",
+                                     criteria,
+                                     null);
+									 
+		  //Return the permission group list
+		  return permissionGroupsList;
      },
 
  /**
