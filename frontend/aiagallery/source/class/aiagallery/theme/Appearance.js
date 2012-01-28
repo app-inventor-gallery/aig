@@ -226,6 +226,45 @@ qx.Theme.define("aiagallery.theme.Appearance",
           margin : [1, 0]
         };
       }
+    },
+    
+    "formimage" :
+    {
+      //
+      // copied from "list", with backgroundColor altered
+      //
+
+      alias : "scrollarea",
+
+      style : function(states)
+      {
+        var decorator;
+
+        var focused = !!states.focused;
+        var invalid = !!states.invalid;
+        var disabled = !!states.disabled;
+
+        if (focused && invalid && !disabled) {
+          decorator = "formimage-focused-invalid";
+        } else if (focused && !invalid && !disabled) {
+          decorator = "formimage-focused";
+        } else if (disabled) {
+          decorator = "formimage-disabled";
+        } else if (!focused && invalid && !disabled) {
+          decorator = "border-invalid";
+        } else {
+          decorator = "formimage";
+        }
+
+        if (qx.core.Environment.get("css.gradient.linear")) {
+          decorator += "-css";
+        }
+
+        return {
+//          backgroundColor : "green",
+          decorator : decorator
+        };
+      }
     }
   }
 });
