@@ -7,7 +7,7 @@
  */
 
 /**
- * Temporary tests, by any developer
+ * Permission Management 
  */
 qx.Class.define("aiagallery.module.mgmt.permissions.Permissions",
 {

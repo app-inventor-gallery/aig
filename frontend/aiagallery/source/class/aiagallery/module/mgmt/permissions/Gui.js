@@ -124,19 +124,18 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       //Allow user to select multiple items
       list.setSelectionMode("multi");
 
-      //Populate the list with all the permission types
-      list.add(new qx.ui.form.ListItem("addOrEditApp"));
-      list.add(new qx.ui.form.ListItem("deleteApp"));
-      list.add(new qx.ui.form.ListItem("getAppListAll"));
-      list.add(new qx.ui.form.ListItem("addComment"));
-      list.add(new qx.ui.form.ListItem("deleteComment"));
-      list.add(new qx.ui.form.ListItem("flagIt"));
-      list.add(new qx.ui.form.ListItem("addOrEditVisitor"));
-      list.add(new qx.ui.form.ListItem("deleteVisitor"));
-      list.add(new qx.ui.form.ListItem("getVisitorList"));
-      list.add(new qx.ui.form.ListItem("likesPlusOne"));
-      list.add(new qx.ui.form.ListItem("getDatabaseEntities"));
-
+	  //Create a data array of possible permissions
+	  var pDataArray = new qx.data.Array(["addOrEditApp", "deleteApp", 
+	                     "getAppListAll", "addComment", "deleteComment", 
+						 "flagIt", "addOrEditVisitor", "deleteVisitor", 
+						 "getVisitorList", "likesPlusOne", 
+						 "getDatabaseEntities"]);
+	  
+	  //Create controller to add data to list2
+	  var permissionController
+	  this.permissionController 
+	    = new qx.data.controller.List(pDataArray, list); 
+	    
       groupbox.add(list);
       fsm.addObject("permissions", list, "main.fsmUtils.disable_during_rpc");
 
@@ -164,6 +163,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       var             response = rpcRequest.getUserData("rpc_response");
       var             requestType = rpcRequest.getUserData("requestType");
       var             result;
+	  var             permissionArray = new Array(); 
 
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -188,6 +188,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         {
           //Permission group name already exists
           //Fail silently for now
+		  alert("IT FAILED"); 
           break;
         }
 
@@ -211,7 +212,26 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
          break; 
 
       case "pGroupChanged" :
-
+	  
+	    if (response.data.result == "false") 
+        {
+          //Could not find the selected pGroup. Oops
+          //Fail silently for now
+          break;
+        }		
+						
+		//Clear all current selections on list 2 (the list of permissions)
+		list2.resetSelection(); 
+		
+		//Make things easier to read
+		var returnedList = response.data.result.permissions;
+		
+		//Convert to a data Array.
+		var dataArray = new qx.data.Array(returnedList);
+		
+		//Set Selectiong using controller
+		this.permissionController.setSelection(dataArray); 
+		
         break; 
 
       default:

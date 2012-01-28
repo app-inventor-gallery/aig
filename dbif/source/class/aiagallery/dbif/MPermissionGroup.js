@@ -21,14 +21,14 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
     this.registerService("aiagallery.features.updatePermissionGroup",
                          this.updatePermissionGroup,
                          [ "name" ]); 
-/*
+
     this.registerService("aiagallery.features.getPermissionGroup",
                          this.getPermissionGroups);
 
     this.registerService("aiagallery.features.getPermissionGroup",
                          this.getPermissionGroup,
                          [ "name" ]);
-*/
+
   },
 
   members :
@@ -143,7 +143,6 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
     /**
      * Get all the permission groups
      *
-     *
      * @return {Array || Error}
      *   This returns an array of permission groups, or an error if
      *   something went wrong
@@ -151,10 +150,7 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
      */
      getPermissionGroups : function()
      {
-        //Get the permission group
-        var pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
-
-        return pGroupData; 
+        //Conduct a query to get all DB objects that are permission groups
 
      },
 
@@ -165,8 +161,8 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
      *   This is a string to identify the name of the permission group
      *
      * @return {PermissionGroup || Error}
-     *   This returns the actual permission group object, or an error if
-     *   something went wrong
+     *   This returns the actual permission group object, 
+	 *   or an error if something went wrong
      *
      */
      getPermissionGroup : function(pGroupName)
@@ -180,8 +176,8 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
            //Object does not exist return error
            return false;
         } else {
-           //Object did exist so return it
-           return pGroup; 
+           //Object did exist so return its list of permissions
+           return pGroup.getData(); 
         }
 
     }
