@@ -60,12 +60,12 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
     addItems : function(items, names, title, options) 
     {
       var             position = {};
+      var             hiddenPosition;
+      var             label;
 
       // add the items
       for (var i = 0; i < items.length; i++) 
       {
-        var label = this._createLabel(names[i], items[i]);
-        
         // Begin to specify the position
         position =
           {
@@ -80,20 +80,38 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
           position.rowSpan = options[i].rowSpan;
         }
 
-        // Add the label
-        this._add(label, position);
+        label = this._createLabel(names[i] || "", items[i]);
 
         // Retrieve the peer input field
         var item = items[i];
-        
-        // Join the label and input field
-        label.setBuddy(item);
 
-        // Setting visibility of item should also alter its label
-        this._connectVisibility(item, label);
+        if (names[i] == null)
+        {
+          // Don't display labels with null names
+          label.setVisibility("excluded");
+          hiddenPosition =
+            {
+              row    : position.row + 100,
+              column : position.column + 100
+            };
 
-        // Position for the input field, in the next column
-        ++position.column;
+          // Add the label
+          this._add(label, hiddenPosition);
+        }
+        else
+        {
+          // Join the label and input field
+          label.setBuddy(item);
+
+          // Setting visibility of item should also alter its label
+          this._connectVisibility(item, label);
+
+          // Add the label
+          this._add(label, position);
+
+          // Position for the input field, in the next column
+          ++position.column;
+        }
 
         // If column span is specified, it's the input field that gets it
         if (options[i].colSpan)
