@@ -20,8 +20,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     var             currentTags;
     var             tempContainer;
     var             required;
-//    var             controller;
-//    var             model;
 
     this.base(arguments);
 
@@ -101,14 +99,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         selectionMode : "multi",
         required      : true
       });
-    categoryList.forEach(
-      function(tagName) 
-      {
-        var item = new qx.ui.form.ListItem(tagName);
-        o.add(item);
-      });
     form.add(o, "Categories", null, "categories", null,
              { row : 3, column : 0, rowSpan : 5 });
+    this.categoryController = new qx.data.controller.List(
+      new qx.data.Array(categoryList), o);
     fsm.addObject("lst_categories", o);
     
     // Tag to add
@@ -117,7 +111,17 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         placeholder : "Enter a new tag"
       });
-    form.add(o, "", null, null, null,
+    form.getValidationManager().add(
+      o,
+      function(value, item)
+      {
+        if (value != null && value.length != 0)
+        {
+          throw new qx.core.ValidationError("Add this tag?");
+        }
+        return true;
+      });
+    form.add(o, "", null, "newTag", null,
              { row : 4, column : 2 });
     fsm.addObject("txt_newTag", o);
 
@@ -157,14 +161,37 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     // Change file name
     o = new qx.ui.form.Button("Select Source File" + required);
+    o.addListener(
+      "execute",
+      function(e)
+      {
+        this.debug("Selecting source file");
+      });
     o.getChildControl("label").setRich(true);
     form.addButton(o, { row : 0, column : 6 });
     fsm.addObject("but_selectSourceFile", o);
     
     // Source file name
-    o = new qx.ui.basic.Label();
-    form.addButton(o, { row : 1, column : 6 });
-    fsm.addObject("lbl_sourceFileName", o);
+    // Title
+    o = new qx.ui.form.TextField();
+    o.set(
+      {
+        required    : true,
+        placeholder : "Select source file"
+      });
+    o.addListener(
+      "focus",
+      function(e)
+      {
+        var             button = fsm.getObject("but_selectSourceFile");
+        this.blur();
+        button.focus();
+        button.execute();
+      });
+    form.add(o, null, null, "sourceFileName", null,
+             { row : 1, column : 6 });
+//    form.addButton(o, { row : 1, column : 6 });
+    fsm.addObject("txt_sourceFileName", o);
     
     // Select image
     o = new qx.ui.form.Button("Select Image" + required);
@@ -173,12 +200,22 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     fsm.addObject("but_selectImage", o);
     
     // Image1
+/*
     o = new qx.ui.basic.Image();
     o.set(
       {
         scale     : true
       });
     form.addButton(o, { row : 4, column : 6, rowSpan : 4 });
+*/
+    o = new aiagallery.widget.mystuff.FormImage();
+    o.set(
+      {
+        required : true
+      });
+    form.add(o, null, null, "image1", null,
+             { row : 4, column : 6, rowSpan : 4 });
+
     fsm.addObject("img_image1", o);
 
     //
@@ -194,12 +231,18 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         var             controller;
         var             model;
 
+        // Is the form complete and ready for submission? First test basic
+        // validation.
         if (! form.validate())
         {
+          // Nope. Get outta here!
           return;
         }
+        
+        // Ensure that a source file has been selected
+        
 
-        // Prepare for data binding
+        // Prepare to retrieve data model
         controller = new qx.data.controller.Form(null, form);
         model = controller.createModel();
         this.debug("model=" + qx.util.Serializer.toJson(model));
@@ -270,10 +313,11 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     
     _applyTags : function(value, old)
     {
+      var             categories = [];
       var             categoryList;
-      var             lst_category = this.__fsm.getObject("lst_categories");
+      var             listTags = this.__fsm.getObject("lst_tags");
+      var             listCategories = this.__fsm.getObject("lst_categories");
 
-/*
       // Retrieve the list of categories
       categoryList =
         qx.core.Init.getApplication().getRoot().getUserData("categories");
@@ -282,24 +326,31 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       value.forEach(
         function(tagName)
         {
-        });
-          // Is this a current tag of the app being edited?
-          if (qx.lang.Array.contains(currentTags, tagName))
+          // Is this tag really a category?
+          if (qx.lang.Array.contains(categoryList, tagName))
           {
-            // Yup. Select it.
-            categories.addToSelection(item);
+            // Yup. Add the category to a list for later processing
+            categories.push(tagName);
           }
-*/      
+          else
+          {
+            // It's not a category. Add it as a list item.
+            listTags.add(new qx.ui.form.ListItem(tagName));
+          }
+        });
+      
+      // Select the categories for this app
+      this.categoryController.setSelection(new qx.data.Array(categories));
     },
     
     _applySourceFileName : function(value, old)
     {
-      this.__fsm.getObject("lbl_sourceFileName").setValue(value);
+      this.__fsm.getObject("txt_sourceFileName").setValue(value);
     },
 
     _applyImage1 : function(value, old)
     {
-      this.__fsm.getObject("img_image1").setSource(value);
+      this.__fsm.getObject("img_image1").setValue(value);
     }
   }
 });
