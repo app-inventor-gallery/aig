@@ -38,6 +38,114 @@ qx.Theme.define("aiagallery.theme.Decoration",
       }
     },
 
+    "formimage" :
+    {
+      decorator : qx.ui.decoration.Beveled,
+
+      style :
+      {
+        outerColor : "border-input",
+        innerColor : "border-inner-input",
+        innerOpacity : 0.5,
+        backgroundImage : "decoration/form/input.png",
+        backgroundRepeat : "repeat-x",
+        backgroundColor : "background-light"
+      }
+    },
+
+    "formimage-focused" :
+    {
+      decorator : qx.ui.decoration.Beveled,
+
+      style :
+      {
+        outerColor : "border-input",
+        innerColor : "border-focused",
+        backgroundImage : "decoration/form/input-focused.png",
+        backgroundRepeat : "repeat-x",
+        backgroundColor : "background-light"
+      }
+    },
+
+    "formimage-focused-invalid" :
+    {
+      decorator : qx.ui.decoration.Beveled,
+
+      style :
+      {
+        outerColor : "invalid",
+        innerColor : "border-focused-invalid",
+        backgroundImage : "decoration/form/input-focused.png",
+        backgroundRepeat : "repeat-x",
+        backgroundColor : "background-light",
+        insets: [2]
+      }
+    },
+
+
+    "formimage-disabled" :
+    {
+      decorator : qx.ui.decoration.Beveled,
+
+      style :
+      {
+        outerColor : "border-disabled",
+        innerColor : "border-inner-input",
+        innerOpacity : 0.5,
+        backgroundImage : "decoration/form/input.png",
+        backgroundRepeat : "repeat-x",
+        backgroundColor : "background-light"
+      }
+    },
+
+    "formimage-css" :
+    {
+      decorator : [
+        qx.ui.decoration.MDoubleBorder,
+        qx.ui.decoration.MLinearBackgroundGradient,
+        qx.ui.decoration.MBackgroundColor
+      ],
+
+      style :
+      {
+        color : "border-input",
+        innerWidth: 1,
+        width : 1
+      }
+    },
+
+    "border-invalid-css" : {
+      include : "formimage-css",
+      style : {
+        innerColor : "border-invalid",
+        color : "border-invalid"
+      }
+    },
+
+    "formimage-focused-css" : {
+      include : "formimage-css",
+      style : {
+        startColor : "input-focused-start",
+        innerColor : "input-focused-end",
+        endColorPosition : 4
+      }
+    },
+
+    "formimage-focused-invalid-css" : {
+      include : "formimage-focused-css",
+      style : {
+        innerColor : "input-focused-inner-invalid",
+        color : "border-invalid"
+      }
+    },
+
+    "formimage-disabled-css" : {
+      include : "formimage-css",
+      style : {
+        color: "input-border-disabled"
+      }
+    },
+
     "pagepane-top" :
     {
       decorator : [
