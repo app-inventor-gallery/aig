@@ -63,7 +63,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
 		  "changeSelection" :
 		  {
 		    //When a user selects a project group on list1 this is called
-		    "pgroups" : "Transition_Idle_to_AwaitRpcResult_via_list1"
+		    "pgroups" : qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
 		  },
 		
           // On the clicking of a button, execute is fired
@@ -72,8 +72,8 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
             //When a user clicks the add Permission Group button
             "addPerm" : "Transition_Idle_to_AwaitRpcResult_via_add",
 
-            //When a user clicks the edit button
-            "savePerm" : "Transition_Idle_to_AwaitRpcResult_via_save",
+            //When a user clicks the save button
+            "savePerm" : qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE,
 
             //When a user clicks the delete button
             "deletePerm" : "Transition_Idle_to_AwaitRpcResult_via_delete"
@@ -103,6 +103,62 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
 
       // The following transitions have a predicate, so must be listed first
 
+	  
+	  /*
+       * Transition: Idle to Awaiting RPC Result
+       *
+       * Cause: User clicked on a permission group on list1
+       *
+       * Action:
+       *  Take the string name currently selected and get the current
+	   *  list of permissions attached to this group
+       */
+        
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_list1",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+		
+		"predicate" : function(fsm, event)
+        {
+          if (fsm.getObject("pgroups").getSelection().length == 0)
+          {
+            // Do not use this transition and do not try others
+            return null;
+          }
+
+          // Accept this transition
+          return true;
+        },
+
+        "ontransition" : function(fsm, event)
+        {
+          //Get selected name 
+          var pName = fsm.getObject("pgroups");
+          pName = pName.getSelection()[0].getLabel();
+
+          //Get permission list from DB
+          // Issue the remote procedure call to execute the query
+          var request =
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "getPermissionGroup",
+                        [
+
+                          pName
+                           
+                        ]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "pGroupChanged");
+        }
+      });
+
+      state.addTransition(trans);
+	  
       /*
        * Transition: Idle to Idle
        *
@@ -243,12 +299,13 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
       {
         "nextState" : "State_AwaitRpcResult",
 
-        "context" : this,
+        "context" : this,		
 
         "ontransition" : function(fsm, event)
         {
           //Get selected name 
           var pName = fsm.getObject("pgroups");
+		  
           pName = pName.getSelection()[0].getLabel();
 
           //Get selected permissions
@@ -270,49 +327,6 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
                          [
 
                           pName, pList
-                           
-                        ]);
-
-          // When we get the result, we'll need to know what type of request
-          // we made.
-          request.setUserData("requestType", "pGroupChanged");
-        }
-      });
-
-      state.addTransition(trans);
-	  
-	  /*
-       * Transition: Idle to Awaiting RPC Result
-       *
-       * Cause: User clicked on a permission group on list1
-       *
-       * Action:
-       *  Take the string name currently selected and get the current
-	   *  list of permissions attached to this group
-       */
-        
-      trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_list1",
-      {
-        "nextState" : "State_AwaitRpcResult",
-
-        "context" : this,
-
-        "ontransition" : function(fsm, event)
-        {
-          //Get selected name 
-          var pName = fsm.getObject("pgroups");
-          pName = pName.getSelection()[0].getLabel();
-
-          //Get permission list from DB
-          // Issue the remote procedure call to execute the query
-          var request =
-            this.callRpc(fsm,
-                         "aiagallery.features",
-                         "getPermissionGroup",
-                         [
-
-                          pName
                            
                         ]);
 
