@@ -126,9 +126,9 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       app.set(
         {
           title        : "The original Adventure game",
-          description  : "'You are in a twisty maze of passages, all alike.' This is an Android version of the 1970's Adventure game. Use the Android <i>keyboard</i> or voice recognition to navigate through the caves.",
+          description  : "'You are in a twisty maze of passages, all alike.' This is an Android version of the 1970's Adventure game. Use the Android keyboard or voice recognition to navigate through the caves.",
           status       : 5,
-          tags         : [ "Games", "adventure", "old-school" ],
+          tags         : [ "Games", "Internet", "adventure", "old-school" ],
           numLikes     : 42,
           numDownloads : 675,
           numViewed    : 78923,
