@@ -44,9 +44,9 @@ qx.Theme.define("aiagallery.theme.Decoration",
 
       style :
       {
-        outerColor : "border-input",
-        innerColor : "border-inner-input",
-        innerOpacity : 0.5,
+        outerColor : null,
+        innerColor : null,
+//        innerOpacity : 0.5,
         backgroundImage : "decoration/form/input.png",
         backgroundRepeat : "repeat-x",
         backgroundColor : "background-light"
@@ -108,7 +108,7 @@ qx.Theme.define("aiagallery.theme.Decoration",
 
       style :
       {
-        color : "border-input",
+        color : null,
         innerWidth: 1,
         width : 1
       }

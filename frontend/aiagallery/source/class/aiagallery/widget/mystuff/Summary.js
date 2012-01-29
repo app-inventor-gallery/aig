@@ -13,6 +13,7 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
   construct : function()
   {
     var             height;
+    var             layout;
 
     this.base(arguments);
     
@@ -26,7 +27,9 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
       });
     
     // Create a layout. Summary is always an HBox
-    this.setLayout(new qx.ui.layout.HBox(10));
+    layout = new qx.ui.layout.HBox(10);
+    layout.setAlignY("middle");
+    this.setLayout(layout);
     
     // Create each of the child controls
     this.getChildControl("icon");

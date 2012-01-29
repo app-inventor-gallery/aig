@@ -192,20 +192,17 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
              { row : 1, column : 6 });
     fsm.addObject("txt_sourceFileName", o);
     
-    // Select image
-    o = new qx.ui.form.Button("Select Image" + required);
-    o.getChildControl("label").setRich(true);
-    form.addButton(o, { row : 3, column : 6 });
-    fsm.addObject("but_selectImage", o);
-    
     // Image1
-    o = new aiagallery.widget.mystuff.FormImage();
+    o = new aiagallery.widget.mystuff.FormImage("Select Image");
     o.set(
       {
         required : true
       });
     form.add(o, null, null, "image1", null,
-             { row : 4, column : 6, rowSpan : 4 });
+             { row : 3, column : 6, rowSpan : 5 });
+
+    // When the file name changes, begin retrieving the file data
+//    o.addListener("changeFileName", fsm.eventListener, fsm);
 
     fsm.addObject("img_image1", o);
 

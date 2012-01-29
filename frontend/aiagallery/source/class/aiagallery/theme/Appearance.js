@@ -234,7 +234,8 @@ qx.Theme.define("aiagallery.theme.Appearance",
       // copied from "list", with backgroundColor altered
       //
 
-      alias : "scrollarea",
+//      alias : "scrollarea",
+      alias : "widget",
 
       style : function(states)
       {
