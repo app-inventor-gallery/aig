@@ -190,7 +190,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       });
     form.add(o, null, null, "sourceFileName", null,
              { row : 1, column : 6 });
-//    form.addButton(o, { row : 1, column : 6 });
     fsm.addObject("txt_sourceFileName", o);
     
     // Select image
@@ -200,14 +199,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     fsm.addObject("but_selectImage", o);
     
     // Image1
-/*
-    o = new qx.ui.basic.Image();
-    o.set(
-      {
-        scale     : true
-      });
-    form.addButton(o, { row : 4, column : 6, rowSpan : 4 });
-*/
     o = new aiagallery.widget.mystuff.FormImage();
     o.set(
       {
@@ -251,10 +242,12 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     form.addButton(o);
     fsm.addObject("but_saveApp", o);
     
+/*
     // Publish
     o = new qx.ui.form.Button("Publish");
     form.addButton(o);
     fsm.addObject("but_publishApp", o);
+*/
     
     // Delete
     o = new qx.ui.form.Button("Delete");
@@ -331,6 +324,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
           {
             // Yup. Add the category to a list for later processing
             categories.push(tagName);
+          }
+          else if (tagName.charAt(0) == "*")
+          {
+            // Do not list special tags such as *Featured*
           }
           else
           {
