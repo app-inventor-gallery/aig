@@ -121,11 +121,10 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
 	  //Disable delete/save button unless something is selected
 	  list.addListener("changeSelection", function(e) 
       {
-		var label = e.getData()[0].getLabel(); 
-        savePermissionGroup.setEnabled(label != "");
-		deletePermissionGroup.setEnabled(label != "")
+		//var label = e.getData().isSelectionEmpty(); 
+        //savePermissionGroup.setEnabled(label != "");
+		//deletePermissionGroup.setEnabled(label != "")
       }, this); 
-
 
       groupbox.add(list);
       fsm.addObject("pgroups", list, "main.fsmUtils.disable_during_rpc");     
@@ -178,6 +177,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       var             response = rpcRequest.getUserData("rpc_response");
       var             requestType = rpcRequest.getUserData("requestType");
       var             result;
+	  var             textField = fsm.getObject("pGroupName");
 
 	  //Set both buttons as disabled
 	  deleteBtn.setEnabled(false);
@@ -211,7 +211,13 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
 
         //Creation was a success add to list. 
         var pName = new qx.ui.form.ListItem(response.data.result.name);        
-        list1.add(pName);		
+        list1.add(pName);	
+		
+		//Select on list
+		list1.setSelection([pName]); 
+		
+		//Clear textField
+		textField.setValue("");
 		
 		//Enable buttons
 		deleteBtn.setEnabled(true);

@@ -314,9 +314,9 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
 
           var pList = new Array();
 		  
-          for each(var item in pSelected)
+          for (var i = 0; i < pSelected.length; i++)
           {
-            pList.push(item.getLabel());
+            pList.push(pSelected[i].getLabel());
           }
 		   
 
