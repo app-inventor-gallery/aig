@@ -77,8 +77,8 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
           // to determine if it's necessary.
           "appear"    :
           {
-            //"main.canvas" : 
-              //qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
+            "main.canvas" : 
+              qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
           },
 
           // When we get a disappear event
@@ -129,7 +129,18 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-         // If we wanted to do something as the page appeared, it would go here.
+          // Issue the remote procedure call to get the list of this visitor's
+          // applications. Request to convert lists into stringts, and
+          // retrieve only the logged-in user's own apps, not all apps.
+          var request =
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "getAppList",
+                         [ false, null, null, null ]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "getAppList");
         }
       });
 
