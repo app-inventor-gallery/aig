@@ -22,8 +22,9 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
                          this.updatePermissionGroup,
                          [ "name" ]); 
 
-    this.registerService("aiagallery.features.getPermissionGroup",
-                         this.getPermissionGroups);
+    this.registerService("aiagallery.features.getPermissionGroups",
+                         this.getPermissionGroups,
+                         []);
 
     this.registerService("aiagallery.features.getPermissionGroup",
                          this.getPermissionGroup,
@@ -149,29 +150,11 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
      *
      */
      getPermissionGroups : function()
-     {
-        // Construct query criteria for permission groups
-        criteria = 
-          {
-            type : "op",
-            method : "and",
-            children : 
-            [
-              {
-                type: "element",
-                field: "permissiongroup"
-              },
-              {
-                type: "element",
-                field: "permissions"
-              }
-            ]
-          };
-          
+     {       
           //Execute the query
-          permissionGroupsList = liberated.dbif.Entity.query(
+          var permissionGroupsList = liberated.dbif.Entity.query(
                                     "aiagallery.dbif.ObjPermissionGroup",
-                                     criteria,
+                                     null,
                                      null);
                                      
           //Return the permission group list

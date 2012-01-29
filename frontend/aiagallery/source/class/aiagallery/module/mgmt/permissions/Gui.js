@@ -43,10 +43,10 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       // Create an Add Permission button
       var addPermissionGroup = new qx.ui.form.Button(this.tr("Add Permission Group"));
       addPermissionGroup.set(
-        {
-          maxHeight : 24,
-          width     : 150
-        });
+      {
+        maxHeight : 24,
+        width     : 150
+      });
       hBox.add(addPermissionGroup);
       addPermissionGroup.addListener("execute", fsm.eventListener, fsm);
 
@@ -59,10 +59,10 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       // Create an Update Permission Group button
       var savePermissionGroup = new qx.ui.form.Button(this.tr("Save"));
       savePermissionGroup.set(
-        {
-          maxHeight : 24,
-          width     : 100
-        });
+      {
+        maxHeight : 24,
+        width     : 100
+      });
       hBox.add(savePermissionGroup);
       savePermissionGroup.addListener("execute", fsm.eventListener, fsm);
 
@@ -75,11 +75,11 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       // Create a Delete button
       var deletePermissionGroup = new qx.ui.form.Button(this.tr("Delete"));
       deletePermissionGroup.set(
-        {
-          maxHeight : 24,
-          width     : 100,
-          enabled   : false
-        });
+      {
+        maxHeight : 24,
+        width     : 100,
+        enabled   : false
+      });
       hBox.add(deletePermissionGroup);
       deletePermissionGroup.addListener("execute", fsm.eventListener, fsm);
       
@@ -92,9 +92,9 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       //Create textfield
       var textField = new qx.ui.form.TextField;
       textField.set(
-        {
-          width     : 200
-        });
+      {
+        width     : 200
+      });
       hBox.add(textField);
 
       //Only enable add button if there is something in the textfield
@@ -195,11 +195,26 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       switch(requestType)
       {
  
+      case "onEntry" :
+        if (response.data.result == "false") 
+        {
+          //Permission group name already exists
+          alert("An error occurred trying to get the permission groups.");
+          break;
+        }
+        
+        //Got the array of permission groups 
+        //Convert to a data Array.
+        var dataArray = new qx.data.Array(response.data.result);
+        
+        list1.add(dataArray);
+        break; 
+ 
       case "pGroupNameAdded" : 
         if (response.data.result == "false") 
         {
           //Permission group name already exists
-          alert("An error occurred trying to add this permission group.")
+          alert("An error occurred trying to add this permission group.");
           break;
         }
 

@@ -80,13 +80,13 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
             
           },
           
-          // When we get an appear event, retrieve the category tags list. We
-          // only want to do it the first time, though, so we use a predicate
-          // to determine if it's necessary.
+          // When we get an appear event, retrieve the permission group 
+          // name list. We only want to do it the first time, though, so  
+          // we use a predicate to determine if it's necessary.
           "appear"    :
           {
-            //"main.canvas" : 
-              //qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
+            "main.canvas" : 
+              qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
           },
 
           // When we get a disappear event
@@ -100,10 +100,58 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
       // Replace the initial Idle state with this one
       fsm.replaceState(state, true);
 
+      /*
+       * Transition: Idle to Idle
+       *
+       * Cause: "appear" on canvas
+       *
+       * Action:
+       *  If this is the very first appear, retrieve the permission
+       *  group name list.
+       */
 
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_appear",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "predicate" : function(fsm, event)
+        {
+          // Have we already been here before?
+          if (fsm.getUserData("noUpdate"))
+          {
+            // Yup. Don't accept this transition and no need to check further.
+            return null;
+          }
+          
+          // Prevent this transition from being taken next time.
+          fsm.setUserData("noUpdate", true);
+          
+          // Accept this transition
+          return true;
+        },
+
+        "ontransition" : function(fsm, event)
+        {   
+         //Call to retrive the permission group name list
+        var request =
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "getPermissionGroups",
+                         []);
+                         
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "onEntry");
+        }
+      });
+
+      state.addTransition(trans);
+      
       // The following transitions have a predicate, so must be listed first
 
-      
       /*
        * Transition: Idle to Awaiting RPC Result
        *
@@ -158,47 +206,6 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
       });
 
       state.addTransition(trans);
-      
-      /*
-       * Transition: Idle to Idle
-       *
-       * Cause: "appear" on canvas
-       *
-       * Action:
-       *  If this is the very first appear, retrieve the category list.
-       */
-
-      trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_appear",
-      {
-        "nextState" : "State_AwaitRpcResult",
-
-        "context" : this,
-
-        "predicate" : function(fsm, event)
-        {
-          // Have we already been here before?
-          if (fsm.getUserData("noUpdate"))
-          {
-            // Yup. Don't accept this transition and no need to check further.
-            return null;
-          }
-          
-          // Prevent this transition from being taken next time.
-          fsm.setUserData("noUpdate", true);
-          
-          // Accept this transition
-          return true;
-        },
-
-        "ontransition" : function(fsm, event)
-        {
-         // If we wanted to do something as the page appeared, it would go here.
-        }
-      });
-
-      state.addTransition(trans);
-
 
       /*
        * Transition: Idle to Awaiting RPC Result
