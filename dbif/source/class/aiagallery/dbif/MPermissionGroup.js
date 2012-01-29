@@ -161,7 +161,7 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
           return permissionGroupsList;
      },
 
- /**
+   /**
      * Get a specific permission group
      *
      * @param pGroupName {String}

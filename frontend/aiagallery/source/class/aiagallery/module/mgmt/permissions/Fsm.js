@@ -63,7 +63,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
           "changeSelection" :
           {
             //When a user selects a project group on list1 this is called
-            "pgroups" : qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
+            "pgroups" : "Transition_Idle_to_AwaitRpcResult_via_list1"
           },
         
           // On the clicking of a button, execute is fired
@@ -86,7 +86,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
           "appear"    :
           {
             "main.canvas" : 
-              qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
+              "Transition_Idle_to_AwaitRpcResult_via_appear"
           },
 
           // When we get a disappear event

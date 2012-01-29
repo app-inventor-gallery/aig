@@ -114,27 +114,27 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       hBox.add(groupbox);
 
       // create and add the lists. Store them in an array.
-      var list = new qx.ui.form.List();
-      list.setWidth(150);
-      list.addListener("changeSelection", fsm.eventListener, fsm);
+      var list1 = new qx.ui.form.List();
+      list1.setWidth(150);
+      list1.addListener("changeSelection", fsm.eventListener, fsm);
       
       //Disable delete/save button unless something is selected
-      list.addListener("changeSelection", function(e) 
+      list1.addListener("changeSelection", function(e) 
       {
-        var bEnable = list.getSelection().length != 0;
+        var bEnable = (list1.getSelection().length != 0);
         savePermissionGroup.setEnabled(bEnable);
         deletePermissionGroup.setEnabled(bEnable)
       }, this); 
 
-      groupbox.add(list);
-      fsm.addObject("pgroups", list, "main.fsmUtils.disable_during_rpc");     
+      groupbox.add(list1);
+      fsm.addObject("pgroups", list1, "main.fsmUtils.disable_during_rpc");     
 
-      list = new qx.ui.form.List();
-      list.setWidth(150);
-      list.addListener("changeSelection", fsm.eventListener, fsm);
+      list2 = new qx.ui.form.List();
+      list2.setWidth(150);
+      list2.addListener("changeSelection", fsm.eventListener, fsm);
 
       //Allow user to select multiple items
-      list.setSelectionMode("multi");
+      list2.setSelectionMode("multi");
 
       //Create a data array of possible permissions
       var pDataArray = new qx.data.Array(["addOrEditApp", "deleteApp", 
@@ -146,10 +146,10 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       //Create controller to add data to list2
       var permissionController
       this.permissionController 
-        = new qx.data.controller.List(pDataArray, list); 
+        = new qx.data.controller.List(pDataArray, list2); 
         
-      groupbox.add(list);
-      fsm.addObject("permissions", list, "main.fsmUtils.disable_during_rpc");
+      groupbox.add(list2);
+      fsm.addObject("permissions", list2, "main.fsmUtils.disable_during_rpc");
 
       // Add to the page
       canvas.add(hBox);
@@ -176,6 +176,9 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       var             requestType = rpcRequest.getUserData("requestType");
       var             result;
       var             textField = fsm.getObject("pGroupName");
+      var             delBtn = fsm.getObject("deletePerm");
+      var             saveBtn = fsm.getObject("savePerm");
+      var             addBtn = fsm.getObject("addPerm"); 
       
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -204,10 +207,36 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         }
         
         //Got the array of permission groups 
-        //Convert to a data Array.
-        var dataArray = new qx.data.Array(response.data.result);
+        //If the array is not empty we need to do something
+        var pArray = response.data.result;
         
-        list1.add(dataArray);
+        for (var i = 0; i < pArray.length; i++)
+        {
+          //Add to list
+          var pName = new qx.ui.form.ListItem(pArray[i].name);   
+          list1.add(pName)
+          
+          //Select it
+          list1.setSelection([pName]); 
+          
+          //Convert to a data Array.
+          var dataArray = new qx.data.Array(pArray[i].permissions);
+        
+          //Set Selectiong using controller
+          this.permissionController.setSelection(dataArray); 
+        }
+        
+        //There was nothing in the array make sure buttons are disabled
+        //They should be disabled, but they are not in this case
+        if (pArray.length == 0)
+        {
+          delBtn.setEnabled(false); 
+          saveBtn.setEnabled(false); 
+        }
+        
+        //Ensure Add Btn is disabled
+        addBtn.setEnabled(false);
+   
         break; 
  
       case "pGroupNameAdded" : 
@@ -227,6 +256,9 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         
         //Clear textField
         textField.setValue("");
+        
+        //Ensure Add Btn is disabled
+        addBtn.setEnabled(false);
         
         break; 
 

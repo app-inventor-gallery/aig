@@ -30,7 +30,7 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
           "permissions" : ["addOrEditApp", "deleteApp", 
                          "getAppListAll", "addComment", "deleteComment", 
                          "flagIt", "likesPlusOne"],
-           "description" : "Some permissions"
+          "description" : "Some permissions"
         }
       },
       "visitors" : 
