@@ -197,16 +197,18 @@ else
     "Find Apps",
     aiagallery.module.dgallery.findapps.FindApps);
 
+/*
   new aiagallery.main.Module(
     "My Apps",
     "aiagallery/module/emblem-favorite.png",
-    "Old (ugly)",
+    "Old (table-based)",
     aiagallery.module.dgallery.mystuff.MyStuff);
+*/
 
   new aiagallery.main.Module(
     "My Apps",
     "aiagallery/module/emblem-favorite.png",
-    "New (not yet operational)",
+    "My Apps",
     aiagallery.module.dgallery.myapps.MyApps);
 }
 
