@@ -167,15 +167,15 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
               }
             ]
           };
-		  
-		  //Execute the query
-		  permissionGroupsList = liberated.dbif.Entity.query(
-		                            "aiagallery.dbif.ObjPermissionGroup",
+          
+          //Execute the query
+          permissionGroupsList = liberated.dbif.Entity.query(
+                                    "aiagallery.dbif.ObjPermissionGroup",
                                      criteria,
                                      null);
-									 
-		  //Return the permission group list
-		  return permissionGroupsList;
+                                     
+          //Return the permission group list
+          return permissionGroupsList;
      },
 
  /**
@@ -186,7 +186,7 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
      *
      * @return {PermissionGroup || Error}
      *   This returns the actual permission group object, 
-	 *   or an error if something went wrong
+     *   or an error if something went wrong
      *
      */
      getPermissionGroup : function(pGroupName)

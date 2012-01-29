@@ -66,9 +66,9 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       hBox.add(savePermissionGroup);
       savePermissionGroup.addListener("execute", fsm.eventListener, fsm);
 
-	  //Disable button on startup 
-	  savePermissionGroup.setEnabled(false); 
-	  
+      //Disable button on startup 
+      savePermissionGroup.setEnabled(false); 
+      
       // We'll be receiving events on the object so save its friendly name
       fsm.addObject("savePerm", savePermissionGroup, "main.fsmUtils.disable_during_rpc");
 
@@ -82,10 +82,10 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         });
       hBox.add(deletePermissionGroup);
       deletePermissionGroup.addListener("execute", fsm.eventListener, fsm);
-	  
-	  //Disable button on startup 
+      
+      //Disable button on startup 
       deletePermissionGroup.setEnabled(false);
-	  
+      
       // We'll be receiving events on the object so save its friendly name
       fsm.addObject("deletePerm", deletePermissionGroup, "main.fsmUtils.disable_during_rpc");
       
@@ -117,13 +117,13 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       var list = new qx.ui.form.List();
       list.setWidth(150);
       list.addListener("changeSelection", fsm.eventListener, fsm);
-	  
-	  //Disable delete/save button unless something is selected
-	  list.addListener("changeSelection", function(e) 
+      
+      //Disable delete/save button unless something is selected
+      list.addListener("changeSelection", function(e) 
       {
-		//var label = e.getData().isSelectionEmpty(); 
-        //savePermissionGroup.setEnabled(label != "");
-		//deletePermissionGroup.setEnabled(label != "")
+        var bEnable = list.getSelection().length != 0;
+        savePermissionGroup.setEnabled(bEnable);
+        deletePermissionGroup.setEnabled(bEnable)
       }, this); 
 
       groupbox.add(list);
@@ -136,18 +136,18 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       //Allow user to select multiple items
       list.setSelectionMode("multi");
 
-	  //Create a data array of possible permissions
-	  var pDataArray = new qx.data.Array(["addOrEditApp", "deleteApp", 
-	                     "getAppListAll", "addComment", "deleteComment", 
-						 "flagIt", "addOrEditVisitor", "deleteVisitor", 
-						 "getVisitorList", "likesPlusOne", 
-						 "getDatabaseEntities"]);
-	  
-	  //Create controller to add data to list2
-	  var permissionController
-	  this.permissionController 
-	    = new qx.data.controller.List(pDataArray, list); 
-	    
+      //Create a data array of possible permissions
+      var pDataArray = new qx.data.Array(["addOrEditApp", "deleteApp", 
+                         "getAppListAll", "addComment", "deleteComment", 
+                         "flagIt", "addOrEditVisitor", "deleteVisitor", 
+                         "getVisitorList", "likesPlusOne", 
+                         "getDatabaseEntities"]);
+      
+      //Create controller to add data to list2
+      var permissionController
+      this.permissionController 
+        = new qx.data.controller.List(pDataArray, list); 
+        
       groupbox.add(list);
       fsm.addObject("permissions", list, "main.fsmUtils.disable_during_rpc");
 
@@ -170,19 +170,13 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
     handleResponse : function(module, rpcRequest)
     {
       var             fsm = module.fsm;
-	  var             deleteBtn = fsm.getObject("deletePerm");
-	  var             saveBtn = fsm.getObject("savePerm");
       var             list1 = fsm.getObject("pgroups");
       var             list2 = fsm.getObject("permissions");
       var             response = rpcRequest.getUserData("rpc_response");
       var             requestType = rpcRequest.getUserData("requestType");
       var             result;
-	  var             textField = fsm.getObject("pGroupName");
-
-	  //Set both buttons as disabled
-	  deleteBtn.setEnabled(false);
-	  saveBtn.setEnabled(false);
-	  
+      var             textField = fsm.getObject("pGroupName");
+      
       // We can ignore aborted requests.
       if (response.type == "aborted")
       {
@@ -205,75 +199,59 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         if (response.data.result == "false") 
         {
           //Permission group name already exists
-		  alert("An error occurred trying to add this permission group.")
+          alert("An error occurred trying to add this permission group.")
           break;
         }
 
         //Creation was a success add to list. 
         var pName = new qx.ui.form.ListItem(response.data.result.name);        
         list1.add(pName);	
-		
-		//Select on list
-		list1.setSelection([pName]); 
-		
-		//Clear textField
-		textField.setValue("");
-		
-		//Enable buttons
-		deleteBtn.setEnabled(true);
-		saveBtn.setEnabled(true); 	
-
+        
+        //Select on list
+        list1.setSelection([pName]); 
+        
+        //Clear textField
+        textField.setValue("");
+        
         break; 
 
       case "pGroupNameDeleted" :
         if (response.data.result == "false") 
         {
           //Delete failed
-		  alert("An error occurred trying to delete this permission group.")
+          alert("An error occurred trying to delete this permission group.")
           break;
         }
         
         //Permission group was deleted remove it from the list
         list1.remove(list1.getSelection()[0]);
-
-		//If there are no remaining permission groups
-		//on list1 disable delete and save button
-		if (list1.getChildren().length == 0) 
-		{
-		  deleteBtn.setEnabled(false);
-		  saveBtn.setEnabled(false); 		  
-		}
-		
-		//Clear all current selections on list 2 (the list of permissions)
-		list2.resetSelection(); 
-		
+        
+        //Clear all current selections on list 2 (the list of permissions)
+        list2.resetSelection(); 
+        
          break; 
 
       case "pGroupChanged" :
-	  
-	    if (response.data.result == "false") 
+      
+        if (response.data.result == "false") 
         {
           //Could not find the selected pGroup. Oops
-		  alert("An error occurred trying get info about this permission group.")
+          alert("An error occurred trying get info about this permission group.")
           break;
         }		
-						
-		//Clear all current selections on list 2 (the list of permissions)
-		list2.resetSelection(); 
-		
-		//Make things easier to read
-		var returnedList = response.data.result.permissions;
-		
-		//Convert to a data Array.
-		var dataArray = new qx.data.Array(returnedList);
-		
-		//Set Selectiong using controller
-		this.permissionController.setSelection(dataArray); 
-		
-		//Enable buttons
-		deleteBtn.setEnabled(true);
-		saveBtn.setEnabled(true); 	
-		
+                        
+        //Clear all current selections on list 2 (the list of permissions)
+        list2.resetSelection(); 
+        
+        //Make things easier to read
+        var returnedList = response.data.result.permissions;
+        
+        //Convert to a data Array.
+        var dataArray = new qx.data.Array(returnedList);
+        
+        //Set Selectiong using controller
+        this.permissionController.setSelection(dataArray); 
+        
         break; 
 
       default:

@@ -60,12 +60,12 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
 
         "events" :
         {
-		  "changeSelection" :
-		  {
-		    //When a user selects a project group on list1 this is called
-		    "pgroups" : qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
-		  },
-		
+          "changeSelection" :
+          {
+            //When a user selects a project group on list1 this is called
+            "pgroups" : qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
+          },
+        
           // On the clicking of a button, execute is fired
           "execute" :
           {
@@ -103,15 +103,15 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
 
       // The following transitions have a predicate, so must be listed first
 
-	  
-	  /*
+      
+      /*
        * Transition: Idle to Awaiting RPC Result
        *
        * Cause: User clicked on a permission group on list1
        *
        * Action:
        *  Take the string name currently selected and get the current
-	   *  list of permissions attached to this group
+       *  list of permissions attached to this group
        */
         
       trans = new qx.util.fsm.Transition(
@@ -120,8 +120,8 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
         "nextState" : "State_AwaitRpcResult",
 
         "context" : this,
-		
-		"predicate" : function(fsm, event)
+        
+        "predicate" : function(fsm, event)
         {
           if (fsm.getObject("pgroups").getSelection().length == 0)
           {
@@ -158,7 +158,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
       });
 
       state.addTransition(trans);
-	  
+      
       /*
        * Transition: Idle to Idle
        *
@@ -305,7 +305,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
         {
           //Get selected name 
           var pName = fsm.getObject("pgroups");
-		  
+          
           pName = pName.getSelection()[0].getLabel();
 
           //Get selected permissions
@@ -313,12 +313,12 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
           pSelected = pSelected.getSelection();
 
           var pList = new Array();
-		  
+          
           for (var i = 0; i < pSelected.length; i++)
           {
             pList.push(pSelected[i].getLabel());
           }
-		   
+           
 
           //Update on DB
           // Issue the remote procedure call to execute the query
