@@ -282,8 +282,23 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
         bgColor = null;
         break;
 
+      case Status.Unpublished:
+        color = "darkgray";
+        bgColor = null;
+        break;
+
+      case Status.Invalid:
+        color = "white";
+        bgColor = "red";
+        break;
+
       case Status.Incomplete:
         color = "red";
+        bgColor = null;
+        break;
+
+      case Status.Editing:
+        color = "orange";
         bgColor = null;
         break;
 
@@ -296,16 +311,6 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
       case Status.Processing:
         color = "black";
         bgColor = "yellow";
-        break;
-
-      case Status.Invalid:
-        color = "white";
-        bgColor = "red";
-        break;
-
-      case Status.Unpublished:
-        color = "darkgray";
-        bgColor = null;
         break;
       }
 
