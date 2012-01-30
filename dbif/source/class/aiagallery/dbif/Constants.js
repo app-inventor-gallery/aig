@@ -40,11 +40,12 @@ qx.Class.define("aiagallery.dbif.Constants",
       Banned      : 0,
       Pending     : 1,
       Active      : 2,
-      Incomplete  : 3,
-      Uploading   : 4,
-      Processing  : 5,
-      Invalid     : 6,
-      Unpublished : 7
+      Unpublished : 3,
+      Invalid     : 4,
+      Incomplete  : 5,
+      Editing     : 6,
+      Uploading   : 7,
+      Processing  : 8
     },
     
     /** Reverse mapping of status: values to names */
@@ -53,11 +54,12 @@ qx.Class.define("aiagallery.dbif.Constants",
       "Banned", 
       "Under review",
       "Active",
-      "Incomplete",
-      "Uploading",
-      "Processing",
+      "Unpublished",
       "Invalid",
-      "Unpublished"
+      "Incomplete",
+      "Editing",
+      "Uploading",
+      "Processing"
     ],
 
     /** Mapping of FlagType names to values */
