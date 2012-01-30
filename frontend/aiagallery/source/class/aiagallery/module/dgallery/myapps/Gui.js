@@ -202,6 +202,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
             var             usefulAppData = {};
             var             usefulFields =
               [
+                "uid",
                 "image1", 
                 "title", 
                 "description", 
