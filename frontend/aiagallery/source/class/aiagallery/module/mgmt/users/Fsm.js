@@ -286,7 +286,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
-                         "getVisitorList",
+                         "getVisitorListAndPGroups",
                          [ true ]);
 
           // When we get the result, we'll need to know what type of request

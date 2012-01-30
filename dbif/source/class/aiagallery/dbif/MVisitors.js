@@ -25,6 +25,10 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     this.registerService("aiagallery.features.editProfile",
                          this.editProfile,
                          [ "profileParams" ]);
+
+    this.registerService("aiagallery.features.getVisitorListAndPGroups",
+                         this.editProfile,
+                         [ "bStringize" ]);
   },
   
   statics :
@@ -282,6 +286,35 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       // We need to return something. true is as good as anything else.
       return true;
-    }
+    },
+
+    getVisitorListAndPGroups : function(bStringize)
+    {
+      var             visitor;
+      var             visitorList;
+      
+      // For each visitor...
+      visitorList = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors");
+
+      // If we were asked to stringize the values...
+      if (bStringize)
+      {
+        // ... then do so
+        for (visitor in visitorList)
+        {
+          var             thisGuy = visitorList[visitor];
+          thisGuy.permissions = 
+            thisGuy.permissions ? thisGuy.permissions.join(", ") : "";
+          thisGuy.status =
+            [ "Banned", "Pending", "Active" ][thisGuy.status];
+        }
+      }
+
+      // Get the current list of permission groups
+      var pGroupList = aiagallery.dbif.MPermissionGroup.getPermissionGroups();
+      
+      // We've built the whole list. Return it.
+      return visitorList;
+    },
   }
 });
