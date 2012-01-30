@@ -84,6 +84,7 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
         this.tr("DisplayName"),
         this.tr("Email"),
         this.tr("Permissions"),
+        this.tr("Permission Groups"),
         this.tr("Status")
       ].forEach(function(label)
         {
@@ -152,6 +153,46 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
       
       cellEditor.add(permissions, { row : 2, column : 1 });
 
+      // Create the editor field for permission groups
+      var pGroups = new qx.ui.form.List();
+      pGroups.setHeight(140);
+      pGroups.setSelectionMode("multi");
+
+      // Add each of the permission group values
+      qx.lang.Object.getKeys(aiagallery.dbif.Constants.Permissions).forEach(
+        function(perm) 
+        {          
+          // Pull the permission description into the variable description
+          var description = aiagallery.dbif.Constants.Permissions[perm];
+
+          // Create a ListItem with the permission group name and description
+          var item = new qx.ui.form.ListItem(description + " (" + perm + ")");
+
+          // Set the internal name of the permission to equal the display name
+          item.setUserData("internal", perm);
+
+          // Set "description" in userdata of the permission to be the 
+          // description of the permission.
+          item.setUserData("description", description); 
+
+          // Create a tooltip that describes the permission, then attach it to 
+          // the List Item
+          var tooltip = new qx.ui.tooltip.ToolTip(description);
+          item.setToolTip(tooltip);
+
+          // Add the list item with the attached tool tip to the list
+          pGroups.add(item);
+          
+          // permission group currently assigned to the user being edited?
+          if (qx.lang.Array.contains(permissionList, perm))
+          {
+            // Yup. Add it to the selection list
+            pGroups.addToSelection(item);
+          }
+        });
+      
+      cellEditor.add(pGroups, { row : 3, column : 1 });
+
       var status = new qx.ui.form.SelectBox();
 
       // Add each of the status values by pulling the array from Constants.js
@@ -179,12 +220,13 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
           }
         });
       
-      cellEditor.add(status, { row : 3, column : 1 });
+      cellEditor.add(status, { row : 4, column : 1 });
       
       // Save the input fields for access by getCellEditorValue() and the FSM
       cellEditor.setUserData("displayName", displayName);
       cellEditor.setUserData("email", email);
       cellEditor.setUserData("permissions", permissions);
+      cellEditor.setUserData("pgroups", pGroups)
       cellEditor.setUserData("status", status);
 
       // buttons

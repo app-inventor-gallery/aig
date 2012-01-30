@@ -434,6 +434,15 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
               internal.permissions.push(item.getUserData("internal"));
             
             });
+          //Add permissionGroup data 
+          selection = cellEditor.getUserData("pgroups").getSelection();
+          selection.forEach(
+            function(item)
+            {
+              // Add to our p-group list the "internal" (English) permission
+              internal.permissions.push(item.getUserData("internal"));
+            
+            });
           selection = cellEditor.getUserData("status").getSelection()[0];
           internal.status = selection.getUserData("internal");
           
@@ -570,6 +579,10 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           // string, and add it it to the row data
           permissions = internal.permissions.join(", ");
           rowData.push(permissions);
+
+          //FIXME add permission group info 
+          //permissionGroups = internal.permissionGroups.join(", ");
+          //rowData.push(permissionGroups)
           
           // Add the status to the row data
           rowData.push(internal.status);

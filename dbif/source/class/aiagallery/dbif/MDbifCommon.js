@@ -327,7 +327,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
             {
 
               // Retrieve the list of permissions it gives me
-              data = new aiagallery.dbif.ObjPermissonGriou(group).getData();
+              data = new aiagallery.dbif.ObjPermissonGroup(group).getData();
               permissionArr = data["permissions"];
 
               // Same as standard check: does this group contain this method?
