@@ -26,6 +26,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
     {
       var             o;
       var             app;
+      var             hBox;
       var             fsm = module.fsm;
       var             canvas = module.canvas;
       var             header;
@@ -34,6 +35,16 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       this.group.setAllowEmptySelection(true);
 
       canvas.setLayout(new qx.ui.layout.VBox());
+
+      // Add an Add New Apps button, left-justified
+      hBox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+      o = new qx.ui.form.Button("Add New App");
+      hBox.add(o);
+      hBox.add(new qx.ui.core.Spacer(), { flex : 1 });
+      canvas.add(hBox);
+
+      // Leave a bit of space
+      canvas.add(new qx.ui.core.Spacer(12, 12));
 
       // Create a header
       header = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
