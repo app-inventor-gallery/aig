@@ -40,17 +40,21 @@ qx.Class.define("aiagallery.dbif.Constants",
       Banned      : 0,
       Pending     : 1,
       Active      : 2,
-      Processing  : 3,
-      Invalid     : 4,
-      Unpublished : 5
+      Incomplete  : 3,
+      Uploading   : 4,
+      Processing  : 5,
+      Invalid     : 6,
+      Unpublished : 7
     },
     
     /** Reverse mapping of status: values to names */
     StatusToName :
     [
       "Banned", 
-      "Pending",
+      "Under review",
       "Active",
+      "Incomplete",
+      "Uploading",
       "Processing",
       "Invalid",
       "Unpublished"
