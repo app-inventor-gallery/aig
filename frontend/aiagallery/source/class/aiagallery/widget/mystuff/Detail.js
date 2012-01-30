@@ -10,7 +10,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 {
   extend : qx.ui.container.Composite,
 
-  construct : function(fsm)
+  construct : function(fsm, container)
   {
     var             o;
     var             hBox;
@@ -23,8 +23,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     this.base(arguments);
 
-    // Save the finite state machine reference
+    // Save the finite state machine reference and our container
     this.__fsm = fsm;
+    this.__container = container;
 
     // Retrieve the list of categories, at least one of which must be selected
     categoryList =
@@ -52,6 +53,17 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     // Add the fields
     //
     
+    // UID (never displayed, but part of the data model)
+    o = new qx.ui.form.Spinner();
+    o.set(
+      {
+        visibility : "excluded",
+        maximum    : Number.MAX_VALUE
+      });
+    form.add(o, "UID", null, "uid", null,
+             { row : 0, column : 100 });
+    this.spinUid = o;
+
     // Title
     o = new qx.ui.form.TextField();
     o.set(
@@ -61,7 +73,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       });
     form.add(o, "Title", null, "title", null,
              { row : 0, column : 0, colSpan : 6 });
-    fsm.addObject("txt_title", o);
+    this.txtTitle = o;
 
     // Description
     o = new qx.ui.form.TextArea();
@@ -74,7 +86,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       });
     form.add(o, "Description", null, "description", null,
              { row : 1, column : 0, colSpan : 6, rowSpan : 2 });
-    fsm.addObject("txt_description", o);
+    this.txtDescription = o;
 
     // Create a temporary container for a spacer, a label, and a spacer
     tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
@@ -103,7 +115,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
              { row : 3, column : 0, rowSpan : 5 });
     this.categoryController = new qx.data.controller.List(
       new qx.data.Array(categoryList), o);
-    fsm.addObject("lst_categories", o);
+    this.lstCategories = o;
     
     // Tag to add
     o = new qx.ui.form.TextField();
@@ -123,7 +135,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       });
     form.add(o, "", null, "newTag", null,
              { row : 4, column : 2 });
-    fsm.addObject("txt_newTag", o);
+    this.txtNewTag = o;
 
 
     // Button to add a tag
@@ -134,7 +146,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         maxHeight : 24
       });
     form.addButton(o, { row : 5, column : 3 });
-    fsm.addObject("but_addTag", o);
+    this.butAddTag = o;
 
     // Button to delete selected tag(s)
     o = new qx.ui.form.Button("Delete");
@@ -144,7 +156,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         maxHeight : 24
       });
     form.addButton(o, { row : 7, column : 5 });
-    fsm.addObject("but_deleteTag", o);
+    this.butDeleteTag = o;
 
     // Application-specific tags
     o = new qx.ui.form.List();
@@ -156,7 +168,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       });
     form.add(o, "", null, "tags", null,
              { row : 4, column : 4, rowSpan : 3 });
-    fsm.addObject("lst_tags", o);
+    this.lstTags = o;
     
 
     // Change file name
@@ -169,7 +181,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       });
     o.getChildControl("label").setRich(true);
     form.addButton(o, { row : 0, column : 6 });
-    fsm.addObject("but_selectSourceFile", o);
+    this.butSelectSourceFile = o;
     
     // Source file name
     // Title
@@ -183,14 +195,16 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       "focus",
       function(e)
       {
-        var             button = fsm.getObject("but_selectSourceFile");
-        this.blur();
+        var             button = this.butSelectSourceFile;
+
+        o.blur();
         button.focus();
         button.execute();
-      });
+      },
+      this);
     form.add(o, null, null, "sourceFileName", null,
              { row : 1, column : 6 });
-    fsm.addObject("txt_sourceFileName", o);
+    this.txtSourceFileName = o;
     
     // Image1
     o = new aiagallery.widget.mystuff.FormImage("Select Image");
@@ -204,7 +218,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     // When the file name changes, begin retrieving the file data
 //    o.addListener("changeFileName", fsm.eventListener, fsm);
 
-    fsm.addObject("img_image1", o);
+    this.imgImage1 = o;
 
     //
     // Add the buttons at the end
@@ -216,8 +230,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       "execute",
       function(e)
       {
-        var             controller;
-        var             model;
+        var             modelObj;
+        var             field;
 
         // Is the form complete and ready for submission? First test basic
         // validation.
@@ -227,37 +241,122 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
           return;
         }
         
-        // Ensure that a source file has been selected
+        // Retrieve data model
+        modelObj = 
+          qx.util.Serializer.toNativeObject(this.controller.createModel());
         
-
-        // Prepare to retrieve data model
-        controller = new qx.data.controller.Form(null, form);
-        model = controller.createModel();
-        this.debug("model=" + qx.util.Serializer.toJson(model));
+        // Check each field in the model to see if it has changed since the
+        // original model was created (when the "appear" event occurred). If
+        // it has not changed, remove it from our current model object. What
+        // we'll be left with is only fields that have changed (and the uid).
+        for (field in modelObj)
+        {
+          if (field == "uid")
+          {
+            // Do not delete the uid field
+            continue;
+          }
+          else if (qx.lang.Type.isArray(modelObj[field]))
+          {
+            if (qx.lang.Array.equals(modelObj[field], this.origModelObj[field]))
+            {
+              delete modelObj[field];
+            }
+          }
+          else if (modelObj[field] == this.origModelObj[field])
+          {
+            delete modelObj[field];
+          }
+        }
+        
+        qx.dev.Debug.debugObject(modelObj, "changed fields");
       },
       this);
     form.addButton(o);
-    fsm.addObject("but_saveApp", o);
+    this.butSaveApp = o;
     
 /*
     // Publish
     o = new qx.ui.form.Button("Publish");
     form.addButton(o);
-    fsm.addObject("but_publishApp", o);
+    this.butPublishApp = o;
 */
     
     // Delete
     o = new qx.ui.form.Button("Delete");
     form.addButton(o);
-    fsm.addObject("but_deleteApp", o);
+    this.butDeleteApp = o;
 
     // Create the rendered form and add it to the HBox
     formRendered = new aiagallery.widget.mystuff.DetailRenderer(form);
     hBox.add(formRendered);
+    
+    // Give the detail time to render, and then create the
+    // controller. Creating the controller is a slow process.
+    this.addListener(
+      "appear",
+      function(e)
+      {
+        qx.util.TimerManager.getInstance().start(
+          function()
+          {
+            var             model;
+
+            this.controller = new qx.data.controller.Form(null, form);
+            model = this.controller.createModel();
+            this.origModelObj = qx.util.Serializer.toNativeObject(model);
+            this.origModelJson = qx.util.Serializer.toJson(model);
+          },
+          null,
+          this,
+          null,
+          100);
+      },
+      this);
+    
+    this.addListener(
+      "disappear",
+      function(e)
+      {
+        var             modelJson;
+
+        // If they're editing something that's known to be incomplete...
+        if (this.__container.getStatus() == 
+            aiagallery.dbif.Constants.Status.Incomplete)
+        {
+          // ... then just leave the status as is
+          return;
+        }
+
+        // Has the json version of the model been built yet?
+        if (! this.origModelJson)
+        {
+          // Nope. This was a quick open/close, so nothing more to do
+          return;
+        }
+        
+        // Retrieve data model and convert to JSON format
+        modelJson = qx.util.Serializer.toJson(this.controller.createModel());
+        
+        // Has anything changed
+        if (modelJson != this.origModelJson)
+        {
+          this.__container.setStatus(aiagallery.dbif.Constants.Status.Editing);
+        }
+      },
+      this);
+
   },
   
   properties :
   {
+    uid :
+    {
+      nullable : false,
+      init     : null,
+      apply    : "_applyUid"
+    },
+
     title :
     {
       check : "String",
@@ -291,22 +390,30 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
   members :
   {
+    __fsm       : null,
+    __container : null,
+
+    _applyUid : function(value, old)
+    {
+      this.spinUid.setValue(value);
+    },
+
     _applyTitle : function(value, old)
     {
-      this.__fsm.getObject("txt_title").setValue(value);
+      this.txtTitle.setValue(value);
     },
     
     _applyDescription : function(value, old)
     {
-      this.__fsm.getObject("txt_description").setValue(value);
+      this.txtDescription.setValue(value);
     },
     
     _applyTags : function(value, old)
     {
       var             categories = [];
       var             categoryList;
-      var             listTags = this.__fsm.getObject("lst_tags");
-      var             listCategories = this.__fsm.getObject("lst_categories");
+      var             listTags = this.lstTags;
+      var             listCategories = this.lstCategories;
 
       // Retrieve the list of categories
       categoryList =
@@ -339,12 +446,12 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     
     _applySourceFileName : function(value, old)
     {
-      this.__fsm.getObject("txt_sourceFileName").setValue(value);
+      this.txtSourceFileName.setValue(value);
     },
 
     _applyImage1 : function(value, old)
     {
-      this.__fsm.getObject("img_image1").setValue(value);
+      this.imgImage1.setValue(value);
     }
   }
 });
