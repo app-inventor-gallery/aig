@@ -197,19 +197,17 @@ else
     "Find Apps",
     aiagallery.module.dgallery.findapps.FindApps);
 
-/*
-  new aiagallery.main.Module(
-    "My Apps",
-    "aiagallery/module/emblem-favorite.png",
-    "Old (table-based)",
-    aiagallery.module.dgallery.mystuff.MyStuff);
-*/
-
   new aiagallery.main.Module(
     "My Apps",
     "aiagallery/module/emblem-favorite.png",
     "My Apps",
     aiagallery.module.dgallery.myapps.MyApps);
+
+  new aiagallery.main.Module(
+    "My Stuff",
+    "aiagallery/module/emblem-favorite.png",
+    "My Stuff",
+    aiagallery.module.dgallery.mystuff.MyStuff);
 }
 
 if (qx.core.Environment.get("qx.debug"))
