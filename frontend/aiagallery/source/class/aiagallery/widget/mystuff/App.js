@@ -35,6 +35,11 @@ qx.Class.define("aiagallery.widget.mystuff.App",
   
   properties :
   {
+    uid :
+    {
+      apply : "_applyUid"
+    },
+
     image1 :
     {
       check : "String",
@@ -109,18 +114,24 @@ qx.Class.define("aiagallery.widget.mystuff.App",
       switch(id)
       {
       case "bar":
-        control = new aiagallery.widget.mystuff.Summary(this.__fsm);
+        control = new aiagallery.widget.mystuff.Summary(this.__fsm, this);
         control.addListener("click", this.toggleValue, this);
         this._add(control, {flex : 1});
         break;
 
       case "container":
-        control = new aiagallery.widget.mystuff.Detail(this.__fsm);
+        control = new aiagallery.widget.mystuff.Detail(this.__fsm, this);
         this._add(control, {flex : 1});
         break;
       }
 
       return control || this.base(arguments, id);
+    },
+    
+    // property apply
+    _applyUid : function(value, old)
+    {
+      this.getChildControl("container").setUid(value);
     },
     
     // property apply
