@@ -167,6 +167,7 @@ qx.Class.define("aiagallery.widget.mystuff.App",
     _applyStatus : function(value, old)
     {
       this.getChildControl("bar").setStatus(value);
+      this.getChildControl("container").setStatus(value);
     },
     
     // property apply

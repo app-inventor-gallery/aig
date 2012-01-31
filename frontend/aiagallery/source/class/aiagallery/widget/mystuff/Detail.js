@@ -335,6 +335,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       function(e)
       {
         var             modelJson;
+        var             snapshotJson;
 
         // If they're editing something that's known to be incomplete...
         if (this.__container.getStatus() == 
@@ -344,11 +345,20 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
           return;
         }
 
+        // Retrieve the model and most recent snapshot, in JSON format
+        modelJson = this.getModelJson();
+        snapshotJson = this.getSnapshotJson();
+
         // Has anything changed
-        // FIXME
-        if (false)
+        if (modelJson != snapshotJson)
         {
+          // Yup. Set the status so they know to come back here to finish it.
           this.__container.setStatus(aiagallery.dbif.Constants.Status.Editing);
+        }
+        else
+        {
+          // Reset the status to what it was originally
+          this.__container.setStatus(this.getOrigStatus());
         }
       },
       this);
@@ -371,6 +381,18 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       nullable : false,
       init     : null,
       apply    : "_applyUid"
+    },
+
+    status :
+    {
+      check : "Number"
+    },
+
+    origStatus :
+    {
+      check    : "Number",
+      nullable : false,
+      init     : null
     },
 
     title :
@@ -517,6 +539,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     {
       // Create a clone of the model
       this._snapshot = qx.lang.Object.clone(this._model, true);
+      
+      // Save the model's status, for resetting the form
+      this.setOrigStatus(this.getStatus());
     },
 
     getModel : function()
@@ -526,7 +551,17 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     getModelJson : function()
     {
-      return qx.lang.Json.stringify(this._model);
+      return qx.lang.Json.stringify(this._model, null, 2);
+    },
+    
+    getSnapshot : function()
+    {
+      return this._snapshot;
+    },
+    
+    getSnapshotJson : function()
+    {
+      return qx.lang.Json.stringify(this._snapshot, null, 2);
     }
   }
 });
