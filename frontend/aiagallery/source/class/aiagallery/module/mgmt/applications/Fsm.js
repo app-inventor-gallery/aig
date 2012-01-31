@@ -70,17 +70,14 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           "execute" :
           {
             // When the Delete Application button is pressed
-            "deleteApp" : "Transition_Idle_to_AwaitRpcResult_via_deleteApp",
-
-            // When the Add Application button is pressed
-            "addApp" : "Transition_Idle_to_AddOrEditApp_via_addApp"
+            "deleteApp" : "Transition_Idle_to_AwaitRpcResult_via_deleteApp"
           },
 
           "cellEditorOpening" :
           {
             // When a cell is double-clicked, or the Edit button is pressed,
             // either of which open a cell editor for the row data
-            "table" : "Transition_Idle_to_AddOrEditApp_via_cellEditorOpening"
+            "table" : "Transition_Idle_to_EditApp_via_cellEditorOpening"
           },
 
           // Request to call some remote procedure call which is specified by
@@ -146,8 +143,7 @@ console.log("mgmt/apps--Transition_Idle_to_AwaitRpcResult_via_deleteApp -- data[
                           "aiagallery.features",
                           "deleteApp",
                           [
-//                            data[1] // ** NEED UID HERE! **
-data.uid
+                            data.uid
                           ]);
 
           // When we get the result, we'll need to know what type of request
@@ -162,57 +158,7 @@ data.uid
       state.addTransition(trans);
 
       /*
-       * Transition: Idle to AddOrEditApp
-       *
-       * Cause: "execute" on "Add Application" button
-       *
-       * Action:
-       *  Open an empty editor to add a new application
-       */
-
-      trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AddOrEditApp_via_addApp",
-      {
-        "nextState" : "State_AddOrEditApp",
-
-        "context" : this,
-
-        "ontransition" : function(fsm, event)
-        {
-          var cellEditor;
-
-          // Retrieve the table object
-          var table = fsm.getObject("table");
-
-          // Get the cell editor factory for all columns of the table
-          var cellEditorFactory =
-            table.getTableColumnModel().getCellEditorFactory(0);
-
-          // Generate a simple cellInfo object
-          var cellInfo = { table : table };
-
-          // Get a cell editor
-          cellEditor = cellEditorFactory.createCellEditor(cellInfo);
-
-          // Make it modal
-          cellEditor.setModal(true);
-
-          // Disallow the window's close button
-          cellEditor.setShowClose(false);
-
-          // Open the cell editor
-          cellEditor.open();
-
-          // Save the cell editor and cell info
-          this.setUserData("cellEditor", cellEditor);
-          this.setUserData("cellInfo", cellInfo);
-        }
-      });
-
-      state.addTransition(trans);
-
-      /*
-       * Transition: Idle to AddOrEditApp
+       * Transition: Idle to EditApp
        *
        * Cause: "cellEditorOpening" on the Table. This can occur as a result
        * of either a press of the "Edit" button, or by double-clicking on the
@@ -223,9 +169,9 @@ data.uid
        */
 
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AddOrEditApp_via_cellEditorOpening",
+        "Transition_Idle_to_EditApp_via_cellEditorOpening",
       {
-        "nextState" : "State_AddOrEditApp",
+        "nextState" : "State_EditApp",
 
         "context" : this,
 
@@ -335,11 +281,11 @@ data.uid
       state.addTransition(trans);
 
       // ------------------------------------------------------------ //
-      // State: AddOrEditApp
+      // State: EditApp
       // ------------------------------------------------------------ //
 
       /*
-       * State: AddOrEditApp
+       * State: EditApp
        *
        * Actions upon entry
        *  - If the event that got us here was "completed", update the GUI
@@ -351,7 +297,7 @@ data.uid
        *    AwaitRpcResult state
        */
 
-      state = new qx.util.fsm.State("State_AddOrEditApp",
+      state = new qx.util.fsm.State("State_EditApp",
       {
         "context" : this,
 
@@ -393,13 +339,13 @@ data.uid
           "execute" :
           {
             // When the Ok button is pressed in the cell editor
-            "ok" : "Transition_AddOrEditApp_to_AwaitRpcResult_via_ok",
+            "ok" : "Transition_EditApp_to_AwaitRpcResult_via_ok",
 
-            "cancel" : "Transition_AddOrEditApp_to_Idle_via_cancel"
+            "cancel" : "Transition_EditApp_to_Idle_via_cancel"
           },
 
           // When we received a "completed" event on RPC
-          "completed" : "Transition_AddOrEditApp_to_Idle_via_completed"
+          "completed" : "Transition_EditApp_to_Idle_via_completed"
         }
       });
 
@@ -416,7 +362,7 @@ data.uid
        */
 
       trans = new qx.util.fsm.Transition(
-        "Transition_AddOrEditApp_to_AwaitRpcResult_via_ok",
+        "Transition_EditApp_to_AwaitRpcResult_via_ok",
       {
         "nextState" : "State_AwaitRpcResult",
 
@@ -426,8 +372,9 @@ data.uid
         {
           var             cellEditor;
           var             cellInfo;
-          var             displayName;
-          var             email;
+          var             uid;
+          var             appTitle;
+          var             description;
           var             selection;
           var             internal = { permissions : [], status : null };
           var             request;
@@ -437,52 +384,44 @@ data.uid
           cellInfo = this.getUserData("cellInfo");
 
           // Retrieve the values from the cell editor
-          displayName = cellEditor.getUserData("displayName").getValue();
-          email = cellEditor.getUserData("email").getValue();
-          selection = cellEditor.getUserData("permissions").getSelection();
-          selection.forEach(
-            function(item)
-            {
-              // Add to our permission list the "internal" (English) permission
-              internal.permissions.push(item.getUserData("internal"));
-
-            });
-          selection = cellEditor.getUserData("status").getSelection()[0];
-          internal.status = selection.getUserData("internal");
+          uid            = cellEditor.getUserData("uid");
+          appTitle = cellEditor.getUserData("titleField").getValue();
+          description = cellEditor.getUserData("descriptionField").getValue();
 
           // Save the request data
           var requestData =
             {
-              displayName : displayName,
-              permissions : internal.permissions,
-              status      : internal.status
+              titleField       : appTitle,
+              descriptionField : description
             };
 
-          // Issue a Add Or Edit Application call.
+          // Issue an Add Or Edit Application call.
           request = this.callRpc(fsm,
                      "aiagallery.features",
+// Need new admin edit app feature!
                      "addOrEditApp",
-                     [ email, requestData ]);
+                     [ uid, requestData ]);
 
           // Save the user id in the request data too
-          requestData.email = email;
+          requestData.uid = uid;
 
           // Save the request data
           request.setUserData("requestData", requestData);
 
           // When we get the result, we'll need to know what type of request
           // we made.
+// Fixme too.
           request.setUserData("requestType", "AddOrEditApp");
 
-          // Save the permissions and status
-          request.setUserData("internal", internal);
+//          // Save the permissions and status
+//          request.setUserData("internal", internal);
         }
       });
 
       state.addTransition(trans);
 
       /*
-       * Transition: AddOrEditApp to Idle
+       * Transition: EditApp to Idle
        *
        * Cause: "execute" on the Cancel button in the cell editor
        *
@@ -491,7 +430,7 @@ data.uid
        */
 
       trans = new qx.util.fsm.Transition(
-        "Transition_AddOrEditApp_to_Idle_via_cancel",
+        "Transition_EditApp_to_Idle_via_cancel",
       {
         "nextState" : "State_Idle",
 
@@ -533,16 +472,16 @@ data.uid
       state.addTransition(trans);
 
       /*
-       * Transition: AddOrEditApp to Idle
+       * Transition: EditApp to Idle
        *
        * Cause: "completed" event from RPC
        *
        * Action:
-       *  Write the edited or added User data to the table
+       *  Write the edited App data to the table
        */
 
       trans = new qx.util.fsm.Transition(
-        "Transition_AddOrEditApp_to_Idle_via_completed",
+        "Transition_EditApp_to_Idle_via_completed",
       {
         "nextState" : "State_Idle",
 
