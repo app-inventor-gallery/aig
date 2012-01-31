@@ -309,6 +309,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         // Use the model to reset the form
         this.set(this._snapshot);
+
+        // Reset the status to what it was originally
+        this.__container.setStatus(this.getOrigStatus());
       },
       this);
     form.addButton(o);
