@@ -154,6 +154,9 @@ qx.Class.define("aiagallery.dbif.Constants",
       // [ title ]
       "App submitted" : "Application submitted, being processed",
       
+      // [ title (if available) ]
+      "App incomplete" : "Application submitted but is incomplete",
+
       // [ title, imageNumber ]
       "Invalid image" : "An invalid image was uploaded",
       
