@@ -26,6 +26,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     // Save the finite state machine reference and our container
     this.__fsm = fsm;
     this.__container = container;
+    
+    // Initialize our data model
+    this._model = {};
+    this._snapshot = {};
 
     // Retrieve the list of categories, at least one of which must be selected
     categoryList =
@@ -71,6 +75,13 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         required    : true,
         placeholder : "Enter the application title"
       });
+    o.addListener(
+      "input",
+      function(e)
+      {
+        this._model.title = e.getData();
+      },
+      this);
     form.add(o, "Title", null, "title", null,
              { row : 0, column : 0, colSpan : 6 });
     this.txtTitle = o;
@@ -84,6 +95,13 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         required    : true,
         placeholder : "Enter a brief description"
       });
+    o.addListener(
+      "input",
+      function(e)
+      {
+        this._model.description = e.getData();
+      },
+      this);
     form.add(o, "Description", null, "description", null,
              { row : 1, column : 0, colSpan : 6, rowSpan : 2 });
     this.txtDescription = o;
@@ -111,6 +129,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         selectionMode : "multi",
         required      : true
       });
+    o.addListener("changeSelection", this._changeCategoriesOrTags, this);
     form.add(o, "Categories", null, "categories", null,
              { row : 3, column : 0, rowSpan : 5 });
     this.categoryController = new qx.data.controller.List(
@@ -149,7 +168,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     this.butAddTag = o;
 
     // Button to delete selected tag(s)
-    o = new qx.ui.form.Button("Delete");
+    o = new qx.ui.form.Button("Delete Tag");
     o.set(
       {
         height    : 24,
@@ -166,6 +185,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         selectionMode : "multi",
         required      : false
       });
+    o.addListener("changeSelection", this._changeCategoriesOrTags, this);
     form.add(o, "", null, "tags", null,
              { row : 4, column : 4, rowSpan : 3 });
     this.lstTags = o;
@@ -216,8 +236,13 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
              { row : 3, column : 6, rowSpan : 5 });
 
     // When the file name changes, begin retrieving the file data
-//    o.addListener("changeFileName", fsm.eventListener, fsm);
-
+    o.addListener(
+      "changeFileName",
+      function(e)
+      {
+        this._model.image1 = e.getData();
+      },
+      this);
     this.imgImage1 = o;
 
     //
@@ -225,7 +250,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     //
     
     // Save
-    o = new qx.ui.form.Button("Save");
+    o = new qx.ui.form.Button("Save App");
     o.addListener(
       "execute",
       function(e)
@@ -242,8 +267,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         }
         
         // Retrieve data model
-        modelObj = 
-          qx.util.Serializer.toNativeObject(this.controller.createModel());
+        // FIXME
+        modelObj = this.getModel();
         
         // Check each field in the model to see if it has changed since the
         // original model was created (when the "appear" event occurred). If
@@ -258,23 +283,39 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
           }
           else if (qx.lang.Type.isArray(modelObj[field]))
           {
-            if (qx.lang.Array.equals(modelObj[field], this.origModelObj[field]))
+            if (qx.lang.Array.equals(modelObj[field], this._snapshot[field]))
             {
               delete modelObj[field];
             }
           }
-          else if (modelObj[field] == this.origModelObj[field])
+          else if (modelObj[field] == this._snapshot[field])
           {
             delete modelObj[field];
           }
         }
         
-        qx.dev.Debug.debugObject(modelObj, "changed fields");
+        // Fire an event with the changed data
+qx.dev.Debug.debugObject(modelObj, "changed fields");
+//        this.fireDataEvent("saveApp", modelObj);
       },
       this);
     form.addButton(o);
     this.butSaveApp = o;
+   
+    this.addListener("saveApp", this.__fsm.eventListener, this.__fsm);
     
+    o = new qx.ui.form.Button("Reset");
+    o.addListener(
+      "execute",
+      function(e)
+      {
+        // Use the model to reset the form
+        this.__container.set(this._snapshot);
+      },
+      this);
+    form.addButton(o);
+    this.butReset = o;
+
 /*
     // Publish
     o = new qx.ui.form.Button("Publish");
@@ -283,36 +324,13 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 */
     
     // Delete
-    o = new qx.ui.form.Button("Delete");
+    o = new qx.ui.form.Button("Delete App");
     form.addButton(o);
     this.butDeleteApp = o;
 
     // Create the rendered form and add it to the HBox
     formRendered = new aiagallery.widget.mystuff.DetailRenderer(form);
     hBox.add(formRendered);
-    
-    // Give the detail time to render, and then create the
-    // controller. Creating the controller is a slow process.
-    this.addListener(
-      "appear",
-      function(e)
-      {
-        qx.util.TimerManager.getInstance().start(
-          function()
-          {
-            var             model;
-
-            this.controller = new qx.data.controller.Form(null, form);
-            model = this.controller.createModel();
-            this.origModelObj = qx.util.Serializer.toNativeObject(model);
-            this.origModelJson = qx.util.Serializer.toJson(model);
-          },
-          null,
-          this,
-          null,
-          100);
-      },
-      this);
     
     this.addListener(
       "disappear",
@@ -328,18 +346,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
           return;
         }
 
-        // Has the json version of the model been built yet?
-        if (! this.origModelJson)
-        {
-          // Nope. This was a quick open/close, so nothing more to do
-          return;
-        }
-        
-        // Retrieve data model and convert to JSON format
-        modelJson = qx.util.Serializer.toJson(this.controller.createModel());
-        
         // Has anything changed
-        if (modelJson != this.origModelJson)
+        // FIXME
+        if (false)
         {
           this.__container.setStatus(aiagallery.dbif.Constants.Status.Editing);
         }
@@ -348,6 +357,15 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
   },
   
+  events :
+  {
+    /** Fired when the Save button is pressed, and no validation errors */
+    saveApp : "qx.event.type.Data",
+
+    /** Fired when the Delete button is pressed, and has been confimed */
+    deleteApp : "qx.event.type.Data"
+  },
+
   properties :
   {
     uid :
@@ -393,18 +411,45 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     __fsm       : null,
     __container : null,
 
+    _changeCategoriesOrTags : function(e)
+    {
+      // Initialize to an empty list of selected categories
+      this._model.tags = [];
+      
+      // For each *selected* item in the categories list...
+      this.lstCategories.getSelection().forEach(
+        function(listItem)
+        {
+          // ... add its label to the model list
+          this._model.tags.push(listItem.getLabel());
+        },
+        this);
+
+      // For each and every item in the tags list...
+      this.lstTags.getChildren().forEach(
+        function(listItem)
+        {
+          // ... add its label to the model list
+          this._model.tags.push(listItem.getLabel());
+        },
+        this);
+    },
+
     _applyUid : function(value, old)
     {
+      this._model.uid = value;
       this.spinUid.setValue(value);
     },
 
     _applyTitle : function(value, old)
     {
+      this._model.title = value;
       this.txtTitle.setValue(value);
     },
     
     _applyDescription : function(value, old)
     {
+      this._model.description = value;
       this.txtDescription.setValue(value);
     },
     
@@ -415,6 +460,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       var             listTags = this.lstTags;
       var             listCategories = this.lstCategories;
 
+      // Initialize the model to an empty array
+      this._model.tags = [];
+
       // Retrieve the list of categories
       categoryList =
         qx.core.Init.getApplication().getRoot().getUserData("categories");
@@ -423,6 +471,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       value.forEach(
         function(tagName)
         {
+          // Add the tag to our model
+          this._model.tags.push(tagName);
+
           // Is this tag really a category?
           if (qx.lang.Array.contains(categoryList, tagName))
           {
@@ -438,7 +489,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
             // It's not a category. Add it as a list item.
             listTags.add(new qx.ui.form.ListItem(tagName));
           }
-        });
+        },
+        this);
       
       // Select the categories for this app
       this.categoryController.setSelection(new qx.data.Array(categories));
@@ -446,12 +498,30 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     
     _applySourceFileName : function(value, old)
     {
+      this._model.sourceFileName = value;
       this.txtSourceFileName.setValue(value);
     },
 
     _applyImage1 : function(value, old)
     {
+      this._model.image1 = value;
       this.imgImage1.setValue(value);
+    },
+    
+    snapshotModel : function()
+    {
+      // Create a clone of the model
+      this._snapshot = qx.lang.Object.clone(this._model, true);
+    },
+
+    getModel : function()
+    {
+      return this._model;
+    },
+
+    getModelJson : function()
+    {
+      return qx.lang.Json.stringify(this._model);
     }
   }
 });

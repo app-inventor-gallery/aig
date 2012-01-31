@@ -64,13 +64,8 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
 
         "events" :
         {
-          // On the clicking of a button, execute is fired
-          "execute" :
-          {
-            
-            "queryBtn" : "Transition_Idle_to_AwaitRpcResult_via_query"
-            
-          },
+          // On the clicking of a Save button in an app's Detail editing area
+          "saveApp" : "Transition_Idle_to_AwaitRpcResult_via_saveApp",
           
           // When we get an appear event, retrieve the category tags list. We
           // only want to do it the first time, though, so we use a predicate
@@ -92,8 +87,6 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
       // Replace the initial Idle state with this one
       fsm.replaceState(state, true);
 
-
-      // The following transitions have a predicate, so must be listed first
 
       /*
        * Transition: Idle to Idle
@@ -150,14 +143,14 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
         /*
        * Transition: Idle to Awaiting RPC Result
        *
-       * Cause: "Search" button pressed
+       * Cause: Save button was pressed, and Detail form validates
        *
        * Action:
-       *  Initiate a request for the list of  matching applications.
+       *  Initiate a request save the changed data
        */
         
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_query",
+        "Transition_Idle_to_AwaitRpcResult_via_saveApp",
       {
         "nextState" : "State_AwaitRpcResult",
 
@@ -165,27 +158,22 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          var             criteria;
-          var             criterium;
+          var             model = event.getData();
           var             request;
-          var             selection;
-
-
 
           // Issue the remote procedure call to execute the query
           request =
             this.callRpc(fsm,
                          "aiagallery.features",
-                         "mobileRequest",
+                         "addOrEditApp",
                          [
-
-                          fsm.getObject("queryField").getValue()
-                           
-                        ]);
+                           model.uid,
+                           model
+                         ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "mobileRequest");
+          request.setUserData("requestType", "addOrEditApp");
 
         }
       });
@@ -217,15 +205,6 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
       state.addTransition(trans);
 
       
-      // ------------------------------------------------------------ //
-      // State: <some other state>
-      // ------------------------------------------------------------ //
-
-      // put state and transitions here
-
-
-
-
       // ------------------------------------------------------------ //
       // State: AwaitRpcResult
       // ------------------------------------------------------------ //
