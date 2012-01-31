@@ -533,7 +533,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             image;
       var             previousAuthors;
       var             source;
-      var             apk;
       var             tags;
       var             tagObj;
       var             tagData;
@@ -555,34 +554,21 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             addedBlobs = [];
       var             removeBlobs = [];
       var             sourceData;
-      var             apkData;
       var             image1Key;
       var             image2Key;
       var             image3Key;
       var             sourceKey = null;
-      var             apkKey = null;
+      var             field;
       var             requestData;
       var             allowableFields =
         [
           "uid",
-          "owner",
           "title",
           "description",
           "image1",
-          "image2",
-          "image3",
-          "previousAuthors",
           "source",
           "sourceFileName",
-          "apk",
-          "apkFileName",
-          "tags",
-          "uploadTime",
-          "numLikes",
-          "numDownloads",
-          "numViewed",
-          "numComments",
-          "status"
+          "tags"
         ];
       var             requiredFields =
         [
@@ -638,76 +624,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         // Set the application owner
         attributes.owner = whoami.email;
 
-        // Save the existing tags list
-        oldTags = appData.tags;
-
-        // If there's no image1 value...
-        if (! attributes.image1)
-        {
-          // ... then move image3 or image2 to image1
-          if (attributes.image3)
-          {
-            attributes.image1 = attributes.image3;
-            attributes.image3 = null;
-          }
-          else
-          {
-            // image2 may not exist either, which will be caught in the
-            // code that detects missing fields.
-            attributes.image1 = attributes.image2;
-            attributes.image2 = null;
-          }
-        }
-
-        // Similarly, if there's no image2 value...
-        if (! attributes.image2)
-        {
-          // ... then move image3 to image2. (Again, it may not exist.)
-          attributes.image2 = attributes.image3;
-          attributes.image3 = null;
-        }
-
-        // Copy fields from the attributes parameter into this db record
-        allowableFields.forEach(
-          function(field)
-          {
-            // Was this field provided in the parameter attributes?
-            if (attributes[field])
-            {
-              // Handle source and apk fields specially
-              switch(field)
-              {
-              case "source":
-                // Save the field data
-                sourceData = attributes.source;
-                break;
-
-              case "apk":
-                // Save the field data
-                apkData = attributes.apk;
-                break;
-
-              case "image1":
-              case "image2":
-              case "image3":
-                // Indicate that this is a new image. It will be processed later
-                appData[field] = attributes[field];
-                appData["new" + field] = attributes[field];
-                break;
-
-              default:
-                // Replace what's in the db entry
-                appData[field] = attributes[field];
-                break;
-              }
-            }
-            else if (qx.lang.Array.contains(requiredFields, field))
-            {
-              // Mark the required field as missing
-              missing.push(field);
-            }
-          });
-
         // Issue a query for all category tags
         categories = liberated.dbif.Entity.query("aiagallery.dbif.ObjTags", 
                                                  {
@@ -724,39 +640,86 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             return o.value;
           });
 
-        // Ensure that at least one of the specified tags is a category
-        bHasCategory = false;
-        tags = appData.tags;
-        for (i = 0; i < tags.length; i++)
-        {
-          // Is this tag a category?
-          if (qx.lang.Array.contains(categories, tags[i]))
+        // Save the existing tags list
+        oldTags = appData.tags;
+
+        // Copy fields from the attributes parameter into this db record
+        allowableFields.forEach(
+          function(field)
           {
-            // Yup. Mark it.
-            bHasCategory = true;
+            // Was this field provided in the parameter attributes?
+            if (attributes[field])
+            {
+              // Handle source field specially
+              switch(field)
+              {
+              case "source":
+                // Save the field data
+                sourceData = attributes.source;
+                break;
 
-            // No need to look further.
-            break;
-          }
-        }
+              case "image1":
+                // Indicate that this is a new image. It will be processed later
+                appData[field] = attributes[field];
+                appData["new" + field] = attributes[field];
+                break;
 
-        // Were there any missing, required fields?
-        if (missing.length > 0)
-        {
-          // Yup. Let 'em know.
-          error.setCode(4);
-          error.setMessage("Please make sure to provide: " +
-                           missing.join(", "));
-          return error;
-        }
+              case "tags":
+                // Replace what's in the db entry
+                appData[field] = attributes[field];
 
-        // Did we find at least one category tag?
-        if (! bHasCategory)
+                // Ensure that at least one of the specified tags is a category
+                bHasCategory = false;
+                tags = appData.tags;
+                for (i = 0; i < tags.length; i++)
+                {
+                  // Is this tag a category?
+                  if (qx.lang.Array.contains(categories, tags[i]))
+                  {
+                    // Yup. Mark it.
+                    bHasCategory = true;
+
+                    // No need to look further.
+                    break;
+                  }
+                }
+                break;
+
+              default:
+                // Replace what's in the db entry
+                appData[field] = attributes[field];
+                break;
+              }
+            }
+          });
+
+        // If tags were specified, did we find at least one category tag?
+        if (attributes.tags && ! bHasCategory)
         {
           // Nope. Let 'em know.
           error.setCode(3);
           error.setMessage("At least one category is required");
           return error;
+        }
+
+        // See if any fields are missing
+        for (field in appData)
+        {
+          if (qx.lang.Array.contains(requiredFields, field))
+          {
+            // Mark the required field as missing
+            missing.push(field);
+          }
+        }
+        
+        // Were there any missing, required fields?
+        if (missing.length > 0)
+        {
+          status = aiagallery.dbif.Constants.Status.Incomplete;
+        }
+        else
+        {
+          status = aiagallery.dbif.Constants.Status.Processing;
         }
 
         // If a new source file was uploaded...
@@ -773,19 +736,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
           // Save the blob id to remove it, in case something fails
           addedBlobs.push(sourceKey);
-        }
-
-        // Similarly for apk data
-        if (apkData)
-        {
-          // Save the data
-          apkKey = liberated.dbif.Entity.putBlob(apkData);
-          
-          // Prepend the blob id to the key list of new apk files
-          appData.newapk.unshift(apkKey);
-
-          // Save the blob id to remove it, in case something fails
-          addedBlobs.push(apkKey);
         }
       }
       catch(e)
@@ -806,64 +756,76 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         appData = liberated.dbif.Entity.asTransaction(
           function()
           {
-            // Add new tags to the database, and update counts of formerly-
-            // existing tags. Remove "normal" tags with a count of 0.
-            appData.tags.forEach(
-              function(tag)
-              {
-                // If the tag existed previously, ignore it.
-                if (qx.lang.Array.contains(oldTags, tag))
+            // If tags were provided...
+            if (attributes.tags)
+            {
+              // Add new tags to the database, and update counts of formerly-
+              // existing tags. Remove "normal" tags with a count of 0.
+              appData.tags.forEach(
+                function(tag)
                 {
-                  // Remove it from oldTags
-                  qx.lang.Array.remove(oldTags, tag);
-                  return;
-                }
+                  // If the tag existed previously, ignore it.
+                  if (qx.lang.Array.contains(oldTags, tag))
+                  {
+                    // Remove it from oldTags
+                    qx.lang.Array.remove(oldTags, tag);
+                    return;
+                  }
 
-                // It didn't exist. Create or retrieve existing tag.
-                tagObj = new aiagallery.dbif.ObjTags(tag);
-                tagData = tagObj.getData();
+                  // It didn't exist. Create or retrieve existing tag.
+                  tagObj = new aiagallery.dbif.ObjTags(tag);
+                  tagData = tagObj.getData();
 
-                // If we created it, data is initialized. Otherwise...
-                if (! tagObj.getBrandNew())
+                  // If we created it, data is initialized. Otherwise...
+                  if (! tagObj.getBrandNew())
+                  {
+                    // ... it existed, so we need to increment its count
+                    ++tagData.count;
+                  }
+
+                  // Save the tag object
+                  tagObj.put();
+                });
+
+              // Anything left in oldTags are those which were removed.
+              oldTags.forEach(
+                function(tag)
                 {
-                  // ... it existed, so we need to increment its count
-                  ++tagData.count;
-                }
+                  tagObj = new aiagallery.dbif.ObjTags(tag);
+                  tagData = tagObj.getData();
 
-                // Save the tag object
-                tagObj.put();
-              });
+                  // The record has to exist already. Decrement this tag's
+                  // count.
+                  --tagData.count;
 
-            // Anything left in oldTags are those which were removed.
-            oldTags.forEach(
-              function(tag)
-              {
-                tagObj = new aiagallery.dbif.ObjTags(tag);
-                tagData = tagObj.getData();
+                  // Ensure it's a "normal" tag
+                  if (tagData.type != "normal")
+                  {
+                    // It's not, so we have nothing more we need to do.
+                    return;
+                  }
 
-                // The record has to exist already. Decrement this tag's count.
-                --tagData.count;
-
-                // Ensure it's a "normal" tag
-                if (tagData.type != "normal")
-                {
-                  // It's not, so we have nothing more we need to do.
-                  return;
-                }
-
-                // If the count is less than 1...
-                if (tagData.count < 1)
-                {
-                  // ... then we can remove the tag
-                  tagObj.removeSelf();
-                }
-              });
-
-            // Set the status to "PROCESSING" until the post-processing is done.
-            appData.status = aiagallery.dbif.Constants.Status.Processing;
+                  // If the count is less than 1...
+                  if (tagData.count < 1)
+                  {
+                    // ... then we can remove the tag
+                    tagObj.removeSelf();
+                  }
+                });
+            }
 
             // Save this record in the database
             appObj.put();
+
+            // If there were were missing fields...
+            if (appData.status != aiagallery.dbif.Constants.Status.Processing)
+            {
+              // ... then add a log entry so they know the app is incomplete
+              this.logMessage(appData.owner, "App incomplete", appData.title);
+
+              // Return partial data including newly-created key (if adding)
+              return appObj.getData();
+            }
 
             // Add all words in text fields to word Search record
             aiagallery.dbif.MApps._populateSearch(appObj.getData());
@@ -955,40 +917,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
                     // Remove the old blob
                     liberated.dbif.Entity.removeBlob(sourceBlobId);
-                  }
-
-                  // See if there are any apk files to process.
-                  if (appData.newapk.length > 0)
-                  {
-                     // There are. They were unshifted() onto their array, so
-                     // pop() them off to get them in FIFO order.
-                    sourceBlobId = appData.newapk.pop();
-
-                    // Retrieve the blob
-                    fileData = liberated.dbif.Entity.getBlob(sourceBlobId);
-
-                    // Decode the data
-                    fileData = aiagallery.dbif.Decoder64.decode(fileData);
-
-                    // Write it to a new blob
-                    destBlobId = liberated.dbif.Entity.putBlob(fileData);
-
-                    // Add the new blob id to the source blob list
-                    appData.apk.unshift(destBlobId);
-
-                    // Remove the old blob
-                    liberated.dbif.Entity.removeBlob(sourceBlobId);
-
-                    // Push a message to the client to let 'em know the change
-                    // of status
-                    this._messageToClient(
-                      appData.owner,
-                      {
-                        type   : "app.postupload",
-                        title  : appData.title,
-                        appId  : appData.uid,
-                        status : appData.status
-                      });
                   }
                 },
                 this);
