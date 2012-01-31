@@ -50,19 +50,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
       hBox.add(edit);
       fsm.addObject("edit", edit);
 
-      // Create an Add Application button
-      var addApp = new qx.ui.form.Button(this.tr("Add Application"));
-      addApp.set(
-        {
-          maxHeight : 24,
-          width     : 100
-        });
-      hBox.add(addApp);
-      addApp.addListener("execute", fsm.eventListener, fsm);
-
-      // We'll be receiving events on the object so save its friendly name
-      fsm.addObject("addApp", addApp, "main.fsmUtils.disable_during_rpc");
-
       // Now right-justify the Delete button
       hBox.add(new qx.ui.core.Widget(), { flex : 1 });
 
