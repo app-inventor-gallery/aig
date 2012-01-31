@@ -24,24 +24,35 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
      */
     buildGui : function(module)
     {
-      var             o;
       var             fsm = module.fsm;
-      var             canvas = module.canvas;
-      var             rowData;
-
-      // Live mode. Retrieve data from the backend.
-      rowData = [];
+      
+      // Layout vars
+      var             canvas = module.canvas;   
+      var             layout;
+      var             hBox;
+      
+      // Button vars
+      var             addPermissionGroup;
+      var             savePermissionGroup;
+      var             deletePermissionGroup;
+      
+      // GUI Elements
+      var             pGroupNameField; 
+      var             pGroupInfo; 
+      var             pGroupNameList;
+      var             possiblePermissionList;
+      var             pDataArray; 
 
       // Create a layout for this page
       canvas.setLayout(new qx.ui.layout.VBox());   
 
       // We'll left-justify some buttons in a button row
-      var layout = new qx.ui.layout.HBox();
+      layout = new qx.ui.layout.HBox();
       layout.setSpacing(10);      
-      var hBox = new qx.ui.container.Composite(layout);
+      hBox = new qx.ui.container.Composite(layout);
 
       // Create an Add Permission button
-      var addPermissionGroup = new qx.ui.form.Button(this.tr("Add Permission Group"));
+      addPermissionGroup = new qx.ui.form.Button(this.tr("Add Permission Group"));
       addPermissionGroup.set(
       {
         maxHeight : 24,
@@ -54,10 +65,11 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       addPermissionGroup.setEnabled(false);
       
       // We'll be receiving events on the object so save its friendly name
-      fsm.addObject("addPerm", addPermissionGroup, "main.fsmUtils.disable_during_rpc");
+      fsm.addObject("addPermissionGroup", 
+         addPermissionGroup, "main.fsmUtils.disable_during_rpc");
 
       // Create an Update Permission Group button
-      var savePermissionGroup = new qx.ui.form.Button(this.tr("Save"));
+      savePermissionGroup = new qx.ui.form.Button(this.tr("Save"));
       savePermissionGroup.set(
       {
         maxHeight : 24,
@@ -70,10 +82,11 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       savePermissionGroup.setEnabled(false); 
       
       // We'll be receiving events on the object so save its friendly name
-      fsm.addObject("savePerm", savePermissionGroup, "main.fsmUtils.disable_during_rpc");
+      fsm.addObject("savePermissionGroup", 
+         savePermissionGroup, "main.fsmUtils.disable_during_rpc");
 
       // Create a Delete button
-      var deletePermissionGroup = new qx.ui.form.Button(this.tr("Delete"));
+      deletePermissionGroup = new qx.ui.form.Button(this.tr("Delete"));
       deletePermissionGroup.set(
       {
         maxHeight : 24,
@@ -87,69 +100,77 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       deletePermissionGroup.setEnabled(false);
       
       // We'll be receiving events on the object so save its friendly name
-      fsm.addObject("deletePerm", deletePermissionGroup, "main.fsmUtils.disable_during_rpc");
+      fsm.addObject("deletePermissionGroup", 
+         deletePermissionGroup, "main.fsmUtils.disable_during_rpc");
       
       //Create textfield
-      var textField = new qx.ui.form.TextField;
-      textField.set(
+      pGroupNameField = new qx.ui.form.TextField;
+      pGroupNameField.set(
       {
         width     : 200
       });
-      hBox.add(textField);
+      hBox.add(pGroupNameField);
 
       //Only enable add button if there is something in the textfield
-      textField.addListener("input", function(e) 
+      pGroupNameField.addListener("input", function(e) 
       {
         var value = e.getData();
         addPermissionGroup.setEnabled(value.length > 0);
+        
+        // Deselect all values on the permission list
+        possiblePermissionList.resetSelection(); 
+        
+        // Deselet all pgroup names
+        pGroupNameList.resetSelection(); 
+        
       }, this); 
 
       //Create friendly name to get it from the FSM
-      fsm.addObject("pGroupName", textField,"main.fsmUtils.disable_during_rpc");
+      fsm.addObject("pGroupNameField", 
+         pGroupNameField,"main.fsmUtils.disable_during_rpc");
 
       // Create a set of finder-style multi-level browsing lists
-      var groupbox = new qx.ui.groupbox.GroupBox("Permission Groups");
-      groupbox.setLayout(new qx.ui.layout.HBox());
-      groupbox.setContentPadding(0);
-      hBox.add(groupbox);
+      pGroupInfo = new qx.ui.groupbox.GroupBox("Permission Groups");
+      pGroupInfo.setLayout(new qx.ui.layout.HBox());
+      pGroupInfo.setContentPadding(0);
+      hBox.add(pGroupInfo);
 
       // create and add the lists. Store them in an array.
-      var list1 = new qx.ui.form.List();
-      list1.setWidth(150);
-      list1.addListener("changeSelection", fsm.eventListener, fsm);
+      pGroupNameList = new qx.ui.form.List();
+      pGroupNameList.setWidth(150);
+      pGroupNameList.addListener("changeSelection", fsm.eventListener, fsm);
       
       //Disable delete/save button unless something is selected
-      list1.addListener("changeSelection", function(e) 
+      pGroupNameList.addListener("changeSelection", function(e) 
       {
-        var bEnable = (list1.getSelection().length != 0);
+        var bEnable = (pGroupNameList.getSelection().length != 0);
         savePermissionGroup.setEnabled(bEnable);
         deletePermissionGroup.setEnabled(bEnable)
       }, this); 
 
-      groupbox.add(list1);
-      fsm.addObject("pgroups", list1, "main.fsmUtils.disable_during_rpc");     
+      pGroupInfo.add(pGroupNameList);
+      fsm.addObject("pGroupNameList", 
+        pGroupNameList, "main.fsmUtils.disable_during_rpc");     
 
-      list2 = new qx.ui.form.List();
-      list2.setWidth(150);
-      list2.addListener("changeSelection", fsm.eventListener, fsm);
+      possiblePermissionList = new qx.ui.form.List();
+      possiblePermissionList.setWidth(150);
+      possiblePermissionList.addListener("changeSelection", 
+        fsm.eventListener, fsm);
 
       //Allow user to select multiple items
-      list2.setSelectionMode("multi");
+      possiblePermissionList.setSelectionMode("multi");
 
       //Create a data array of possible permissions
-      var pDataArray = new qx.data.Array(["addOrEditApp", "deleteApp", 
-                         "getAppListAll", "addComment", "deleteComment", 
-                         "flagIt", "addOrEditVisitor", "deleteVisitor", 
-                         "getVisitorList", "likesPlusOne", 
-                         "getDatabaseEntities"]);
+      pDataArray = new qx.data.Array
+       (qx.lang.Object.getKeys(aiagallery.dbif.Constants.Permissions));
       
-      //Create controller to add data to list2
-      var permissionController
+      //Create controller to add data to possiblePermissionList
       this.permissionController 
-        = new qx.data.controller.List(pDataArray, list2); 
+        = new qx.data.controller.List(pDataArray, possiblePermissionList); 
         
-      groupbox.add(list2);
-      fsm.addObject("permissions", list2, "main.fsmUtils.disable_during_rpc");
+      pGroupInfo.add(possiblePermissionList);
+      fsm.addObject("possiblePermissionList", 
+        possiblePermissionList, "main.fsmUtils.disable_during_rpc");
 
       // Add to the page
       canvas.add(hBox);
@@ -170,15 +191,17 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
     handleResponse : function(module, rpcRequest)
     {
       var             fsm = module.fsm;
-      var             list1 = fsm.getObject("pgroups");
-      var             list2 = fsm.getObject("permissions");
+      var             pGroupNameList = fsm.getObject("pGroupNameList");
+      var             possiblePermissionList = 
+                        fsm.getObject("possiblePermissionList");
+                        
       var             response = rpcRequest.getUserData("rpc_response");
       var             requestType = rpcRequest.getUserData("requestType");
       var             result;
-      var             textField = fsm.getObject("pGroupName");
-      var             delBtn = fsm.getObject("deletePerm");
-      var             saveBtn = fsm.getObject("savePerm");
-      var             addBtn = fsm.getObject("addPerm"); 
+      var             pGroupNameField = fsm.getObject("pGroupNameField");
+      var             delBtn = fsm.getObject("deletePermissionGroup");
+      var             saveBtn = fsm.getObject("savePermissionGroup");
+      var             addBtn = fsm.getObject("addPermissionGroup"); 
       
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -198,26 +221,22 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       switch(requestType)
       {
  
-      case "onEntry" :
-        if (response.data.result == "false") 
-        {
-          //Permission group name already exists
-          alert("An error occurred trying to get the permission groups.");
-          break;
-        }
-        
+      case "appear" :
+      
         //Got the array of permission groups 
         //If the array is not empty we need to do something
         var pArray = response.data.result;
+        
+        //pArray.forEach(function)
         
         for (var i = 0; i < pArray.length; i++)
         {
           //Add to list
           var pName = new qx.ui.form.ListItem(pArray[i].name);   
-          list1.add(pName)
+          pGroupNameList.add(pName);
           
           //Select it
-          list1.setSelection([pName]); 
+          pGroupNameList.setSelection([pName]); 
           
           //Convert to a data Array.
           var dataArray = new qx.data.Array(pArray[i].permissions);
@@ -228,41 +247,58 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         
         //There was nothing in the array make sure buttons are disabled
         //They should be disabled, but they are not in this case
-        if (pArray.length == 0)
-        {
-          delBtn.setEnabled(false); 
-          saveBtn.setEnabled(false); 
-        }
-        
+        delBtn.setEnabled(pArray.length != 0); 
+        saveBtn.setEnabled(pArray.length != 0); 
+
         //Ensure Add Btn is disabled
         addBtn.setEnabled(false);
    
         break; 
  
-      case "pGroupNameAdded" : 
+      case "addOrEditOrGetPermissionGroup" : 
         if (response.data.result == "false") 
         {
-          //Permission group name already exists
-          alert("An error occurred trying to add this permission group.");
+          // Permission group name already exists
+          alert("The selected Permission Group has already been deleted.");
+          
+          // Permission group was deleted remove it from the list
+          pGroupNameList.remove(pGroupNameList.getSelection()[0]);
+          
+          // Clear all current selections on list 2 (the list of permissions)
+          possiblePermissionList.resetSelection(); 
+          
           break;
         }
 
-        //Creation was a success add to list. 
+        // Creation was a success add to list. 
         var pName = new qx.ui.form.ListItem(response.data.result.name);        
-        list1.add(pName);	
+        pGroupNameList.add(pName);	
         
-        //Select on list
-        list1.setSelection([pName]); 
+        // Select on list
+        pGroupNameList.setSelection([pName]); 
         
-        //Clear textField
-        textField.setValue("");
+        // Clear textField
+        pGroupNameField.setValue("");
         
-        //Ensure Add Btn is disabled
+        // Possibly returned an existing pGroup
+        // Clear all current selections on the list of permissions
+        possiblePermissionList.resetSelection(); 
+        
+        // Make things easier to read
+        var returnedList = response.data.result.permissions;
+        
+        // Convert to a data Array.
+        var dataArray = new qx.data.Array(returnedList);
+        
+        // Set Selectiong using controller
+        this.permissionController.setSelection(dataArray); 
+            
+        // Ensure Add Btn is disabled
         addBtn.setEnabled(false);
         
         break; 
 
-      case "pGroupNameDeleted" :
+      case "deletePermissionGroup" :
         if (response.data.result == "false") 
         {
           //Delete failed
@@ -271,35 +307,39 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         }
         
         //Permission group was deleted remove it from the list
-        list1.remove(list1.getSelection()[0]);
+        pGroupNameList.remove(pGroupNameList.getSelection()[0]);
         
         //Clear all current selections on list 2 (the list of permissions)
-        list2.resetSelection(); 
+        possiblePermissionList.resetSelection(); 
         
-         break; 
-
-      case "pGroupChanged" :
-      
-        if (response.data.result == "false") 
-        {
-          //Could not find the selected pGroup. Oops
-          alert("An error occurred trying get info about this permission group.")
-          break;
-        }		
-                        
-        //Clear all current selections on list 2 (the list of permissions)
-        list2.resetSelection(); 
-        
-        //Make things easier to read
-        var returnedList = response.data.result.permissions;
-        
-        //Convert to a data Array.
-        var dataArray = new qx.data.Array(returnedList);
-        
-        //Set Selectiong using controller
-        this.permissionController.setSelection(dataArray); 
+        // Ensure Add Btn is disabled
+        addBtn.setEnabled(false);
         
         break; 
+        
+      case "addOrEditOrGetPermissionGroup_changeSelection" :
+      
+        // I need this since if I put it all in one switch I 
+        // Cannot detect a just a changeSelection and thus
+        // it will keep looping         
+      
+        // Clear all current selections on the list of permissions
+        possiblePermissionList.resetSelection(); 
+        
+        // Make things easier to read
+        var returnedList = response.data.result.permissions;
+        
+        // Convert to a data Array.
+        var dataArray = new qx.data.Array(returnedList);
+        
+        // Set Selectiong using controller
+        this.permissionController.setSelection(dataArray); 
+        
+      case "addOrEditOrGetPermissionGroup_save" :
+      
+        // Empty since everything is already set
+
+        break;       
 
       default:
         throw new Error("Unexpected request type: " + requestType);

@@ -63,20 +63,24 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
           "changeSelection" :
           {
             //When a user selects a project group on list1 this is called
-            "pgroups" : "Transition_Idle_to_AwaitRpcResult_via_list1"
+            "pGroupNameList" : 
+              "Transition_Idle_to_AwaitRpcResult_via_changeSelection"
           },
         
           // On the clicking of a button, execute is fired
           "execute" :
           {
             //When a user clicks the add Permission Group button
-            "addPerm" : "Transition_Idle_to_AwaitRpcResult_via_add",
+            "addPermissionGroup" : 
+              "Transition_Idle_to_AwaitRpcResult_via_addPermissionGroup",
 
             //When a user clicks the save button
-            "savePerm" : "Transition_Idle_to_AwaitRpcResult_via_save",
+            "savePermissionGroup" : 
+              "Transition_Idle_to_AwaitRpcResult_via_savePermissionGroup",
 
             //When a user clicks the delete button
-            "deletePerm" : "Transition_Idle_to_AwaitRpcResult_via_delete"
+            "deletePermissionGroup" : 
+              "Transition_Idle_to_AwaitRpcResult_via_deletePermissionGroup"
             
           },
           
@@ -117,22 +121,6 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
 
         "context" : this,
 
-        "predicate" : function(fsm, event)
-        {
-          // Have we already been here before?
-          if (fsm.getUserData("noUpdate"))
-          {
-            // Yup. Don't accept this transition and no need to check further.
-            return null;
-          }
-          
-          // Prevent this transition from being taken next time.
-          fsm.setUserData("noUpdate", true);
-          
-          // Accept this transition
-          return true;
-        },
-
         "ontransition" : function(fsm, event)
         {   
          //Call to retrive the permission group name list
@@ -144,18 +132,17 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
                          
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "onEntry");
+          request.setUserData("requestType", "appear");
         }
       });
 
       state.addTransition(trans);
-      
-      // The following transitions have a predicate, so must be listed first
 
       /*
        * Transition: Idle to Awaiting RPC Result
        *
-       * Cause: User clicked on a permission group on list1
+       * Cause: User clicked on a permission group on the permission
+       * group name list. 
        *
        * Action:
        *  Take the string name currently selected and get the current
@@ -163,7 +150,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
        */
         
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_list1",
+        "Transition_Idle_to_AwaitRpcResult_via_changeSelection",
       {
         "nextState" : "State_AwaitRpcResult",
 
@@ -171,7 +158,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
         
         "predicate" : function(fsm, event)
         {
-          if (fsm.getObject("pgroups").getSelection().length == 0)
+          if (fsm.getObject("pGroupNameList").getSelection().length == 0)
           {
             // Do not use this transition and do not try others
             return null;
@@ -183,25 +170,27 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          //Get selected name 
-          var pName = fsm.getObject("pgroups");
+          // Get selected name 
+          var pName = fsm.getObject("pGroupNameList");
           pName = pName.getSelection()[0].getLabel();
 
-          //Get permission list from DB
+          // Get permission list from DB
           // Issue the remote procedure call to execute the query
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
-                         "getPermissionGroup",
+                         "addOrEditOrGetPermissionGroup",
                         [
 
-                          pName
+                          pName,
+                          ["get"]
                            
                         ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "pGroupChanged");
+          request.setUserData("requestType", 
+            "addOrEditOrGetPermissionGroup_changeSelection");
         }
       });
 
@@ -218,7 +207,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
        */
         
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_add",
+        "Transition_Idle_to_AwaitRpcResult_via_addPermissionGroup",
       {
         "nextState" : "State_AwaitRpcResult",
 
@@ -226,21 +215,33 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
 
         "ontransition" : function(fsm, event)
         {
+        
+          // Get selected permissions
+          var pSelected = fsm.getObject("possiblePermissionList");
+          pSelected = pSelected.getSelection();
+
+          var pList = new Array();
+          
+          for (var i = 0; i < pSelected.length; i++)
+          {
+            pList.push(pSelected[i].getLabel());
+          }
 
           // Issue the remote procedure call to execute the query
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
-                         "addPermissionGroup",
+                         "addOrEditOrGetPermissionGroup",
                          [
 
-                          fsm.getObject("pGroupName").getValue()
+                          fsm.getObject("pGroupNameField").getValue(),
+                          pList
                            
                         ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "pGroupNameAdded");
+          request.setUserData("requestType", "addOrEditOrGetPermissionGroup");
 
         }
       });
@@ -258,7 +259,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
        */
         
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_delete",
+        "Transition_Idle_to_AwaitRpcResult_via_deletePermissionGroup",
       {
         "nextState" : "State_AwaitRpcResult",
 
@@ -268,7 +269,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
         {
 
           //Get the name of the permission group to delete
-          var pName = fsm.getObject("pgroups");
+          var pName = fsm.getObject("pGroupNameList");
           pName = pName.getSelection()[0].getLabel();
 
           // Issue the remote procedure call to execute the query
@@ -284,7 +285,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "pGroupNameDeleted");
+          request.setUserData("requestType", "deletePermissionGroup");
 
         }
       });
@@ -302,7 +303,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
        */
         
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_save",
+        "Transition_Idle_to_AwaitRpcResult_via_savePermissionGroup",
       {
         "nextState" : "State_AwaitRpcResult",
 
@@ -311,12 +312,12 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
         "ontransition" : function(fsm, event)
         {
           //Get selected name 
-          var pName = fsm.getObject("pgroups");
+          var pName = fsm.getObject("pGroupNameList");
           
           pName = pName.getSelection()[0].getLabel();
 
           //Get selected permissions
-          var pSelected = fsm.getObject("permissions");
+          var pSelected = fsm.getObject("possiblePermissionList");
           pSelected = pSelected.getSelection();
 
           var pList = new Array();
@@ -332,7 +333,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
-                         "updatePermissionGroup",
+                         "addOrEditOrGetPermissionGroup",
                         [
 
                           pName, pList
@@ -341,7 +342,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "pGroupChanged");
+          request.setUserData("requestType", "addOrEditOrGetPermissionGroup_save");
         }
       });
 
@@ -369,16 +370,6 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
       });
 
       state.addTransition(trans);
-
-      
-      // ------------------------------------------------------------ //
-      // State: <some other state>
-      // ------------------------------------------------------------ //
-
-      // put state and transitions here
-
-
-
 
       // ------------------------------------------------------------ //
       // State: AwaitRpcResult

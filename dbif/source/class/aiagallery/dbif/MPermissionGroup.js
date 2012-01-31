@@ -10,25 +10,17 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
 {
   construct : function()
   {
-    this.registerService("aiagallery.features.addPermissionGroup",
-                         this.addPermissionGroup,
-                         [ "name" ]);
+    this.registerService("aiagallery.features.addOrEditOrGetPermissionGroup",
+                         this.addOrEditOrGetPermissionGroup,
+                         [ "pGroupName", "pArray" ]);
 
     this.registerService("aiagallery.features.deletePermissionGroup",
                          this.deletePermissionGroup,
-                         [ "name" ]);
-
-    this.registerService("aiagallery.features.updatePermissionGroup",
-                         this.updatePermissionGroup,
-                         [ "name" ]); 
+                         [ "pGroupName" ]);
 
     this.registerService("aiagallery.features.getPermissionGroups",
                          this.getPermissionGroups,
                          []);
-
-    this.registerService("aiagallery.features.getPermissionGroup",
-                         this.getPermissionGroup,
-                         [ "name" ]);
 
   },
 
@@ -36,39 +28,64 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
   {
 
     /**
-     * Create a new permission group
+     * Create a new permission group, edit an existing one, or get
+     * an existing one. 
      *
      * @param pGroupName {String}
      *   This is a string to identify the name of the permission group
+     *
+     * @param pArray {Array}
+     *   An array of strings of permissions
      *
      * @return {PermissionGroup || Error}
      *   This returns the actual permission group object, or an error if
      *   something went wrong
      *
      */
-     addPermissionGroup : function(pGroupName)
+     addOrEditOrGetPermissionGroup : function(pGroupName, pArray)
      {
-        //Create a new permission group
-        //Use default permissions
+        // Create a new permission group
+        // Use default permissions
         var pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
-
-        if (pGroup.getBrandNew() == false)
-        {
-           //Object already exists return error
-           return false;
-        }
  
-        //New permission group, set with default information
-        var pGroupData = pGroup.getData();
+        if (pGroup.getBrandNew())
+        {
+          // New permission group, set with default information
+          var pGroupData = pGroup.getData();
 
-        pGroupData.name = pGroupName;
-        //Empty permission array
-        pGroupData.permissions = []; 
+          pGroupData.name = pGroupName;
+          
+          // Use user supplied permissions
+          pGroupData.permissions = pArray; 
 
-        //Put this on the databse   
-        pGroup.put(); 
+          // Put this on the databse   
+          pGroup.put();
 
-        return pGroupData; 
+          // Return new pGroup Data
+          return pGroupData        
+        } 
+        else 
+        {
+          // Existing Permission Group
+          // Get the data
+          var pGroupData = pGroup.getData();
+ 
+          if (pArray.length == 1 && pArray[0] == "get")
+          {
+            // Doing a single get, just get the data and return
+            return pGroupData; 
+          }
+ 
+          // Update Permisssions
+          pGroupData.permissions = pArray;
+
+          // Put this on the databse   
+          pGroup.put(); 
+
+          // Return updated permission
+          return pGroupData; 
+          
+        }
 
     },
 
@@ -101,47 +118,6 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
     },
 
     /**
-     * Update a permission group
-     *
-     * @param pName {String}
-     *   This is a string to identify the name of the permission group
-     *
-     * @param pArray {Array}
-     *   This is an array of strings with the updated permissions
-     *
-     * @return {PermissionGroup || Error}
-     *   This returns the actual permission group object, or an error if
-     *   something went wrong
-     *
-     */
-     updatePermissionGroup : function(pName, pArray)
-     {
-        //Get the permission group
-        var pGroup = new aiagallery.dbif.ObjPermissionGroup(pName);   
-
-        if (pGroup.getBrandNew() == true)
-        {
-           //Object does not exist return error
-           return false;
-        }
-
-        //Get the data
-        var pGroupData = pGroup.getData();
-
-        //FIXME Ensure permissions exist
- 
-        //Update Permisssions
-        pGroupData.permissions = pArray;
-
-        //Put this on the databse   
-        pGroup.put(); 
-
-        //Return updated permission
-        return pGroupData; 
-
-     },
-
-    /**
      * Get all the permission groups
      *
      * @return {Array || Error}
@@ -153,41 +129,10 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
      {       
           //Execute the query
           var permissionGroupsList = liberated.dbif.Entity.query(
-                                    "aiagallery.dbif.ObjPermissionGroup",
-                                     null,
-                                     null);
+                                    "aiagallery.dbif.ObjPermissionGroup");
                                      
           //Return the permission group list
           return permissionGroupsList;
-     },
-
-   /**
-     * Get a specific permission group
-     *
-     * @param pGroupName {String}
-     *   This is a string to identify the name of the permission group
-     *
-     * @return {PermissionGroup || Error}
-     *   This returns the actual permission group object, 
-     *   or an error if something went wrong
-     *
-     */
-     getPermissionGroup : function(pGroupName)
-     {
-        //Create a new permission group
-        //Use default permissions
-        var pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
-
-        if (pGroup.getBrandNew() == true)
-        {
-           //Object does not exist return error
-           return false;
-        } else {
-           //Object did exist so return its list of permissions
-           return pGroup.getData(); 
-        }
-
-    }
-
-  }
+     }
+   }
 }); 
