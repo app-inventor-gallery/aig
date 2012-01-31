@@ -51,8 +51,10 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
         /** A list of explicit permissions assigned to this user */
         "permissions" : "StringArray",
         
-        /** A list of names of permission groups assigned to this user. Each of
-         *  these groups gives this user additional explicit permissions */
+        /** 
+         * A list of names of permission groups assigned to this user. Each of
+         *  these groups gives this user additional explicit permissions 
+         */
         "permissionGroups" : "StringArray",
 
         /** Active, Pending, or Banned (by their numeric values) */
