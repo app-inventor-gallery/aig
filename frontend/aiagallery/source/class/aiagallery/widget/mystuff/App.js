@@ -107,6 +107,15 @@ qx.Class.define("aiagallery.widget.mystuff.App",
     __fsm : null,
 
     // overridden
+    set : function(data, value)
+    {
+      this.base(arguments, data, value);
+      
+      // Create a snapshot of the Detail container's data
+      this.getChildControl("container").snapshotModel();
+    },
+
+    // overridden
     _createChildControlImpl : function(id)
     {
       var control;
