@@ -79,7 +79,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       "input",
       function(e)
       {
-        this._model.title = e.getData();
+        this.setTitle(e.getData());
       },
       this);
     form.add(o, "Title", null, "title", null,
@@ -99,7 +99,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       "input",
       function(e)
       {
-        this._model.description = e.getData();
+        this.setDescription(e.getData());
       },
       this);
     form.add(o, "Description", null, "description", null,
@@ -240,7 +240,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       "changeFileName",
       function(e)
       {
-        this._model.image1 = e.getData();
+        this.setImage1(e.getData());
       },
       this);
     this.imgImage1 = o;
@@ -267,7 +267,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         }
         
         // Retrieve data model
-        // FIXME
         modelObj = this.getModel();
         
         // Check each field in the model to see if it has changed since the
@@ -295,8 +294,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         }
         
         // Fire an event with the changed data
-qx.dev.Debug.debugObject(modelObj, "changed fields");
-//        this.fireDataEvent("saveApp", modelObj);
+        this.fireDataEvent("saveApp", modelObj);
       },
       this);
     form.addButton(o);
@@ -310,7 +308,7 @@ qx.dev.Debug.debugObject(modelObj, "changed fields");
       function(e)
       {
         // Use the model to reset the form
-        this.__container.set(this._snapshot);
+        this.set(this._snapshot);
       },
       this);
     form.addButton(o);
@@ -413,15 +411,17 @@ qx.dev.Debug.debugObject(modelObj, "changed fields");
 
     _changeCategoriesOrTags : function(e)
     {
+      var             tags;
+
       // Initialize to an empty list of selected categories
-      this._model.tags = [];
+      tags = [];
       
       // For each *selected* item in the categories list...
       this.lstCategories.getSelection().forEach(
         function(listItem)
         {
           // ... add its label to the model list
-          this._model.tags.push(listItem.getLabel());
+          tags.push(listItem.getLabel());
         },
         this);
 
@@ -430,9 +430,11 @@ qx.dev.Debug.debugObject(modelObj, "changed fields");
         function(listItem)
         {
           // ... add its label to the model list
-          this._model.tags.push(listItem.getLabel());
+          tags.push(listItem.getLabel());
         },
         this);
+      
+      this.setTags(tags);
     },
 
     _applyUid : function(value, old)
@@ -466,6 +468,9 @@ qx.dev.Debug.debugObject(modelObj, "changed fields");
       // Retrieve the list of categories
       categoryList =
         qx.core.Init.getApplication().getRoot().getUserData("categories");
+
+      // Clear out the tags list
+      listTags.removeAll();
 
       // For each tag...
       value.forEach(
