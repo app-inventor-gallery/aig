@@ -62,28 +62,34 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
           pGroup.put();
 
           // Return new pGroup Data
-          return pGroupData        
+          return pGroupData;        
         } 
         else 
         {
           // Existing Permission Group
           // Get the data
-          var pGroupData = pGroup.getData();
- 
-          if (pArray.length == 1 && pArray[0] == "get")
+          var returnValue = liberated.dbif.Entity.asTransaction( 
+          function()
           {
-            // Doing a single get, just get the data and return
-            return pGroupData; 
-          }
+            var pGroupData = pGroup.getData();
  
-          // Update Permisssions
-          pGroupData.permissions = pArray;
+            if (pArray.length == 1 && pArray[0] == "get")
+            {
+              // Doing a single get, just get the data and return
+              return pGroupData; 
+            }
+ 
+            // Update Permisssions
+            pGroupData.permissions = pArray;
 
-          // Put this on the databse   
-          pGroup.put(); 
-
+            // Put this on the databse   
+            pGroup.put(); 
+            
+            return pGroupData; 
+          }); 
+          
           // Return updated permission
-          return pGroupData; 
+          return returnValue; 
           
         }
 
