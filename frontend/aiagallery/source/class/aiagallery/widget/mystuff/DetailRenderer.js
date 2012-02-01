@@ -123,6 +123,19 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
         // Add the input field
         this._add(item, position);
 
+        // Keep track of the largest column number used
+        if (position.column < 100 &&
+            position.column + (position.colSpan || 0) > this.__maxCol)
+        {
+          this.__maxCol = position.column + (position.colSpan || 0);
+        }
+
+        // Keep track of the largest row number used
+        if (position.row + (position.rowSpan || 0) > this.__maxRow)
+        {
+          this.__maxRow = position.row + (position.rowSpan || 0);
+        }
+
         // store the names for translation
         if (qx.core.Environment.get("qx.dynlocale")) 
         {
@@ -154,7 +167,7 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
           hBox = new qx.ui.layout.HBox();
           hBox.set(
             {
-              alignX  : "right",
+              alignX  : "center",
               spacing : 5
             });
           this._buttonRow.setLayout(hBox);
@@ -164,7 +177,7 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
                     {
                       row     : this.__maxRow + 1,
                       column  : 0,
-                      colSpan : this.__maxCol
+                      colSpan : this.__maxCol + 1
                     });
         }
 

@@ -235,7 +235,11 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     //
     
     // Save
-    o = new qx.ui.form.Button("Save App");
+    o = new qx.ui.form.Button("Save Application");
+    o.set(
+      {
+        width : 130
+      });
     o.addListener(
       "execute",
       function(e)
@@ -288,6 +292,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     this.addListener("saveApp", this.__fsm.eventListener, this.__fsm);
     
     o = new qx.ui.form.Button("Reset");
+    o.set(
+      {
+        width : 130
+      });
     o.addListener(
       "execute",
       function(e)
@@ -302,15 +310,12 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     form.addButton(o);
     this.butReset = o;
 
-/*
-    // Publish
-    o = new qx.ui.form.Button("Publish");
-    form.addButton(o);
-    this.butPublishApp = o;
-*/
-    
     // Delete
-    o = new qx.ui.form.Button("Delete App");
+    o = new qx.ui.form.Button("Delete Application");
+    o.set(
+      {
+        width : 130
+      });
     form.addButton(o);
     this.butDeleteApp = o;
 
