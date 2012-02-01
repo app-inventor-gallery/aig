@@ -19,12 +19,13 @@ qx.Class.define("aiagallery.widget.mystuff.FormImage",
     qx.ui.form.MForm
   ],
 
-  construct : function(label)
+  construct : function(label, fieldName)
   {
     var             layout;
 
-    // Save the label. The button child control will need it
+    // Save the label and field name. The button child control will need them
     this.label = label;
+    this.fieldName = fieldName;
 
     layout = new qx.ui.layout.VBox(10);
     this.base(arguments, layout);
@@ -93,7 +94,7 @@ qx.Class.define("aiagallery.widget.mystuff.FormImage",
       {
       case "button":
         // Select image
-        control = new uploadwidget.UploadButton("image1", "Select image");
+        control = new uploadwidget.UploadButton(this.fieldName, this.label);
         control.setRich(true);
         this._add(control);
         
