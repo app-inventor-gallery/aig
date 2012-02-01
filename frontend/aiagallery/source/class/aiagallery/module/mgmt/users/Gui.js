@@ -234,8 +234,15 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       case "getVisitorList":
         table = fsm.getObject("table");
         
+        // Split out the data from the map
+        // Save the pgroup info for the cellEditorWindow
+        var pGroups = response.data.result.pGroups; 
+        table.setUserData("pGroups", pGroups);
+        
+        var vistors = response.data.result.visitors; 
+        
         // Set the entire data model given the result array
-        table.getTableModel().setDataAsMapArray(response.data.result);
+        table.getTableModel().setDataAsMapArray(vistors);
         break;
 
       case "addOrEditVisitor":

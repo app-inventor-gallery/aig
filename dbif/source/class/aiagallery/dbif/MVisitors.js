@@ -27,7 +27,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                          [ "profileParams" ]);
 
     this.registerService("aiagallery.features.getVisitorListAndPGroups",
-                         this.editProfile,
+                         this.getVisitorListAndPGroups,
                          [ "bStringize" ]);
   },
   
@@ -288,6 +288,14 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       return true;
     },
 
+    /**
+     * Get all the permission groups and visitors
+     *
+     * @return {Array || Error}
+     *   This a map permission groups and visitors, or an error if
+     *   something went wrong
+     *
+     */
     getVisitorListAndPGroups : function(bStringize)
     {
       var             visitor;
@@ -311,10 +319,17 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       }    
 
       // Get the current list of permission groups
-      var pGroupList = this.aiagallery.dbif.MPermissionGroup.getPermissionGroups();
+      var pGroupList = this.getPermissionGroups(); 
+      
+      //Construct a map
+      var map = 
+      {
+        "visitors" : visitorList,
+        "pGroups" : pGroupList
+      }; 
       
       // We've built the whole list. Return it.
-      return visitorList;
+      return map;
     }
   }
 });

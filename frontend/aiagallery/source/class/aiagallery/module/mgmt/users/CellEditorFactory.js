@@ -59,7 +59,7 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
       cellEditor.setLayout(layout);
       cellEditor.set(
         {
-          width: 600,
+          width: 650,
           modal: true,
           showClose: false,
           showMaximize: false,
@@ -112,7 +112,7 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
       
       // Create the editor field for permissions
       var permissions = new qx.ui.form.List();
-      permissions.setHeight(140);
+      permissions.setHeight(70);
       permissions.setSelectionMode("multi");
 
       // Split the existing permissions so we can easily search for them
@@ -155,21 +155,24 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
 
       // Create the editor field for permission groups
       var pGroups = new qx.ui.form.List();
-      pGroups.setHeight(140);
+      pGroups.setHeight(70);
       pGroups.setSelectionMode("multi");
+      
+      //Get the possible permission groups
+      var pGroupList = cellInfo.table.getUserData("pGroups");
 
       // Add each of the permission group values
-      qx.lang.Object.getKeys(aiagallery.dbif.Constants.Permissions).forEach(
-        function(perm) 
+      pGroupList.forEach(function(perm) 
         {          
           // Pull the permission description into the variable description
-          var description = aiagallery.dbif.Constants.Permissions[perm];
+          var description = perm.description;
 
           // Create a ListItem with the permission group name and description
-          var item = new qx.ui.form.ListItem(description + " (" + perm + ")");
+          var item = new qx.ui.form.ListItem(description + 
+            " (" + perm.permissions + ")");
 
-          // Set the internal name of the permission to equal the display name
-          item.setUserData("internal", perm);
+          // Set the internal name of the pgroup to equal the display name
+          item.setUserData("internal", perm.name);
 
           // Set "description" in userdata of the permission to be the 
           // description of the permission.

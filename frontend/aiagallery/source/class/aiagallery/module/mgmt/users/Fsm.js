@@ -416,6 +416,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           var             displayName;
           var             email;
           var             selection;
+          var             pGroups;
           var             internal = { permissions : [], status : null };
           var             request;
 
@@ -439,7 +440,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           selection.forEach(
             function(item)
             {
-              // Add to our p-group list the "internal" (English) permission
+              // Add to our pGroup list the "internal" (English) permission
               internal.permissions.push(item.getUserData("internal"));
             
             });
