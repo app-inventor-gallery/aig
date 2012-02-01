@@ -12,7 +12,7 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
   {
     this.registerService("aiagallery.features.addOrEditOrGetPermissionGroup",
                          this.addOrEditOrGetPermissionGroup,
-                         [ "pGroupName", "pArray" ]);
+                         [ "pGroupName", "pArray", "getFlag", "descString" ]);
 
     this.registerService("aiagallery.features.deletePermissionGroup",
                          this.deletePermissionGroup,
@@ -37,12 +37,18 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
      * @param pArray {Array}
      *   An array of strings of permissions
      *
+     * @param getFlag {Boolean}
+     *   If true, just return data its a get operation
+     *
+     * @param descString {String}
+     *   The description string
+     *
      * @return {PermissionGroup || Error}
      *   This returns the actual permission group object, or an error if
      *   something went wrong
      *
      */
-     addOrEditOrGetPermissionGroup : function(pGroupName, pArray)
+     addOrEditOrGetPermissionGroup : function(pGroupName, pArray, getFlag, descString)
      {
         // Create a new permission group
         // Use default permissions
@@ -57,6 +63,9 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
           
           // Use user supplied permissions
           pGroupData.permissions = pArray; 
+          
+          // Use user supplied description
+          pGroupData.description = descString; 
 
           // Put this on the databse   
           pGroup.put();
@@ -73,7 +82,7 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
           {
             var pGroupData = pGroup.getData();
  
-            if (pArray.length == 1 && pArray[0] == "get")
+            if (getFlag)
             {
               // Doing a single get, just get the data and return
               return pGroupData; 
@@ -81,6 +90,9 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
  
             // Update Permisssions
             pGroupData.permissions = pArray;
+            
+            // Use user supplied description
+            pGroupData.description = descString; 
 
             // Put this on the databse   
             pGroup.put(); 

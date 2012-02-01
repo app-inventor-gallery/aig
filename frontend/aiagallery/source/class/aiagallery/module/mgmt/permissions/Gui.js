@@ -31,6 +31,8 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       var             canvas = module.canvas;   
       var             layout;
       var             hBox;
+      var             vBoxBtns;
+      var             vBoxText; 
       
       // Button vars
       var             addPermissionGroup;
@@ -39,10 +41,12 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       
       // GUI Elements
       var             pGroupNameField; 
+      var             pGroupDescriptionField; 
       var             pGroupInfo; 
       var             pGroupNameList;
       var             possiblePermissionList;
       var             pDataArray; 
+      var             textFieldLabel
 
       // Create a layout for this page
       canvas.setLayout(new qx.ui.layout.VBox());   
@@ -52,6 +56,11 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       layout.setSpacing(10);      
       hBox = new qx.ui.container.Composite(layout);
 
+      // Create a virtual box for the buttons
+      layout = new qx.ui.layout.VBox();
+      layout.setSpacing(10);      
+      vBoxBtns = new qx.ui.container.Composite(layout);
+      
       // Create an Add Permission button
       addPermissionGroup = 
         new qx.ui.form.Button(this.tr("Add Permission Group"));
@@ -60,7 +69,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         maxHeight : 24,
         width     : 150
       });
-      hBox.add(addPermissionGroup);
+      vBoxBtns.add(addPermissionGroup);
       addPermissionGroup.addListener("execute", fsm.eventListener, fsm);
 
       //Disable button on startup since textfield will be empty
@@ -77,7 +86,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         maxHeight : 24,
         width     : 100
       });
-      hBox.add(savePermissionGroup);
+      vBoxBtns.add(savePermissionGroup);
       savePermissionGroup.addListener("execute", fsm.eventListener, fsm);
 
       //Disable button on startup 
@@ -95,8 +104,10 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         width     : 100,
         enabled   : false
       });
-      hBox.add(deletePermissionGroup);
+      vBoxBtns.add(deletePermissionGroup);
       deletePermissionGroup.addListener("execute", fsm.eventListener, fsm);
+      
+      hBox.add(vBoxBtns);
       
       //Disable button on startup 
       deletePermissionGroup.setEnabled(false);
@@ -105,15 +116,24 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       fsm.addObject("deletePermissionGroup", 
          deletePermissionGroup, "main.fsmUtils.disable_during_rpc");
       
-      //Create textfield
+      // Create a vertical layout just for the two textfields and labels.
+      layout = new qx.ui.layout.VBox();
+      layout.setSpacing(10);      
+      vBoxText = new qx.ui.container.Composite(layout);
+      
+      //Create a label for describing the textfields 
+      textFieldLabel = new qx.ui.basic.Label("Permission Group Name:");
+      vBoxText.add(textFieldLabel);
+      
+      // Create textfield for entering in a pGroup name
       pGroupNameField = new qx.ui.form.TextField;
       pGroupNameField.set(
       {
         width     : 200
       });
-      hBox.add(pGroupNameField);
+      vBoxText.add(pGroupNameField);
 
-      //Only enable add button if there is something in the textfield
+      // Only enable add button if there is something in the textfield
       pGroupNameField.addListener("input", function(e) 
       {
         var value = e.getData();
@@ -127,9 +147,29 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         
       }, this); 
 
-      //Create friendly name to get it from the FSM
+      // Create friendly name to get it from the FSM
       fsm.addObject("pGroupNameField", 
          pGroupNameField,"main.fsmUtils.disable_during_rpc");
+         
+      // Create a textfield to enter a description for the pGroup
+      pGroupDescriptionField = new qx.ui.form.TextField;
+      pGroupNameField.set(
+      {
+        width     : 200
+      });
+      
+      //Create a label for describing the textfields 
+      textFieldLabel = new qx.ui.basic.Label("Description:");
+      vBoxText.add(textFieldLabel);
+      
+      vBoxText.add(pGroupDescriptionField);
+      
+      //Add vertical layout to horizantal layout
+      hBox.add(vBoxText); 
+      
+      // Create friendly name to get it from the FSM
+      fsm.addObject("pGroupDescriptionField", 
+         pGroupDescriptionField,"main.fsmUtils.disable_during_rpc");
 
       // Create a set of finder-style multi-level browsing lists
       pGroupInfo = new qx.ui.groupbox.GroupBox("Permission Groups");
@@ -204,6 +244,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       var             delBtn = fsm.getObject("deletePermissionGroup");
       var             saveBtn = fsm.getObject("savePermissionGroup");
       var             addBtn = fsm.getObject("addPermissionGroup"); 
+      var             pGroupDescriptionField = fsm.getObject("pGroupDescriptionField");
       
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -292,8 +333,9 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         // Select on list
         pGroupNameList.setSelection([pName]); 
         
-        // Clear textField
+        // Clear textFields
         pGroupNameField.setValue("");
+        pGroupDescriptionField.setValue("");
         
         // Possibly returned an existing pGroup
         // Clear all current selections on the list of permissions
@@ -352,7 +394,8 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         
       case "addOrEditOrGetPermissionGroup_save" :
       
-        // Empty since everything is already set
+        // Clear description field
+        pGroupDescriptionField.setValue("");
 
         break;       
 

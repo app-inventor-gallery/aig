@@ -314,6 +314,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         return true;
       }
 
+      var trueFlag = false; 
       // Permission Groups Search
       // Deeper check: Do any of my permission groups give me access to this
       // method?
@@ -325,7 +326,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
           {
 
             // Retrieve the list of permissions it gives me
-            data = new aiagallery.dbif.ObjPermissonGroup(group).getData();
+            data = aiagallery.dbif.DbifSim.prototype.addOrEditOrGetPermissionGroup
+               (group, [], true);
             permissionArr = data["permissions"];
 
             // Same as standard check: does this group contain this method?
@@ -333,14 +335,21 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
                 qx.lang.Array.contains(permissionArr, methodName))
             {
               // Yes, allow me.
+              trueFlag = true;
               return true;
             }
-
+            
             return false;
           });
         
       }
 
+      //Check the allowFlag
+      if (trueFlag != false)
+      {
+        return true;
+      }
+      
       // Did not find this permission, dissalow.
       return false;
 

@@ -184,7 +184,9 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
                         [
 
                           pName,
-                          ["get"]
+                          [],
+                          true,
+                          null
                            
                         ]);
 
@@ -227,6 +229,9 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
           {
             pList.push(pSelected[i].getLabel());
           }
+          
+          // Get the textfield with the description
+          var description = fsm.getObject("pGroupDescriptionField").getValue();
 
           // Issue the remote procedure call to execute the query
           var request =
@@ -236,7 +241,9 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
                          [
 
                           fsm.getObject("pGroupNameField").getValue(),
-                          pList
+                          pList,
+                          false,
+                          description
                            
                         ]);
 
@@ -328,6 +335,8 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
               return listItem.getLabel(); 
             });  
            
+          // Get the textfield with the description
+          var description = fsm.getObject("pGroupDescriptionField").getValue();
 
           // Update on DB
           // Issue the remote procedure call to execute the query
@@ -337,7 +346,10 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
                          "addOrEditOrGetPermissionGroup",
                         [
 
-                          pName, pList
+                          pName, 
+                          pList,
+                          false,
+                          description
                            
                         ]);
 
