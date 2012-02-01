@@ -190,44 +190,29 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
              { row : 4, column : 4, rowSpan : 3 });
     this.lstTags = o;
     
-
-    // Change file name
-    o = new qx.ui.form.Button("Select Source File" + required);
-    o.addListener(
-      "execute",
-      function(e)
-      {
-        this.debug("Selecting source file");
-      });
-    o.getChildControl("label").setRich(true);
-    form.addButton(o, { row : 0, column : 6 });
-    this.butSelectSourceFile = o;
-    
     // Source file name
-    // Title
-    o = new qx.ui.form.TextField();
+    o = new aiagallery.widget.mystuff.FormFile("Select source file", "source");
     o.set(
       {
-        required    : true,
-        placeholder : "Select source file"
+        required : true
       });
+    form.add(o, null, null, "source", null,
+             { row : 0, column : 6, rowSpan : 2 });
+
+    // When the file name changes, begin retrieving the file data
     o.addListener(
-      "focus",
+      "changeFileName",
       function(e)
       {
-        var             button = this.butSelectSourceFile;
-
-        o.blur();
-        button.focus();
-        button.execute();
+        this.setValue(e.getData());
       },
       this);
-    form.add(o, null, null, "sourceFileName", null,
-             { row : 1, column : 6 });
-    this.txtSourceFileName = o;
+    this.ffSource = o;
+
+
     
     // Image1
-    o = new aiagallery.widget.mystuff.FormImage("Select Image");
+    o = new aiagallery.widget.mystuff.FormImage("Select Image", "image1");
     o.set(
       {
         required : true
@@ -243,7 +228,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         this.setImage1(e.getData());
       },
       this);
-    this.imgImage1 = o;
+    this.fiImage1 = o;
 
     //
     // Add the buttons at the end
@@ -529,13 +514,13 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     _applySourceFileName : function(value, old)
     {
       this._model.sourceFileName = value;
-      this.txtSourceFileName.setValue(value);
+      this.ffSource.setValue(value);
     },
 
     _applyImage1 : function(value, old)
     {
       this._model.image1 = value;
-      this.imgImage1.setValue(value);
+      this.fiImage1.setValue(value);
     },
     
     snapshotModel : function()
