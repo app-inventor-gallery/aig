@@ -57,7 +57,7 @@ qx.Class.define("aiagallery.dbif.Constants",
       "Unpublished",
       "Invalid",
       "Incomplete",
-      "Editing",
+      "Not saved!",
       "Uploading",
       "Processing"
     ],
