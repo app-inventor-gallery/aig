@@ -19,10 +19,27 @@ qx.Class.define("aiagallery.widget.mystuff.App",
 
     // Don't pass label to superclass constructor. It's unused here.
     this.base(arguments);
+    
+    // Turn of the separator between summary and detail
+    this.setShowSeparator(false);
+    
+    // Arrange to scroll into view when this panel is opened
+    this.getChildControl("container").addListener(
+      "appear",
+      function(e)
+      {
+        this.scrollChildIntoViewY(this, null, true);
+      },
+      this);
   },
   
   properties :
   {
+    uid :
+    {
+      apply : "_applyUid"
+    },
+
     image1 :
     {
       check : "String",
@@ -90,6 +107,15 @@ qx.Class.define("aiagallery.widget.mystuff.App",
     __fsm : null,
 
     // overridden
+    set : function(data, value)
+    {
+      this.base(arguments, data, value);
+      
+      // Create a snapshot of the Detail container's data
+      this.getChildControl("container").snapshotModel();
+    },
+
+    // overridden
     _createChildControlImpl : function(id)
     {
       var control;
@@ -97,18 +123,24 @@ qx.Class.define("aiagallery.widget.mystuff.App",
       switch(id)
       {
       case "bar":
-        control = new aiagallery.widget.mystuff.Summary(this.__fsm);
+        control = new aiagallery.widget.mystuff.Summary(this.__fsm, this);
         control.addListener("click", this.toggleValue, this);
         this._add(control, {flex : 1});
         break;
 
       case "container":
-        control = new aiagallery.widget.mystuff.Detail(this.__fsm);
+        control = new aiagallery.widget.mystuff.Detail(this.__fsm, this);
         this._add(control, {flex : 1});
         break;
       }
 
       return control || this.base(arguments, id);
+    },
+    
+    // property apply
+    _applyUid : function(value, old)
+    {
+      this.getChildControl("container").setUid(value);
     },
     
     // property apply
@@ -135,6 +167,7 @@ qx.Class.define("aiagallery.widget.mystuff.App",
     _applyStatus : function(value, old)
     {
       this.getChildControl("bar").setStatus(value);
+      this.getChildControl("container").setStatus(value);
     },
     
     // property apply

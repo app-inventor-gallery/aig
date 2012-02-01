@@ -28,8 +28,8 @@ qx.Class.define("aiagallery.dbif.DbifSim",
     // Save the logged-in user. The whoAmI property is in MDbifCommon.
     this.setWhoAmI(
       {
-        email             : "jarjar@binks.org",
-        userId            : "obnoxious",
+        email             : "jane@uphill.org",
+        userId            : "Jane Doe",
         isAdmin           : true,
         logoutUrl         : 
           [

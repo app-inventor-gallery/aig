@@ -116,7 +116,11 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       var results = liberated.dbif.Entity.query(
         "aiagallery.dbif.ObjAppData",
         // We want everything, so null search criteria
-        null,
+        {
+          type : "element",
+          field: "status",
+          value: aiagallery.dbif.Constants.Status.Active
+        },
         // This is where resultCriteria goes
         this.__buildResultCriteria( offset, count, order, field));
 
@@ -255,9 +259,21 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       var results = liberated.dbif.Entity.query(
         "aiagallery.dbif.ObjAppData",
         {
-          type  : "element",
-          field : "tags",
-          value : tagName 
+          type : "op",
+          method : "and",
+          children : 
+          [
+            {
+              type  : "element",
+              field : "status",
+              value : aiagallery.dbif.Constants.Status.Active 
+            },
+            {
+              type  : "element",
+              field : "tags",
+              value : tagName 
+            }
+          ]
         },
         // This is where resultCriteria goes
         this.__buildResultCriteria(offset, count, order, field));
@@ -345,9 +361,21 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       var results = liberated.dbif.Entity.query(
         "aiagallery.dbif.ObjAppData",
         {
-          type  : "element",
-          field : "owner",
-          value : ownerId
+          type : "op",
+          method : "and",
+          children : 
+          [
+            {
+              type  : "element",
+              field : "status",
+              value : aiagallery.dbif.Constants.Status.Active 
+            },
+            {
+              type  : "element",
+              field : "owner",
+              value : ownerId
+            }
+          ]
         },
         // This is where resultCriteria goes
         this.__buildResultCriteria( offset, count, order, field));

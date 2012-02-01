@@ -200,14 +200,14 @@ else
   new aiagallery.main.Module(
     "My Apps",
     "aiagallery/module/emblem-favorite.png",
-    "Old (ugly)",
-    aiagallery.module.dgallery.mystuff.MyStuff);
+    "My Apps",
+    aiagallery.module.dgallery.myapps.MyApps);
 
   new aiagallery.main.Module(
-    "My Apps",
+    "My Stuff",
     "aiagallery/module/emblem-favorite.png",
-    "New (not yet operational)",
-    aiagallery.module.dgallery.myapps.MyApps);
+    "My Stuff",
+    aiagallery.module.dgallery.mystuff.MyStuff);
 }
 
 if (qx.core.Environment.get("qx.debug"))

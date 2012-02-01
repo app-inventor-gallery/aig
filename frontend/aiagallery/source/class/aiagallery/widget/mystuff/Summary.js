@@ -13,6 +13,7 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
   construct : function()
   {
     var             height;
+    var             layout;
 
     this.base(arguments);
     
@@ -26,7 +27,9 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
       });
     
     // Create a layout. Summary is always an HBox
-    this.setLayout(new qx.ui.layout.HBox(10));
+    layout = new qx.ui.layout.HBox(10);
+    layout.setAlignY("middle");
+    this.setLayout(layout);
     
     // Create each of the child controls
     this.getChildControl("icon");
@@ -279,8 +282,23 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
         bgColor = null;
         break;
 
+      case Status.Unpublished:
+        color = "darkgray";
+        bgColor = null;
+        break;
+
+      case Status.Invalid:
+        color = "white";
+        bgColor = "red";
+        break;
+
       case Status.Incomplete:
         color = "red";
+        bgColor = null;
+        break;
+
+      case Status.Editing:
+        color = "orange";
         bgColor = null;
         break;
 
@@ -293,16 +311,6 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
       case Status.Processing:
         color = "black";
         bgColor = "yellow";
-        break;
-
-      case Status.Invalid:
-        color = "white";
-        bgColor = "red";
-        break;
-
-      case Status.Unpublished:
-        color = "darkgray";
-        bgColor = null;
         break;
       }
 
