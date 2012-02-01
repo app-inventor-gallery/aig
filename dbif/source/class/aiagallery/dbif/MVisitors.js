@@ -123,6 +123,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     {
       var             displayName;
       var             permissions;
+      var             permissionGroups;
       var             status;
       var             statusIndex;
       var             visitor;
@@ -131,6 +132,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       displayName = attributes.displayName;
       permissions = attributes.permissions;
+      permissionGroups = attributes.permissionGroups; 
       
       // Get the status value. If the status string isn't found, we'll use
       // "Active" when we set the database.
@@ -149,6 +151,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
           id          : userId,
           displayName : displayName || visitorData.displayName || "<>",
           permissions : permissions || visitorData.permissions || [],
+          permissionGroups :
+            permissionGroups || visitorData.permissionGroups || [],
           status      : status != -1 ? status : (visitorData.status || 2)
         });
       
@@ -196,6 +200,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
           var             thisGuy = visitorList[visitor];
           thisGuy.permissions = 
             thisGuy.permissions ? thisGuy.permissions.join(", ") : "";
+          thisGuy.permissionGroups = 
+            thisGuy.permissionGroups ? thisGuy.permissionGroups.join(", ") : "";
           thisGuy.status =
             [ "Banned", "Pending", "Active" ][thisGuy.status];
         }
@@ -313,6 +319,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
           var thisGuy = visitorList[visitor];
           thisGuy.permissions = 
             thisGuy.permissions ? thisGuy.permissions.join(", ") : "";
+          thisGuy.permissionGroups = 
+            thisGuy.permissionGroups ? thisGuy.permissionGroups.join(", ") : "";
           thisGuy.status =
             [ "Banned", "Pending", "Active" ][thisGuy.status];
         }

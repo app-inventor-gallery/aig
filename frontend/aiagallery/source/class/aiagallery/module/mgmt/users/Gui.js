@@ -96,7 +96,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
                          "displayName",
                          "id",
                          "permissions",
-                         "permissiongroups",
+                         "permissionGroups",
                          "status"
                        ]);
 

@@ -417,7 +417,13 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           var             email;
           var             selection;
           var             pGroups;
-          var             internal = { permissions : [], status : null };
+          var             internal = 
+                          { 
+                            permissions : [], 
+                            permissionGroups : [], 
+                            status : null 
+                          };
+
           var             request;
 
           // Retrieve the cell editor and cell info
@@ -441,7 +447,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
             function(item)
             {
               // Add to our pGroup list the "internal" (English) permission
-              internal.permissions.push(item.getUserData("internal"));
+              internal.permissionGroups.push(item.getUserData("internal"));
             
             });
           selection = cellEditor.getUserData("status").getSelection()[0];
@@ -452,6 +458,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
             {
               displayName : displayName,
               permissions : internal.permissions,
+              permissionGroups : internal.permissionGroups, 
               status      : internal.status 
             };
 
@@ -555,6 +562,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           var             table;
           var             dataModel;
           var             permissions;
+          var             permissionGroups
           var             rowData = [];
 
           // Retrieve the RPC request
@@ -581,9 +589,9 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           permissions = internal.permissions.join(", ");
           rowData.push(permissions);
 
-          //FIXME add permission group info 
-          //permissionGroups = internal.permissionGroups.join(", ");
-          //rowData.push(permissionGroups)
+          // Add permission group info 
+          permissionGroups = internal.permissionGroups.join(", ");
+          rowData.push(permissionGroups);
           
           // Add the status to the row data
           rowData.push(internal.status);

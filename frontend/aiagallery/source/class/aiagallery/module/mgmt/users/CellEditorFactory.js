@@ -159,7 +159,7 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
       pGroups.setSelectionMode("multi");
       
       //Get the possible permission groups
-      var pGroupList = cellInfo.table.getUserData("pGroups");
+      var pGroupList = [cellInfo.table.getUserData("pGroups")];
 
       // Add each of the permission group values
       pGroupList.forEach(function(perm) 
@@ -169,7 +169,7 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
 
           // Create a ListItem with the permission group name and description
           var item = new qx.ui.form.ListItem(description + 
-            " (" + perm.permissions + ")");
+            " (" + perm.name + ")");
 
           // Set the internal name of the pgroup to equal the display name
           item.setUserData("internal", perm.name);
@@ -187,7 +187,7 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
           pGroups.add(item);
           
           // permission group currently assigned to the user being edited?
-          if (qx.lang.Array.contains(permissionList, perm))
+          if (qx.lang.Array.contains(pGroupList, perm))
           {
             // Yup. Add it to the selection list
             pGroups.addToSelection(item);
