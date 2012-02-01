@@ -314,37 +314,36 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         return true;
       }
 
-// Permission Groups Untested, disabling for now
-      if(false)
+      // Permission Groups Search
+      // Deeper check: Do any of my permission groups give me access to this
+      // method?
+      if (permissionGroupArr != null)
       {
-        // Deeper check: Do any of my permission groups give me access to this
-        // method?
-        if (permissionGroupArr != null)
-        {
-          // For every permission group of which I am a member...
-          permissionGroupArr.forEach(
-            function (group)
+        // For every permission group of which I am a member...
+        permissionGroupArr.forEach(
+          function (group)
+          {
+
+            // Retrieve the list of permissions it gives me
+            data = new aiagallery.dbif.ObjPermissonGroup(group).getData();
+            permissionArr = data["permissions"];
+
+            // Same as standard check: does this group contain this method?
+            if (permissionArr != null &&
+                qx.lang.Array.contains(permissionArr, methodName))
             {
+              // Yes, allow me.
+              return true;
+            }
 
-              // Retrieve the list of permissions it gives me
-              data = new aiagallery.dbif.ObjPermissonGroup(group).getData();
-              permissionArr = data["permissions"];
-
-              // Same as standard check: does this group contain this method?
-              if (permissionArr != null &&
-                  qx.lang.Array.contains(permissionArr, methodName))
-              {
-                // Yes, allow me.
-                return true;
-              }
-
-              return false;
-            });
-        }
+            return false;
+          });
+        
       }
 
       // Did not find this permission, dissalow.
       return false;
+
     }
   }
 });

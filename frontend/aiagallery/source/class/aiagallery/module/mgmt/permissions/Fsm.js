@@ -1,5 +1,6 @@
 /**
- * Copyright (c) 2011 Derrell Lipman
+ * Copyright (c) 2012 Derrell Lipman
+ * Copyright (c) 2012 Paul Geromini 
  * 
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html 
@@ -311,24 +312,24 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          //Get selected name 
-          var pName = fsm.getObject("pGroupNameList");
-          
+          // Get selected name 
+          var pName = fsm.getObject("pGroupNameList");         
           pName = pName.getSelection()[0].getLabel();
 
-          //Get selected permissions
+          // Get selected permissions
           var pSelected = fsm.getObject("possiblePermissionList");
           pSelected = pSelected.getSelection();
 
+          // Put Selected permissions in a list
           var pList = new Array();
-          
-          for (var i = 0; i < pSelected.length; i++)
-          {
-            pList.push(pSelected[i].getLabel());
-          }
+          pList = pSelected.map(
+            function(listItem)
+            {
+              return listItem.getLabel(); 
+            });  
            
 
-          //Update on DB
+          // Update on DB
           // Issue the remote procedure call to execute the query
           var request =
             this.callRpc(fsm,

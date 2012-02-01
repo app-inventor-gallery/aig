@@ -1,5 +1,6 @@
 /**
- * Copyright (c) 2011 Derrell Lipman
+ * Copyright (c) 2012 Derrell Lipman
+ * Copyright (c) 2012 Paul Geromini 
  * 
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html 
@@ -52,7 +53,8 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       hBox = new qx.ui.container.Composite(layout);
 
       // Create an Add Permission button
-      addPermissionGroup = new qx.ui.form.Button(this.tr("Add Permission Group"));
+      addPermissionGroup = 
+        new qx.ui.form.Button(this.tr("Add Permission Group"));
       addPermissionGroup.set(
       {
         maxHeight : 24,
@@ -227,22 +229,35 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         //If the array is not empty we need to do something
         var pArray = response.data.result;
         
-        //pArray.forEach(function)
+        // Convert pGroupNameList to Array to see if it already
+        // contains the pgroup we may be trying to add
+        var pGroupLabels = pGroupNameList.getChildren().map(
+          function(listItem)
+          {
+            return listItem.getLabel();
+          }); 
         
         for (var i = 0; i < pArray.length; i++)
         {
-          //Add to list
-          var pName = new qx.ui.form.ListItem(pArray[i].name);   
-          pGroupNameList.add(pName);
+
+          // Does the list already contain this pGroup
+          // If not do not add it
+          if (!qx.lang.Array.contains(pGroupLabels, pArray[i].name)){
+
+            // Add to list
+            var pName = new qx.ui.form.ListItem(pArray[i].name);   
+            pGroupNameList.add(pName);
           
-          //Select it
-          pGroupNameList.setSelection([pName]); 
-          
-          //Convert to a data Array.
-          var dataArray = new qx.data.Array(pArray[i].permissions);
+            // Select it
+            pGroupNameList.setSelection([pName]); 
+
+            // Convert to a data Array.
+            var dataArray = new qx.data.Array(pArray[i].permissions);
         
-          //Set Selectiong using controller
-          this.permissionController.setSelection(dataArray); 
+            // Set Selection using controller
+            this.permissionController.setSelection(dataArray); 
+          }          
+
         }
         
         //There was nothing in the array make sure buttons are disabled
