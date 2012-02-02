@@ -201,10 +201,17 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     // When the file name changes, begin retrieving the file data
     o.addListener(
-      "changeFileName",
+      "changeValue",
       function(e)
       {
-        this.setValue(e.getData());
+        this.setSourceFileName(e.getData());
+      },
+      this);
+    o.addListener(
+      "changeContent",
+      function(e)
+      {
+        this.setSource(e.getData());
       },
       this);
     this.ffSource = o;
@@ -220,9 +227,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     form.add(o, null, null, "image1", null,
              { row : 3, column : 6, rowSpan : 5 });
 
-    // When the file name changes, begin retrieving the file data
+    // When the image changes, display it
     o.addListener(
-      "changeFileName",
+      "changeValue",
       function(e)
       {
         this.setImage1(e.getData());
@@ -406,6 +413,12 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       apply : "_applyTags"
     },
     
+    source :
+    {
+      check : "String",
+      apply : "_applySource"
+    },
+
     sourceFileName :
     {
       check : "String",
@@ -520,6 +533,13 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     {
       this._model.sourceFileName = value;
       this.ffSource.setValue(value);
+    },
+
+    _applySource : function(value, old)
+    {
+      this._model.source = value;
+
+      // read-only from this.ffSource so no need to set anything.
     },
 
     _applyImage1 : function(value, old)
