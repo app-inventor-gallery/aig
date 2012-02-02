@@ -298,6 +298,11 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
         break;
 
       case Status.Editing:
+        color = "cyan";
+        bgColor = null;
+        break;
+
+      case Status.NotSaved:
         color = "black";
         bgColor = "orange";
         break;
