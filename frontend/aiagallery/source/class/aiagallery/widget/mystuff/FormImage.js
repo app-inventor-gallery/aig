@@ -59,10 +59,7 @@ qx.Class.define("aiagallery.widget.mystuff.FormImage",
   events :
   {
     /** Fired when the value was modified */
-    "changeValue" : "qx.event.type.Data",
-    
-    /** Fired when a filename selection is made */
-    "changeFileName" : "qx.event.type.Data"
+    "changeValue" : "qx.event.type.Data"
   },
 
   members :
@@ -98,12 +95,15 @@ qx.Class.define("aiagallery.widget.mystuff.FormImage",
         control.setRich(true);
         this._add(control);
         
+        // We access this a lot, so make it a member variable
+        this.uploadButton = control;
+        
         // When this button gets a changeFileName event, pass it along
         control.addListener(
           "changeFileName",
           function(e)
           {
-            this.fireDataEvent(e.getData());
+            this.retrieveFile();
           },
           this);
         break;
@@ -119,6 +119,121 @@ qx.Class.define("aiagallery.widget.mystuff.FormImage",
       }
 
       return control || this.base(arguments, id);
+    },
+    
+    /**
+     * Begin retrieving a selected file using a FileReader object.
+     */
+    retrieveFile : function()
+    {
+      var             uploadElement;
+      var             selection;
+      var             fileSize;
+      var             message;
+      
+      try
+      {
+        this.uploadReader = new qx.bom.FileReader();
+      }
+      catch(e)
+      {
+        this.uploadReader = null;
+
+        message =
+          "Your browser does not support the required functionality. " +
+          "Please use a recent version of Chrome or Firefox.";
+
+        alert(message);
+        return;
+      }
+
+      // Determine the size of the file requested for upload
+      fileSize = this.uploadButton.getFileSize();
+
+      // Size check
+      if (fileSize > aiagallery.main.Constant.MAX_IMAGE_FILE_SIZE)
+      {
+        // Clean up
+        this.uploadReader.dispose();
+        this.uploadReader = null;
+
+        // Generate a message for image too large
+        message = 
+          "The image you attempted to upload was " +
+          fileSize +
+          " bytes, which is larger than the limit of " + 
+          aiagallery.main.Constant.MAX_IMAGE_FILE_SIZE +
+          " bytes.";              
+        
+        alert(message);
+      }
+      
+      // Arrange to be told when the file is fully loaded
+      this.uploadReader.addListener("load", this.fileLoaded, this);
+      this.uploadReader.addListener("error", this.fileLoadError, this);
+
+      // Get the selected File object
+      uploadElement = this.uploadButton.getInputElement().getDomElement();
+      selection = uploadElement.files[0];
+
+      // Begin reading the file. Request that it be data-URL-encoded.
+      this.uploadReader.readAsDataURL(selection);
+    },
+    
+    /**
+     * Event handler for the FileReader, when a file has been fully loaded
+     * 
+     * @param e {qx.event.type.Event}
+     *   The "load" event
+     */
+    fileLoaded : function(e)
+    {
+      var             content;
+      var             semiPos;
+      var             mimeType;
+      var             debugStr;
+      var             message;
+      
+      // Retrieve the data URL from the upload button, and save it.
+      content = e.getData().content;
+
+      // Extract the MIME type
+      semiPos = content.indexOf(";");
+      mimeType = semiPos > 5 ? content.substring(5, semiPos) : "";
+      debugStr = content.substring(0, 30);
+
+      // We're finished with this reader
+      this.uploadReader = null;
+
+      // Test for valid image type
+      if(qx.lang.Array.contains(aiagallery.main.Constant.VALID_IMAGE_TYPES,
+                                mimeType)) 
+      {
+        // Display the new image
+        this.setValue(content);        
+      }
+      else
+      {
+        // Generate an error message for invalid type
+        message = 
+          "You have selected an invalid image file. " +
+          "Valid file types are:\n" +
+          aiagallery.main.Constant.VALID_IMAGE_TYPES.join(", ");
+        
+        alert(message);
+      }
+    },
+    
+    /**
+     * Event handler for the FileReader, when a file load error occurs
+     * 
+     * @param e {qx.event.type.Event}
+     *   The "error" event
+     */
+    fileLoadError : function(e)
+    {
+      // FIXME: Find a better mechanism for displaying the error
+      alert("ERROR: " + e.progress + " (" + e.progress.getMessage() + ")");
     }
   }
 });
