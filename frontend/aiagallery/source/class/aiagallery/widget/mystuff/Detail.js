@@ -129,7 +129,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         selectionMode : "multi",
         required      : true
       });
-    o.addListener("changeSelection", this._changeCategoriesOrTags, this);
+    o.addListener("changeSelection", this._changeCategories, this);
     form.add(o, "Categories", null, "categories", null,
              { row : 3, column : 0, rowSpan : 5 });
     this.categoryController = new qx.data.controller.List(
@@ -164,9 +164,59 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         height    : 24,
         maxHeight : 24
       });
+    o.addListener(
+      "execute",
+      function(e)
+      {
+        var             existingTags;
+        var             newTags;
+        var             newValue;
+
+        // Get the value being added
+        newValue = this.txtNewTag.getValue();
+        
+        // Ensure there's something there
+        if (! newValue || newValue.length == 0)
+        {
+          // Nothing to do
+          return;
+        }
+
+        // Get the current list of tags
+        existingTags = this.getTags();
+        
+        // Is the tag being added already in the list?
+        if (! qx.lang.Array.contains(existingTags, newValue))
+        {
+          // Nope, it's a new tag. Clone the tag list.
+          newTags = qx.lang.Array.clone(existingTags);
+          
+          // Add the new one to the tag list
+          newTags.push(this.txtNewTag.getValue());
+          
+          // Save the new set of tags
+          this.setTags(newTags);
+        }
+        
+        // Clear out the text field
+        this.txtNewTag.setValue(null);
+      },
+      this);
     form.addButton(o, { row : 5, column : 3 });
     this.butAddTag = o;
 
+    // Application-specific tags
+    o = new qx.ui.form.List();
+    o.set(
+      {
+        height        : 100,
+        selectionMode : "single",
+        required      : false
+      });
+    form.add(o, "", null, "tags", null,
+             { row : 4, column : 4, rowSpan : 3 });
+    this.lstTags = o;
+    
     // Button to delete selected tag(s)
     o = new qx.ui.form.Button("Delete Tag");
     o.set(
@@ -174,22 +224,40 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         height    : 24,
         maxHeight : 24
       });
+    o.addListener(
+      "execute",
+      function(e)
+      {
+        var             existingTags;
+        var             selectedTags;
+        var             newTags;
+
+        // Get the current list of tags
+        existingTags = this.getTags();
+        
+        // Get the tag to be deleted
+        selectedTags = this.lstTags.getSelection();
+        
+        // Is there a selection?
+        if (selectedTags.length == 0)
+        {
+          // Nope. Nothing to do.
+          return;
+        }
+        
+        // Clone the tags list
+        newTags = qx.lang.Array.clone(existingTags);
+        
+        // Remove the selected tag
+        qx.lang.Array.remove(newTags, selectedTags[0].getLabel());
+        
+        // Save the new set of tags
+        this.setTags(newTags);
+      },
+      this);
     form.addButton(o, { row : 7, column : 5 });
     this.butDeleteTag = o;
 
-    // Application-specific tags
-    o = new qx.ui.form.List();
-    o.set(
-      {
-        height        : 100,
-        selectionMode : "multi",
-        required      : false
-      });
-    o.addListener("changeSelection", this._changeCategoriesOrTags, this);
-    form.add(o, "", null, "tags", null,
-             { row : 4, column : 4, rowSpan : 3 });
-    this.lstTags = o;
-    
     // Source file name
     o = new aiagallery.widget.mystuff.FormFile("Select source file", "source");
     o.set(
@@ -357,7 +425,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         if (modelJson != snapshotJson)
         {
           // Yup. Set the status so they know to come back here to finish it.
-          this.__container.setStatus(aiagallery.dbif.Constants.Status.Editing);
+          this.__container.setStatus(aiagallery.dbif.Constants.Status.NotSaved);
         }
         else
         {
@@ -441,7 +509,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     __fsm       : null,
     __container : null,
 
-    _changeCategoriesOrTags : function(e)
+    _changeCategories : function(e)
     {
       var             tags;
 
