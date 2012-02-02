@@ -158,7 +158,8 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          var             model = event.getData();
+          var             data = event.getData();
+          var             model = data.model;
           var             request;
 
           // Issue the remote procedure call to execute the query
@@ -174,7 +175,9 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
           // When we get the result, we'll need to know what type of request
           // we made.
           request.setUserData("requestType", "addOrEditApp");
-
+          
+          // Save the App object to which this request applies
+          request.setUserData("App", data.app);
         }
       });
 

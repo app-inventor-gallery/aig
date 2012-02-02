@@ -148,6 +148,8 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       var             fsm = module.fsm;
       var             response = rpcRequest.getUserData("rpc_response");
       var             requestType = rpcRequest.getUserData("requestType");
+      var             app;
+      var             data;
 
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -251,6 +253,26 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
           this);
         break;
         
+      case "addOrEditApp":
+        // Retrieve the App object to which this request applied
+        app = rpcRequest.getUserData("App");
+        
+        // Strip out fields that we don't support, from the returned data
+        data = response.data.result;
+        delete data.owner;
+        
+        // Now display the results.
+        app.set(data);
+        
+        // Close the window if the status is Active or Processing
+        if (data.status == aiagallery.dbif.Constants.Status.Active ||
+            data.stautus == aiagallery.dbif.Constants.Status.Processing)
+        {
+          app.setValue(false);
+        }
+
+        break;
+
       default:
         throw new Error("Unexpected request type: " + requestType);
       }

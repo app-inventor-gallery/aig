@@ -290,7 +290,11 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         }
         
         // Fire an event with the changed data
-        this.fireDataEvent("saveApp", modelObj);
+        this.fireDataEvent("saveApp",
+                           {
+                             model : modelObj, 
+                             app   : container
+                           });
       },
       this);
     form.addButton(o);
