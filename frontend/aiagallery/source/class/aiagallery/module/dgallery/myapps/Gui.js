@@ -49,33 +49,27 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
           // Obtain the first app (if there is one) to see if it's our one and
           // only new app editor
           children = this.scrollCanvas.getChildren();
-          if (children.length != 0)
+          if (children.length != 0 && children[0].getUid() === null)
           {
-            // We have children. Get the first one.
+            // Found an existing new app editor. Retrieve it.
             app = children[0];
-            
-            // Does it have a uid?
-            if (app.getUid() == null)
-            {
-              // Not yet, so this is already a new app editor.
-            }
-            else
-            {
-              // There's no new app editor, so instantiate a new one
-              app = new aiagallery.widget.mystuff.App(fsm);
-              app.setGroup(this.group);
-              app.set(
-                {
-                  status : aiagallery.dbif.Constants.Status.Editing
-                });
-            }
-
-            // Scroll the new app editor into view
-            this.scrollCanvas.addAt(app, 0);
-            
-            // Be sure it's open
-            app.setValue(true);
           }
+          else
+          {
+            // No existing new app editor. Instantiate a new one.
+            app = new aiagallery.widget.mystuff.App(fsm);
+            app.setGroup(this.group);
+            app.set(
+              {
+                status : aiagallery.dbif.Constants.Status.Editing
+              });
+          }
+
+          // Scroll the app editor into view
+          this.scrollCanvas.addAt(app, 0);
+
+          // Be sure it's open
+          app.setValue(true);
         },
         this);
       hBox.add(o);
