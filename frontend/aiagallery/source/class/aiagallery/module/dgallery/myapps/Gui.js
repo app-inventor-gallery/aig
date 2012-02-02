@@ -150,6 +150,8 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       var             requestType = rpcRequest.getUserData("requestType");
       var             app;
       var             data;
+      var             prop;
+      var             availableProperties;
 
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -257,19 +259,28 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
         // Retrieve the App object to which this request applied
         app = rpcRequest.getUserData("App");
         
-        // Strip out fields that we don't support, from the returned data
+        // Strip out fields that we don't have properties for in the GUI
         data = response.data.result;
-        delete data.owner;
+        availableProperties = qx.Class.getProperties(app.constructor);
+        for (prop in data)
+        {
+          if (! qx.lang.Array.contains(availableProperties, prop))
+          {
+            delete data[prop];
+          }
+        }
         
         // Now display the results.
         app.set(data);
         
+/*
         // Close the window if the status is Active or Processing
         if (data.status == aiagallery.dbif.Constants.Status.Active ||
             data.stautus == aiagallery.dbif.Constants.Status.Processing)
         {
           app.setValue(false);
         }
+*/
 
         break;
 
