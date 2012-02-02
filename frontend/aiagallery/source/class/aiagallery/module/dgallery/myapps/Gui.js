@@ -38,7 +38,46 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
 
       // Add an Add New Apps button, left-justified
       hBox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
-      o = new qx.ui.form.Button("Add New App");
+      o = new qx.ui.form.Button("Add New Application");
+      o.addListener(
+        "execute",
+        function(e)
+        {
+          var             app = null;
+          var             children;
+
+          // Obtain the first app (if there is one) to see if it's our one and
+          // only new app editor
+          children = this.scrollCanvas.getChildren();
+          if (children.length != 0)
+          {
+            // We have children. Get the first one.
+            app = children[0];
+            
+            // Does it have a uid?
+            if (app.getUid() == null)
+            {
+              // Not yet, so this is already a new app editor.
+            }
+            else
+            {
+              // There's no new app editor, so instantiate a new one
+              app = new aiagallery.widget.mystuff.App(fsm);
+              app.setGroup(this.group);
+              app.set(
+                {
+                  status : aiagallery.dbif.Constants.Status.Editing
+                });
+            }
+
+            // Scroll the new app editor into view
+            this.scrollCanvas.addAt(app, 0);
+            
+            // Be sure it's open
+            app.setValue(true);
+          }
+        },
+        this);
       hBox.add(o);
       hBox.add(new qx.ui.core.Spacer(), { flex : 1 });
       canvas.add(hBox);

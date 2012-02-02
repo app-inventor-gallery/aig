@@ -37,7 +37,8 @@ qx.Class.define("aiagallery.widget.mystuff.App",
   {
     uid :
     {
-      apply : "_applyUid"
+      apply : "_applyUid",
+      init  : null
     },
 
     image1 :

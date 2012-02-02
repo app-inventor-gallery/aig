@@ -600,7 +600,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
               case "image1":
                 // Ensure we have a data url
-                if (appData.image1.substring(0, 5) != "data:")
+                if (! qx.lang.Type.isString(attributes.image1) ||
+                    attributes.image1.substring(0, 5) != "data:")
                 {
                   // The image is invalid. Let 'em know.
                   error.setCode(3);

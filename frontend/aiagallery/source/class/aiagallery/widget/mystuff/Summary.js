@@ -298,7 +298,7 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
         break;
 
       case Status.Editing:
-        color = "cyan";
+        color = "black";
         bgColor = null;
         break;
 

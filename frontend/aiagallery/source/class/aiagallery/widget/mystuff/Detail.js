@@ -346,7 +346,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
           }
           else if (qx.lang.Type.isArray(modelObj[field]))
           {
-            if (qx.lang.Array.equals(modelObj[field], this._snapshot[field]))
+            if (this._snapshot[field] &&
+                qx.lang.Array.equals(modelObj[field], this._snapshot[field]))
             {
               delete modelObj[field];
             }
