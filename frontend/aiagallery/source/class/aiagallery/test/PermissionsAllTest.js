@@ -27,10 +27,40 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
                           "addOrEditVisitor", "deleteVisitor", "getVisitorList",
                          "editProfile", "whoAmI"],
           status       : 2
+        },
+        "paul@thetester.com" : 
+        {
+          displayName  : "paulissocool",
+          id           : "paul@thetester.com",
+          permissions  : [],
+          permissionGroups : [],
+          status       : 2
         }
         
       
       },
+      "permissiongroup" :
+      {
+        "ALL" :
+        {
+          "name" : "ALL",
+          "permissions" : ["addOrEditApp", "deleteApp", 
+                         "getAppListAll", "addComment", "deleteComment", 
+                         "flagIt", "addOrEditVisitor", "deleteVisitor", 
+                         "getVisitorList", "likesPlusOne", 
+                         "getDatabaseEntities"],
+          "description" : "All permissions"
+        },
+        "SOME" :
+        {
+          "name" : "SOME",
+          "permissions" : ["addOrEditApp", "deleteApp", 
+                         "getAppListAll", "addComment", "deleteComment", 
+                         "flagIt", "likesPlusOne"],
+          "description" : "Some permissions"
+        }
+      },
+      
       tags:     {},
       search:   {},
       likes:    {},
@@ -73,6 +103,8 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
       // Reset the db for other tests
       liberated.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
     },
+    
+    // Unit tests for Individual Permissions
     
     "test: attempt to getAppList" : function()
     {
@@ -168,7 +200,45 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
     {
       // Anonymous
       this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.whoAmI"), "whoAmI with " + this.permissionLevel);
-    } 
+    }, 
+    
+    // Unit Tests for Group Permissions
+    
+    "test: attempt to addOrEditApp (PGroups)" : function()
+    {
+        this.dbifSim.setWhoAmI(
+        {
+          email : "paul@thetester.com",
+          isAdmin: false,
+          logoutUrl: "undefined",
+          permissions: [],
+          permissionGroups : ["ALL"],
+          userId :  "pGroupTests"
+        });
+    
+      this.assertTrue(aiagallery.dbif.MDbifCommon._deepPermissionCheck(
+        "addOrEditApp"), "with all permission groups");
+    },
+    
+    "test: fail to addOrEditApp (PGroups)" : function()
+    {
+        this.dbifSim.setWhoAmI(
+        {
+          email : "paul@thetester.com",
+          isAdmin: false,
+          logoutUrl: "undefined",
+          permissions: [],
+          permissionGroups: [],
+          userId :  "pGroupTests"
+        });
+        
+      var myObjData = 
+        new aiagallery.dbif.ObjVisitors("paul@thetester.com").getData();
+    
+      this.assertFalse(aiagallery.dbif.MDbifCommon._deepPermissionCheck(
+        "addOrEditApp"), "with permission group: " + 
+          myObjData.permissionGroups);
+    }
     
   }
 });

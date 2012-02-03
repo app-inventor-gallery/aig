@@ -377,7 +377,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       case "addOrEditOrGetPermissionGroup_changeSelection" :
       
         // I need this since if I put it all in one switch I 
-        // Cannot detect a just a changeSelection and thus
+        // Cannot detect just a changeSelection and thus
         // it will keep looping         
       
         // Clear all current selections on the list of permissions
