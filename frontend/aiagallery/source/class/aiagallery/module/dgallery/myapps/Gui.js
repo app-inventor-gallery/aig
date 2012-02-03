@@ -61,7 +61,11 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
             app.setGroup(this.group);
             app.set(
               {
-                status : aiagallery.dbif.Constants.Status.Editing
+                numLikes     : 0,
+                numDownloads : 0,
+                numViewed    : 0,
+                numComments  : 0,
+                status       : aiagallery.dbif.Constants.Status.Editing
               });
           }
 
@@ -154,15 +158,39 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       header.add(o);
       
       canvas.add(header);
+      
+      // Initially the header should be invisible, until adding apps
+      // (children) causes it to become visible
+      header.setVisibility("excluded");
 
       // Create a scroll container for all of the apps' collapsable panels
       o = new qx.ui.container.Scroll();
       canvas.add(o, { flex : 1 });
       
-      // The scroll container can only have a single widget as its content
+      // The scroll container can only have a single widget as its content, so
+      // create a scroll canvas to which we'll add each of the apps.
       this.scrollCanvas =
         new qx.ui.container.Composite(new qx.ui.layout.VBox());
       o.add(this.scrollCanvas);
+      
+      // Make the header visible or not depending on whether there are any
+      // applications in the scroll canvas.
+      function setHeaderVisibility(e)
+      {
+        header.setVisibility(this.scrollCanvas.getChildren().length > 0
+                             ? "visible"
+                             : "excluded");
+      }
+
+      this.scrollCanvas.addListener(
+        "addChildWidget",
+        setHeaderVisibility, 
+        this);
+
+      this.scrollCanvas.addListener(
+        "removeChildWidget",
+        setHeaderVisibility, 
+        this);
     },
 
     
