@@ -398,13 +398,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         }
       }
 
-      // If we didn't add or remove anything, ...
-      if (addedBlobs.length == 0 && removeBlobs.length == 0)
-      {
-        // ... then we're all done
-        return;
-      }
-
       // Save the app object with the updates
       try
       {

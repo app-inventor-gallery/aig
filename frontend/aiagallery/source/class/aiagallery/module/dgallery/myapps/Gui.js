@@ -350,18 +350,8 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
           }
         }
         
-        // Now display the results.
+        // Now display the results and save a new snapshot
         app.set(data);
-        
-/*
-        // Close the window if the status is Active or Processing
-        if (data.status == aiagallery.dbif.Constants.Status.Active ||
-            data.stautus == aiagallery.dbif.Constants.Status.Processing)
-        {
-          app.setValue(false);
-        }
-*/
-
         break;
 
       case "deleteApp":
@@ -392,8 +382,11 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
         // Did we find it?
         if (i < apps.length)
         {
-          // Yup. Update the row
-          apps[i].setStatus(response.data.status);
+          // Yup. Update the row and save a new snapshot
+          apps[i].set(
+            {
+              status : response.data.status
+            });
         }
         break;
 

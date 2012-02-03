@@ -414,6 +414,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
         // Reset the status to what it was originally
         this.__container.setStatus(this.getOrigStatus());
+        
+        // Save a new snapshot
+        this.snapshotModel();
       },
       this);
     form.addButton(o);
@@ -782,11 +785,11 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
                                   this);
       }
 
-      // Create a clone of the model
-      this._snapshot = qx.lang.Object.clone(this._model, true);
-      
       // Save the model's status, for resetting the form
       this.setOrigStatus(this.getStatus());
+
+      // Create a clone of the model
+      this._snapshot = qx.lang.Object.clone(this._model, true);
     },
 
     getOrigTitle : function()
