@@ -29,7 +29,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     
     // Initialize our data model
     this._model = {};
-    this._snapshot = {};
 
     // Retrieve the list of categories, at least one of which must be selected
     categoryList =
@@ -79,6 +78,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       "input",
       function(e)
       {
+        // Save the new title
         this.setTitle(e.getData());
       },
       this);
@@ -99,6 +99,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       "input",
       function(e)
       {
+        // Save the new description
         this.setDescription(e.getData());
       },
       this);
@@ -272,6 +273,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       "changeValue",
       function(e)
       {
+        // Save the new source file name
         this.setSourceFileName(e.getData());
       },
       this);
@@ -300,6 +302,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       "changeValue",
       function(e)
       {
+        // Save the new image
         this.setImage1(e.getData());
       },
       this);
@@ -321,6 +324,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         var             modelObj;
         var             field;
+        var             modelJson;
+        var             snapshotJson;
 
         // Is the form complete and ready for submission? First test basic
         // validation.
@@ -330,6 +335,17 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
           return;
         }
         
+        // Retrieve the model and most recent snapshot, in JSON format
+        modelJson = this.getModelJson();
+        snapshotJson = this.getSnapshotJson();
+
+        // Has anything changed
+        if (modelJson == snapshotJson)
+        {
+          // Nope. We have nothing to do.
+          return;
+        }
+
         // Retrieve data model
         modelObj = this.getModel();
         
@@ -444,6 +460,39 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     hBox.add(formRendered);
     
     this.addListener(
+      "appear",
+      function(e)
+      {
+        var             modelJson;
+        var             snapshotJson;
+
+        // If the status isn't already NotSaved...
+        if (this.__container.getStatus() != 
+            aiagallery.dbif.Constants.Status.NotSaved)
+        {
+          // ... then we don't need to do anything special right now
+          return;
+        }
+
+        // Retrieve the model and most recent snapshot, in JSON format
+        modelJson = this.getModelJson();
+        snapshotJson = this.getSnapshotJson();
+
+        // Has anything changed
+        if (modelJson != snapshotJson)
+        {
+          // Yup. Set the status so they know to come back here to finish it.
+          this.__container.setStatus(aiagallery.dbif.Constants.Status.Editing);
+        }
+        else
+        {
+          // Reset the status to what it was originally
+          this.__container.setStatus(this.getOrigStatus());
+        }
+      },
+      this);
+
+    this.addListener(
       "disappear",
       function(e)
       {
@@ -549,6 +598,28 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
   {
     __fsm       : null,
     __container : null,
+
+    _watchForEdits : function(e)
+    {
+      var             modelJson;
+      var             snapshotJson;
+
+      // Retrieve the model and most recent snapshot, in JSON format
+      modelJson = this.getModelJson();
+      snapshotJson = this.getSnapshotJson();
+
+      // Has anything changed
+      if (modelJson != snapshotJson)
+      {
+        // Yup. Set the status so they know it
+        this.__container.setStatus(aiagallery.dbif.Constants.Status.Editing);
+      }
+      else
+      {
+        // They just changed it back to its original state
+        this.__container.setStatus(this.getOrigStatus());
+      }
+    },
 
     _changeCategories : function(e)
     {
@@ -667,6 +738,33 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     
     snapshotModel : function()
     {
+      // If this is our first time in here...
+      if (! this._snapshot)
+      {
+        // ... then establish listeners to watch for edits
+        this.txtTitle.addListener("input",
+                                  this._watchForEdits,
+                                  this);
+        this.txtDescription.addListener("input",
+                                        this._watchForEdits,
+                                        this);
+        this.lstCategories.addListener("changeSelection",
+                                       this._watchForEdits,
+                                       this);
+        this.butAddTag.addListener("execute",
+                                   this._watchForEdits,
+                                   this);
+        this.butDeleteTag.addListener("execute",
+                                      this._watchForEdits,
+                                      this);
+        this.ffSource.addListener("changeValue",
+                                  this._watchForEdits,
+                                  this);
+        this.fiImage1.addListener("changeValue",
+                                  this._watchForEdits,
+                                  this);
+      }
+
       // Create a clone of the model
       this._snapshot = qx.lang.Object.clone(this._model, true);
       
