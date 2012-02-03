@@ -649,11 +649,14 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         }
 
         // See if any fields are missing
-        for (field in appData)
+        for (field in
+             qx.lang.Object.getKeys(appObj.getDatabaseProperties().fields))
         {
-          if (qx.lang.Array.contains(requiredFields, field))
+          if (qx.lang.Array.contains(requiredFields, field) &&
+              typeof appData[field] == "undefined")
           {
             // Mark the required field as missing
+console.log("Found missing field: " + field);
             missing.push(field);
           }
         }
@@ -661,11 +664,11 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         // Were there any missing, required fields?
         if (missing.length > 0)
         {
-          status = aiagallery.dbif.Constants.Status.Incomplete;
+          appData.status = aiagallery.dbif.Constants.Status.Incomplete;
         }
         else
         {
-          status = aiagallery.dbif.Constants.Status.Processing;
+          appData.status = aiagallery.dbif.Constants.Status.Processing;
         }
 
         // If a new source file was uploaded...
