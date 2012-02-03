@@ -345,6 +345,15 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
 
         break;
 
+      case "deleteApp":
+        // Retrieve the App object to which this request applied
+        app = rpcRequest.getUserData("App");
+        
+        // The app has been deleted, so remove it from view
+        app.getLayoutParent().remove(app);
+        app.dispose();
+        break;
+
       default:
         throw new Error("Unexpected request type: " + requestType);
       }

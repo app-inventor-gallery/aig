@@ -67,6 +67,9 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
           // On the clicking of a Save button in an app's Detail editing area
           "saveApp" : "Transition_Idle_to_AwaitRpcResult_via_saveApp",
           
+          // On the clicking of a Delete button in an app's Detail editing area
+          "deleteApp" : "Transition_Idle_to_AwaitRpcResult_via_deleteApp",
+          
           // When we get an appear event, retrieve the category tags list. We
           // only want to do it the first time, though, so we use a predicate
           // to determine if it's necessary.
@@ -140,7 +143,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
       state.addTransition(trans);
 
 
-        /*
+      /*
        * Transition: Idle to Awaiting RPC Result
        *
        * Cause: Save button was pressed, and Detail form validates
@@ -175,6 +178,47 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
           // When we get the result, we'll need to know what type of request
           // we made.
           request.setUserData("requestType", "addOrEditApp");
+          
+          // Save the App object to which this request applies
+          request.setUserData("App", data.app);
+        }
+      });
+
+      state.addTransition(trans);
+
+      /*
+       * Transition: Idle to Awaiting RPC Result
+       *
+       * Cause: Delete button was pressed on a previously-saved app
+       *
+       * Action:
+       *  Initiate a request save the changed data
+       */
+        
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_deleteApp",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var             data = event.getData();
+          var             request;
+
+          // Issue the remote procedure call to execute the query
+          request =
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "deleteApp",
+                         [
+                           data.uid
+                         ]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "deleteApp");
           
           // Save the App object to which this request applies
           request.setUserData("App", data.app);

@@ -1100,11 +1100,14 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       ].forEach(
         function(blobIdArr)
         {
-          blobIdArr.forEach(
-            function(blobId)
-            {
-              liberated.dbif.Entity.removeBlob(blobId);
-            });
+          if (qx.lang.Type.isArray(blobIdArr))
+          {
+            blobIdArr.forEach(
+              function(blobId)
+              {
+                liberated.dbif.Entity.removeBlob(blobId);
+              });
+          }
         });
 
       // Let the user know something failed

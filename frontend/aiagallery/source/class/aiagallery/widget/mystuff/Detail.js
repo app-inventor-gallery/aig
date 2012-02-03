@@ -390,14 +390,54 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     form.addButton(o);
     this.butReset = o;
 
-    // Delete
-    o = new qx.ui.form.Button("Delete Application");
+    // Delete. The button's label is reset to "Delete Application" when a uid
+    // is specified, meaning that there actually is an application to be
+    // deleted.
+    o = new qx.ui.form.Button(this.tr("Discard"));
     o.set(
       {
         width : 130
       });
+    o.addListener(
+      "execute",
+      function(e)
+      {
+        var             uid = this.getUid();
+
+        // If this is a new app...
+        if (uid === null)
+        {
+          // ... then just remove this App object
+          container.getLayoutParent().remove(container);
+          container.dispose();
+          return;
+        }
+        
+        // Confirm that they really want to delete this application
+        dialog.Dialog.confirm(
+          this.tr(
+            "Really delete application") + 
+            " '" + this.getOrigTitle() + "'?",
+          function(result)
+          {
+            // If they confirmed the deletion...
+            if (result)
+            {
+              // ... then fire an event to the FSM to delete the app
+              this.fireDataEvent("deleteApp",
+                                 {
+                                   uid   : uid,
+                                   app   : container
+                                 });
+            }
+          },
+          this);
+      },
+      this);
     form.addButton(o);
     this.butDeleteApp = o;
+
+    this.addListener("deleteApp", this.__fsm.eventListener, this.__fsm);
 
     // Create the rendered form and add it to the HBox
     formRendered = new aiagallery.widget.mystuff.DetailRenderer(form);
@@ -542,6 +582,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     {
       this._model.uid = value;
       this.spinUid.setValue(value);
+      
+      // Set the Delete Application button's label properly since there's an
+      // app here to be deleted.
+      this.butDeleteApp.setLabel(this.tr("Delete Application"));
     },
 
     _applyTitle : function(value, old)
@@ -628,6 +672,11 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       
       // Save the model's status, for resetting the form
       this.setOrigStatus(this.getStatus());
+    },
+
+    getOrigTitle : function()
+    {
+      return this._snapshot ? this._snapshot.title : null;
     },
 
     getModel : function()
