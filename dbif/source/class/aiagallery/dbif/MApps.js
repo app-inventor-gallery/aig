@@ -656,7 +656,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               typeof appData[field] == "undefined")
           {
             // Mark the required field as missing
-console.log("Found missing field: " + field);
             missing.push(field);
           }
         }
