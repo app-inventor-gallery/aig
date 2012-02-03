@@ -70,6 +70,12 @@ qx.Class.define("aiagallery.widget.mystuff.FormImage",
       this.getChildControl("image").setSource(value);
     },
 
+    // property apply function
+    _applyTabIndex : function(value, old)
+    {
+      this.getChildControl("button").setTabIndex(value);
+    },
+
     /** Called when the 'required' property changes value */
     _onChangeRequired : function(e)
     {
@@ -112,6 +118,7 @@ qx.Class.define("aiagallery.widget.mystuff.FormImage",
         control = new qx.ui.basic.Image();
         control.set(
           {
+            focusable : false,
             scale     : true,
             maxWidth  : 130,
             maxHeight : 130

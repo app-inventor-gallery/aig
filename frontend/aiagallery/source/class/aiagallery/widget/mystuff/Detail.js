@@ -71,6 +71,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.TextField();
     o.set(
       {
+        tabIndex    : 1,
         required    : true,
         placeholder : "Enter the application title"
       });
@@ -90,6 +91,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.TextArea();
     o.set(
       {
+        tabIndex    : 2,
         width       : 200,
         height      : 60,
         required    : true,
@@ -126,6 +128,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.List();
     o.set(
       {
+        tabIndex    : 3,
         height        : 100,
         selectionMode : "multi",
         required      : true
@@ -141,6 +144,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.TextField();
     o.set(
       {
+        tabIndex    : 5,
         placeholder : "Enter a new tag"
       });
     form.getValidationManager().add(
@@ -162,6 +166,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.Button("Add");
     o.set(
       {
+        tabIndex  : 6,
         height    : 24,
         maxHeight : 24
       });
@@ -210,6 +215,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.List();
     o.set(
       {
+        tabIndex      : 7,
         height        : 100,
         selectionMode : "single",
         required      : false
@@ -222,6 +228,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.Button("Delete Tag");
     o.set(
       {
+        tabIndex  : 8,
         height    : 24,
         maxHeight : 24
       });
@@ -263,7 +270,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new aiagallery.widget.mystuff.FormFile("Select source file", "source");
     o.set(
       {
-        required : true
+        tabIndex  : 9,
+        focusable : false,
+        required  : true
       });
     form.add(o, null, null, "source", null,
              { row : 0, column : 6, rowSpan : 2 });
@@ -292,7 +301,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new aiagallery.widget.mystuff.FormImage("Select Image", "image1");
     o.set(
       {
-        required : true
+        tabIndex  : 10,
+        focusable : false,
+        required  : true
       });
     form.add(o, null, null, "image1", null,
              { row : 3, column : 6, rowSpan : 5 });
@@ -316,7 +327,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.Button("Save Application");
     o.set(
       {
-        width : 130
+        tabIndex : 11,
+        width    : 130
       });
     o.addListener(
       "execute",
@@ -390,7 +402,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.Button("Reset");
     o.set(
       {
-        width : 130
+        tabIndex : 12,
+        width    : 130
       });
     o.addListener(
       "execute",
@@ -412,7 +425,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.Button(this.tr("Discard"));
     o.set(
       {
-        width : 130
+        tabIndex : 13,
+        width    : 130
       });
     o.addListener(
       "execute",
@@ -465,6 +479,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         var             modelJson;
         var             snapshotJson;
+
+        // Set the focus to the first field
+        this.txtTitle.focus();
 
         // If the status isn't already NotSaved...
         if (this.__container.getStatus() != 

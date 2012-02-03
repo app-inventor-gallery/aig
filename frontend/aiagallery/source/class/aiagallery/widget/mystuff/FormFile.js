@@ -80,6 +80,12 @@ qx.Class.define("aiagallery.widget.mystuff.FormFile",
       this.getChildControl("filename").setValue(value);
     },
 
+    // property apply function
+    _applyTabIndex : function(value, old)
+    {
+      this.getChildControl("button").setTabIndex(value);
+    },
+
     /** Called when the 'required' property changes value */
     _onChangeRequired : function(e)
     {
@@ -122,7 +128,8 @@ qx.Class.define("aiagallery.widget.mystuff.FormFile",
         control = new qx.ui.basic.Label();
         control.set(
           {
-            alignX : "center"
+            focusable : false,
+            alignX    : "center"
           });
         this._add(control, { flex : 1 });
         break;
