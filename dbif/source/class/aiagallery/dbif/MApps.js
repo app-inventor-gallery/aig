@@ -590,12 +590,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                   // ... then create it
                   appData.newsource = [];
                 }
-
-                // Save the field data
-                appData.source = attributes.source;
-
-                // Indicate that this file needs later processing.
-                appData.newsource.push(attributes.source);
                 break;
 
               case "image1":
@@ -684,7 +678,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           sourceKey = liberated.dbif.Entity.putBlob(attributes.source);
 
           // Prepend the blob id to the key list of new source files
-          appData.newsource.unshift(sourceKey);
+          appData.source.unshift(sourceKey);
 
           // Save the blob id to remove it, in case something fails
           addedBlobs.push(sourceKey);
