@@ -314,7 +314,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         return true;
       }
 
-      var trueFlag = false; 
+      var allowFlag = false; 
       // Permission Groups Search
       // Deeper check: Do any of my permission groups give me access to this
       // method?
@@ -335,7 +335,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
                 qx.lang.Array.contains(permissionArr, methodName))
             {
               // Yes, allow me.
-              trueFlag = true;
+              allowFlag = true;
               return true;
             }
             
@@ -344,15 +344,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         
       }
 
-      //Check the allowFlag
-      if (trueFlag != false)
-      {
-        return true;
-      }
-      
-      // Did not find this permission, dissalow.
-      return false;
-
+      //Return the allowFlag true is allowed, false is disallowed
+      return allowFlag; 
     }
   }
 });
