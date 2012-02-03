@@ -30,6 +30,22 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       var             fsm = module.fsm;
       var             canvas = module.canvas;
       var             header;
+      var             messageBus;
+
+      // Let the FSM handle server push events
+      this.addListener("serverPush", fsm.eventListener, fsm);
+
+      // Subscribe to receive server push messages of type "app.postupload"
+      messageBus = qx.event.message.Bus.getInstance();
+      messageBus.subscribe(
+        "app.postupload", 
+        function(e)
+        {
+          // Generate an event to the FSM
+          this.fireDataEvent("serverPush", e);
+        },
+        this);
+
 
       this.group = new qx.ui.form.RadioGroup();
       this.group.setAllowEmptySelection(true);
@@ -209,7 +225,10 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       var             fsm = module.fsm;
       var             response = rpcRequest.getUserData("rpc_response");
       var             requestType = rpcRequest.getUserData("requestType");
+      var             i;
       var             app;
+      var             apps;
+      var             appId;
       var             data;
       var             prop;
       var             availableProperties;
@@ -352,6 +371,30 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
         // The app has been deleted, so remove it from view
         app.getLayoutParent().remove(app);
         app.dispose();
+        break;
+
+      case "serverPush":
+        // Get the scroll canvas' children (all of the apps)
+        apps = this.scrollCanvas.getChildren();
+
+        // Update the app's status
+        appId = response.data.appId;
+        
+        // Search for the app with the given 
+        for (i = 0; i < apps.length; i++)
+        {
+          if (apps[i].getUid() == appId)
+          {
+            break;
+          }
+        }
+        
+        // Did we find it?
+        if (i < apps.length)
+        {
+          // Yup. Update the row
+          apps[i].setStatus(response.data.status);
+        }
         break;
 
       default:

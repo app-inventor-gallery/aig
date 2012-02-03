@@ -64,6 +64,9 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
 
         "events" :
         {
+          // Messages pushed by the server, e.g. app status changes
+          "serverPush" : "Transition_Idle_to_Idle_via_serverPush",
+
           // On the clicking of a Save button in an app's Detail editing area
           "saveApp" : "Transition_Idle_to_AwaitRpcResult_via_saveApp",
           
@@ -225,6 +228,60 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
         }
       });
 
+      state.addTransition(trans);
+
+
+      /*
+       * Transition: Idle to Idle
+       *
+       * Cause: A server push message arrived, indicating, generally, a change
+       * of status of an app.
+       *
+       * Action:
+       *  Update the GUI
+       */
+
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_Idle_via_serverPush",
+      {
+        "nextState" : "State_Idle",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var data;
+            
+          // Retrieve the serverPush event
+          data = event.getData();
+          
+          // The serverPush event contains the data we care about
+          data = data.getData();
+          
+          //
+          // Simulate that this is an RPC response
+          //
+          var rpcRequest = new qx.core.Object();
+          rpcRequest.setUserData("requestType", "serverPush");
+          rpcRequest.setUserData("rpc_response", 
+                                 {
+                                   type : "success",
+                                   data : data
+                                 });
+
+          // Call the standard result handler
+          var gui = aiagallery.module.dgallery.myapps.Gui.getInstance();
+          gui.handleResponse(module, rpcRequest);
+
+          // Dispose of the request
+          if (rpcRequest.request)
+          {
+            rpcRequest.request.dispose();
+            rpcRequest.request = null;
+          }
+        }
+      });
+        
       state.addTransition(trans);
 
 
