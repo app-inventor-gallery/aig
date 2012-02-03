@@ -112,8 +112,9 @@ qx.Class.define("aiagallery.widget.mystuff.FormImage",
         control = new qx.ui.basic.Image();
         control.set(
           {
-            scale    : true,
-            maxWidth : 130
+            scale     : true,
+            maxWidth  : 130,
+            maxHeight : 130
           });
         this._add(control, { flex : 1 });
         break;
