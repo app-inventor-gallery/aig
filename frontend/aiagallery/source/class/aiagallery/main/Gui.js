@@ -380,7 +380,7 @@ qx.Class.define("aiagallery.main.Gui",
             var loader = new qx.io.ScriptLoader();
             loader.load(
               "/_ah/channel/jsapi", 
-              function(status)
+              function createChannel(status)
               {
                 // Did we successfully load the Channel API?
                 switch(status)
@@ -439,6 +439,7 @@ qx.Class.define("aiagallery.main.Gui",
 
                         // Parse the JSON message
                         data = qx.lang.Json.parse(data.data);
+                        channelMessage("message", data);
 
                         // Dispatch a message for any subscribers to
                         // this type.
@@ -462,6 +463,9 @@ qx.Class.define("aiagallery.main.Gui",
                       socket.onclose = function(data)
                       {
                         channelMessage("close", data);
+                        
+                        // Re-establish the channel
+                        createChannel("success");
                       };
 
                       // Save the channel token (if provided)
