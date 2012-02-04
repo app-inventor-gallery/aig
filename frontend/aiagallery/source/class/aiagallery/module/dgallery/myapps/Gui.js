@@ -13,6 +13,11 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
 {
   type : "singleton",
   extend : qx.ui.core.Widget,
+  
+  events :
+  {
+    serverPush : "qx.event.type.Data"
+  },
 
   members :
   {

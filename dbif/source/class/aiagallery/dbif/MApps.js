@@ -483,6 +483,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             sourceKey = null;
       var             field;
       var             requestData;
+      var             messageData;
+      var             messageBus;
       var             allowableFields =
         [
           "uid",
@@ -839,6 +841,25 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                   this.logMessage(appData.owner,
                                   "App available",
                                   appData.title);
+
+                  // Dispatch a message for any subscribers to this type.
+                  qx.util.TimerManager.getInstance().start(
+                    function()
+                    {
+                      messageData =
+                        {
+                          type   : "app.postupload",
+                          title  : appData.title,
+                          appId  : appData.uid,
+                          status : appData.status
+                        };
+                      messageBus = qx.event.message.Bus.getInstance();
+                      messageBus.dispatchByName(messageData.type, messageData);
+                    },
+                    null,
+                    this,
+                    null,
+                    250);
 
                   // See if there are any source files to process.
                   while (appData.newsource && appData.newsource.length > 0)
