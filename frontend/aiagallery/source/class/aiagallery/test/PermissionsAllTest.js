@@ -48,7 +48,13 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
                          "getAppListAll", "addComment", "deleteComment", 
                          "flagIt", "likesPlusOne"],
           "description" : "Some permissions"
-        }
+        },
+         "ONE" :
+        {
+          "name" : "SOME",
+          "permissions" : ["addOrEditApp"],
+          "description" : "Some permissions"
+        },
       },
       
       tags:     {},
@@ -284,7 +290,99 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
       this.assertFalse(aiagallery.dbif.MDbifCommon._deepPermissionCheck(
         "addOrEditApp"), "with permission group: " + 
           myObjData.permissionGroups);
-    }
+    },
     
+    "test: User has two pGroups, second one has valid permission (PGroups)" 
+      : function()
+    {
+    
+        //Start with fresh DB
+      var myDB = qx.lang.Object.clone(this.__db, true);
+        
+      // Use a personalized database
+      liberated.sim.Dbif.setDb(myDB);
+        
+      //Get instance
+      myDB = aiagallery.dbif.DbifSim.getInstance();
+       
+      // Create new objVisitor
+      visitor = new aiagallery.dbif.ObjVisitors("paul@thetester.com");
+    
+      // Provide the new data
+      visitor.setData(
+        {
+          id          : "paul@thetester.com",
+          displayName : "paulissocool",
+          permissions :  [],
+          permissionGroups : ["SOME", "ALL"],
+          status : 2
+        });
+      
+       // Write the new data
+       visitor.put();
+    
+       myDB.setWhoAmI(
+       {
+          email : "paul@thetester.com",
+          isAdmin: false,
+          logoutUrl: "undefined",
+          permissions: [],
+          permissionGroups : ["SOME", "ALL"],
+          userId :  "pGroupTests"
+        });
+        
+      var myObjData = 
+        new aiagallery.dbif.ObjVisitors("paul@thetester.com").getData();
+    
+      this.assertTrue(aiagallery.dbif.MDbifCommon._deepPermissionCheck(
+        "getDatabaseEntities"), "with permission group: " + 
+          myObjData.permissionGroups);
+    },
+    "test: User has two pGroups, neither has valid permissions (PGroups)" 
+      : function()
+    {
+    
+        //Start with fresh DB
+      var myDB = qx.lang.Object.clone(this.__db, true);
+        
+      // Use a personalized database
+      liberated.sim.Dbif.setDb(myDB);
+        
+      //Get instance
+      myDB = aiagallery.dbif.DbifSim.getInstance();
+       
+      // Create new objVisitor
+      visitor = new aiagallery.dbif.ObjVisitors("paul@thetester.com");
+    
+      // Provide the new data
+      visitor.setData(
+        {
+          id          : "paul@thetester.com",
+          displayName : "paulissocool",
+          permissions :  [],
+          permissionGroups : ["SOME", "ONE"],
+          status : 2
+        });
+      
+       // Write the new data
+       visitor.put();
+    
+       myDB.setWhoAmI(
+       {
+          email : "paul@thetester.com",
+          isAdmin: false,
+          logoutUrl: "undefined",
+          permissions: [],
+          permissionGroups : ["SOME", "ONE"],
+          userId :  "pGroupTests"
+        });
+        
+      var myObjData = 
+        new aiagallery.dbif.ObjVisitors("paul@thetester.com").getData();
+    
+      this.assertFalse(aiagallery.dbif.MDbifCommon._deepPermissionCheck(
+        "getDatabaseEntities"), "with permission group: " + 
+          myObjData.permissionGroups);
+    }
   }
 });
