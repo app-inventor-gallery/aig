@@ -359,7 +359,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         }
 
         // Retrieve data model
-        modelObj = this.getModel();
+        modelObj = qx.lang.Object.clone(this.getModel(), true);
         
         // Check each field in the model to see if it has changed since the
         // original model was created (when the "appear" event occurred). If
