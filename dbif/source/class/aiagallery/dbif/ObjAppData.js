@@ -17,15 +17,8 @@ qx.Class.define("aiagallery.dbif.ObjAppData",
       {
         "newimage1"       : null,
         "image1"          : null,
-        "newimage2"       : null,
-        "image2"          : null,
-        "newimage3"       : null,
-        "image3"          : null,
-        "previousAuthors" : [],
         "newsource"       : [],
         "source"          : [],
-        "newapk"          : [],
-        "apk"             : [],
         "tags"            : [],
         "numLikes"        : 0,
         "numDownloads"    : 0,
@@ -65,27 +58,6 @@ qx.Class.define("aiagallery.dbif.ObjAppData",
 
         /** Image #1 blob id */
         "image1blob" : "String",
-
-        /** New (to be processed) image #2 (data: or real URL) */
-        "newimage2" : "LongString",
-
-        /** Image #2 (data: or real URL) */
-        "image2" : "LongString",
-
-        /** Image #2 blob id */
-        "image2blob" : "String",
-
-        /** New (to be processed) image #3 (data: or real URL) */
-        "newimage3" : "LongString",
-
-        /** Image #3 (data: or real URL) */
-        "image3" : "LongString",
-
-        /** Image #3 blob id */
-        "image3blob" : "String",
-
-        /** Authorship chain */
-        "previousAuthors" : "StringArray",
 
         /** Blob ids of source ZIP file (base64-encoded), newest first */
         "newsource" : "StringArray",

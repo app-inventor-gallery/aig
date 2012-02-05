@@ -13,6 +13,11 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
 {
   type : "singleton",
   extend : qx.ui.core.Widget,
+  
+  events :
+  {
+    serverPush : "qx.event.type.Data"
+  },
 
   members :
   {
@@ -30,6 +35,22 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       var             fsm = module.fsm;
       var             canvas = module.canvas;
       var             header;
+      var             messageBus;
+
+      // Let the FSM handle server push events
+      this.addListener("serverPush", fsm.eventListener, fsm);
+
+      // Subscribe to receive server push messages of type "app.postupload"
+      messageBus = qx.event.message.Bus.getInstance();
+      messageBus.subscribe(
+        "app.postupload", 
+        function(e)
+        {
+          // Generate an event to the FSM
+          this.fireDataEvent("serverPush", e);
+        },
+        this);
+
 
       this.group = new qx.ui.form.RadioGroup();
       this.group.setAllowEmptySelection(true);
@@ -38,7 +59,44 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
 
       // Add an Add New Apps button, left-justified
       hBox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
-      o = new qx.ui.form.Button("Add New App");
+      o = new qx.ui.form.Button("Add New Application");
+      o.addListener(
+        "execute",
+        function(e)
+        {
+          var             app = null;
+          var             children;
+
+          // Obtain the first app (if there is one) to see if it's our one and
+          // only new app editor
+          children = this.scrollCanvas.getChildren();
+          if (children.length != 0 && children[0].getUid() === null)
+          {
+            // Found an existing new app editor. Retrieve it.
+            app = children[0];
+          }
+          else
+          {
+            // No existing new app editor. Instantiate a new one.
+            app = new aiagallery.widget.mystuff.App(fsm);
+            app.setGroup(this.group);
+            app.set(
+              {
+                numLikes     : 0,
+                numDownloads : 0,
+                numViewed    : 0,
+                numComments  : 0,
+                status       : aiagallery.dbif.Constants.Status.Editing
+              });
+          }
+
+          // Scroll the app editor into view
+          this.scrollCanvas.addAt(app, 0);
+
+          // Be sure it's open
+          app.setValue(true);
+        },
+        this);
       hBox.add(o);
       hBox.add(new qx.ui.core.Spacer(), { flex : 1 });
       canvas.add(hBox);
@@ -121,15 +179,39 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       header.add(o);
       
       canvas.add(header);
+      
+      // Initially the header should be invisible, until adding apps
+      // (children) causes it to become visible
+      header.setVisibility("excluded");
 
       // Create a scroll container for all of the apps' collapsable panels
       o = new qx.ui.container.Scroll();
       canvas.add(o, { flex : 1 });
       
-      // The scroll container can only have a single widget as its content
+      // The scroll container can only have a single widget as its content, so
+      // create a scroll canvas to which we'll add each of the apps.
       this.scrollCanvas =
         new qx.ui.container.Composite(new qx.ui.layout.VBox());
       o.add(this.scrollCanvas);
+      
+      // Make the header visible or not depending on whether there are any
+      // applications in the scroll canvas.
+      function setHeaderVisibility(e)
+      {
+        header.setVisibility(this.scrollCanvas.getChildren().length > 0
+                             ? "visible"
+                             : "excluded");
+      }
+
+      this.scrollCanvas.addListener(
+        "addChildWidget",
+        setHeaderVisibility, 
+        this);
+
+      this.scrollCanvas.addListener(
+        "removeChildWidget",
+        setHeaderVisibility, 
+        this);
     },
 
     
@@ -148,6 +230,13 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       var             fsm = module.fsm;
       var             response = rpcRequest.getUserData("rpc_response");
       var             requestType = rpcRequest.getUserData("requestType");
+      var             i;
+      var             app;
+      var             apps;
+      var             appId;
+      var             data;
+      var             prop;
+      var             availableProperties;
 
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -251,6 +340,61 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
           this);
         break;
         
+      case "addOrEditApp":
+        // Retrieve the App object to which this request applied
+        app = rpcRequest.getUserData("App");
+        
+        // Strip out fields that we don't have properties for in the GUI
+        data = response.data.result;
+        availableProperties = qx.Class.getProperties(app.constructor);
+        for (prop in data)
+        {
+          if (! qx.lang.Array.contains(availableProperties, prop))
+          {
+            delete data[prop];
+          }
+        }
+        
+        // Now display the results and save a new snapshot
+        app.set(data);
+        break;
+
+      case "deleteApp":
+        // Retrieve the App object to which this request applied
+        app = rpcRequest.getUserData("App");
+        
+        // The app has been deleted, so remove it from view
+        app.getLayoutParent().remove(app);
+        app.dispose();
+        break;
+
+      case "serverPush":
+        // Get the scroll canvas' children (all of the apps)
+        apps = this.scrollCanvas.getChildren();
+
+        // Update the app's status
+        appId = response.data.appId;
+        
+        // Search for the app with the given 
+        for (i = 0; i < apps.length; i++)
+        {
+          if (apps[i].getUid() == appId)
+          {
+            break;
+          }
+        }
+        
+        // Did we find it?
+        if (i < apps.length)
+        {
+          // Yup. Update the row and save a new snapshot
+          apps[i].set(
+            {
+              status : response.data.status
+            });
+        }
+        break;
+
       default:
         throw new Error("Unexpected request type: " + requestType);
       }

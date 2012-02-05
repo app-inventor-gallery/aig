@@ -44,8 +44,9 @@ qx.Class.define("aiagallery.dbif.Constants",
       Invalid     : 4,
       Incomplete  : 5,
       Editing     : 6,
-      Uploading   : 7,
-      Processing  : 8
+      NotSaved    : 7,
+      Uploading   : 8,
+      Processing  : 9
     },
     
     /** Reverse mapping of status: values to names */
@@ -58,6 +59,7 @@ qx.Class.define("aiagallery.dbif.Constants",
       "Invalid",
       "Incomplete",
       "Editing",
+      "Not saved!",
       "Uploading",
       "Processing"
     ],

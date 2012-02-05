@@ -399,9 +399,9 @@ qx.Class.define("appengine.Application",
         // Simulate a real RPC request
         jsonInput = 
           '{\n' +
+          '  "jsonrpc" : "2.0",\n' +
           '  "id"      : "tag",\n' +
-          '  "service" : "aiagallery.features",\n' +
-          '  "method"  : "mobileRequest",\n' +
+          '  "method"  : "aiagallery.features.mobileRequest",\n' +
           '  "params"  : [ "' + querySplit[1] + '" ]\n' +
           '}';
 

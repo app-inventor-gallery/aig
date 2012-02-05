@@ -6,7 +6,7 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
-qx.Class.define("aiagallery.widget.mystuff.FormImage",
+qx.Class.define("aiagallery.widget.mystuff.FormFile",
 {
   extend    : qx.ui.container.Composite,
   implement :
@@ -32,7 +32,7 @@ qx.Class.define("aiagallery.widget.mystuff.FormImage",
     
     // Create the child controls
     this.getChildControl("button");
-    this.getChildControl("image");
+    this.getChildControl("filename");
     
     // Listen for changes to the 'required' property
     this.addListener("changeRequired", this._onChangeRequired);
@@ -53,13 +53,23 @@ qx.Class.define("aiagallery.widget.mystuff.FormImage",
       nullable : false,
       init     : null,
       event    : "changeValue"
+    },
+    
+    content :
+    {
+      check    : "String",
+      init     : null,
+      event    : "changeContent"
     }
   },
 
   events :
   {
     /** Fired when the value was modified */
-    "changeValue" : "qx.event.type.Data"
+    "changeValue" : "qx.event.type.Data",
+    
+    /** Fired when a filename selection is made */
+    "changeFileName" : "qx.event.type.Data"
   },
 
   members :
@@ -67,7 +77,7 @@ qx.Class.define("aiagallery.widget.mystuff.FormImage",
     // property apply function
     _applyValue : function(value, old)
     {
-      this.getChildControl("image").setSource(value);
+      this.getChildControl("filename").setValue(value);
     },
 
     // property apply function
@@ -96,14 +106,14 @@ qx.Class.define("aiagallery.widget.mystuff.FormImage",
       switch(id)
       {
       case "button":
-        // Select image
+        // Select file
         control = new uploadwidget.UploadButton(this.fieldName, this.label);
         control.setRich(true);
         this._add(control);
         
         // We access this a lot, so make it a member variable
         this.uploadButton = control;
-        
+
         // When this button gets a changeFileName event, pass it along
         control.addListener(
           "changeFileName",
@@ -114,14 +124,12 @@ qx.Class.define("aiagallery.widget.mystuff.FormImage",
           this);
         break;
 
-      case "image":
-        control = new qx.ui.basic.Image();
+      case "filename":
+        control = new qx.ui.basic.Label();
         control.set(
           {
             focusable : false,
-            scale     : true,
-            maxWidth  : 130,
-            maxHeight : 130
+            alignX    : "center"
           });
         this._add(control, { flex : 1 });
         break;
@@ -160,7 +168,7 @@ qx.Class.define("aiagallery.widget.mystuff.FormImage",
       fileSize = this.uploadButton.getFileSize();
 
       // Size check
-      if (fileSize > aiagallery.main.Constant.MAX_IMAGE_FILE_SIZE)
+      if (fileSize > aiagallery.main.Constant.MAX_SOURCE_FILE_SIZE)
       {
         // Clean up
         this.uploadReader.dispose();
@@ -168,10 +176,10 @@ qx.Class.define("aiagallery.widget.mystuff.FormImage",
 
         // Generate a message for image too large
         message = 
-          "The image you attempted to upload was " +
+          "The file you attempted to upload was " +
           fileSize +
           " bytes, which is larger than the limit of " + 
-          aiagallery.main.Constant.MAX_IMAGE_FILE_SIZE +
+          aiagallery.main.Constant.MAX_SOURCE_FILE_SIZE +
           " bytes.";              
         
         alert(message);
@@ -215,19 +223,18 @@ qx.Class.define("aiagallery.widget.mystuff.FormImage",
       this.uploadReader = null;
 
       // Test for valid image type
-      if(qx.lang.Array.contains(aiagallery.main.Constant.VALID_IMAGE_TYPES,
+      if(qx.lang.Array.contains(aiagallery.main.Constant.VALID_SOURCE_TYPES,
                                 mimeType)) 
       {
-        // Display the new image
-        this.setValue(content);        
+        this.setValue(this.uploadButton.getFileName());
+        this.setContent(content);
       }
       else
       {
         // Generate an error message for invalid type
         message = 
-          "You have selected an invalid image file. " +
-          "Valid file types are:\n" +
-          aiagallery.main.Constant.VALID_IMAGE_TYPES.join(", ");
+          "The file you selected is not a valid '.zip' source file " +
+          "(found " + debugStr + ")";
         
         alert(message);
       }

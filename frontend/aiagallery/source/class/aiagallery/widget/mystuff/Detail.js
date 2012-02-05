@@ -29,7 +29,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     
     // Initialize our data model
     this._model = {};
-    this._snapshot = {};
 
     // Retrieve the list of categories, at least one of which must be selected
     categoryList =
@@ -72,6 +71,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.TextField();
     o.set(
       {
+        tabIndex    : 1,
         required    : true,
         placeholder : "Enter the application title"
       });
@@ -79,6 +79,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       "input",
       function(e)
       {
+        // Save the new title
         this.setTitle(e.getData());
       },
       this);
@@ -90,6 +91,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.TextArea();
     o.set(
       {
+        tabIndex    : 2,
         width       : 200,
         height      : 60,
         required    : true,
@@ -99,6 +101,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       "input",
       function(e)
       {
+        // Save the new description
         this.setDescription(e.getData());
       },
       this);
@@ -125,11 +128,12 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.List();
     o.set(
       {
+        tabIndex    : 3,
         height        : 100,
         selectionMode : "multi",
         required      : true
       });
-    o.addListener("changeSelection", this._changeCategoriesOrTags, this);
+    o.addListener("changeSelection", this._changeCategories, this);
     form.add(o, "Categories", null, "categories", null,
              { row : 3, column : 0, rowSpan : 5 });
     this.categoryController = new qx.data.controller.List(
@@ -140,6 +144,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.TextField();
     o.set(
       {
+        tabIndex    : 5,
         placeholder : "Enter a new tag"
       });
     form.getValidationManager().add(
@@ -161,102 +166,178 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.Button("Add");
     o.set(
       {
+        tabIndex  : 6,
         height    : 24,
         maxHeight : 24
       });
+    o.addListener(
+      "execute",
+      function(e)
+      {
+        var             existingTags;
+        var             newTags;
+        var             newValue;
+
+        // Get the value being added
+        newValue = this.txtNewTag.getValue();
+        
+        // Ensure there's something there
+        if (! newValue || newValue.length == 0)
+        {
+          // Nothing to do
+          return;
+        }
+
+        // Get the current list of tags
+        existingTags = this.getTags();
+        
+        // Is the tag being added already in the list?
+        if (! qx.lang.Array.contains(existingTags, newValue))
+        {
+          // Nope, it's a new tag. Clone the tag list.
+          newTags = qx.lang.Array.clone(existingTags);
+          
+          // Add the new one to the tag list
+          newTags.push(this.txtNewTag.getValue());
+          
+          // Save the new set of tags
+          this.setTags(newTags);
+        }
+        
+        // Clear out the text field
+        this.txtNewTag.setValue(null);
+      },
+      this);
     form.addButton(o, { row : 5, column : 3 });
     this.butAddTag = o;
-
-    // Button to delete selected tag(s)
-    o = new qx.ui.form.Button("Delete Tag");
-    o.set(
-      {
-        height    : 24,
-        maxHeight : 24
-      });
-    form.addButton(o, { row : 7, column : 5 });
-    this.butDeleteTag = o;
 
     // Application-specific tags
     o = new qx.ui.form.List();
     o.set(
       {
+        tabIndex      : 7,
         height        : 100,
-        selectionMode : "multi",
+        selectionMode : "single",
         required      : false
       });
-    o.addListener("changeSelection", this._changeCategoriesOrTags, this);
     form.add(o, "", null, "tags", null,
              { row : 4, column : 4, rowSpan : 3 });
     this.lstTags = o;
     
-
-    // Change file name
-    o = new qx.ui.form.Button("Select Source File" + required);
+    // Button to delete selected tag(s)
+    o = new qx.ui.form.Button("Delete Tag");
+    o.set(
+      {
+        tabIndex  : 8,
+        height    : 24,
+        maxHeight : 24
+      });
     o.addListener(
       "execute",
       function(e)
       {
-        this.debug("Selecting source file");
-      });
-    o.getChildControl("label").setRich(true);
-    form.addButton(o, { row : 0, column : 6 });
-    this.butSelectSourceFile = o;
-    
-    // Source file name
-    // Title
-    o = new qx.ui.form.TextField();
-    o.set(
-      {
-        required    : true,
-        placeholder : "Select source file"
-      });
-    o.addListener(
-      "focus",
-      function(e)
-      {
-        var             button = this.butSelectSourceFile;
+        var             existingTags;
+        var             selectedTags;
+        var             newTags;
 
-        o.blur();
-        button.focus();
-        button.execute();
+        // Get the current list of tags
+        existingTags = this.getTags();
+        
+        // Get the tag to be deleted
+        selectedTags = this.lstTags.getSelection();
+        
+        // Is there a selection?
+        if (selectedTags.length == 0)
+        {
+          // Nope. Nothing to do.
+          return;
+        }
+        
+        // Clone the tags list
+        newTags = qx.lang.Array.clone(existingTags);
+        
+        // Remove the selected tag
+        qx.lang.Array.remove(newTags, selectedTags[0].getLabel());
+        
+        // Save the new set of tags
+        this.setTags(newTags);
       },
       this);
-    form.add(o, null, null, "sourceFileName", null,
-             { row : 1, column : 6 });
-    this.txtSourceFileName = o;
-    
-    // Image1
-    o = new aiagallery.widget.mystuff.FormImage("Select Image");
+    form.addButton(o, { row : 7, column : 5 });
+    this.butDeleteTag = o;
+
+    // Source file name
+    o = new aiagallery.widget.mystuff.FormFile("Select source file", "source");
     o.set(
       {
-        required : true
+        tabIndex  : 9,
+        focusable : false,
+        required  : true
+      });
+    form.add(o, null, null, "source", null,
+             { row : 0, column : 6, rowSpan : 2 });
+
+    // When the file name changes, begin retrieving the file data
+    o.addListener(
+      "changeValue",
+      function(e)
+      {
+        // Save the new source file name
+        this.setSourceFileName(e.getData());
+      },
+      this);
+    o.addListener(
+      "changeContent",
+      function(e)
+      {
+        this.setSource(e.getData());
+      },
+      this);
+    this.ffSource = o;
+
+
+    
+    // Image1
+    o = new aiagallery.widget.mystuff.FormImage("Select Image", "image1");
+    o.set(
+      {
+        tabIndex  : 10,
+        focusable : false,
+        required  : true
       });
     form.add(o, null, null, "image1", null,
              { row : 3, column : 6, rowSpan : 5 });
 
-    // When the file name changes, begin retrieving the file data
+    // When the image changes, display it
     o.addListener(
-      "changeFileName",
+      "changeValue",
       function(e)
       {
+        // Save the new image
         this.setImage1(e.getData());
       },
       this);
-    this.imgImage1 = o;
+    this.fiImage1 = o;
 
     //
     // Add the buttons at the end
     //
     
     // Save
-    o = new qx.ui.form.Button("Save App");
+    o = new qx.ui.form.Button("Save Application");
+    o.set(
+      {
+        tabIndex : 11,
+        width    : 130
+      });
     o.addListener(
       "execute",
       function(e)
       {
         var             modelObj;
         var             field;
+        var             modelJson;
+        var             snapshotJson;
 
         // Is the form complete and ready for submission? First test basic
         // validation.
@@ -266,8 +347,19 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
           return;
         }
         
+        // Retrieve the model and most recent snapshot, in JSON format
+        modelJson = this.getModelJson();
+        snapshotJson = this.getSnapshotJson();
+
+        // Has anything changed
+        if (modelJson == snapshotJson)
+        {
+          // Nope. We have nothing to do.
+          return;
+        }
+
         // Retrieve data model
-        modelObj = this.getModel();
+        modelObj = qx.lang.Object.clone(this.getModel(), true);
         
         // Check each field in the model to see if it has changed since the
         // original model was created (when the "appear" event occurred). If
@@ -282,7 +374,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
           }
           else if (qx.lang.Type.isArray(modelObj[field]))
           {
-            if (qx.lang.Array.equals(modelObj[field], this._snapshot[field]))
+            if (this._snapshot[field] &&
+                qx.lang.Array.equals(modelObj[field], this._snapshot[field]))
             {
               delete modelObj[field];
             }
@@ -294,7 +387,11 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         }
         
         // Fire an event with the changed data
-        this.fireDataEvent("saveApp", modelObj);
+        this.fireDataEvent("saveApp",
+                           {
+                             model : modelObj, 
+                             app   : container
+                           });
       },
       this);
     form.addButton(o);
@@ -303,6 +400,11 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     this.addListener("saveApp", this.__fsm.eventListener, this.__fsm);
     
     o = new qx.ui.form.Button("Reset");
+    o.set(
+      {
+        tabIndex : 12,
+        width    : 130
+      });
     o.addListener(
       "execute",
       function(e)
@@ -312,27 +414,104 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
         // Reset the status to what it was originally
         this.__container.setStatus(this.getOrigStatus());
+        
+        // Save a new snapshot
+        this.snapshotModel();
       },
       this);
     form.addButton(o);
     this.butReset = o;
 
-/*
-    // Publish
-    o = new qx.ui.form.Button("Publish");
-    form.addButton(o);
-    this.butPublishApp = o;
-*/
-    
-    // Delete
-    o = new qx.ui.form.Button("Delete App");
+    // Delete. The button's label is reset to "Delete Application" when a uid
+    // is specified, meaning that there actually is an application to be
+    // deleted.
+    o = new qx.ui.form.Button(this.tr("Discard"));
+    o.set(
+      {
+        tabIndex : 13,
+        width    : 130
+      });
+    o.addListener(
+      "execute",
+      function(e)
+      {
+        var             uid = this.getUid();
+
+        // If this is a new app...
+        if (uid === null)
+        {
+          // ... then just remove this App object
+          container.getLayoutParent().remove(container);
+          container.dispose();
+          return;
+        }
+        
+        // Confirm that they really want to delete this application
+        dialog.Dialog.confirm(
+          this.tr(
+            "Really delete application") + 
+            " '" + this.getOrigTitle() + "'?",
+          function(result)
+          {
+            // If they confirmed the deletion...
+            if (result)
+            {
+              // ... then fire an event to the FSM to delete the app
+              this.fireDataEvent("deleteApp",
+                                 {
+                                   uid   : uid,
+                                   app   : container
+                                 });
+            }
+          },
+          this);
+      },
+      this);
     form.addButton(o);
     this.butDeleteApp = o;
+
+    this.addListener("deleteApp", this.__fsm.eventListener, this.__fsm);
 
     // Create the rendered form and add it to the HBox
     formRendered = new aiagallery.widget.mystuff.DetailRenderer(form);
     hBox.add(formRendered);
     
+    this.addListener(
+      "appear",
+      function(e)
+      {
+        var             modelJson;
+        var             snapshotJson;
+
+        // Set the focus to the first field
+        this.txtTitle.focus();
+
+        // If the status isn't already NotSaved...
+        if (this.__container.getStatus() != 
+            aiagallery.dbif.Constants.Status.NotSaved)
+        {
+          // ... then we don't need to do anything special right now
+          return;
+        }
+
+        // Retrieve the model and most recent snapshot, in JSON format
+        modelJson = this.getModelJson();
+        snapshotJson = this.getSnapshotJson();
+
+        // Has anything changed
+        if (modelJson != snapshotJson)
+        {
+          // Yup. Set the status so they know to come back here to finish it.
+          this.__container.setStatus(aiagallery.dbif.Constants.Status.Editing);
+        }
+        else
+        {
+          // Reset the status to what it was originally
+          this.__container.setStatus(this.getOrigStatus());
+        }
+      },
+      this);
+
     this.addListener(
       "disappear",
       function(e)
@@ -356,7 +535,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         if (modelJson != snapshotJson)
         {
           // Yup. Set the status so they know to come back here to finish it.
-          this.__container.setStatus(aiagallery.dbif.Constants.Status.Editing);
+          this.__container.setStatus(aiagallery.dbif.Constants.Status.NotSaved);
         }
         else
         {
@@ -416,6 +595,12 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       apply : "_applyTags"
     },
     
+    source :
+    {
+      check : "String",
+      apply : "_applySource"
+    },
+
     sourceFileName :
     {
       check : "String",
@@ -434,7 +619,29 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     __fsm       : null,
     __container : null,
 
-    _changeCategoriesOrTags : function(e)
+    _watchForEdits : function(e)
+    {
+      var             modelJson;
+      var             snapshotJson;
+
+      // Retrieve the model and most recent snapshot, in JSON format
+      modelJson = this.getModelJson();
+      snapshotJson = this.getSnapshotJson();
+
+      // Has anything changed
+      if (modelJson != snapshotJson)
+      {
+        // Yup. Set the status so they know it
+        this.__container.setStatus(aiagallery.dbif.Constants.Status.Editing);
+      }
+      else
+      {
+        // They just changed it back to its original state
+        this.__container.setStatus(this.getOrigStatus());
+      }
+    },
+
+    _changeCategories : function(e)
     {
       var             tags;
 
@@ -466,6 +673,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     {
       this._model.uid = value;
       this.spinUid.setValue(value);
+      
+      // Set the Delete Application button's label properly since there's an
+      // app here to be deleted.
+      this.butDeleteApp.setLabel(this.tr("Delete Application"));
     },
 
     _applyTitle : function(value, old)
@@ -529,22 +740,61 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     _applySourceFileName : function(value, old)
     {
       this._model.sourceFileName = value;
-      this.txtSourceFileName.setValue(value);
+      this.ffSource.setValue(value);
+    },
+
+    _applySource : function(value, old)
+    {
+      this._model.source = value;
+
+      // read-only from this.ffSource so no need to set anything.
     },
 
     _applyImage1 : function(value, old)
     {
       this._model.image1 = value;
-      this.imgImage1.setValue(value);
+      this.fiImage1.setValue(value);
     },
     
     snapshotModel : function()
     {
-      // Create a clone of the model
-      this._snapshot = qx.lang.Object.clone(this._model, true);
-      
+      // If this is our first time in here...
+      if (! this._snapshot)
+      {
+        // ... then establish listeners to watch for edits
+        this.txtTitle.addListener("input",
+                                  this._watchForEdits,
+                                  this);
+        this.txtDescription.addListener("input",
+                                        this._watchForEdits,
+                                        this);
+        this.lstCategories.addListener("changeSelection",
+                                       this._watchForEdits,
+                                       this);
+        this.butAddTag.addListener("execute",
+                                   this._watchForEdits,
+                                   this);
+        this.butDeleteTag.addListener("execute",
+                                      this._watchForEdits,
+                                      this);
+        this.ffSource.addListener("changeValue",
+                                  this._watchForEdits,
+                                  this);
+        this.fiImage1.addListener("changeValue",
+                                  this._watchForEdits,
+                                  this);
+      }
+
       // Save the model's status, for resetting the form
       this.setOrigStatus(this.getStatus());
+
+      // Create a clone of the model
+      this._snapshot = qx.lang.Object.clone(this._model, true);
+    },
+
+    getOrigTitle : function()
+    {
+      return this._snapshot ? this._snapshot.title : null;
     },
 
     getModel : function()
