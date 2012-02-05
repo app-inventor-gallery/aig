@@ -200,7 +200,7 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
     
     // Unit Tests for Group Permissions
     
-    "test: succede permission test with addOrEditApp (PGroups)" : function()
+    "test: succeed permission test with addOrEditApp (PGroups)" : function()
     {
        
       //Start with fresh DB
@@ -383,6 +383,52 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
     
       this.assertFalse(aiagallery.dbif.MDbifCommon._deepPermissionCheck(
         "getDatabaseEntities"), "with permission group: " + 
+          myObjData.permissionGroups);
+    },
+     "test: User has a pgroup, but does not have valid permission (PGroups)" 
+      : function()
+    {
+    
+      //Start with fresh DB
+      var myDB = qx.lang.Object.clone(this.__db, true);
+        
+      // Use a personalized database
+      liberated.sim.Dbif.setDb(myDB);
+        
+      //Get instance
+      myDB = aiagallery.dbif.DbifSim.getInstance();
+       
+      // Create new objVisitor
+      visitor = new aiagallery.dbif.ObjVisitors("paul@thetester.com");
+    
+      // Provide the new data
+      visitor.setData(
+        {
+          id          : "paul@thetester.com",
+          displayName : "paulissocool",
+          permissions :  [],
+          permissionGroups : ["SOME"],
+          status : 2
+        });
+      
+       // Write the new data
+       visitor.put();
+    
+       myDB.setWhoAmI(
+       {
+          email : "paul@thetester.com",
+          isAdmin: false,
+          logoutUrl: "undefined",
+          permissions: [],
+          permissionGroups : ["SOME"],
+          userId :  "pGroupTests"
+        });
+        
+      var myObjData = 
+        new aiagallery.dbif.ObjVisitors("paul@thetester.com").getData();
+    
+      this.assertFalse(aiagallery.dbif.MDbifCommon._deepPermissionCheck(
+        "addOrEditVisitor"), "with permission group: " + 
           myObjData.permissionGroups);
     }
   }
