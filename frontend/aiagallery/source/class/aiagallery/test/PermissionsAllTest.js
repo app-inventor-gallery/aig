@@ -54,7 +54,7 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
           "name" : "SOME",
           "permissions" : ["addOrEditApp"],
           "description" : "Some permissions"
-        },
+        }
       },
       
       tags:     {},
