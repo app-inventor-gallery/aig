@@ -200,7 +200,7 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
     
     // Unit Tests for Group Permissions
     
-    "test: attempt to addOrEditApp (PGroups)" : function()
+    "test: succede permission test with addOrEditApp (PGroups)" : function()
     {
        
       //Start with fresh DB
@@ -246,10 +246,10 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
           myObjData.permissionGroups);
     },
     
-    "test: fail to addOrEditApp (PGroups)" : function()
+    "test: fail permission test with addOrEditApp (PGroups)" : function()
     {
     
-        //Start with fresh DB
+      //Start with fresh DB
       var myDB = qx.lang.Object.clone(this.__db, true);
         
       // Use a personalized database
@@ -296,7 +296,7 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
       : function()
     {
     
-        //Start with fresh DB
+      //Start with fresh DB
       var myDB = qx.lang.Object.clone(this.__db, true);
         
       // Use a personalized database
@@ -338,11 +338,12 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
         "getDatabaseEntities"), "with permission group: " + 
           myObjData.permissionGroups);
     },
+    
     "test: User has two pGroups, neither has valid permissions (PGroups)" 
       : function()
     {
     
-        //Start with fresh DB
+      //Start with fresh DB
       var myDB = qx.lang.Object.clone(this.__db, true);
         
       // Use a personalized database

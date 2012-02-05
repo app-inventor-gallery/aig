@@ -72,14 +72,14 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       vBoxBtns.add(addPermissionGroup);
       addPermissionGroup.addListener("execute", fsm.eventListener, fsm);
 
-      //Disable button on startup since textfield will be empty
+      // Disable button on startup since textfield will be empty
       addPermissionGroup.setEnabled(false);
       
       // We'll be receiving events on the object so save its friendly name
       fsm.addObject("addPermissionGroup", 
          addPermissionGroup, "main.fsmUtils.disable_during_rpc");
 
-      // Create an Update Permission Group button
+      // Create an Save Permission Group button
       savePermissionGroup = new qx.ui.form.Button(this.tr("Save"));
       savePermissionGroup.set(
       {
@@ -89,7 +89,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       vBoxBtns.add(savePermissionGroup);
       savePermissionGroup.addListener("execute", fsm.eventListener, fsm);
 
-      //Disable button on startup 
+      // Disable button on startup 
       savePermissionGroup.setEnabled(false); 
       
       // We'll be receiving events on the object so save its friendly name
@@ -109,7 +109,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       
       hBox.add(vBoxBtns);
       
-      //Disable button on startup 
+      // Disable button on startup 
       deletePermissionGroup.setEnabled(false);
       
       // We'll be receiving events on the object so save its friendly name
@@ -121,7 +121,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       layout.setSpacing(10);      
       vBoxText = new qx.ui.container.Composite(layout);
       
-      //Create a label for describing the textfields 
+      // Create a label for describing the textfields 
       textFieldLabel = new qx.ui.basic.Label("Permission Group Name:");
       vBoxText.add(textFieldLabel);
       
@@ -139,12 +139,15 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         var value = e.getData();
         addPermissionGroup.setEnabled(value.length > 0);
         
+        // When a user starts typing a new pGroup deselect everything
         // Deselect all values on the permission list
         possiblePermissionList.resetSelection(); 
         
         // Deselet all pgroup names
         pGroupNameList.resetSelection(); 
         
+        // Clear description field 
+        pGroupDescriptionField.setValue("");           
       }, this); 
 
       // Create friendly name to get it from the FSM
@@ -199,14 +202,14 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       possiblePermissionList.addListener("changeSelection", 
         fsm.eventListener, fsm);
 
-      //Allow user to select multiple items
+      // Allow user to select multiple items
       possiblePermissionList.setSelectionMode("multi");
 
-      //Create a data array of possible permissions
+      // Create a data array of possible permissions
       pDataArray = new qx.data.Array
        (qx.lang.Object.getKeys(aiagallery.dbif.Constants.Permissions));
       
-      //Create controller to add data to possiblePermissionList
+      // Create controller to add data to possiblePermissionList
       this.permissionController 
         = new qx.data.controller.List(pDataArray, possiblePermissionList); 
         
@@ -244,7 +247,8 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       var             delBtn = fsm.getObject("deletePermissionGroup");
       var             saveBtn = fsm.getObject("savePermissionGroup");
       var             addBtn = fsm.getObject("addPermissionGroup"); 
-      var             pGroupDescriptionField = fsm.getObject("pGroupDescriptionField");
+      var             pGroupDescriptionField = 
+                        fsm.getObject("pGroupDescriptionField");
       
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -288,6 +292,9 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
             // Add to list
             var pName = new qx.ui.form.ListItem(pArray[i].name);   
             pGroupNameList.add(pName);
+            
+            // Fill the description field
+            pGroupDescriptionField.setValue(pArray[i].description);         
           
             // Select it
             pGroupNameList.setSelection([pName]); 
@@ -335,7 +342,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         
         // Clear textFields
         pGroupNameField.setValue("");
-        pGroupDescriptionField.setValue("");
+        pGroupDescriptionField.setValue("");      
         
         // Possibly returned an existing pGroup
         // Clear all current selections on the list of permissions
@@ -358,16 +365,19 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       case "deletePermissionGroup" :
         if (response.data.result == "false") 
         {
-          //Delete failed
+          // Delete failed
           alert("An error occurred trying to delete this permission group.")
           break;
         }
         
-        //Permission group was deleted remove it from the list
+        // Permission group was deleted remove it from the list
         pGroupNameList.remove(pGroupNameList.getSelection()[0]);
         
-        //Clear all current selections on list 2 (the list of permissions)
+        // Clear all current selections on list 2 (the list of permissions)
         possiblePermissionList.resetSelection(); 
+        
+        // Clear the description field
+        pGroupDescriptionField.setValue("");    
         
         // Ensure Add Btn is disabled
         addBtn.setEnabled(false);
@@ -383,6 +393,9 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         // Clear all current selections on the list of permissions
         possiblePermissionList.resetSelection(); 
         
+        // Fill the description field
+        pGroupDescriptionField.setValue(response.data.result.description);    
+        
         // Make things easier to read
         var returnedList = response.data.result.permissions;
         
@@ -391,11 +404,10 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         
         // Set Selectiong using controller
         this.permissionController.setSelection(dataArray); 
-        
+
       case "addOrEditOrGetPermissionGroup_save" :
       
-        // Clear description field
-        pGroupDescriptionField.setValue("");
+        // Everything is all set 
 
         break;       
 
