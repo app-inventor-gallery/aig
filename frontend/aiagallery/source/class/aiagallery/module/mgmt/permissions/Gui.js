@@ -318,7 +318,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
    
         break; 
  
-      case "addOrEditOrGetPermissionGroup" : 
+      case "addOrEditPermissionGroup" : 
         if (response.data.result == "false") 
         {
           // Permission group name already exists
@@ -384,7 +384,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         
         break; 
         
-      case "addOrEditOrGetPermissionGroup_changeSelection" :
+      case "getGroupPermissions" :
       
         // I need this since if I put it all in one switch I 
         // Cannot detect just a changeSelection and thus
@@ -405,7 +405,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         // Set Selectiong using controller
         this.permissionController.setSelection(dataArray); 
 
-      case "addOrEditOrGetPermissionGroup_save" :
+      case "addOrEditPermissionGroup_save" :
       
         // Everything is all set 
 

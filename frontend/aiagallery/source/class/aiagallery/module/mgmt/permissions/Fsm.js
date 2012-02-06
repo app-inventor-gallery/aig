@@ -180,20 +180,17 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
-                         "addOrEditOrGetPermissionGroup",
+                         "getGroupPermissions",
                         [
 
-                          pName,
-                          [],
-                          true,
-                          null
+                          pName
                            
                         ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
           request.setUserData("requestType", 
-            "addOrEditOrGetPermissionGroup_changeSelection");
+            "getGroupPermissions");
         }
       });
 
@@ -237,19 +234,18 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
-                         "addOrEditOrGetPermissionGroup",
+                         "addOrEditPermissionGroup",
                          [
 
                           fsm.getObject("pGroupNameField").getValue(),
                           pList,
-                          false,
                           description
                            
                         ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "addOrEditOrGetPermissionGroup");
+          request.setUserData("requestType", "addOrEditPermissionGroup");
 
         }
       });
@@ -343,19 +339,18 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
-                         "addOrEditOrGetPermissionGroup",
+                         "addOrEditPermissionGroup",
                         [
 
                           pName, 
                           pList,
-                          false,
                           description
                            
                         ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "addOrEditOrGetPermissionGroup_save");
+          request.setUserData("requestType", "addOrEditPermissionGroup_save");
         }
       });
 

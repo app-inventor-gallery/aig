@@ -10,9 +10,13 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
 {
   construct : function()
   {
-    this.registerService("aiagallery.features.addOrEditOrGetPermissionGroup",
-                         this.addOrEditOrGetPermissionGroup,
-                         [ "pGroupName", "pArray", "getFlag", "descString" ]);
+    this.registerService("aiagallery.features.addOrEditPermissionGroup",
+                         this.addOrEditPermissionGroup,
+                         [ "pGroupName", "pArray", "descString" ]);
+
+    this.registerService("aiagallery.features.getGroupPermissions",
+                         this.getGroupPermissions,
+                         [ "pGroupName" ])
 
     this.registerService("aiagallery.features.deletePermissionGroup",
                          this.deletePermissionGroup,
@@ -28,17 +32,13 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
   {
 
     /**
-     * Create a new permission group, edit an existing one, or get
-     * an existing one. 
+     * Create a new permission group, edit an existing one
      *
      * @param pGroupName {String}
      *   This is a string to identify the name of the permission group
      *
      * @param pArray {Array}
      *   An array of strings of permissions
-     *
-     * @param getFlag {Boolean}
-     *   If true, just return data its a get operation
      *
      * @param descString {String}
      *   The description string
@@ -48,8 +48,12 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
      *   something went wrong
      *
      */
-     addOrEditOrGetPermissionGroup : function(pGroupName, pArray, getFlag, descString)
+     addOrEditPermissionGroup : function(pGroupName, pArray, descString)
      {
+        var       pGroup;
+        var       pGroupData;
+        var       returnValue
+
         // Create a new permission group
         // Use default permissions
         var pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
@@ -57,7 +61,7 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
         if (pGroup.getBrandNew())
         {
           // New permission group, set with default information
-          var pGroupData = pGroup.getData();
+          pGroupData = pGroup.getData();
 
           pGroupData.name = pGroupName;
           
@@ -77,16 +81,10 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
         {
           // Existing Permission Group
           // Get the data
-          var returnValue = liberated.dbif.Entity.asTransaction( 
+          returnValue = liberated.dbif.Entity.asTransaction( 
           function()
           {
-            var pGroupData = pGroup.getData();
- 
-            if (getFlag)
-            {
-              // Doing a single get, just get the data and return
-              return pGroupData; 
-            }
+            pGroupData = pGroup.getData();
  
             // Update Permisssions
             pGroupData.permissions = pArray;
@@ -108,6 +106,32 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
     },
 
     /**
+     * Get the permissions attached to a permission group
+     * 
+     * @param pGroupName {String}
+     *   This is a string to identify the name of the permission group
+     *
+     * @return {PermissionGroup || Error}
+     *   This returns the actual permission group object, or an error if
+     *   something went wrong
+     *
+     */
+     getGroupPermissions : function(pGroupName)
+     {       
+         var       pGroup;
+         var       pGroupData;
+
+         // Get the permission group
+         pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
+
+         // Get the permission data 
+         pGroupData = pGroup.getData();
+
+         // Return the data
+         return pGroupData; 
+     },
+
+    /**
      * Delete a permission group.
      *
      * @param pGroupName {String}
@@ -120,8 +144,10 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
      */
      deletePermissionGroup : function(pGroupName)
      {
+        var      pGroup;
+
         //Get permission group data
-        var pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
+        pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
 
         if (pGroup.getBrandNew() == true)
         {
