@@ -46,7 +46,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       var             pGroupNameList;
       var             possiblePermissionList;
       var             pDataArray; 
-      var             textFieldLabel
+      var             textFieldLabel;
 
       // Create a layout for this page
       canvas.setLayout(new qx.ui.layout.VBox());   

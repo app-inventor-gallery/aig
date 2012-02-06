@@ -326,8 +326,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
           {
 
             // Retrieve the list of permissions it gives me
-            data = aiagallery.dbif.DbifSim.prototype.addOrEditOrGetPermissionGroup
-               (group, [], true);
+            data = this.addOrEditOrGetPermissionGroup(group, [], true);
             permissionArr = data["permissions"];
 
             // Same as standard check: does this group contain this method?
@@ -340,7 +339,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
             }
             
             return false;
-          });
+          },
+          this);
         
       }
 
