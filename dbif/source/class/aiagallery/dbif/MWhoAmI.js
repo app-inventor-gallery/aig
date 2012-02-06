@@ -35,8 +35,9 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
       {
         // Nope.
         return({
+                 id                : -1,
                  email             : "anonymous",
-                 userId            : "",
+                 displayName       : "",
                  isAdmin           : false,
                  logoutUrl         : "",
                  permissions       : [],
@@ -51,8 +52,9 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
       // permissions from the database.
       ret =
         {
+          id                : whoami.id,
           email             : String(whoami.email),
-          userId            : String(whoami.userId),
+          displayName       : String(whoami.userId),
           isAdmin           : whoami.isAdmin,
           logoutUrl         : (qx.lang.Type.isArray(whoami.logoutUrl)
                                ? whoami.logoutUrl

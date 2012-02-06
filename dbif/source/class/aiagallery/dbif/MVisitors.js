@@ -12,11 +12,11 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
   {
     this.registerService("aiagallery.features.addOrEditVisitor",
                          this.addOrEditVisitor,
-                         [ "userId", "attributes" ]);
+                         [ "id", "attributes" ]);
 
     this.registerService("aiagallery.features.deleteVisitor",
                          this.deleteVisitor,
-                         [ "userId" ]);
+                         [ "id" ]);
 
     this.registerService("aiagallery.features.getVisitorList",
                          this.getVisitorList,
@@ -30,18 +30,18 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
   statics :
   {
     /**
-     * Exchange userId for user's displayName
+     * Exchange id for user's displayName
      * 
-     *@param userId {String}
-     * Visitor's userId
+     *@param id {String}
+     * Visitor's id
      * 
      *@return {String}
      * Visitor's display name 
      */
-    _getDisplayName : function(userId, error)
+    _getDisplayName : function(id, error)
     {
       
-      var visitor = new aiagallery.dbif.ObjVisitors(userId);
+      var visitor = new aiagallery.dbif.ObjVisitors(id);
      
       if (qx.core.Environment.get("qx.debug"))
       {
@@ -51,7 +51,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                                       "Need error object");
       }
 
-      // Was our userId faulty in some way?
+      // Was our id faulty in some way?
       if (typeof visitor === "undefined" || 
           visitor === null ||
           visitor.getBrandNew())
@@ -75,13 +75,13 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     },
     
     /**
-     * Exchange user's displayName for userId
+     * Exchange user's displayName for id
      * 
      *@param displayName {String}
      * Visitor's display name
      * 
      *@return {String} 
-     * Visitor's userId
+     * Visitor's id
      */
     _getVisitorId : function(displayName, error)
     {
@@ -115,8 +115,9 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
   
   members :
   {
-    addOrEditVisitor : function(userId, attributes)
+    addOrEditVisitor : function(id, attributes)
     {
+      var             email;
       var             displayName;
       var             permissions;
       var             status;
@@ -125,6 +126,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       var             visitorData;
       var             ret;
       
+      email = attributes.email;
       displayName = attributes.displayName;
       permissions = attributes.permissions;
       
@@ -133,7 +135,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       status = aiagallery.dbif.Constants.StatusToName.indexOf(status);
       
       // Get the old visitor entry
-      visitor = new aiagallery.dbif.ObjVisitors(userId);
+      visitor = new aiagallery.dbif.ObjVisitors(id);
       visitorData = visitor.getData();
       
       // Remember whether it already existed.
@@ -142,7 +144,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       // Provide the new data
       visitor.setData(
         {
-          id          : userId,
+          id          : id,
+          email       : email,
           displayName : displayName || visitorData.displayName || "<>",
           permissions : permissions || visitorData.permissions || [],
           status      : status != -1 ? status : (visitorData.status || 2)
@@ -154,12 +157,12 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       return ret;
     },
     
-    deleteVisitor : function(userId)
+    deleteVisitor : function(id)
     {
       var             visitor;
 
       // Retrieve this visitor
-      visitor = new aiagallery.dbif.ObjVisitors(userId);
+      visitor = new aiagallery.dbif.ObjVisitors(id);
 
       // See if this visitor exists.
       if (visitor.getBrandNew())
