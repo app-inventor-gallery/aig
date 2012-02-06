@@ -33,6 +33,48 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
   
   statics :
   {
+    getVisitorPermissions : function(visitor)
+    {
+      var             pGroups;
+      var             permMap = {};
+      
+      // Add each permission to a map, so we can detect duplicates later
+      visitor.permissions.forEach(
+        function(perm)
+        {
+          permMap[perm] = true;
+        });
+      
+      // Get the permission groups that this visitor is a member of
+      pGroups = visitor.permissionGroups;
+      
+      pGroups.forEach(
+        function(pGroup)
+        {
+          var             thisGroupPermissions;
+          
+          thisGroupPermissions = liberated.dbif.Entity.query(
+            "aiagallery.dbif.ObjPermissionGroup",
+            {
+              type  : "element",
+              field : "name",
+              value : pGroup
+            });
+          
+          thisGroupPermissions.forEach(
+            function(thisGroupPermission)
+            {
+              thisGroupPermission.permissions.forEach(
+                function(perm)
+                {
+                  permMap[perm] = true;
+                });
+            });
+        });
+      
+      return qx.lang.Object.getKeys(permMap);
+    },
+
     /**
      * Exchange userId for user's displayName
      * 

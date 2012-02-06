@@ -123,7 +123,8 @@ qx.Class.define("aiagallery.dbif.DbifSim",
             // Yup, he exists and has a known display name.
             displayName = visitor[0].displayName;
             bHasSetDisplayName = true;
-            permissions = visitor[0].permissions;
+            permissions =
+              aiagallery.dbif.MVisitors.getVisitorPermissions(visitor[0]);
           }
           else
           {
