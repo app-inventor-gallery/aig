@@ -72,6 +72,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o.set(
       {
         tabIndex    : 1,
+        maxLength   : 80,
         required    : true,
         placeholder : "Enter the application title"
       });
@@ -92,6 +93,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o.set(
       {
         tabIndex    : 2,
+        maxLength   : aiagallery.dbif.Constants.FieldLength.Description,
         width       : 200,
         height      : 60,
         required    : true,
@@ -358,7 +360,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
           return;
         }
 
-        // Retrieve data model
+        // Retrieve a copy of the data model
         modelObj = qx.lang.Object.clone(this.getModel(), true);
         
         // Check each field in the model to see if it has changed since the

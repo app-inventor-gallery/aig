@@ -578,6 +578,46 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               // Handle source field specially
               switch(field)
               {
+              case "title":
+                // Validate the length
+                if (attributes.title.length > 
+                    aiagallery.dbif.Constants.FieldLength.Title)
+                {
+                  // The field data is too long
+                  error.setCode(3);
+                  error.setMessage("Field data too long");
+                  error.setData(
+                    {
+                      field  : "title",
+                      maxLen : aiagallery.dbif.Constants.FieldLength.Title
+                    });
+                  throw error;
+                }
+
+                // Replace what's in the db entry
+                appData[field] = attributes[field];
+                break;
+
+              case "description":
+                // Validate the length
+                if (attributes.description.length > 
+                    aiagallery.dbif.Constants.FieldLength.Description)
+                {
+                  // The field data is too long
+                  error.setCode(3);
+                  error.setMessage("Field data too long");
+                  error.setData(
+                    {
+                      field  : "description",
+                      maxLen : aiagallery.dbif.Constants.FieldLength.Description
+                    });
+                  throw error;
+                }
+
+                // Replace what's in the db entry
+                appData[field] = attributes[field];
+                break;
+
               case "source":
                 // If there's no newsource member...
                 if (! appData.newsource)
@@ -593,7 +633,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                     attributes.image1.substring(0, 5) != "data:")
                 {
                   // The image is invalid. Let 'em know.
-                  error.setCode(3);
+                  error.setCode(4);
                   error.setMessage("Invalid image data");
                   throw error;
                 }
@@ -606,6 +646,25 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                 break;
 
               case "tags":
+                // Validate the length
+                if (attributes.tags.length > 
+                    aiagallery.dbif.Constants.FieldLength.Tags)
+                {
+                  // The field data is too long
+                  error.setCode(3);
+                  error.setMessage("Field data too long");
+                  error.setData(
+                    {
+                      field  : "tags",
+                      maxLen : aiagallery.dbif.Constants.FieldLength.Tags
+                    });
+                  throw error;
+                }
+
+                // Replace what's in the db entry
+                appData[field] = attributes[field];
+                break;
+
                 // Replace what's in the db entry
                 appData.tags = attributes.tags;
 
@@ -638,7 +697,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         if (attributes.tags && ! bHasCategory)
         {
           // Nope. Let 'em know.
-          error.setCode(4);
+          error.setCode(5);
           error.setMessage("At least one category is required");
           return error;
         }
@@ -843,7 +902,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                   appData.title);
 
                   // Dispatch a message for any subscribers to this type.
-                  qx.util.TimerManager.getInstance().start(
+                  // Don't do this in the build environment, because
+                  // TimerManager requires threads (in Rhino) which are
+                  // unavailable in App Engine.
+                  if (qx.core.Environment.get("qx.debug"))
+                  {
+                    qx.util.TimerManager.getInstance().start(
                     function()
                     {
                       messageData =
@@ -860,6 +924,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                     this,
                     null,
                     250);
+                  }
 
                   // See if there are any source files to process.
                   while (appData.newsource && appData.newsource.length > 0)

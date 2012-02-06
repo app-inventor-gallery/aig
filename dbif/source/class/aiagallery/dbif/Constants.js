@@ -64,6 +64,15 @@ qx.Class.define("aiagallery.dbif.Constants",
       "Processing"
     ],
 
+    /** Maximum length of input fields */
+    FieldLength :
+    {
+      Title       : 80,
+      Description : 480,
+      Tags        : 20,
+      Comment     : 480
+    },
+
     /** Mapping of FlagType names to values */
     FlagType      : 
     {
