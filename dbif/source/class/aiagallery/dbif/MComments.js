@@ -179,7 +179,7 @@ qx.Mixin.define("aiagallery.dbif.MComments",
           commentObj.put();
 
           // Replace the visitor id with his display name.
-          commentObjData.visitor     = whoami.userId;
+          commentObjData.visitor     = whoami.displayName;
 
           // This includes newly-created key
           return commentObjData;  

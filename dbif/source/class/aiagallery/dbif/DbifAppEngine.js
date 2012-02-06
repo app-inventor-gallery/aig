@@ -70,7 +70,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       var             userService;
       var             user;
       var             whoami;
-      var             userId;
+      var             displayName;
       var             visitor;
       var             googleUserId;
       var             googleNickname;
@@ -88,7 +88,8 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
         this.setWhoAmI(
           {
             email             : "anonymous",
-            userId            : "",
+            userId            : -1,
+            displayName       : "",
             isAdmin           : false,
             logoutUrl         : "",
             permissions       : [],
@@ -107,13 +108,13 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       if (visitor.length > 0)
       {
         // Yup, he exists.
-        userId = visitor[0].displayName || googleNickname || googleUserId;
+        displayName = visitor[0].displayName || googleNickname || googleUserId;
         permissions = visitor[0].permissions || [];
       }
       else
       {
         // He doesn't exist. Just use the unique number.
-        userId = googleNickname || googleUserId;
+        displayName = googleNickname || googleUserId;
         permissions = [];
       }
 
@@ -121,11 +122,12 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       this.setWhoAmI(
         {
           email             : whoami,
-          userId            : userId,
+          userId            : googleUserId,
+          displayName       : displayName,
           isAdmin           : userService.isUserAdmin(),
           logoutUrl         : userService.createLogoutURL("/"),
           permissions       : permissions,
-          hasSetDisplayName : userId != googleUserId
+          hasSetDisplayName : displayName != googleUserId
         });
     }
   },

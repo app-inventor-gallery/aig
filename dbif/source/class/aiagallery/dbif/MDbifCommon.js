@@ -34,7 +34,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
   {
     /**
      * Information about the currently-logged-in user. The value is a map
-     * containing the fields: email, userId, and isAdmin.
+     * containing the fields: id, email, displayName, and isAdmin.
      */
     whoAmI :
     {
@@ -139,7 +139,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
           // True. Save it.
           if (! meData.displayName)
           {
-            meData.displayName = aiagallery.dbif.MDbifCommon.__whoami.userId;
+            meData.displayName =
+              aiagallery.dbif.MDbifCommon.__whoami.displayName;
           }
 
           me.put();

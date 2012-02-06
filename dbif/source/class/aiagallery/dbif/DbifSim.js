@@ -28,8 +28,9 @@ qx.Class.define("aiagallery.dbif.DbifSim",
     // Save the logged-in user. The whoAmI property is in MDbifCommon.
     this.setWhoAmI(
       {
+        id                : 23,
         email             : "jane@uphill.org",
-        userId            : "Jane Doe",
+        displayName       : "Jane Doe",
         isAdmin           : true,
         logoutUrl         : 
           [
@@ -66,7 +67,7 @@ qx.Class.define("aiagallery.dbif.DbifSim",
   
   statics :
   {
-    __userNumber : 0,
+    __userNumber : 100,
 
     changeWhoAmI : function(context)
     {
@@ -99,8 +100,8 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           // Add this visitor to the list
           formData.username.options.push(
             {
-              label : visitor.id,
-              value : visitor.id
+              label : visitor.email,
+              value : { id : visitor.id, email : visitor.email }
             });
         });
 
@@ -117,7 +118,7 @@ qx.Class.define("aiagallery.dbif.DbifSim",
 
           // Try to get this user's display name. Does the visitor exist?
           visitor = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
-                                                result.username);
+                                                result.username.id);
           if (visitor.length > 0 && visitor[0].displayName)
           {
             // Yup, he exists and has a known display name.
@@ -136,8 +137,9 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           // Save the backend whoAmI information
           aiagallery.dbif.DbifSim.getInstance().setWhoAmI(
           {
-            email             : result.username,
-            userId            : displayName,
+            id                : result.username.id,
+            email             : result.username.email,
+            displayName       : displayName,
             isAdmin           : true,
             logoutUrl         :
               [

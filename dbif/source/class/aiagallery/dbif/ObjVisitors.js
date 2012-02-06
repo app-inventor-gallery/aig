@@ -42,8 +42,11 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
 
     var databaseProperties =
       {
-        /** The user's email address */
+        /** The user's numeric id */
         "id" : "String",
+        
+        /** The user's email address */
+        "email" : "String",
 
         /** How the user's name is displayed in the gallery */
         "displayName" : "String",
