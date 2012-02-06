@@ -25,11 +25,12 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
       
       dbifSim.setWhoAmI(
         {
+          id : 1002,
           email : "billy@thekid.edu",
           isAdmin: false,
           logoutUrl: "undefined",
           permissions: [],
-          userId :  "Billy The Kid"
+          displayName :  "Billy The Kid"
         });
 
       // Ensure the database is properly initialized
@@ -39,7 +40,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
       var myApps = 
         [
           {
-            owner       : "billy@thekid.edu",
+            owner       : 1002,
             description : "This one's beautiful",
             title       : "The Shooting Game",
             tags        : ["shooter", "shooting", "game", "Games"],
@@ -49,7 +50,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
           
           {
             source      : "somerandomstring",
-            owner       : "billy@thekid.edu",
+            owner       : 1002,
             description : "This one's sexy and beautiful",
             title       : "Your Mother Jokes",
             tags        : ["funny", "Development"],
@@ -58,7 +59,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
 
           {
             source      : "somerandomstring",
-            owner       : "billy@thekid.edu",
+            owner       : 1002,
             description : "This one's sexy",
             title       : "Laughapalooza",
             tags        : ["Educational"],
@@ -67,7 +68,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
             
           {
             source      : "somerandomstring",
-            owner       : "billy@thekid.edu",
+            owner       : 1002,
             description : "This one's not interesting in any way",
             title       : "Microsoft Windows for Android",
             tags        : ["Development", "broken"],

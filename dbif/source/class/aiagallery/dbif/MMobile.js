@@ -320,13 +320,33 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       var order = fields.shift();
       var field = fields.shift();
       
-      // displayName is required
-      if (typeof displayName !== "string")
+      // ownerId is required
+      if (typeof ownerId !== "number")
       {
         error.setCode(3);
-        error.setMessage("No developer's name given");
+        error.setMessage("No developer's id given");
         return error;
       }
+
+      // Get the display name for this app's owner
+      var visitor = liberated.dbif.Entity.query(
+        "aiagallery.dbif.ObjVisitors",
+        {
+          type : "element",
+          field : "owner",
+          value : ownerId
+        });
+
+      // We must have found this visitor
+      if (visitor.getBrandNew())
+      {
+        error.setCode(3);
+        error.setMessage("No developer's id given");
+        return error;
+      }
+      
+      var displayName = visitor.getData().displayName;
+
       var offsetTypeCheck = offset === null || !isNaN(parseInt(offset,10));
       var countTypeCheck = count === null || !isNaN(parseInt(count,10));
       var orderTypeCheck = order === null || typeof order === "string";

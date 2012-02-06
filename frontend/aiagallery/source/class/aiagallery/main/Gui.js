@@ -240,9 +240,10 @@ qx.Class.define("aiagallery.main.Gui",
                 };
 
                 // Set the header to display just-retrieved values
+                _this.whoAmI.setId(e.id);
                 _this.whoAmI.setIsAdmin(e.isAdmin);
                 _this.whoAmI.setEmail(e.email);
-                _this.whoAmI.setDisplayName(e.userId);
+                _this.whoAmI.setDisplayName(e.displayName);
                 _this.whoAmI.setHasSetDisplayName(e.hasSetDisplayName);
                 _this.whoAmI.setLogoutUrl(e.logoutUrl);
                 

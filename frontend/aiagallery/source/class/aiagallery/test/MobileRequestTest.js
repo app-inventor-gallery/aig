@@ -187,6 +187,10 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
                            mobileRequest,
                            "apps retrieved from mobile getinfo");
 
+      this.assertKeyInMap( "displayName",
+                           mobileRequest,
+                           "apps retrieved from mobile getinfo");
+
       // Now a bad request
       mobileRequest = dbifSim.mobileRequest("getinfo:abcd", error);      
       
@@ -216,7 +220,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
             
       dbifSim.setWhoAmI(
         {
-          email : "billy@thekid.edu",
+          email : 1002,
           isAdmin: false,
           logoutUrl: "undefined",
           permissions: [],
@@ -227,7 +231,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       var myApps = 
         [
           {
-            owner       : "billy@thekid.edu",
+            owner       : 1002,
             description : "This one's beautiful",
             title       : "The Shooting Game",
             tags        : ["shooter", "shooting", "game", "Games"],
@@ -237,7 +241,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
           
           {
             source      : "somerandomstring",
-            owner       : "billy@thekid.edu",
+            owner       : 1002,
             description : "This one's scoop and poop",
             title       : "Your Mother Jokes",
             tags        : ["funny", "Development"],
@@ -246,7 +250,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
 
           {
             source      : "somerandomstring",
-            owner       : "billy@thekid.edu",
+            owner       : 1002,
             description : "This one's sexy",
             title       : "Laughapalooza",
             tags        : ["Educational"],
@@ -255,7 +259,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
             
           {
             source      : "somerandomstring",
-            owner       : "billy@thekid.edu",
+            owner       : 1002,
             description : "This one's scoop interesting in any way",
             title       : "Microsoft Windows for Android",
             tags        : ["Development", "broken"],

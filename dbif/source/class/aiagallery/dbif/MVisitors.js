@@ -72,7 +72,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       // No problems, give them the display name
       return visitor.getData().displayName;
-    },
+    }
     
     /**
      * Exchange user's displayName for id
@@ -110,8 +110,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       // No problems, give them the ID
       return owners[0].id;
     }
-  },
 */
+  },
   
   members :
   {

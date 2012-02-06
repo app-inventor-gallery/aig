@@ -26,7 +26,7 @@ qx.Class.define("aiagallery.test.AppsTest",
       // Adding then deleting an App to see it go smoothly.
       var myAppData = dbifSim.addOrEditApp(null, 
                                            {
-                                             owner      : "me",
+                                             owner      : 1002,
                                              description: 
                                              "A bunch of Totally Awesome words",
                                              title : "some title",

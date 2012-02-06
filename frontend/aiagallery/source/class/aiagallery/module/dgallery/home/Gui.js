@@ -296,11 +296,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         for (var i = 0; i < featuredAppsList.length; i++)
         {
           var appFeatured = featuredAppsList[i];
-          
-          // FIXME: Need to fetch visitor's displayName to show instead of id
           var appThumbFeatured = 
             new aiagallery.widget.AppThumb(appFeatured.title,
-                                           appFeatured.owner,
+                                           appFeatured.displayName,
                                            appFeatured.image1);
           featuredApps.add(appThumbFeatured);
           
@@ -324,7 +322,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           var appNewest = newestAppsList[i];
           var appThumbNewest = 
             new aiagallery.widget.AppThumb(appNewest.title, 
-                                           appNewest.owner,
+                                           appNewest.displayName,
                                            appNewest.image1);
           newestApps.add(appThumbNewest);
 
@@ -349,7 +347,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 
           var appThumbLiked = 
             new aiagallery.widget.AppThumb(appLiked.title,
-                                           appLiked.owner,
+                                           appLiked.displayName,
                                            appLiked.image1);
           likedApps.add(appThumbLiked);
 

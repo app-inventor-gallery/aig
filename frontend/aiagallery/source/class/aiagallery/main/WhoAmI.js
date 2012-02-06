@@ -32,6 +32,12 @@ qx.Class.define("aiagallery.main.WhoAmI",
 
   properties :
   {
+    /** This user's id */
+    id :
+    {
+      check : "Number"
+    },
+    
     /** This user's email address */
     email :
     {

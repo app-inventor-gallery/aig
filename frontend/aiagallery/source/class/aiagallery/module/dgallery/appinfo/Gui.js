@@ -286,7 +286,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
         // Create a label describing who created the app.
         createdBy = new qx.ui.basic.Label('Created by <b>' +
-                                              result.owner + '</b>');
+                                              result.displayName + '</b>');
 
         // Make it purty with rich formatting.
         createdBy.set(

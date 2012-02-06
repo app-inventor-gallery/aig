@@ -25,7 +25,7 @@ qx.Class.define("aiagallery.test.LikingSimpleTest",
       // Adding a new app.
       var myAppData = dbifSim.addOrEditApp(null,
                                            {
-                                             owner    : "me",
+                                             owner    : 1002,
                                              description: "hello",
                                              title : "a title",
                                              tags :
