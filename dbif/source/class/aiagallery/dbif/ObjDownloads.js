@@ -34,7 +34,7 @@ qx.Class.define("aiagallery.dbif.ObjDownloads",
         "app" : "Key",
 
         /** Id of the Visitor who downloaded the application */
-        "visitor" : "String",
+        "visitor" : "Number",
 
         /** Time the download was initiated */
         "timestamp" : "Date"

@@ -34,7 +34,7 @@ qx.Class.define("aiagallery.dbif.ObjLikes",
         "app" : "Key",
 
         /** Id of the Visitor who liked the application */
-        "visitor" : "String",
+        "visitor" : "Number",
 
         /** Time the like occurred */
         "timestamp" : "Date"

@@ -69,7 +69,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       var             UserServiceFactory;
       var             userService;
       var             user;
-      var             whoami;
+      var             email;
       var             displayName;
       var             visitor;
       var             googleUserId;
@@ -87,8 +87,8 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       {
         this.setWhoAmI(
           {
+            id                : -1,
             email             : "anonymous",
-            userId            : -1,
             displayName       : "",
             isAdmin           : false,
             logoutUrl         : "",
@@ -98,13 +98,13 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
         return;
       }
 
-      whoami = String(user.getEmail());
+      email = String(user.getEmail());
       googleNickname = String(user.getNickname());
       googleUserId = String(user.getUserId());
 
       // Try to get this user's display name. Does the visitor exist?
-      visitor =
-        liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", whoami);
+      visitor = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                            googleUserId);
       if (visitor.length > 0)
       {
         // Yup, he exists.
@@ -121,8 +121,8 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       // Save the logged-in user. The whoAmI property is in MDbifCommon.
       this.setWhoAmI(
         {
-          email             : whoami,
-          userId            : googleUserId,
+          id                : googleUserId,
+          email             : email,
           displayName       : displayName,
           isAdmin           : userService.isUserAdmin(),
           logoutUrl         : userService.createLogoutURL("/"),

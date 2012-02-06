@@ -46,20 +46,21 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
       }
       
       // Obtain this dude's Visitor record
-      me = new aiagallery.dbif.ObjVisitors(whoami.email);
+      me = new aiagallery.dbif.ObjVisitors(whoami.id);
       
-      // Create the return object, initialized to a clone of whoami. Add
-      // permissions from the database.
+      // Create the return object, initialized to a clone of whoami.
       ret =
         {
-          id                : whoami.id,
+          id                : Number(whoami.id),
           email             : String(whoami.email),
-          displayName       : String(whoami.userId),
+          displayName       : String(whoami.displayName),
           isAdmin           : whoami.isAdmin,
           logoutUrl         : (qx.lang.Type.isArray(whoami.logoutUrl)
-                               ? whoami.logoutUrl
+                               ? qx.lang.Array.clone(whoami.logoutUrl)
                                : String(whoami.logoutUrl)),
-          permissions       : whoami.permissions,
+          permissions       : (qx.lang.Type.isArray(whoami.permissions)
+                               ? qx.lang.Array.clone(whoami.permissions)
+                               : []),
           hasSetDisplayName : whoami.hasSetDisplayName
         };
 

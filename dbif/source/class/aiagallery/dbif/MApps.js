@@ -532,7 +532,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           }
 
           // Ensure that the logged-in user owns this application.
-          if (appData.owner != whoami.email)
+          if (appData.owner != whoami.id)
           {
             // He doesn't. Someone's doing something nasty!
             error.setCode(2);
@@ -543,11 +543,11 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         else
         {
           // Initialize the owner field
-          appData.owner = whoami.email;
+          appData.owner = whoami.id;
         }
 
         // Set the application owner
-        attributes.owner = whoami.email;
+        attributes.owner = whoami.id;
 
         // Issue a query for all category tags
         categories = liberated.dbif.Entity.query("aiagallery.dbif.ObjTags", 
@@ -1026,7 +1026,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       whoami = this.getWhoAmI();
 
       // Ensure that the logged-in user owns this application
-      if (! whoami || appData.owner != whoami.email)
+      if (! whoami || appData.owner != whoami.id)
       {
         // He doesn't. Someone's doing something nasty!
         error.setCode(1);
@@ -1237,6 +1237,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             criteria;
       var             resultCriteria = [];
       var             owners;
+      var             email;
       var             displayName;
 
       // Get the current user
@@ -1249,7 +1250,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           {
             type  : "element",
             field : "owner",
-            value : whoami.email
+            value : whoami.id
           };
       }
       else
@@ -1306,22 +1307,21 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               displayName = null;
               if (owners.length == 0)
               {
+                email = "nobody@nowhere.org";
                 displayName = "<>";
               }
             }
 
-            // If it's not an "all" request (administrator)...
-            if (! bAll)
-            {
-              // ... then replace his visitor id with his display name
-              app["owner"] = displayName || owners[0].displayName || "<>";
-            }
-            else
-            {
-              // Otherwise add the display name
-              app["displayName"] = displayName || owners[0].displayName || "<>";
-            }
+            // Add the display name a
+            app["displayName"] = displayName || owners[0].displayName || "<>";
            
+            // If it's an "all" request (administrator)...
+            if (bAll)
+            {
+              // ... then add the email address too
+              app["email"] = email || owners[0].email || "<>";
+            }
+
             // If we were asked to stringize the values...
             if (bStringize)
             {
@@ -1662,6 +1662,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     { 
       var             owners;
       var             displayName;
+      var             email;
       var             url;
 
       // Create and execute query for "Featured" apps.
@@ -1694,7 +1695,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             }
 
             // Replace his visitor id with his display name
-            app["owner"] = displayName || owners[0].displayName || "<>";
+            app["displayName"] = displayName || owners[0].displayName || "<>";
                       
             // Do special App Engine processing to scale images
             if (liberated.dbif.Entity.getCurrentDatabaseProvider() ==
@@ -1746,18 +1747,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
                                                  app["owner"]);
 
-            // FIXME: should never occur (but does)
-            if (true)
-            {
-              displayName = null;
-              if (owners.length == 0)
-              {
-                displayName = "<>";
-              }
-            }
-
             // Replace his visitor id with his display name
-            app["owner"] = displayName || owners[0].displayName || "<>";
+            app["displayName"] = displayName || owners[0].displayName || "<>";
                       
           });
 
@@ -1806,7 +1797,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           }
 
           // Replace his visitor id with his display name
-          app["owner"] = displayName || owners[0].displayName || "<>";
+          app["displayName"] = displayName || owners[0].displayName || "<>";
         });
 
       //Construct map of data
@@ -1879,7 +1870,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           }
 
           // Replace the (private) owner id with his display name
-          app.owner = displayName || owners[0].displayName || "<>";
+          app.displayName = displayName || owners[0].displayName || "<>";
           
           // Do special App Engine processing to scale images
           if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
@@ -1993,7 +1984,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
  
       // If the application status is not Active, only the owner can view it.
       if (app.status != aiagallery.dbif.Constants.Status.Active &&
-          (! whoami || app.owner != whoami.email))
+          (! whoami || app.owner != whoami.id))
       {
         // It doesn't. Let 'em know that the application has just been removed
         // (or there's a programmer error)
@@ -2018,10 +2009,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       }
 
       // Replace the (private) owner id with his display name
-      app.owner = displayName || owners[0].displayName || "<>";
+      app.displayName = displayName || owners[0].displayName || "<>";
 
       // If there's a user signed in...
-      if (whoami && whoami.email)
+      if (whoami && whoami.id)
       {
         // Determine if the current user has already liked this application
         // Construct query criteria for "likes of this app by current visitor"
@@ -2039,7 +2030,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               {
                 type: "element",
                 field: "visitor",
-                value: whoami.email
+                value: whoami.id
               }
             ]
           };

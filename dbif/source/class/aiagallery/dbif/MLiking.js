@@ -34,6 +34,7 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
       var            appObj;
       var            appDataObj;
       var            myEmail;
+      var            myId;
       var            likesList;
       var            criteria;
       var            likesObj;
@@ -56,8 +57,9 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
           // Get the application data
           appDataObj = appObj.getData();
 
-          // Retrieve my email address (my visitor id)
+          // Retrieve my email address and my visitor id
           myEmail = this.getWhoAmI().email;
+          myId = this.getWhoAmI().id;
 
           // Construct query criteria for "likes of this app by current
           // visitor"
@@ -75,7 +77,7 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
                 {
                   type: "element",
                   field: "visitor",
-                  value: myEmail
+                  value: myId
                 }
               ]
             };
@@ -95,7 +97,7 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
 
             // Put app and visitor info into it
             likesDataObj.app = appId;
-            likesDataObj.visitor = myEmail;
+            likesDataObj.visitor = myId;
 
             // And increment the like count in the DB
             appDataObj.numLikes++;

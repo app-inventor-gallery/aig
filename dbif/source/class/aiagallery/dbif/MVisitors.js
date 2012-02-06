@@ -83,6 +83,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
      *@return {String} 
      * Visitor's id
      */
+/*
     _getVisitorId : function(displayName, error)
     {
       
@@ -108,10 +109,9 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       // No problems, give them the ID
       return owners[0].id;
-      
     }
-            
   },
+*/
   
   members :
   {
@@ -196,7 +196,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
           thisGuy.permissions = 
             thisGuy.permissions ? thisGuy.permissions.join(", ") : "";
           thisGuy.status =
-            [ "Banned", "Pending", "Active" ][thisGuy.status];
+            aiagallery.dbif.Constants.StatusToName[thisGuy.status];
         }
       }
       
@@ -221,7 +221,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       whoami = this.getWhoAmI();
 
       // Retrieve the current user's visitor object
-      me = new aiagallery.dbif.ObjVisitors(whoami.email);
+      me = new aiagallery.dbif.ObjVisitors(whoami.id);
       
       // Get my object data
       meData = me.getData();

@@ -50,8 +50,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
     /**
      * Add a log message for the specified visitor.
      * 
-     * @param visitor {String}
-     *   The email address identifying a specific existing visitor
+     * @param visitor {Number}
+     *   The id of a specific existing visitor
      * 
      * @param messageCode {String}
      *   A key from the aiagallery.dbif.Constants.LogMessage map
@@ -130,7 +130,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       {
         // Nope. Retrieve our visitor object
         me = new aiagallery.dbif.ObjVisitors(
-          aiagallery.dbif.MDbifCommon.__whoami.email);
+          aiagallery.dbif.MDbifCommon.__whoami.id);
 
         // Is it brand new, or does not contain a display name yet?
         meData = me.getData();
@@ -298,8 +298,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         return false;
       }
 
-      var email = whoami.email;
-      var myObjData = new aiagallery.dbif.ObjVisitors(email).getData();
+      var id = whoami.id;
+      var myObjData = new aiagallery.dbif.ObjVisitors(id).getData();
       var permissionArr = myObjData["permissions"];
       var permissionGroupArr = myObjData["permissionGroups"];
       var permission;
