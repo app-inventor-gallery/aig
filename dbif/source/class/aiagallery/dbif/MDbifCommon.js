@@ -300,8 +300,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
 
       var email = whoami.email;
       var myObjData = new aiagallery.dbif.ObjVisitors(email).getData();
-      var permissionArr = myObjData["permissions"];
-      var permissionGroupArr = myObjData["permissionGroups"];
+      var permissionArr = 
+        aiagallery.dbif.MVisitors.getVisitorPermissions(whoami); 
       var permission;
       var group;
       var data;
@@ -314,6 +314,9 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         return true;
       }
 
+      // Permission not found 
+      return false; 
+/*
       var allowFlag = false; 
       // Permission Groups Search
       // Deeper check: Do any of my permission groups give me access to this
@@ -326,7 +329,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
           {
 
             // Retrieve the list of permissions it gives me
-            data = this.addOrEditOrGetPermissionGroup(group, [], true);
+            data = this.getGroupPermissions(group);
             permissionArr = data["permissions"];
 
             // Same as standard check: does this group contain this method?
@@ -341,11 +344,13 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
             return false;
           },
           this);
+
         
       }
 
       //Return the allowFlag true is allowed, false is disallowed
       return allowFlag; 
+*/
     }
   }
 });
