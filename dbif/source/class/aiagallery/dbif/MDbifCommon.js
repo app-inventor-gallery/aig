@@ -316,41 +316,6 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
 
       // Permission not found 
       return false; 
-/*
-      var allowFlag = false; 
-      // Permission Groups Search
-      // Deeper check: Do any of my permission groups give me access to this
-      // method?
-      if (permissionGroupArr != null)
-      {
-        // For every permission group of which I am a member...
-        permissionGroupArr.forEach(
-          function (group)
-          {
-
-            // Retrieve the list of permissions it gives me
-            data = this.getGroupPermissions(group);
-            permissionArr = data["permissions"];
-
-            // Same as standard check: does this group contain this method?
-            if (permissionArr != null &&
-                qx.lang.Array.contains(permissionArr, methodName))
-            {
-              // Yes, allow me.
-              allowFlag = true;
-              return true;
-            }
-            
-            return false;
-          },
-          this);
-
-        
-      }
-
-      //Return the allowFlag true is allowed, false is disallowed
-      return allowFlag; 
-*/
     }
   }
 });
