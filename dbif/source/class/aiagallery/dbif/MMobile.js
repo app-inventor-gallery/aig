@@ -414,6 +414,7 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       var requestedFields = 
       {
         owner              : "owner",
+        displayName        : "displayName",
         title              : "title",
         description        : "description",
         tags               : "tags",

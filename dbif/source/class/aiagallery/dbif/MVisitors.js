@@ -36,10 +36,11 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     getVisitorPermissions : function(visitor)
     {
       var             pGroups;
+      var             permissions = visitor.permissions || [];
       var             permMap = {};
       
       // Add each permission to a map, so we can detect duplicates later
-      visitor.permissions.forEach(
+      permissions.forEach(
         function(perm)
         {
           permMap[perm] = true;

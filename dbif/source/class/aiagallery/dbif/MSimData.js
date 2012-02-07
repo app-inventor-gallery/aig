@@ -17,19 +17,34 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
         "ALL" :
         {
           "name" : "ALL",
-          "permissions" : ["addOrEditApp", "deleteApp", 
-                         "getAppListAll", "addComment", "deleteComment", 
-                         "flagIt", "addOrEditVisitor", "deleteVisitor", 
-                         "getVisitorList", "likesPlusOne", 
-                         "getDatabaseEntities"],
+          "permissions" : 
+          [
+            "addOrEditApp",
+            "deleteApp", 
+            "getAppListAll",
+            "addComment",
+            "deleteComment", 
+            "flagIt",
+            "addOrEditVisitor",
+            "deleteVisitor", 
+            "getVisitorList",
+            "likesPlusOne", 
+            "getDatabaseEntities"
+          ],
           "description" : "All permissions"
         },
         "SOME" :
         {
           "name" : "SOME",
-          "permissions" : ["addOrEditApp", "deleteApp", 
-                         "getAppListAll", "addComment", "deleteComment", 
-                         "flagIt", "likesPlusOne"],
+          "permissions" :
+          [
+            "addOrEditApp",
+            "deleteApp", 
+            "getAppListAll",
+            "addComment",
+            "deleteComment", 
+            "flagIt",
+            "likesPlusOne"],
           "description" : "Some permissions"
         }
       },
