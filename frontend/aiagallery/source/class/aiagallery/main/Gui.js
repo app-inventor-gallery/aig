@@ -372,9 +372,8 @@ qx.Class.define("aiagallery.main.Gui",
               [ 
                 // These permissions allow access to the page
                 // FIXME: Kept same as Application page for now
-                "addOrEditApp",
-                "deleteApp",
-                "getAppListAll"
+                "addOrEditPermissionGroup",
+                "deletePermissionGroup"
               ].forEach(
                 function(rpcFunc)
                 {
