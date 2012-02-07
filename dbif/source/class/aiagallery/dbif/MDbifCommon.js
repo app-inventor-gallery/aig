@@ -20,7 +20,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
     aiagallery.dbif.MSearch,
     aiagallery.dbif.MLiking,
     aiagallery.dbif.MFlags,
-    aiagallery.dbif.MDbMgmt
+    aiagallery.dbif.MDbMgmt,
+    aiagallery.dbif.MPermissionGroup
   ],
 
   construct : function()
@@ -300,8 +301,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
 
       var id = whoami.id;
       var myObjData = new aiagallery.dbif.ObjVisitors(id).getData();
-      var permissionArr = myObjData["permissions"];
-      var permissionGroupArr = myObjData["permissionGroups"];
+      var permissionArr = 
+        aiagallery.dbif.MVisitors.getVisitorPermissions(whoami); 
       var permission;
       var group;
       var data;
@@ -314,37 +315,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         return true;
       }
 
-// Permission Groups Untested, disabling for now
-      if(false)
-      {
-        // Deeper check: Do any of my permission groups give me access to this
-        // method?
-        if (permissionGroupArr != null)
-        {
-          // For every permission group of which I am a member...
-          permissionGroupArr.forEach(
-            function (group)
-            {
-
-              // Retrieve the list of permissions it gives me
-              data = new aiagallery.dbif.ObjPermissonGriou(group).getData();
-              permissionArr = data["permissions"];
-
-              // Same as standard check: does this group contain this method?
-              if (permissionArr != null &&
-                  qx.lang.Array.contains(permissionArr, methodName))
-              {
-                // Yes, allow me.
-                return true;
-              }
-
-              return false;
-            });
-        }
-      }
-
-      // Did not find this permission, dissalow.
-      return false;
+      // Permission not found 
+      return false; 
     }
   }
 });

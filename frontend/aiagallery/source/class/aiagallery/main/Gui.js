@@ -365,17 +365,56 @@ qx.Class.define("aiagallery.main.Gui",
                   
                   // We've instantiated a new module which needs to be added
                   bAddModules = true;
-                }
+                }      
 
-                // If we instantiated at least one of the management modules...
-                if (bAddModules)
+              // Determine whether they have access to the permission
+              // management page.
+              bAllowed = false;
+              [ 
+                // These permissions allow access to the page
+                // FIXME: Kept same as Application page for now
+                "addOrEditPermissionGroup",
+                "deletePermissionGroup"
+              ].forEach(
+                function(rpcFunc)
                 {
-                  // ... then add them.
-                  aiagallery.Application.addModules(moduleList);
+                  if (qx.lang.Array.contains(e.permissions, rpcFunc))
+                  {
+                    bAllowed = true;
+                  }
+                });
+
+              // If they're allowed access to the page...
+              if (e.isAdmin || bAllowed)
+              {
+                // ... then create it
+                module = new aiagallery.main.Module(
+                  "Management",
+                  "aiagallery/test.png",
+                  "Permissions",
+                  aiagallery.module.mgmt.permissions.Permissions);
+
+                // Start up the new module
+                if (! moduleList["Management"])
+                {
+                  moduleList["Management"] = {};
                 }
-              },
-              "whoAmI",
-              []);
+                moduleList["Management"]["Permissions"] = module;
+                  
+                // We've instantiated a new module which needs to be added
+                bAddModules = true;
+              }
+
+              // If we instantiated at least one of the management modules...
+              if (bAddModules)
+              {
+                // ... then add them.
+                aiagallery.Application.addModules(moduleList);
+              }
+            },
+            "whoAmI",
+            []);
+            
 
             // Load the Channel API. If we're on App Engine, it'll succeed
             var loader = new qx.io.ScriptLoader();

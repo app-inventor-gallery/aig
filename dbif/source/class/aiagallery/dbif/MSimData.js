@@ -12,6 +12,27 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
   {
     Db : 
     {
+      "permissiongroup" :
+      {
+        "ALL" :
+        {
+          "name" : "ALL",
+          "permissions" : ["addOrEditApp", "deleteApp", 
+                         "getAppListAll", "addComment", "deleteComment", 
+                         "flagIt", "addOrEditVisitor", "deleteVisitor", 
+                         "getVisitorList", "likesPlusOne", 
+                         "getDatabaseEntities"],
+          "description" : "All permissions"
+        },
+        "SOME" :
+        {
+          "name" : "SOME",
+          "permissions" : ["addOrEditApp", "deleteApp", 
+                         "getAppListAll", "addComment", "deleteComment", 
+                         "flagIt", "likesPlusOne"],
+          "description" : "Some permissions"
+        }
+      },
       "visitors" : 
       {
         1001 : 
@@ -20,6 +41,7 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
           "email" : "jane@uphill.org",
           "displayName" : "Jane Doe",
           "permissions" : [],
+          "permissionGroups" : ["SOME"],
           "status" : 2,
           "recentSearches" : [],
           "recentViews" : []
@@ -30,6 +52,7 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
           "email" : "billy@thekid.edu",
           "displayName" : "Billy The Kid",
           "permissions" : [],
+          "permissionGroups" : [],
           "status" : 2,
           "recentSearches" : [],
           "recentViews" : []
@@ -40,6 +63,7 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
           "email" : "joe@blow.com",
           "displayName" : "Joe Blow",
           "permissions" : ["addOrEditApp"],
+          "permissionGroups" : [],
           "status" : 2,
           "recentSearches" : [],
           "recentViews" : []
