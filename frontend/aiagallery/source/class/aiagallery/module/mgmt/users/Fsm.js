@@ -286,7 +286,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
-                         "getVisitorList",
+                         "getVisitorListAndPGroups",
                          [ true ]);
 
           // When we get the result, we'll need to know what type of request
@@ -416,7 +416,14 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           var             displayName;
           var             email;
           var             selection;
-          var             internal = { permissions : [], status : null };
+          var             pGroups;
+          var             internal = 
+                          { 
+                            permissions : [], 
+                            permissionGroups : [], 
+                            status : null 
+                          };
+
           var             request;
 
           // Retrieve the cell editor and cell info
@@ -434,6 +441,15 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
               internal.permissions.push(item.getUserData("internal"));
             
             });
+          //Add permissionGroup data 
+          selection = cellEditor.getUserData("pgroups").getSelection();
+          selection.forEach(
+            function(item)
+            {
+              // Add to our pGroup list the "internal" (English) permission
+              internal.permissionGroups.push(item.getUserData("internal"));
+            
+            });
           selection = cellEditor.getUserData("status").getSelection()[0];
           internal.status = selection.getUserData("internal");
           
@@ -442,6 +458,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
             {
               displayName : displayName,
               permissions : internal.permissions,
+              permissionGroups : internal.permissionGroups, 
               status      : internal.status 
             };
 
@@ -545,6 +562,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           var             table;
           var             dataModel;
           var             permissions;
+          var             permissionGroups
           var             rowData = [];
 
           // Retrieve the RPC request
@@ -570,6 +588,10 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           // string, and add it it to the row data
           permissions = internal.permissions.join(", ");
           rowData.push(permissions);
+
+          // Add permission group info 
+          permissionGroups = internal.permissionGroups.join(", ");
+          rowData.push(permissionGroups);
           
           // Add the status to the row data
           rowData.push(internal.status);
