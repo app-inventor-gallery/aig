@@ -321,26 +321,29 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       var field = fields.shift();
       
       // ownerId is required
-      if (typeof ownerId !== "number")
+      if (ownerId.length == 0)
       {
         error.setCode(3);
         error.setMessage("No developer's id given");
         return error;
       }
 
+      // Convert the owner id from string type to number
+      ownerId = Number(ownerId);
+
       // Get the display name for this app's owner
-      var visitor = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
-                                                ownerId);
+      var visitors = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
+                                                 ownerId);
 
       // We must have found this visitor
-      if (visitor.getBrandNew())
+      if (visitors.length != 1)
       {
         error.setCode(4);
         error.setMessage("Developer (owner) not found: " + ownerId);
         return error;
       }
       
-      var displayName = visitor.getData().displayName;
+      var displayName = visitors[0].displayName;
 
       var offsetTypeCheck = offset === null || !isNaN(parseInt(offset,10));
       var countTypeCheck = count === null || !isNaN(parseInt(count,10));
@@ -413,8 +416,6 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
         owner              : "owner",
         title              : "title",
         description        : "description",
-        //FIXME: Uncomment next line when previous authors are implemented
-        //previousAuthors    : "previousAuthors",
         tags               : "tags",
         uploadTime         : "uploadTime",
         creationTime       : "creationTime",

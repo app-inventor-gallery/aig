@@ -12,7 +12,7 @@ qx.Class.define("aiagallery.test.TagsTest",
 
   members :
   {
-    "test: RPC getCategoryTags" : function()
+    "test 01: RPC getCategoryTags" : function()
     {
       // There's no finite state machine in this environment. We keep the
       // parameter here for consistency with the working environment.
@@ -39,7 +39,8 @@ qx.Class.define("aiagallery.test.TagsTest",
           // Compare the rest of the result
           this.assertJsonEquals(
             {
-              result :
+              jsonrpc : "2.0",
+              result  :
                 [
                   "Development", 
                   "Educational",

@@ -662,10 +662,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                 }
 
                 // Replace what's in the db entry
-                appData[field] = attributes[field];
-                break;
-
-                // Replace what's in the db entry
                 appData.tags = attributes.tags;
 
                 // Ensure that at least one of the specified tags is a category

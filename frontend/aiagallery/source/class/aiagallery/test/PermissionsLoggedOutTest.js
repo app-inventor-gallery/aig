@@ -63,97 +63,97 @@ qx.Class.define("aiagallery.test.PermissionsLoggedOutTest",
       liberated.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
     },
     
-    "test: attempt to getAppList" : function()
+    "test 01: attempt to getAppList" : function()
     {
       // Must be logged in
       this.assertFalse(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.getAppList"), "getAppList with " + this.permissionLevel);
     },
     
-    "test: attempt to addOrEditApp" : function()
+    "test 02: attempt to addOrEditApp" : function()
     {
       // Must be logged in
       this.assertFalse(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.addOrEditApp"), "addOrEditApp with " + this.permissionLevel);
     },
     
-    "test: attempt to deleteApp" : function()
+    "test 03: attempt to deleteApp" : function()
     {
       // Check Permissions
       this.assertFalse(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.deleteApp"), "deleteApp with " + this.permissionLevel);
     },
     
-    "test: attempt to getAppListAll" : function()
+    "test 04: attempt to getAppListAll" : function()
     {
       // FIXME: TEMPORARILY ANON, SHOULD BE CHECK PERMISSIONS
       this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.getAppListAll"), "getAppListAll with " + this.permissionLevel);
     },
     
-    "test: attempt to appQuery" : function()
+    "test 05: attempt to appQuery" : function()
     {
       // Anonymous
       this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.appQuery"), "appQuery with " + this.permissionLevel);
     },
 
-    "test: attempt to getAppInfo" : function()
+    "test 06: attempt to getAppInfo" : function()
     {
       // Anonymous
       this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.getAppInfo"), "getAppInfo with " + this.permissionLevel);
     },    
     
-    "test: attempt to addComment" : function()
+    "test 07: attempt to addComment" : function()
     {
       // Must be logged in
       this.assertFalse(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.addComment"), "addComment with " + this.permissionLevel);
     },
     
-    "test: attempt to deleteComment" : function()
+    "test 08: attempt to deleteComment" : function()
     {
       // Check Permissions
       this.assertFalse(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.deleteComment"), "deleteComment with " + this.permissionLevel);
     },    
 
-    "test: attempt to getComments" : function()
+    "test 09: attempt to getComments" : function()
     {
       // Anonymous
       this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.getComments"), "getComments with " + this.permissionLevel);
     },
 
-    "test: attempt to mobileRequest" : function()
+    "test 10: attempt to mobileRequest" : function()
     {
       // Anonymous
       this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.mobileRequest"), "mobileRequest with " + this.permissionLevel);
     },
 
-    "test: attempt to getCategoryTags" : function()
+    "test 11: attempt to getCategoryTags" : function()
     {
       // Anonymous
       this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.getCategoryTags"), "getCategoryTags with " + this.permissionLevel);
     },
 
-    "test: attempt to addOrEditVisitor" : function()
+    "test 12: attempt to addOrEditVisitor" : function()
     {
       // Check Permissions
       this.assertFalse(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.addOrEditVisitor"), "addOrEditVisitor with " + this.permissionLevel);
     },
 
-    "test: attempt to deleteVisitor" : function()
+    "test 13: attempt to deleteVisitor" : function()
     {
       // Check permissions
       this.assertFalse(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.deleteVisitor"), "deleteVisitor with " + this.permissionLevel);
     },
     
-    "test: attempt to getVisitorList" : function()
+    "test 14: attempt to getVisitorList" : function()
     {
       // Check permissions
       this.assertFalse(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.getVisitorList"), "getVisitorList with " + this.permissionLevel);
     },
 
-    "test: attempt to editProfile" : function()
+    "test 15: attempt to editProfile" : function()
     {
       // Must be logged in
       this.assertFalse(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.editProfile"), "editProfile with " + this.permissionLevel);
     },
 
-    "test: attempt to whoAmI" : function()
+    "test 16: attempt to whoAmI" : function()
     {
       // Anonymous
       this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.whoAmI"), "whoAmI with " + this.permissionLevel);

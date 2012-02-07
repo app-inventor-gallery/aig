@@ -46,7 +46,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
         });
       
       // Get the permission groups that this visitor is a member of
-      pGroups = visitor.permissionGroups;
+      pGroups = visitor.permissionGroups || [];
       
       pGroups.forEach(
         function(pGroup)

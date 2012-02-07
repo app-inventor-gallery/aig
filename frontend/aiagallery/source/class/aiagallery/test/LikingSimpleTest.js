@@ -13,7 +13,7 @@ qx.Class.define("aiagallery.test.LikingSimpleTest",
   members :
   {
 
-    "test: Simple Plus One Liking" : function()
+    "test 01: Simple Plus One Liking" : function()
     {
       // Get access to the RPC implementations. This includes the mixins for
       // all RPCs.
@@ -35,7 +35,7 @@ qx.Class.define("aiagallery.test.LikingSimpleTest",
                                                "Development"
                                              ],
                                              source : "sources",
-                                             image1 : "xxx"
+                                             image1 : "data://xxx"
                                            },
                                            error);
 

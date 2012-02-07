@@ -12,7 +12,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
   
   members :
   {
-    "test: Keyword Search" : function()
+    "test 01: Keyword Search" : function()
     {
       var queryResults;
       
@@ -45,7 +45,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
             title       : "The Shooting Game",
             tags        : ["shooter", "shooting", "game", "Games"],
             source      : "somerandomstring",
-            image1      : "xxx"
+            image1      : "data://xxx"
           },
           
           {
@@ -54,7 +54,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
             description : "This one's sexy and beautiful",
             title       : "Your Mother Jokes",
             tags        : ["funny", "Development"],
-            image1      : "xxx"
+            image1      : "data://xxx"
           },
 
           {
@@ -63,7 +63,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
             description : "This one's sexy",
             title       : "Laughapalooza",
             tags        : ["Educational"],
-            image1      : "xxx"
+            image1      : "data://xxx"
           },
             
           {
@@ -72,7 +72,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
             description : "This one's not interesting in any way",
             title       : "Microsoft Windows for Android",
             tags        : ["Development", "broken"],
-            image1      : "xxx"
+            image1      : "data://xxx"
           }
         ];
 
@@ -88,9 +88,8 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
       this.assert(queryResults !== error,
                   "Error: " + error.getCode() + ": " + error.getMessage());
 
-      this.assert(queryResults.length === 1,
-                  "Returned correct # results with 1 title keyword");
-
+      this.assertEquals(1, queryResults.length,
+                        "Expected 1 result; got " + queryResults.length);
 
       // Test with one word present in 2 apps
       queryResults = dbifSim.keywordSearch("beautiful", null, null, error);
@@ -99,8 +98,8 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
       this.assert(queryResults !== error,
                   "Error: " + error.getCode() + ": " + error.getMessage());
 
-      this.assert(queryResults.length === 2,
-                  "Returned correct # results with 1 keyword");
+      this.assertEquals(2, queryResults.length,
+                        "Expected 2 results; got " + queryResults.length);
 
       // Test with 2 words present in 1 app, each present in 4 total
       queryResults = dbifSim.keywordSearch("this not", null, null, error);
@@ -109,9 +108,9 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
       this.assert(queryResults !== error,
                   "Error: " + error.getCode() + ": " + error.getMessage());
       
-      this.assert(queryResults.length === 0,
-                  "Should fail to return anything because both words are" +
-                  " stop words");
+      this.assertEquals(0, queryResults.length,
+                        "Both stop words so expect 0 results; got" +
+                        queryResults.length);
 
       // Test with 2 words present in 1 app, each present in 3 total
       queryResults = dbifSim.keywordSearch("beautiful sexy", null, null, error);
@@ -120,8 +119,8 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
       this.assert(queryResults !== error,
                   "Error: " + error.getCode() + ": " + error.getMessage());
       
-      this.assert(queryResults.length === 3,
-                  "Returned correct # results with 2 keywords");
+      this.assertEquals(3, queryResults.length,
+                        "Expected 3 results; got " + queryResults.length);
     
       var firstResultDescription = queryResults[0]["description"];
       var descSplit = firstResultDescription.split(" ");
@@ -141,8 +140,8 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
       this.assert(queryResults !== error,
                   "Error: " + error.getCode() + ": " + error.getMessage());
       
-      this.assert(queryResults.length === 0, "Correctly returned zero results");
-      
+      this.assertEquals(0, queryResults.length,
+                        "Expected 0 results; got " + queryResults.length);
     }
   }
 });  
