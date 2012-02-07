@@ -256,10 +256,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
                            
                            // Requested fields and the return field name
                            {
-                             uid    : "uid",
-                             title  : "label", // remap name for Gallery
-                             image1 : "icon",  // remap name for Gallery
-                             tags   : "tags"
+                             uid         : "uid",
+                             title       : "label", // remap name for Gallery
+                             image1      : "icon",  // remap name for Gallery
+                             tags        : "tags",
+                             displayName : "displayName"
                            }
                          ]);
 

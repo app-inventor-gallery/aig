@@ -12,11 +12,14 @@ qx.Class.define("aiagallery.widget.AppThumb",
 
   construct : function(titleText, ownerText, imagePath)
   { 
-    this.base(arguments, this.tr("<b>%1</b><br>by %2", titleText, ownerText), imagePath);
+    this.base(arguments, 
+              this.tr("%1 by %2",
+                      titleText, ownerText),
+              imagePath);
       
     this.set(
       {
-        rich            : true,
+//        rich            : true,
         backgroundColor : "#eee9e9",
         marginRight     : 20,
         padding         : 10,

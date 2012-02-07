@@ -371,6 +371,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       var             querySource = rpcRequest.getUserData("querySource");
       var             nextList;
       var             selection;
+      var             parent;
 
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -404,7 +405,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         apps = response.data.result;
         
         // FIXME: KLUDGE: should be able to update without remove/add!!!
-        var parent = gallery.getLayoutParent();
+        parent = gallery.getLayoutParent();
         parent.remove(gallery);
         gallery = new aiagallery.widget.virtual.Gallery(apps);
         gallery.addListener("changeSelection", fsm.eventListener, fsm);
@@ -422,7 +423,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         categories = response.data.result.categories;
 
         // FIXME: KLUDGE: should be able to update without remove/add!!!
-        var parent = gallery.getLayoutParent();
+        parent = gallery.getLayoutParent();
         parent.remove(gallery);
         gallery = new aiagallery.widget.virtual.Gallery(apps);
         gallery.addListener("changeSelection", fsm.eventListener, fsm);
