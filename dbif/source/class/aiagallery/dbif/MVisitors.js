@@ -25,10 +25,56 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     this.registerService("aiagallery.features.editProfile",
                          this.editProfile,
                          [ "profileParams" ]);
+
+    this.registerService("aiagallery.features.getVisitorListAndPGroups",
+                         this.getVisitorListAndPGroups,
+                         [ "bStringize" ]);
   },
   
   statics :
   {
+    getVisitorPermissions : function(visitor)
+    {
+      var             pGroups;
+      var             permMap = {};
+      
+      // Add each permission to a map, so we can detect duplicates later
+      visitor.permissions.forEach(
+        function(perm)
+        {
+          permMap[perm] = true;
+        });
+      
+      // Get the permission groups that this visitor is a member of
+      pGroups = visitor.permissionGroups;
+      
+      pGroups.forEach(
+        function(pGroup)
+        {
+          var             thisGroupPermissions;
+          
+          thisGroupPermissions = liberated.dbif.Entity.query(
+            "aiagallery.dbif.ObjPermissionGroup",
+            {
+              type  : "element",
+              field : "name",
+              value : pGroup
+            });
+          
+          thisGroupPermissions.forEach(
+            function(thisGroupPermission)
+            {
+              thisGroupPermission.permissions.forEach(
+                function(perm)
+                {
+                  permMap[perm] = true;
+                });
+            });
+        });
+      
+      return qx.lang.Object.getKeys(permMap);
+    },
+
     /**
      * Exchange userId for user's displayName
      * 
@@ -119,6 +165,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     {
       var             displayName;
       var             permissions;
+      var             permissionGroups;
       var             status;
       var             statusIndex;
       var             visitor;
@@ -127,6 +174,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       displayName = attributes.displayName;
       permissions = attributes.permissions;
+      permissionGroups = attributes.permissionGroups; 
       
       // Get the status value. If the status string isn't found, we'll use
       // "Active" when we set the database.
@@ -145,6 +193,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
           id          : userId,
           displayName : displayName || visitorData.displayName || "<>",
           permissions : permissions || visitorData.permissions || [],
+          permissionGroups :
+            permissionGroups || visitorData.permissionGroups || [],
           status      : status != -1 ? status : (visitorData.status || 2)
         });
       
@@ -192,6 +242,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
           var             thisGuy = visitorList[visitor];
           thisGuy.permissions = 
             thisGuy.permissions ? thisGuy.permissions.join(", ") : "";
+          thisGuy.permissionGroups = 
+            thisGuy.permissionGroups ? thisGuy.permissionGroups.join(", ") : "";
           thisGuy.status =
             [ "Banned", "Pending", "Active" ][thisGuy.status];
         }
@@ -282,6 +334,52 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       // We need to return something. true is as good as anything else.
       return true;
+    },
+
+    /**
+     * Get all the permission groups and visitors
+     *
+     * @return {Array || Error}
+     *   This a map permission groups and visitors, or an error if
+     *   something went wrong
+     *
+     */
+    getVisitorListAndPGroups : function(bStringize)
+    {
+      var             visitor;
+      var             visitorList;
+      
+      // For each visitor...
+      visitorList = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors");
+
+      // If we were asked to stringize the values...
+      if (bStringize)
+      {
+        // ... then do so
+        for (visitor in visitorList)
+        {
+          var thisGuy = visitorList[visitor];
+          thisGuy.permissions = 
+            thisGuy.permissions ? thisGuy.permissions.join(", ") : "";
+          thisGuy.permissionGroups = 
+            thisGuy.permissionGroups ? thisGuy.permissionGroups.join(", ") : "";
+          thisGuy.status =
+            [ "Banned", "Pending", "Active" ][thisGuy.status];
+        }
+      }    
+
+      // Get the current list of permission groups
+      var pGroupList = this.getPermissionGroups(); 
+      
+      //Construct a map
+      var map = 
+      {
+        "visitors" : visitorList,
+        "pGroups" : pGroupList
+      }; 
+      
+      // We've built the whole list. Return it.
+      return map;
     }
   }
 });
