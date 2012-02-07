@@ -364,18 +364,18 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
           thisGuy.permissionGroups = 
             thisGuy.permissionGroups ? thisGuy.permissionGroups.join(", ") : "";
           thisGuy.status =
-            [ "Banned", "Pending", "Active" ][thisGuy.status];
+            aiagallery.dbif.Constants.StatusToName[thisGuy.status];
         }
       }    
 
       // Get the current list of permission groups
       var pGroupList = this.getPermissionGroups(); 
       
-      //Construct a map
+      // Construct a map
       var map = 
       {
         "visitors" : visitorList,
-        "pGroups" : pGroupList
+        "pGroups"  : pGroupList
       }; 
       
       // We've built the whole list. Return it.
