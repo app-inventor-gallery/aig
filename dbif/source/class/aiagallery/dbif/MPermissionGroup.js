@@ -51,54 +51,28 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
     {
       var       pGroup;
       var       pGroupData;
-      var       returnValue;
 
-      returnValue = liberated.dbif.Entity.asTransaction( 
+      return liberated.dbif.Entity.asTransaction( 
         function()
         {
-          // Create a new permission group
-          // Use default permissions
+          // Retrieve or create a new permission group
+          // Use default permissions, if new
           pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
 
-          if (pGroup.getBrandNew())
-          {
-            // New permission group, set with default information
-            pGroupData = pGroup.getData();
+          // Get the group data
+          pGroupData = pGroup.getData();
 
-            pGroupData.name = pGroupName;
+          // Update Permisssions
+          pGroupData.permissions = pArray;
 
-            // Use user supplied permissions
-            pGroupData.permissions = pArray; 
+          // Use user supplied description
+          pGroupData.description = descString; 
 
-            // Use user supplied description
-            pGroupData.description = descString; 
+          // Put this on the databse   
+          pGroup.put(); 
 
-            // Put this on the databse   
-            pGroup.put();
-
-            // Return new pGroup Data
-            return pGroupData;        
-          } 
-          else 
-          {
-            // Existing Permission Group
-            // Get the data
-            pGroupData = pGroup.getData();
-
-            // Update Permisssions
-            pGroupData.permissions = pArray;
-
-            // Use user supplied description
-            pGroupData.description = descString; 
-
-            // Put this on the databse   
-            pGroup.put(); 
-
-            return pGroupData; 
-
-            // Return updated permission
-            return returnValue; 
-          }
+          // Return new pGroup Data
+          return pGroupData; 
         }); 
     },
 
