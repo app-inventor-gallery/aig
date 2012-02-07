@@ -90,7 +90,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // These are the 3 fields of interest to a viewer
       // (the rest is metadata -- app ID, tree ID, numChildren)
       var commentText = comment["text"];
-      var commentAuthor = comment["visitor"];
+      var commentAuthor = comment["displayName"];
       var commentTime = comment["timestamp"];
       // var treeId = comment["treeId"];
 

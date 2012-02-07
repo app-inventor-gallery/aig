@@ -71,6 +71,8 @@ qx.Class.define("aiagallery.dbif.DbifSim",
 
     changeWhoAmI : function(context)
     {
+      var userId = {};
+
       var formData =  
       {
         'username'   : 
@@ -100,9 +102,10 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           // Add this visitor to the list
           formData.username.options.push(
             {
-              label : visitor.email,
-              value : { id : visitor.id, email : visitor.email }
+              label : visitor.email
             });
+          
+          userId[visitor.email] = visitor.id;
         });
 
       dialog.Dialog.form(
@@ -118,7 +121,7 @@ qx.Class.define("aiagallery.dbif.DbifSim",
 
           // Try to get this user's display name. Does the visitor exist?
           visitor = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
-                                                result.username.id);
+                                                userId[result.username]);
           if (visitor.length > 0 && visitor[0].displayName)
           {
             // Yup, he exists and has a known display name.
@@ -137,8 +140,8 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           // Save the backend whoAmI information
           aiagallery.dbif.DbifSim.getInstance().setWhoAmI(
           {
-            id                : result.username.id,
-            email             : result.username.email,
+            id                : userId[result.username],
+            email             : result.username,
             displayName       : displayName,
             isAdmin           : true,
             logoutUrl         :

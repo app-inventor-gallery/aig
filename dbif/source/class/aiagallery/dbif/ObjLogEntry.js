@@ -34,7 +34,7 @@ qx.Class.define("aiagallery.dbif.ObjLogEntry",
     var databaseProperties =
       {
         /** Id of the Visitor for whom this log entry applies */
-        "visitor" : "Number",
+        "visitor" : "Integer",
 
         /** Code identifying a (translatable) message */
         "code"      : "String",

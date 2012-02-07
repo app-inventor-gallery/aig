@@ -252,7 +252,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
               break;
 
             case "number":
-              bValid = (fields[fieldName] == "Number");
+              bValid = (fields[fieldName] == "Integer" || 
+                        fields[fieldName] == "Float");
               break;
 
             default:

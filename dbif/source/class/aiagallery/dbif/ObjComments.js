@@ -61,7 +61,7 @@ qx.Class.define("aiagallery.dbif.ObjComments",
         "numChildren" : "Integer",
 
         /** Id of the Visitor who made this comment */
-        "visitor" : "Number",
+        "visitor" : "Integer",
 
         /** Time the comment was made */
         "timestamp" : "Date",

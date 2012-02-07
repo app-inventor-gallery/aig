@@ -42,7 +42,7 @@ qx.Class.define("aiagallery.dbif.ObjAppData",
     var databaseProperties =
       {
         /** The owner of the application (id of Visitor object) */
-        "owner" : "Number",
+        "owner" : "Integer",
 
         /** The application title */
         "title" : "String",

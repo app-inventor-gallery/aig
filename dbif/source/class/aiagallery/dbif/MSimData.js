@@ -14,7 +14,7 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
     {
       "visitors" : 
       {
-        "jane@uphill.org" : 
+        1001 : 
         {
           "id" : 1001,
           "email" : "jane@uphill.org",
@@ -24,7 +24,7 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
           "recentSearches" : [],
           "recentViews" : []
         },
-        "billy@thekid.edu" : 
+        1002 : 
         {
           "id" : 1002,
           "email" : "billy@thekid.edu",
@@ -34,7 +34,7 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
           "recentSearches" : [],
           "recentViews" : []
         },
-        "joe@blow.com" : 
+        1003 : 
         {
           "id" : 1003,
           "email" : "joe@blow.com",
