@@ -329,19 +329,14 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       }
 
       // Get the display name for this app's owner
-      var visitor = liberated.dbif.Entity.query(
-        "aiagallery.dbif.ObjVisitors",
-        {
-          type : "element",
-          field : "owner",
-          value : ownerId
-        });
+      var visitor = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
+                                                ownerId);
 
       // We must have found this visitor
       if (visitor.getBrandNew())
       {
-        error.setCode(3);
-        error.setMessage("No developer's id given");
+        error.setCode(4);
+        error.setMessage("Developer (owner) not found: " + ownerId);
         return error;
       }
       
