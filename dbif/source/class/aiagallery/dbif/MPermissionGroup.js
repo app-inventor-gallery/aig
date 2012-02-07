@@ -16,7 +16,7 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
 
     this.registerService("aiagallery.features.getGroupPermissions",
                          this.getGroupPermissions,
-                         [ "pGroupName" ])
+                         [ "pGroupName" ]);
 
     this.registerService("aiagallery.features.deletePermissionGroup",
                          this.deletePermissionGroup,
@@ -30,7 +30,6 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
 
   members :
   {
-
     /**
      * Create a new permission group, edit an existing one
      *
@@ -48,61 +47,59 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
      *   something went wrong
      *
      */
-     addOrEditPermissionGroup : function(pGroupName, pArray, descString)
-     {
-        var       pGroup;
-        var       pGroupData;
-        var       returnValue
+    addOrEditPermissionGroup : function(pGroupName, pArray, descString)
+    {
+      var       pGroup;
+      var       pGroupData;
+      var       returnValue;
 
-        // Create a new permission group
-        // Use default permissions
-        var pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
- 
-        if (pGroup.getBrandNew())
+      returnValue = liberated.dbif.Entity.asTransaction( 
+        function()
         {
-          // New permission group, set with default information
-          pGroupData = pGroup.getData();
+          // Create a new permission group
+          // Use default permissions
+          pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
 
-          pGroupData.name = pGroupName;
-          
-          // Use user supplied permissions
-          pGroupData.permissions = pArray; 
-          
-          // Use user supplied description
-          pGroupData.description = descString; 
-
-          // Put this on the databse   
-          pGroup.put();
-
-          // Return new pGroup Data
-          return pGroupData;        
-        } 
-        else 
-        {
-          // Existing Permission Group
-          // Get the data
-          returnValue = liberated.dbif.Entity.asTransaction( 
-          function()
+          if (pGroup.getBrandNew())
           {
+            // New permission group, set with default information
             pGroupData = pGroup.getData();
- 
+
+            pGroupData.name = pGroupName;
+
+            // Use user supplied permissions
+            pGroupData.permissions = pArray; 
+
+            // Use user supplied description
+            pGroupData.description = descString; 
+
+            // Put this on the databse   
+            pGroup.put();
+
+            // Return new pGroup Data
+            return pGroupData;        
+          } 
+          else 
+          {
+            // Existing Permission Group
+            // Get the data
+            pGroupData = pGroup.getData();
+
             // Update Permisssions
             pGroupData.permissions = pArray;
-            
+
             // Use user supplied description
             pGroupData.description = descString; 
 
             // Put this on the databse   
             pGroup.put(); 
-            
-            return pGroupData; 
-          }); 
-          
-          // Return updated permission
-          return returnValue; 
-          
-        }
 
+            return pGroupData; 
+
+            // Return updated permission
+            return returnValue; 
+          }
+        }); 
     },
 
     /**
@@ -116,20 +113,20 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
      *   something went wrong
      *
      */
-     getGroupPermissions : function(pGroupName)
-     {       
-         var       pGroup;
-         var       pGroupData;
+    getGroupPermissions : function(pGroupName)
+    {       
+      var       pGroup;
+      var       pGroupData;
 
-         // Get the permission group
-         pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
+      // Get the permission group
+      pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
 
-         // Get the permission data 
-         pGroupData = pGroup.getData();
+      // Get the permission data 
+      pGroupData = pGroup.getData();
 
-         // Return the data
-         return pGroupData; 
-     },
+      // Return the data
+      return pGroupData; 
+    },
 
     /**
      * Delete a permission group.
@@ -142,23 +139,21 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
      *   something went wrong
      *
      */
-     deletePermissionGroup : function(pGroupName)
-     {
-        var      pGroup;
+    deletePermissionGroup : function(pGroupName)
+    {
+      var      pGroup;
 
-        //Get permission group data
-        pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
+      //Get permission group data
+      pGroup = new aiagallery.dbif.ObjPermissionGroup(pGroupName);   
 
-        if (pGroup.getBrandNew() == true)
-        {
-           //Object does not exists return error
-           return false;
-        }
-      
-        pGroup.removeSelf(); 
+      if (pGroup.getBrandNew() == true)
+      {
+         //Object does not exist. Return error
+         return false;
+      }
 
-        return true; 
-
+      pGroup.removeSelf(); 
+      return true; 
     },
 
     /**
@@ -169,14 +164,14 @@ qx.Mixin.define("aiagallery.dbif.MPermissionGroup",
      *   something went wrong
      *
      */
-     getPermissionGroups : function()
-     {       
-          //Execute the query
-          var permissionGroupsList = liberated.dbif.Entity.query(
-                                    "aiagallery.dbif.ObjPermissionGroup");
-                                     
-          //Return the permission group list
-          return permissionGroupsList;
-     }
-   }
+    getPermissionGroups : function()
+    {       
+      //Execute the query
+      var permissionGroupsList = liberated.dbif.Entity.query(
+                                "aiagallery.dbif.ObjPermissionGroup");
+
+      //Return the permission group list
+      return permissionGroupsList;
+    }
+  }
 }); 
