@@ -237,6 +237,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var             fsm = module.fsm;
       var             response = rpcRequest.getUserData("rpc_response");
       var             requestType = rpcRequest.getUserData("requestType");
+      var             i;
 
       if (response.type == "failed")
       {
@@ -265,7 +266,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         featuredApps = new qx.ui.container.SlideBar();
         featuredApps.set(
           {
-            height : 180
+            height : 160
           });
         fsm.addObject("Featured Apps", featuredApps);
         parent.add(featuredApps);
@@ -276,7 +277,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         newestApps = new qx.ui.container.SlideBar();
         newestApps.set(
           {
-            height : 180
+            height : 160
           });
         fsm.addObject("Newest Apps", newestApps);
         parent.add(newestApps);
@@ -287,13 +288,13 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         likedApps = new qx.ui.container.SlideBar();
         likedApps.set(
           {
-            height : 180
+            height : 160
           });
         fsm.addObject("Most Liked Apps", likedApps);
         parent.add(likedApps);
         
         // Fill the featured apps ribbon with data
-        for (var i = 0; i < featuredAppsList.length; i++)
+        for (i = 0; i < featuredAppsList.length; i++)
         {
           var appFeatured = featuredAppsList[i];
           var appThumbFeatured = 
@@ -317,7 +318,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         }
 
         // Fill the newest apps ribbon with data
-        for (var i = 0; i < newestAppsList.length; i++)
+        for (i = 0; i < newestAppsList.length; i++)
         {
           var appNewest = newestAppsList[i];
           var appThumbNewest = 
@@ -341,7 +342,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         }
 
         // Fill the most liked apps ribbon with data
-        for (var i = 0; i < likedAppsList.length; i++)
+        for (i = 0; i < likedAppsList.length; i++)
         {
           var appLiked = likedAppsList[i];
 
@@ -360,7 +361,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
             "click", 
             function(e)
             {
-              fsm.fireImmediateEvent("homeRibbonAppClick", this, 
+              fsm.fireImmediateEvent(
+                "homeRibbonAppClick", 
+                this, 
                 e.getCurrentTarget().getUserData("App Data"));
             });
         }
