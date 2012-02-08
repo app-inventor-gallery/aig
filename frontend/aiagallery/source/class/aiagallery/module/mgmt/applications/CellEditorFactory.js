@@ -41,7 +41,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       // Error--no cellInfo! (shouldn't happen)
       {
 // INSERT ERROR CODE HERE!
-// ALSO REMOVE ADD APP CODE, IF ANY, FROM GUI AND FSM
       }
 
       // Cell editor layout

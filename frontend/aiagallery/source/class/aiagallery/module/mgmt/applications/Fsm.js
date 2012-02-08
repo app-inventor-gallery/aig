@@ -84,7 +84,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           // the event data.
           "callRpc" : "Transition_Idle_to_AwaitRpcResult_via_generic_rpc_call",
 
-          // When we get an appear event, retrieve the visitor list
+          // When we get an appear event, retrieve the application list
           "appear"    :
           {
             "main.canvas" : "Transition_Idle_to_AwaitRpcResult_via_appear"
@@ -125,18 +125,9 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var table = fsm.getObject("table");
           var selectionModel = table.getSelectionModel();
           var selection = selectionModel.getSelectedRanges()[0].minIndex;
-//          var data = table.getTableModel().getData()[selection];
-var data = table.getTableModel().getDataAsMapArray()[selection];
-// DEBUG:
-// Replaced getData with getDataAsMapArray in preceding line.
-// With this change, and the change to the Gui's getAppListAll handleResponse case (rememberMaps -> True),
-// we can now access the uid (as data.uid, not data[1]).
-// On sim data, there are a couple error messages because there's no apk blob, but the app's gone on reload.
-// NEXT STEPS: - Add more columns?
-//             - Implement cell editor
-//
-console.log("mgmt/apps--Transition_Idle_to_AwaitRpcResult_via_deleteApp -- data[]: " + qx.lang.Json.stringify(data));
+          var data = table.getTableModel().getDataAsMapArray()[selection];
 
+//console.log("mgmt/apps--Transition_Idle_to_AwaitRpcResult_via_deleteApp -- data[]: " + qx.lang.Json.stringify(data));
           // Issue a Delete App call
           var request =
             this.callRpc(fsm,
@@ -222,7 +213,7 @@ console.log("mgmt/apps--Transition_Idle_to_AwaitRpcResult_via_deleteApp -- data[
       state.addTransition(trans);
 
       /*
-       * Transition: Idle to Idle
+       * Transition: Idle to AwaitRpcResult
        *
        * Cause: "appear" on canvas
        *
@@ -246,7 +237,12 @@ console.log("mgmt/apps--Transition_Idle_to_AwaitRpcResult_via_deleteApp -- data[
             this.callRpc(fsm,
                          "aiagallery.features",
                          "getAppListAll",
-                         [true, null, null, null, true]);
+// Superfluous 5th param?   ->  ->  ->  ->  ->  ->  vvvv
+//                         [true, null, null, null, true]);
+                         [true, null, null, null]);
+// Two issues:
+// - Should 1st param, bStringize, be true (as in mystuff) or null (as in myapps)?
+// - Less importantly--specify a default sortCriteria?
 
           // When we get the result, we'll need to know what type of request
           // we made.
@@ -391,8 +387,8 @@ console.log("mgmt/apps--Transition_Idle_to_AwaitRpcResult_via_deleteApp -- data[
           // Save the request data
           var requestData =
             {
-              titleField       : appTitle,
-              descriptionField : description
+              title       : appTitle,
+              description : description
             };
 
           // Issue an Add Or Edit Application call.
