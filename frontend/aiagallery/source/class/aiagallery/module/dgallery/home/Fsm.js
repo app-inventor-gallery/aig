@@ -74,7 +74,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Fsm",
           "appear" :
           {
             "main.canvas" : 
-              qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
+              "Transition_Idle_to_AwaitRpcResult_via_appear"
           },
 
           // When we get a disappear event, stop our timer
@@ -88,8 +88,6 @@ qx.Class.define("aiagallery.module.dgallery.home.Fsm",
 
       // Replace the initial Idle state with this one
       fsm.replaceState(state, true);
-
-      // The following transitions have a predicate, so must be listed first
 
       /*
        * Transition: Idle to Idle
@@ -106,22 +104,6 @@ qx.Class.define("aiagallery.module.dgallery.home.Fsm",
         "nextState" : "State_AwaitRpcResult",
 
         "context" : this,
-
-        "predicate" : function(fsm, event)
-        {
-          // Have we already been here before?
-          if (fsm.getUserData("noUpdate"))
-          {
-            // Yup. Don't accept this transition and no need to check further.
-            return null;
-          }
-          
-          // Prevent this transition from being taken next time.
-          fsm.setUserData("noUpdate", true);
-          
-          // Accept this transition
-          return true;
-        },
 
         "ontransition" : function(fsm, event)
         {          
