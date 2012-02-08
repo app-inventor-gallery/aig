@@ -72,7 +72,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o.set(
       {
         tabIndex    : 1,
-        maxLength   : 60,
+        maxLength   : 80,
         required    : true,
         placeholder : "Enter the application title"
       });
