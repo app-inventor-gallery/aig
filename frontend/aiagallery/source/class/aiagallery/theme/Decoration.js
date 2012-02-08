@@ -164,12 +164,12 @@ qx.Theme.define("aiagallery.theme.Decoration",
       }
     },
     
-    "tabview-pane" :
+    "radioview-pane" :
     {
       decorator : qx.ui.decoration.Single
     },
 
-    "tabview-pane-css" :
+    "radioview-pane-css" :
     {
       decorator : []
     }

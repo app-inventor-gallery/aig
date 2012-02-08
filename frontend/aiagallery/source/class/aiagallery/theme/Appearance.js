@@ -12,6 +12,24 @@ qx.Theme.define("aiagallery.theme.Appearance",
 
   appearances :
   {
+    "tabview/pane" :
+    {
+      style : function(states)
+      {
+        var useCSS = qx.core.Environment.get("css.gradient.linear") &&
+          qx.core.Environment.get("css.borderradius");
+        return {
+          decorator : useCSS ? "tabview-pane-css" : "tabview-pane",
+          minHeight : 0,
+
+          marginBottom : states.barBottom ? -1 : 0,
+          marginTop : states.barTop ? -1 : 0,
+          marginLeft : states.barLeft ? -1 : 0,
+          marginRight : states.barRight ? -1 : 0
+        };
+      }
+    },
+
     "pagepane" :
     {
       alias : "widget",
@@ -36,7 +54,7 @@ qx.Theme.define("aiagallery.theme.Appearance",
       style : function(states)
       {
         return {
-          contentPadding : 16
+          contentPadding : 0
         };
       }
     },
@@ -59,7 +77,7 @@ qx.Theme.define("aiagallery.theme.Appearance",
       style : function(states)
       {
         return {
-          decorator : "tabview-pane",
+          decorator : "radioview-pane",
           minHeight : 60,
 
           marginBottom : states.barBottom ? -1 : 0,

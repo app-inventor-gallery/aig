@@ -13,7 +13,7 @@
 qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
 {
   type : "singleton",
-  extend : qx.core.Object,
+  extend : qx.ui.core.Widget,
 
   members :
   {
@@ -24,6 +24,253 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
      *   The module descriptor for the module.
      */
     buildGui : function(module)
+    {
+      var             o;
+      var             canvas = module.canvas;
+      var             vBox;
+      var             tabView;
+      var             groupbox;
+
+      // Save the finite state machine reference
+      this.__fsm = module.fsm;
+
+      // Make it easy to provide some space around the edges
+      canvas.setLayout(new qx.ui.layout.Canvas());
+
+      // The canvas is composed of search and results area, vertically aligned
+      vBox = new qx.ui.container.Composite(new qx.ui.layout.VBox(10));
+      canvas.add(vBox, { edge : 10 });
+      
+      // The search area is a tabview, for selecting the type of search
+      tabView = new qx.ui.tabview.TabView();
+      
+      // Allow results section to grow or shrink based on tabview page's needs
+      tabView.getChildControl("pane").setDynamic(true);
+      
+      // Add the search option pages
+      o = new qx.ui.tabview.Page(this.tr("Text search"));
+      o.set(
+        {
+          layout    : new qx.ui.layout.VBox()
+        });
+      tabView.add(o);
+      
+      o = new qx.ui.tabview.Page(this.tr("Browse categories"));
+      this._addCategoryBrowser(o);
+      tabView.add(o);
+      
+      o = new qx.ui.tabview.Page(this.tr("Advanced"));
+      o.set(
+        {
+          layout    : new qx.ui.layout.VBox()
+        });
+      tabView.add(o);
+      
+      // Add the tabView to the top of the vBox
+      vBox.add(tabView);
+      
+      // Create a set of finder-style multi-level browsing lists
+      groupbox = new qx.ui.groupbox.GroupBox("Search Results");
+      groupbox.setLayout(new qx.ui.layout.HBox());
+      groupbox.setContentPadding(0);
+      vBox.add(groupbox, { flex : 1 });
+
+//      groupbox.add(new qx.ui.basic.Label("content goes here"));
+
+/*
+      // Create a splitpane. Top: browse and search; bottom: results
+      splitpane = new qx.ui.splitpane.Pane("vertical");
+      canvas.add(splitpane, { flex : 1 });
+
+      // Create a horizontal box layout for the top pane
+      hBox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
+      splitpane.add(hBox, 1);
+      
+      // Provide a bit of space at the left
+      hBox.add(new qx.ui.core.Spacer(10));
+
+      // Create a set of finder-style multi-level browsing lists
+      groupbox = new qx.ui.groupbox.GroupBox("Browse by Category");
+      groupbox.setLayout(new qx.ui.layout.HBox());
+      groupbox.setContentPadding(0);
+      hBox.add(groupbox);
+
+      // create and add the lists. Store them in an array.
+      list = new qx.ui.form.List();
+      list.setWidth(150);
+      list.addListener("changeSelection", fsm.eventListener, fsm);
+      groupbox.add(list);
+      fsm.addObject("browse0", list);
+
+      list = new qx.ui.form.List();
+      list.setWidth(150);
+      list.addListener("changeSelection", fsm.eventListener, fsm);
+      groupbox.add(list);
+      fsm.addObject("browse1", list);
+
+      list = new qx.ui.form.List();
+      list.setWidth(150);
+      list.addListener("changeSelection", fsm.eventListener, fsm);
+      groupbox.add(list);
+      fsm.addObject("browse2", list);
+
+      // Finished with the finder-style browser
+       
+      // Begin creating the search gui
+      // groupbox contains the whole rest of the shabang
+      groupbox = new qx.ui.groupbox.GroupBox("Search Apps") ;
+      groupbox.setLayout( new qx.ui.layout.VBox()) ;
+
+      // criteria will house all of the "lines of refinement"
+      var criteria = new qx.ui.groupbox.GroupBox();
+      criteria.setLayout( new qx.ui.layout.VBox());
+  
+      // criteria VBox gets wrapped by Scroll for functionality
+      var criteriascroll = new qx.ui.container.Scroll().set(
+        {
+          height : 330,
+          width : 1000
+        });
+      criteriascroll.add(criteria);
+       
+      // Start with a single line of refinement
+      var myRefineLine = this.buildSearchRefineLine(fsm);
+      
+      // Store the criteria object in the criteria container
+      searchCriteriaArr.push(myRefineLine.criteria);
+     
+      // Wrapping all stuff relevant to search in one object
+      var searchWrapper = new qx.core.Object();
+      searchWrapper.setUserData("array", searchCriteriaArr);
+      searchWrapper.setUserData("widget",criteria);
+      searchWrapper.setUserData("buildRefineFunc", this.buildSearchRefineLine);
+      
+      // Going to need access in reset function to this object by the criteria
+      criteria.setUserData("searchObject", searchWrapper);
+      
+      // Store the search object in the FSM so everyone has access to the data
+      fsm.addObject("searchCriteria", searchWrapper);
+      
+      // And install the container widget
+      criteria.add(myRefineLine.widget);
+      
+      
+      
+      // buttonbar is where the search, reset, and possibly more buttons go
+      var buttonbar = new qx.ui.groupbox.GroupBox();
+      buttonbar.set(
+        {
+          layout         : new qx.ui.layout.HBox(),
+          contentPadding : 3
+        });
+      
+      
+      
+      var searchbtn = new qx.ui.form.Button("Search On This");
+      fsm.addObject("searchBtn", searchbtn);
+      searchbtn.addListener("execute", fsm.eventListener, fsm);
+      
+      var resetbtn = new qx.ui.form.Button("Reset All Fields");
+      resetbtn.addListener("execute", function() {
+        
+        var searchObj = this.getUserData("searchObject");
+        var newLine   = searchObj.getUserData("buildRefineFunc")();
+        
+        // Set the Search Criteria Array to an empty array and clean the widget
+        searchObj.setUserData("array", [] );
+        this.removeAll();
+        
+        // Add a brand new first line
+        this.add(newLine.widget);
+        searchObj.getUserData("array").push(newLine.criteria);
+        
+      // Pass criteria widget as context so we can access (and clean) it.  
+      }, criteria);
+      
+      var addcriteriabtn = new qx.ui.form.Button("Add Search Criteria");
+      
+      // When the button is hit, create a new refinement line
+      addcriteriabtn.addListener("execute", function() {
+        
+        // Gather everything we'll need, mostly unpacking the searchObject
+        var         searchObject   = this.getObject("searchCriteria");
+        var         criteriaWidget = searchObject.getUserData("widget");
+        var         array          = searchObject.getUserData("array");
+        var         newRefineLine  = 
+          searchObject.getUserData("buildRefineFunc")();
+        
+        // Add the widget to the GUI, and the data to the data array
+        criteriaWidget.add(newRefineLine.widget);
+        array.push(newRefineLine.criteria);
+        
+      // Pass the listener the FSM, no other way to get it in there!
+      }, fsm);
+      
+      // Add buttons onto button bar, with a little space
+      buttonbar.add(resetbtn);
+      buttonbar.add(new qx.ui.core.Spacer(5));
+      buttonbar.add(searchbtn);
+      buttonbar.add(new qx.ui.core.Spacer(5));
+      buttonbar.add(addcriteriabtn);
+      
+      // Finally, add the Scroll-wrapped criteria on top of the buttonbar
+      groupbox.add(criteriascroll, { flex : 1 });
+      groupbox.add(buttonbar);
+
+      groupbox.getChildControl("frame").setBackgroundColor("white");
+
+      // End search gui by adding it to hBox
+      hBox.add(groupbox, {flex : 1});
+
+      // Provide a bit of space at the right
+      hBox.add(new qx.ui.core.Spacer(10));
+
+      // Create a vertical box layout for the bottom pane
+      vBox = new qx.ui.container.Composite(new qx.ui.layout.VBox(10));
+      splitpane.add(vBox, 2);
+      
+      // Display 
+      gallery = new aiagallery.widget.virtual.Gallery();
+      gallery.addListener("changeSelection", fsm.eventListener, fsm);
+      fsm.addObject("gallery", gallery);
+      vBox.add(gallery, { flex : 1 });
+*/
+    },
+
+    _addCategoryBrowser : function(container)
+    {
+      var             list;
+      var             hBox;
+      
+      // Put the three lists into a horizontal box
+      container.setLayout(new qx.ui.layout.HBox(0));
+
+      // create and add the lists.
+      [
+        "browse0",
+        "browse1",
+        "browse2"
+      ].forEach(
+        function(listName)
+        {
+          list = new qx.ui.form.List();
+          list.set(
+            {
+              width  : 150
+            });
+          list.addListener("changeSelection",
+                           this.__fsm.eventListener,
+                           this.__fsm);
+          container.add(list);
+          this.__fsm.addObject(listName, list);
+        },
+        this);
+
+      // Add a spacer to take up the remaining space in the hbox
+      container.add(new qx.ui.core.Spacer(), { flex : 1 });
+    },
+
+    _old_buildGui : function(module)
     {
       var             o;
       var             fsm = module.fsm;

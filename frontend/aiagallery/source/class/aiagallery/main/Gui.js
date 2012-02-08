@@ -197,6 +197,7 @@ qx.Class.define("aiagallery.main.Gui",
         pagePane.add(hbox);
 
         mainTabs = new qx.ui.tabview.TabView();
+        mainTabs.setAppearance("radioview");
         
         // We're going to control the tab view via the link bar
         mainTabs.getChildControl("bar").exclude();
