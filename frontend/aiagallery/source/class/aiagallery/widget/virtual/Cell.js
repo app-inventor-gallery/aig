@@ -29,6 +29,7 @@ qx.Class.define("aiagallery.widget.virtual.Cell",
         {
           backgroundColor : null
         });
+
       return widget;
     },
 
@@ -37,9 +38,10 @@ qx.Class.define("aiagallery.widget.virtual.Cell",
     {
       widget.set(
         {
-          icon  : data.icon,
-          label : data.label,
-          owner : data.displayName
+          icon        : data.icon,
+          label       : data.label,
+          displayName : data.displayName,
+          owner       : data.owner
         });
     },
 
@@ -55,7 +57,9 @@ qx.Class.define("aiagallery.widget.virtual.Cell",
         label.setDecorator("selected");
         label.setTextColor("text-selected");
         owner.setDecorator("selected");
-        owner.setTextColor("text-selected");
+
+        // do not set owner text color, as it overrides the android-green
+        // owner.setTextColor("text-selected");
         icon.setDecorator("group");
       }
       else
@@ -63,7 +67,7 @@ qx.Class.define("aiagallery.widget.virtual.Cell",
         label.resetDecorator();
         label.resetTextColor();
         owner.resetDecorator();
-        owner.resetTextColor();
+        // owner.resetTextColor();
         icon.resetDecorator();
       }
     }

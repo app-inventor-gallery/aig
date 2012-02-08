@@ -10,8 +10,9 @@ qx.Class.define("aiagallery.widget.AppThumb",
 {
   extend : qx.ui.basic.Atom,
 
-  construct : function(titleText, ownerText, imagePath)
+  construct : function(titleText, displayName, imagePath, owner)
   { 
+    var             ownerLabel;
     var             font;
 
     this.base(arguments, titleText, imagePath);
@@ -24,12 +25,18 @@ qx.Class.define("aiagallery.widget.AppThumb",
         padding         : 10,
         gap             : 0,
         width           : 150,
-        iconPosition    : "top"
+        iconPosition    : "top",
+        center          : false
       });
 
-    if (ownerText)
+    if (displayName)
     {
-      this.setOwner(ownerText);
+      this.setDisplayName(displayName);
+    }
+    
+    if (typeof owner != "undefined")
+    {
+      this.setOwner(owner);
     }
 
     // Add the thumbnail image
@@ -40,23 +47,54 @@ qx.Class.define("aiagallery.widget.AppThumb",
         scale  : true
       });
     
-    // The title should be in bold font
-    font = qx.bom.Font.fromString("bold 10px sans-serif");
-    this.getChildControl("label").set(
+    // Display the title (label)
+    this.getChildControl("label");
+    
+    // Add the spacer
+    this.getChildControl("spacer");
+
+    // The owner should be displayed android green
+    font = qx.bom.Font.fromString("10px sans-serif");
+    font.setColor("#75940c");   // android-green-dark
+    ownerLabel = this.getChildControl("owner");
+    ownerLabel.set(
       {
-        font   : font
+        textColor : null,       // don't let it override font's color
+        font      : font
       });
+    
+    // Owner clicks may work differently than other clicks within this widget
+    ownerLabel.addListener(
+      "click",
+      function(e)
+      {
+        // Prevent the default 'click' behavior
+        e.preventDefault();
+        e.stop();
+
+        // Initiate a search
+        alert("Future: initiate search for owner " +
+              this.getDisplayName() + " (" + this.getOwner() + ")");
+      },
+      this);
   },
   
   properties :
   {
-    /** The second line of text */
-    owner :
+    /** The second line of text: the owner of the app */
+    displayName :
     {
-      apply     : "_applyOwner",
+      apply     : "_applyDisplayName",
       nullable  : true,
       check     : "String",
-      event     : "changeOwner"
+      event     : "changeDisplayName"
+    },
+
+    /** The owner's unique ID */
+    owner :
+    {
+      nullable  : false,
+      check     : "Number"
     }    
   },
 
@@ -65,22 +103,44 @@ qx.Class.define("aiagallery.widget.AppThumb",
     // overridden
     _createChildControlImpl : function(id, hash)
     {
-      var control;
+      var             control;
 
       switch(id)
       {
-        case "owner":
-          control = new qx.ui.basic.Label(this.getOwner());
-          control.setAnonymous(true);
-          this._addAt(control, 2);
-          break;
+      case "label":
+        control = new qx.ui.form.TextArea(this.getLabel());
+        control.set(
+          {
+            font      : qx.bom.Font.fromString("bold 10px sans-serif"),
+            readOnly  : true,
+            autoSize  : true,
+            wrap      : true,
+            anonymous : true,
+            maxHeight : 40
+          });
+        this._add(control);
+        break;
+
+      case "spacer":
+        control = new qx.ui.core.Spacer(1, 1);
+        this._addAt(control, 2);
+        break;
+
+      case "owner":
+        control = new qx.ui.basic.Label(this.getDisplayName());
+        control.set(
+          {
+            textAlign : "left"
+          });
+        this._addAt(control, 3);
+        break;
       }
 
       return control || this.base(arguments, id);
     },
     
     // property apply
-    _applyOwner : function(value, old)
+    _applyDisplayName : function(value, old)
     {
       var owner = this.getChildControl("owner");
       if (owner) 

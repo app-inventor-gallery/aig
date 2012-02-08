@@ -14,7 +14,8 @@ qx.Theme.define("aiagallery.theme.Color",
 
   colors :
   {
-    "android-green" : "#a5c43c",
+    "android-green"      : "#a5c43c",
+    "android-green-dark" : "#75940c",
 
     // invalid form widgets
     "invalid" : "#ff0000",
