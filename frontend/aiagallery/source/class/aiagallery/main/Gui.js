@@ -417,9 +417,8 @@ qx.Class.define("aiagallery.main.Gui",
             
 
             // Load the Channel API. If we're on App Engine, it'll succeed
-            var loader = new qx.io.ScriptLoader();
-            loader.load(
-              "/_ah/channel/jsapi", 
+            var loader = new qx.bom.request.Script();
+            loader.onload = 
               function createChannel(status)
               {
                 // Did we successfully load the Channel API?
@@ -521,7 +520,9 @@ qx.Class.define("aiagallery.main.Gui",
                   break;
 
                 }
-            });
+              };
+            loader.open("GET", "/_ah/channel/jsapi");
+            loader.send();
           });
       }
       
