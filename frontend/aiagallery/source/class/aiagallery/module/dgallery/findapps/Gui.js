@@ -430,14 +430,12 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         fsm.addObject("gallery", gallery);
         parent.add(gallery);
 
-        
-        if (querySource != "searchBtn"){
-          
+        if (querySource != "searchBtn")
+        {
           // Create a list of tags to exclude from this next level
           excludeTags = [];
 
           // Get the previous selections
-  
           switch(querySource)
           {          
           case "browse1":

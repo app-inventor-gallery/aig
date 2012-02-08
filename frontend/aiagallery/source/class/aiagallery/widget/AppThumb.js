@@ -19,7 +19,6 @@ qx.Class.define("aiagallery.widget.AppThumb",
     // Specify the owner text and layout parameters
     this.set(
       {
-        owner           : ownerText,
         backgroundColor : "#eee9e9",
         marginRight     : 20,
         padding         : 10,
@@ -27,6 +26,11 @@ qx.Class.define("aiagallery.widget.AppThumb",
         width           : 150,
         iconPosition    : "top"
       });
+
+    if (ownerText)
+    {
+      this.setOwner(ownerText);
+    }
 
     // Add the thumbnail image
     this.getChildControl("icon").set(
