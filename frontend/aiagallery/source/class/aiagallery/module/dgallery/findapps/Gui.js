@@ -256,7 +256,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
           list = new qx.ui.form.List();
           list.set(
             {
-              width  : 150
+              width  : 150,
+              height : 150
             });
           list.addListener("changeSelection",
                            this.__fsm.eventListener,
