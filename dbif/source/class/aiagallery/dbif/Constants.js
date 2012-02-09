@@ -67,7 +67,7 @@ qx.Class.define("aiagallery.dbif.Constants",
     /** Maximum length of input fields */
     FieldLength :
     {
-      Title       : 80,
+      Title       : 30,
       Description : 480,
       Tags        : 20,
       Comment     : 480
