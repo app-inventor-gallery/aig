@@ -89,6 +89,26 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
             createItem : function()
             {
               return new aiagallery.module.dgallery.findapps.SearchResult();
+            },
+            
+            bindItem : function(controller, item, id) 
+            {
+              [
+                "image1",
+                "title",
+                "numLikes",
+                "numDownloads",
+                "numViewed",
+                "numComments",
+                "displayName",
+                "description"
+//                "creationTime",
+//                "uploadTime"
+              ].forEach(
+                function(name)
+                {
+                  controller.bindProperty(name, name, null, item, id);
+                });
             }
           }
         });
@@ -506,17 +526,15 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         break;
       
       case "intersectKeywordAndQuery":
-        gallery = fsm.getObject("gallery");
-        
+        // Retrieve the app list and list of categories
         apps = response.data.result;
+        categories = response.data.result.categories;
         
-        // FIXME: KLUDGE: should be able to update without remove/add!!!
-        parent = gallery.getLayoutParent();
-        parent.remove(gallery);
-        gallery = new aiagallery.widget.virtual.Gallery(apps);
-        gallery.addListener("changeSelection", fsm.eventListener, fsm);
-        fsm.addObject("gallery", gallery);
-        parent.add(gallery);
+        // Build a model for the search results list
+        model = qx.data.marshal.Json.createModel(apps);
+
+        // Add the data to the list
+        this.searchResults.setModel(model);
         break;
         
         
@@ -527,6 +545,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         
         // Build a model for the search results list
         model = qx.data.marshal.Json.createModel(apps);
+
+        // Add the data to the list
         this.searchResults.setModel(model);
 return;
         

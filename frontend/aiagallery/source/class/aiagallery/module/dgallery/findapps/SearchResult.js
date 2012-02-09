@@ -22,6 +22,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     grid = new qx.ui.layout.Grid(2, 2);
     this.setLayout(grid);
     
+    // Pre-create each of the child controls
     this.getChildControl("image1");
     this.getChildControl("title");
     this.getChildControl("numLikes");
@@ -37,12 +38,36 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
   events:
   {
     /** (Fired by {@link qx.ui.form.List}) */
-    "action" : "qx.event.type.Event"
+    "action" : "qx.event.type.Event",
+    
+    /** Fired when the numLikes property is changed */
+    "changeNumLikes" : "qx.event.type.Data",
+    
+    /** Fired when the numDownloads property is changed */
+    "changeNumDownloads" : "qx.event.type.Data",
+    
+    /** Fired when the numViewed property is changed */
+    "changeNumViewed" : "qx.event.type.Data",
+    
+    /** Fired when the numComments property is changed */
+    "changeNumComments" : "qx.event.type.Data",
+    
+    /** Fired when the displayName property is changed */
+    "changeDisplayName" : "qx.event.type.Data",
+    
+    /** Fired when the description property is changed */
+    "changeDescription" : "qx.event.type.Data",
+    
+    /** Fired when the creationTime property is changed */
+    "changeCreationTime" : "qx.event.type.Data",
+    
+    /** Fired when the uploadTime property is changed */
+    "changeUploadTime" : "qx.event.type.Data"
   },
 
   properties :
   {
-    icon :                      // actually image1
+    image1 :
     {
       apply    : "_applyImage1",
       nullable : true,
@@ -50,7 +75,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
       event    : "changeImage1"
     },
     
-    label :                     // actually title
+    title :
     {
       apply    : "_applyTitle",
       nullable : true,
@@ -270,7 +295,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
           {
             appearance : "widget",
             value      : "This is a big long description that will take up a couple of rows. I want to see what happens with it. Hopefully it looks really nice and I can continue along this path.",
-//            font       : qx.bom.Font.fromString("bold 10px sans-serif"),
             readOnly   : true,
             autoSize   : true,
             wrap       : true,
@@ -318,25 +342,25 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     // property apply function
     _applyNumLikes : function(value, old)
     {
-      this.getChildControl("numLikes").setValue(value + "");
+      this.getChildControl("numLikes").setLabel(value + "");
     },
     
     // property apply function
     _applyNumDownloads : function(value, old)
     {
-      this.getChildControl("numDownloads").setValue(value + "");
+      this.getChildControl("numDownloads").setLabel(value + "");
     },
     
     // property apply function
     _applyNumViewed : function(value, old)
     {
-      this.getChildControl("numViewed").setValue(value + "");
+      this.getChildControl("numViewed").setLabel(value + "");
     },
     
     // property apply function
     _applyNumComments : function(value, old)
     {
-      this.getChildControl("numComments").setValue(value + "");
+      this.getChildControl("numComments").setLabel(value + "");
     },
     
     // property apply function
