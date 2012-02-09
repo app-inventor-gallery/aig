@@ -251,17 +251,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
                          "aiagallery.features",
                          "appQuery",
                          [
-                           // Root of the criteria tree
-                           criteria,
-                           
-                           // Requested fields and the return field name
-                           {
-                             uid         : "uid",
-                             title       : "label", // remap name for Gallery
-                             image1      : "icon",  // remap name for Gallery
-                             tags        : "tags",
-                             displayName : "displayName"
-                           }
+                           criteria
                          ]);
 
           // When we get the result, we'll need to know what type of request
