@@ -72,7 +72,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o.set(
       {
         tabIndex    : 1,
-        maxLength   : 80,
+        maxLength   : aiagallery.dbif.Constants.FieldLength.Title,
+        width       : 300,
+        maxWidth    : 300,
         required    : true,
         placeholder : "Enter the application title"
       });
@@ -94,7 +96,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         tabIndex    : 2,
         maxLength   : aiagallery.dbif.Constants.FieldLength.Description,
-        width       : 200,
         height      : 60,
         required    : true,
         placeholder : "Enter a brief description"
