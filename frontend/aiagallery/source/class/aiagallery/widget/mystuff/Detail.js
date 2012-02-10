@@ -389,6 +389,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
           }
         }
         
+        // Change the status to Uploading to provide some feedback
+        this.__container.setStatus(aiagallery.dbif.Constants.Status.Uploading);
+
         // Fire an event with the changed data
         this.fireDataEvent("saveApp",
                            {

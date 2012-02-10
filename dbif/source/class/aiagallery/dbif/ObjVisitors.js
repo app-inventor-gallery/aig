@@ -43,8 +43,8 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
 
     var databaseProperties =
       {
-        /** The user's numeric id */
-        "id" : "Integer",
+        /** The user's numeric id, converted to a string */
+        "id" : "String",
         
         /** The user's email address */
         "email" : "String",

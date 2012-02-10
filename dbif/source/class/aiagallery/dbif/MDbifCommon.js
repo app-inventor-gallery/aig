@@ -83,6 +83,28 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
     _applyWhoAmI : function(value, old)
     {
       aiagallery.dbif.MDbifCommon.__whoami = value;
+      
+      // Be sure this visitor is in the database
+      if (typeof value == "object" &&
+          typeof value.id == "string" &&
+          value.id.length > 0)
+      {
+        liberated.dbif.Entity.asTransaction(
+          function()
+          {
+            var             visitor;
+            var             data;
+
+            visitor = new aiagallery.dbif.ObjVisitors(value.id);
+            if (visitor.getBrandNew())
+            {
+              data = visitor.getData();
+              data.email = value.email;
+              data.displayName = value.displayName;
+              visitor.put();
+            }
+          });
+      }
     }
   },
 

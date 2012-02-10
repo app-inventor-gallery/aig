@@ -43,7 +43,7 @@ qx.Class.define("aiagallery.dbif.ObjFlags",
         "comment" : "String",
 
         /** Id of the Visitor who flagged the application or comment */
-        "visitor" : "Integer",
+        "visitor" : "String",
 
         /** Time the like occurred */
         "timestamp" : "Date",

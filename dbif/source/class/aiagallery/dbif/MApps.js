@@ -1293,7 +1293,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       appList.forEach(
           function(app)
           {
-            // Add the owner's display name
+            // Get the owner's display name
             owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
                                                   app["owner"]);
 
@@ -1308,7 +1308,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               }
             }
 
-            // Add the display name a
+            // Add the display name
             app["displayName"] = displayName || owners[0].displayName || "<>";
            
             // If it's an "all" request (administrator)...
