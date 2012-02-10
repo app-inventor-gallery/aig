@@ -44,6 +44,20 @@ qx.Theme.define("aiagallery.theme.Appearance",
       }
     },
 
+    "searchResult" :
+    {
+      alias : "atom",
+
+      style : function(states)
+      {
+        return {
+          margin : 10,
+          padding : 10,
+          decorator : "search-result-separator"
+        };
+      }
+    },
+
 
     //
     // Radio View

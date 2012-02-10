@@ -70,6 +70,12 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
 
   properties :
   {
+    appearance :
+    {
+      refine   : true,
+      init     : "searchResult"
+    },
+
     image1 :
     {
       apply    : "_applyImage1",

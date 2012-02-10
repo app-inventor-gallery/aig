@@ -29,7 +29,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       var             canvas = module.canvas;
       var             vBox;
       var             tabView;
-      var             groupbox;
       var             searchResults;
 
       // Save the finite state machine reference
@@ -70,18 +69,15 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       // Add the tabView to the top of the vBox
       vBox.add(tabView);
       
-      // Create a set of finder-style multi-level browsing lists
-      groupbox = new qx.ui.groupbox.GroupBox("Search Results");
-      groupbox.setLayout(new qx.ui.layout.VBox());
-      groupbox.setContentPadding(10);
-      vBox.add(groupbox, { flex : 1 });
-      
-      // The groupbox will contain a list for all of the search results
+      // Add the search results label
+      vBox.add(new qx.ui.basic.Label("Search Results"));
+
+      // Add the list for all of the search results
       this.searchResults = new qx.ui.list.List();
       this.searchResults.set(
         {
-          appearance : "widget",
-          itemHeight : 130,
+//          appearance : "widget",
+          itemHeight : 120,
           labelPath  : "title",
           iconPath   : "image1",
           delegate   :
@@ -112,7 +108,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
             }
           }
         });
-      groupbox.add(this.searchResults, { flex : 1 });
+
+      vBox.add(this.searchResults, { flex : 1 });
     },
 
     _addCategoryBrowser : function(container)

@@ -164,6 +164,17 @@ qx.Theme.define("aiagallery.theme.Decoration",
       }
     },
     
+    "search-result-separator" :
+    {
+      decorator: qx.ui.decoration.Single,
+
+      style :
+      {
+        widthBottom : 1,
+        colorBottom : "border-separator"
+      }
+    },
+
     "radioview-pane" :
     {
       decorator : qx.ui.decoration.Single
