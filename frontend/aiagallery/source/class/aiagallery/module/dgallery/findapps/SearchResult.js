@@ -23,7 +23,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     this.setLayout(grid);
     
     // Specify the format of date output
-    this.dateFormat = new qx.util.format.DateFormat("yyyy-MM-dd hh:mm a");
+    this.dateFormat = aiagallery.Application.getDateFormat();
 
     // Pre-create each of the child controls
     this.getChildControl("image1");
@@ -207,11 +207,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         this._add(control, { row : 0, column : 2, rowSpan : 2 });
         break;
         
-      case "numDownloads":
+      case "numViewed":
         control = new qx.ui.basic.Atom();
         control.set(
           {
-            icon      : "aiagallery/thumbs-up.png",
+            icon      : "aiagallery/viewed.png",
             minWidth  : 60
           });
         control.getChildControl("icon").set(
@@ -223,12 +223,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         this._add(control, { row : 0, column : 3, rowSpan : 2 });
         break;
 
-        
-      case "numViewed":
+      case "numDownloads":
         control = new qx.ui.basic.Atom();
         control.set(
           {
-            icon      : "aiagallery/thumbs-up.png",
+            icon      : "aiagallery/downloads.png",
             minWidth  : 60
           });
         control.getChildControl("icon").set(
@@ -240,12 +239,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         this._add(control, { row : 0, column : 4, rowSpan : 2 });
         break;
 
-        
       case "numComments":
         control = new qx.ui.basic.Atom();
         control.set(
           {
-            icon      : "aiagallery/thumbs-up.png",
+            icon      : "aiagallery/comments.png",
             minWidth  : 60
           });
         control.getChildControl("icon").set(
