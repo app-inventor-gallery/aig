@@ -35,7 +35,7 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
       {
         // Nope.
         return({
-                 id                : -1,
+                 id                : "",
                  email             : "anonymous",
                  displayName       : "",
                  isAdmin           : false,
@@ -51,7 +51,7 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
       // Create the return object, initialized to a clone of whoami.
       ret =
         {
-          id                : Number(whoami.id),
+          id                : String(whoami.id),
           email             : String(whoami.email),
           displayName       : String(whoami.displayName),
           isAdmin           : whoami.isAdmin,

@@ -1293,7 +1293,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       appList.forEach(
           function(app)
           {
-            // Replace the owner name with the owner's display name
+            // Get the owner's display name
             owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
                                                   app["owner"]);
 
@@ -1308,7 +1308,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               }
             }
 
-            // Add the display name a
+            // Add the display name
             app["displayName"] = displayName || owners[0].displayName || "<>";
            
             // If it's an "all" request (administrator)...
@@ -1475,8 +1475,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             }
           }
 
-          // Replace the (private) owner id with his display name
-          app.owner = displayName || owners[0].displayName || "<>";
+          // Add his display name
+          app.displayName = displayName || owners[0].displayName || "<>";
           
           // If there were requested fields specified...
           if (requestedFields)
@@ -1865,7 +1865,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             }
           }
 
-          // Replace the (private) owner id with his display name
+          // Add his display name
           app.displayName = displayName || owners[0].displayName || "<>";
           
           // Do special App Engine processing to scale images
@@ -2004,7 +2004,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         }
       }
 
-      // Replace the (private) owner id with his display name
+      // Add his display name
       app.displayName = displayName || owners[0].displayName || "<>";
 
       // If there's a user signed in...

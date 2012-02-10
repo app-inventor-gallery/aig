@@ -35,7 +35,7 @@ qx.Class.define("aiagallery.main.WhoAmI",
     /** This user's id */
     id :
     {
-      check : "Number"
+      check : "String"
     },
     
     /** This user's email address */
