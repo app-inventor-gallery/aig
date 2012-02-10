@@ -94,7 +94,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
                        ],
                        [
                          "displayName",
-                         "id",
+                         "email",
                          "permissions",
                          "permissionGroups",
                          "status"
