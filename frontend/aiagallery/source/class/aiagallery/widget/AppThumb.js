@@ -94,7 +94,7 @@ qx.Class.define("aiagallery.widget.AppThumb",
     owner :
     {
       nullable  : false,
-      check     : "Number"
+      check     : "String"
     }    
   },
 
