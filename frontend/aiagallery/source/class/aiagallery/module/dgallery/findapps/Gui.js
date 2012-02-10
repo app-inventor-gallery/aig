@@ -30,6 +30,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       var             vBox;
       var             tabView;
       var             searchResults;
+      var             font;
 
       // Save the finite state machine reference
       this.__fsm = module.fsm;
@@ -38,7 +39,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       canvas.setLayout(new qx.ui.layout.Canvas());
 
       // The canvas is composed of search and results area, vertically aligned
-      vBox = new qx.ui.container.Composite(new qx.ui.layout.VBox(10));
+      vBox = new qx.ui.container.Composite(new qx.ui.layout.VBox(0));
       canvas.add(vBox, { edge : 10 });
       
       // The search area is a tabview, for selecting the type of search
@@ -69,14 +70,22 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       // Add the tabView to the top of the vBox
       vBox.add(tabView);
       
+      // Add a bit of space before the search results
+      vBox.add(new qx.ui.core.Spacer(10, 10));
+
       // Add the search results label
-      vBox.add(new qx.ui.basic.Label("Search Results"));
+      font = qx.bom.Font.fromString("10px sans-serif bold");
+      o = new qx.ui.basic.Label("Search Results");
+      o.set(
+        {
+          font : font
+        });
+      vBox.add(o);
 
       // Add the list for all of the search results
       this.searchResults = new qx.ui.list.List();
       this.searchResults.set(
         {
-//          appearance : "widget",
           itemHeight : 120,
           labelPath  : "title",
           iconPath   : "image1",
