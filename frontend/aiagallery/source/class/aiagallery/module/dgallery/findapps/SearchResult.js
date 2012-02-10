@@ -22,6 +22,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     grid = new qx.ui.layout.Grid(2, 2);
     this.setLayout(grid);
     
+    // Specify the format of date output
+    this.dateFormat = new qx.util.format.DateFormat("yyyy-MM-dd hh:mm a");
+
     // Pre-create each of the child controls
     this.getChildControl("image1");
     this.getChildControl("title");
@@ -182,7 +185,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         control = new qx.ui.basic.Label();
         control.set(
           {
-            value : "title goes here",
             width : 300,
             font  : font
           });
@@ -193,7 +195,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         control = new qx.ui.basic.Atom();
         control.set(
           {
-            label     : "0",
             icon      : "aiagallery/thumbs-up.png",
             minWidth  : 60
           });
@@ -210,7 +211,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         control = new qx.ui.basic.Atom();
         control.set(
           {
-            label     : "0",
             icon      : "aiagallery/thumbs-up.png",
             minWidth  : 60
           });
@@ -228,7 +228,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         control = new qx.ui.basic.Atom();
         control.set(
           {
-            label     : "0",
             icon      : "aiagallery/thumbs-up.png",
             minWidth  : 60
           });
@@ -246,7 +245,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         control = new qx.ui.basic.Atom();
         control.set(
           {
-            label     : "0",
             icon      : "aiagallery/thumbs-up.png",
             minWidth  : 60
           });
@@ -266,7 +264,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         control = new qx.ui.basic.Label();
         control.set(
           {
-            value     : "Joe Blow",
             textColor : null,       // don't let it override font's color
             font      : font
           });
@@ -294,9 +291,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         control.set(
           {
             appearance : "widget",
-            value      : "This is a big long description that will take up a couple of rows. I want to see what happens with it. Hopefully it looks really nice and I can continue along this path.",
             readOnly   : true,
-            autoSize   : true,
             wrap       : true,
             anonymous  : true,
             minHeight  : 50,
@@ -309,7 +304,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         control = new qx.ui.basic.Label();
         control.set(
           {
-            value : "Created: 2012/02/09 3:45pm"
+            rich : true
           });
         this._add(control, { row : 3, column : 1 });
         break;
@@ -318,7 +313,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         control = new qx.ui.basic.Label();
         control.set(
           {
-            value : "Last Updated: 2012/02/09 3:45pm"
+            rich : true
           });
         this._add(control, { row : 3, column : 2, colSpan : 4 });
         break;
@@ -390,8 +385,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     // property transform function
     _transformCreationTime : function(value)
     {
-      var dateFormat = new qx.util.format.DateFormat();
-      return "Created " + dateFormat.format(new Date(value));
+      return("Created&nbsp;&nbsp" +
+             this.dateFormat.format(new Date(Number(value))));
     },
     
     // property apply function
@@ -403,8 +398,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     // property transform function
     _transformUploadTime : function(value)
     {
-      var dateFormat = new qx.util.format.DateFormat();
-      return "Last updated " + dateFormat.format(new Date(value));
+      return("Last updated&nbsp;&nbsp" +
+             this.dateFormat.format(new Date(Number(value))));
     },
 
     // overridden

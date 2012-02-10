@@ -101,9 +101,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
                 "numViewed",
                 "numComments",
                 "displayName",
-                "description"
-//                "creationTime",
-//                "uploadTime"
+                "description",
+                "creationTime",
+                "uploadTime"
               ].forEach(
                 function(name)
                 {
