@@ -87,7 +87,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       {
         this.setWhoAmI(
           {
-            id                : -1,
+            id                : "",
             email             : "anonymous",
             displayName       : "",
             isAdmin           : false,
