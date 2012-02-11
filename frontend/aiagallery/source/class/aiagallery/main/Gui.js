@@ -335,8 +335,6 @@ qx.Class.define("aiagallery.main.Gui",
                 bAllowed = false;
                 [ 
                   // These permissions allow access to the page
-                  "addOrEditApp",
-                  "deleteApp",
                   "getAppListAll"
                 ].forEach(
                   function(rpcFunc)
