@@ -48,7 +48,6 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       // Get the permission groups that this visitor is a member of
       pGroups = visitor.permissionGroups || [];
-      
       pGroups.forEach(
         function(pGroup)
         {
@@ -56,11 +55,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
           
           thisGroupPermissions = liberated.dbif.Entity.query(
             "aiagallery.dbif.ObjPermissionGroup",
-            {
-              type  : "element",
-              field : "name",
-              value : pGroup
-            });
+            pGroup);
           
           thisGroupPermissions.forEach(
             function(thisGroupPermission)

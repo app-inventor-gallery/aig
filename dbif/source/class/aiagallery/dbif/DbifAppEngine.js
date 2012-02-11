@@ -110,8 +110,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
         // Yup, he exists.
         displayName = visitor[0].displayName || googleNickname || googleUserId;
         permissions = 
-          aiagallery.dbif.MVisitors.getVisitorPermissions(
-            visitor[0].permissions || []);
+          aiagallery.dbif.MVisitors.getVisitorPermissions(visitor[0]);
       }
       else
       {

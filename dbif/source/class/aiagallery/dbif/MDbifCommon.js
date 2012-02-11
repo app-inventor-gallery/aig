@@ -321,13 +321,9 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         return false;
       }
 
-      var id = whoami.id;
-      var myObjData = new aiagallery.dbif.ObjVisitors(id).getData();
-      var permissionArr = 
-        aiagallery.dbif.MVisitors.getVisitorPermissions(whoami); 
-      var permission;
-      var group;
-      var data;
+      // Retrieve this user's full list of permissions (already expanded to
+      // include permissions gleaned from permission groups).
+      var permissionArr = whoami.permissions || [];
 
       // Standard check: Does my permission list contain this method?
       if (permissionArr != null &&

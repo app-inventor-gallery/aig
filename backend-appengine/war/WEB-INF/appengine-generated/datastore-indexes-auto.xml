@@ -1,17 +1,4 @@
-<!-- Indices written at Fri, 10 Feb 2012 18:25:15 UTC -->
+<!-- Indices written at Sat, 11 Feb 2012 15:53:00 UTC -->
 
-<datastore-indexes>
+<datastore-indexes/>
 
-    <!-- Used 1 time in query history -->
-    <datastore-index kind="apps" ancestor="true" source="auto">
-        <property name="status" direction="asc"/>
-        <property name="numLikes" direction="desc"/>
-    </datastore-index>
-
-    <!-- Used 1 time in query history -->
-    <datastore-index kind="apps" ancestor="true" source="auto">
-        <property name="status" direction="asc"/>
-        <property name="uploadTime" direction="desc"/>
-    </datastore-index>
-
-</datastore-indexes>
