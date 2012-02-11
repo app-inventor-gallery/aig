@@ -276,7 +276,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         }
 
       case "editProfile":
-        return ! bAnonymous;    // Access is allowed if they're logged in
+        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       //
       // MWhoAmI
@@ -294,7 +294,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MLiking
       //
       case "likesPlusOne":
-        return ! bAnonymous;   // Access allowed if logged in
+        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       //
       // MDbMgmt
