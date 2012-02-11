@@ -40,8 +40,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
   
   events:
   {
-    /** (Fired by {@link qx.ui.form.List}) */
+    /** Fired by {@link qx.ui.form.List} */
     "action" : "qx.event.type.Event",
+    
+    /** Fired by click on app title or image */
+    "viewApp" : "qx.event.type.Data",
     
     /** Fired when the numLikes property is changed */
     "changeNumLikes" : "qx.event.type.Data",
@@ -74,6 +77,12 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     {
       refine   : true,
       init     : "searchResult"
+    },
+
+    uid :
+    {
+      check    : "Number",
+      nullable : false
     },
 
     image1 :
@@ -162,6 +171,19 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
 
   members :
   {
+    /** Event handler for click on app title or image */
+    _onViewApp : function(e)
+    {
+      var             searchResult = e.getTarget().getLayoutParent();
+
+      this.fireDataEvent(
+        "viewApp",
+        {
+          uid   : searchResult.getUid(),
+          title : searchResult.getTitle()
+        });
+    },
+
     // overridden
     _createChildControlImpl : function(id, hash)
     {
@@ -182,6 +204,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
             minHeight : 100,
             maxHeight : 100
           });
+        control.addListener("click", this._onViewApp, this);
         this._add(control, { row : 0, column : 0, rowSpan : 4 });
         break;
         
@@ -194,6 +217,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
             width : 300,
             font  : font
           });
+        control.addListener("click", this._onViewApp, this);
         this._add(control, { row : 0, column : 1 });
         break;
         

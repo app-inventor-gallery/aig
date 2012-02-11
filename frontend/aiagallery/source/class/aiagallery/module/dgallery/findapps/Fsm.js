@@ -74,12 +74,12 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
             "browse1" : "Transition_Idle_to_AwaitRpcResult_via_browse",
 
             // When a finder selection is made in the third list
-            "browse2" : "Transition_Idle_to_AwaitRpcResult_via_browse",
-            
-            "gallery" : "Transition_Idle_to_Idle_via_gallerySelection"
-
+            "browse2" : "Transition_Idle_to_AwaitRpcResult_via_browse"
           },
           
+          // click on app title or image
+          "viewApp" : "Transition_Idle_to_Idle_via_viewApp",
+
           "execute" :
           {
             "searchBtn" : "Transition_Idle_to_AwaitRpcResult_via_search"
@@ -447,14 +447,14 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
       /*
        * Transition: Idle to Idle
        *
-       * Cause: An item is selected from the gallery
+       * Cause: An item is selected from the search results
        *
        * Action:
        *  Create (if necessary) and switch to an application-specific tab
        */
 
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_Idle_via_gallerySelection",
+        "Transition_Idle_to_Idle_via_viewApp",
       {
         "nextState" : "State_Idle",
 
@@ -462,12 +462,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          var             eventData = event.getData();
-          var             item = eventData.item;
+          var             item = event.getData();
           
           // Add a module for the specified app
           aiagallery.module.dgallery.appinfo.AppInfo.addAppView(item.uid, 
-                                                                item.label);
+                                                                item.title);
         }
       });
 

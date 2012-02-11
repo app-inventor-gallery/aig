@@ -31,6 +31,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       var             tabView;
       var             searchResults;
       var             font;
+      var             _this;
 
       // Save the finite state machine reference
       this.__fsm = module.fsm;
@@ -87,6 +88,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         });
       vBox.add(o);
 
+      // Allow access to our GUI from within the delegate functions
+      _this = this;
+
       // Add the list for all of the search results
       this.searchResults = new qx.ui.list.List();
       this.searchResults.set(
@@ -104,6 +108,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
             bindItem : function(controller, item, id) 
             {
               [
+                "uid",
                 "image1",
                 "title",
                 "numLikes",
@@ -119,6 +124,14 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
                 {
                   controller.bindProperty(name, name, null, item, id);
                 });
+            },
+
+            configureItem : function(item) 
+            {
+              // Listen for clicks on the title or image, to view the app
+              item.addListener("viewApp",
+                               _this.__fsm.eventListener,
+                               _this.__fsm);
             }
           }
         });
