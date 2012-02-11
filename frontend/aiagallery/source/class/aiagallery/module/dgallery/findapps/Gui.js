@@ -44,6 +44,10 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       
       // The search area is a tabview, for selecting the type of search
       tabView = new qx.ui.tabview.TabView();
+      tabView.set(
+        {
+          barPosition : "left"
+        });
       
       // Allow results section to grow or shrink based on tabview page's needs
       tabView.getChildControl("pane").setDynamic(true);
@@ -554,7 +558,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
 
         // Add the data to the list
         this.searchResults.setModel(model);
-return;
         
         if (querySource != "searchBtn")
         {
