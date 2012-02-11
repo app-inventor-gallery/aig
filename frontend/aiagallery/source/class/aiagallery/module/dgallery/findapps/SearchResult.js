@@ -29,8 +29,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     this.getChildControl("image1");
     this.getChildControl("title");
     this.getChildControl("numLikes");
-    this.getChildControl("numDownloads");
     this.getChildControl("numViewed");
+    this.getChildControl("numDownloads");
     this.getChildControl("numComments");
     this.getChildControl("displayName");
     this.getChildControl("description");
@@ -46,11 +46,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     /** Fired when the numLikes property is changed */
     "changeNumLikes" : "qx.event.type.Data",
     
-    /** Fired when the numDownloads property is changed */
-    "changeNumDownloads" : "qx.event.type.Data",
-    
     /** Fired when the numViewed property is changed */
     "changeNumViewed" : "qx.event.type.Data",
+    
+    /** Fired when the numDownloads property is changed */
+    "changeNumDownloads" : "qx.event.type.Data",
     
     /** Fired when the numComments property is changed */
     "changeNumComments" : "qx.event.type.Data",
@@ -213,11 +213,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         this._add(control, { row : 0, column : 2, rowSpan : 2 });
         break;
         
-      case "numViewed":
+      case "numDownloads":
         control = new qx.ui.basic.Atom();
         control.set(
           {
-            icon      : "aiagallery/viewed.png",
+            icon      : "aiagallery/downloads.png",
             minWidth  : 60
           });
         control.getChildControl("icon").set(
@@ -229,11 +229,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         this._add(control, { row : 0, column : 3, rowSpan : 2 });
         break;
 
-      case "numDownloads":
+      case "numViewed":
         control = new qx.ui.basic.Atom();
         control.set(
           {
-            icon      : "aiagallery/downloads.png",
+            icon      : "aiagallery/viewed.png",
             minWidth  : 60
           });
         control.getChildControl("icon").set(

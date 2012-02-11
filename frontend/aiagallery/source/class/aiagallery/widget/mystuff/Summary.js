@@ -106,11 +106,11 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
       icon         : 20,
       image1       : 0,         // set in defer: function
       title        : 200,
-      status       : 120,
-      numLikes     : 60,
-      numDownloads : 60,
-      numViewed    : 60,
-      numComments  : 60
+      status       : 80,
+      numLikes     : 70,
+      numDownloads : 70,
+      numViewed    : 70,
+      numComments  : 70
     }
   },
 

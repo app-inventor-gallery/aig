@@ -14,6 +14,17 @@ qx.Theme.define("aiagallery.theme.Decoration",
 
   decorations :
   {
+    "selected" :
+    {
+      decorator : qx.ui.decoration.Background,
+
+      style :
+      {
+        backgroundImage  : "aiagallery/decoration/selection.png",
+        backgroundRepeat : "scale"
+      }
+    },
+
     "border-invalid-css" : {
       include : "input-css",
       style : {

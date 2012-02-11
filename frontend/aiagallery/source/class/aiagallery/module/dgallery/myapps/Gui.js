@@ -34,6 +34,8 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       var             hBox;
       var             fsm = module.fsm;
       var             canvas = module.canvas;
+      var             grid;
+      var             font;
       var             header;
       var             messageBus;
 
@@ -105,81 +107,98 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       canvas.add(new qx.ui.core.Spacer(12, 12));
 
       // Create a header
-      header = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
+      grid = new qx.ui.layout.Grid(10, 10);
       
-      function setAttrs(o, width, otherOptions)
-      {
-        var             text;
-
-        // Set the exact width
-        o.set(
-          {
-            width    : width,
-            minWidth : width,
-            maxWidth : width
-          });
-        
-        // Add other attributes
-        if (otherOptions)
+      // Set column attributes
+      [
         {
-          o.set(otherOptions);
-        }
-        
-        // Make the label bold
-        if (o instanceof qx.ui.basic.Label)
+          width  : aiagallery.widget.mystuff.Summary.Width.icon,
+          vAlign : "middle",
+          hAlign : "left"
+        },
         {
-          text = o.getValue();
-          o.set(
-            {
-              rich  : true,
-              value : "<span style='font-weight:bold;'>" + text + "</span>"
-            });
+          width  : aiagallery.widget.mystuff.Summary.Width.image1,
+          vAlign : "middle",
+          hAlign : "left"
+        },
+        {
+          width  : aiagallery.widget.mystuff.Summary.Width.title,
+          vAlign : "bottom",
+          hAlign : "left"
+        },
+        {
+          width  : aiagallery.widget.mystuff.Summary.Width.status,
+          vAlign : "bottom",
+          hAlign : "left"
+        },
+        {
+          width  : aiagallery.widget.mystuff.Summary.Width.numLikes,
+          vAlign : "middle",
+          hAlign : "right"
+        },
+        {
+          width  : aiagallery.widget.mystuff.Summary.Width.numDownloads,
+          vAlign : "middle",
+          hAlign : "right"
+        },
+        {
+          width  : aiagallery.widget.mystuff.Summary.Width.numViewed,
+          vAlign : "middle",
+          hAlign : "right"
+        },
+        {
+          width  : aiagallery.widget.mystuff.Summary.Width.numComments,
+          vAlign : "middle",
+          hAlign : "right"
         }
-      }
-
-      // Create the header based on the widths of the summary fields
-      o = new qx.ui.core.Spacer(); // no label for icon
-      setAttrs(o, aiagallery.widget.mystuff.Summary.Width.icon);
-      header.add(o);
-
-      o = new qx.ui.core.Spacer(); // no label for image
-      setAttrs(o, aiagallery.widget.mystuff.Summary.Width.image1);
-      header.add(o);
+      ].forEach(
+        function(data, column)
+        {
+          grid.setColumnWidth(column, data.width);
+          grid.setColumnAlign(column, data.hAlign, data.vAlign);
+        });
+      header = new qx.ui.container.Composite(grid);
+      
+      // Prepare to bold some headings
+      font = qx.bom.Font.fromString("10px sans-serif bold");
 
       o = new qx.ui.basic.Label("Title");
-      setAttrs(o, aiagallery.widget.mystuff.Summary.Width.title);
-      header.add(o);
+      o.setFont(font);
+      header.add(o, { row : 2, column : 2 });
 
       o = new qx.ui.basic.Label("Status");
-      setAttrs(o, aiagallery.widget.mystuff.Summary.Width.status);
-      header.add(o);
+      o.setFont(font);
+      header.add(o, { row : 2, column : 3 });
 
+      o = new qx.ui.basic.Image("aiagallery/thumbs-up.png"); // Likes
+      header.add(o, { row : 0, column : 4, rowSpan : 2 });
       o = new qx.ui.basic.Label("Likes");
-      setAttrs(o,
-               aiagallery.widget.mystuff.Summary.Width.numLikes,
-               { textAlign : "right" });
-      header.add(o);
+      o.setFont(font);
+      header.add(o, { row : 2, column : 4 });
 
+      o = new qx.ui.basic.Image("aiagallery/downloads.png"); // Downloads
+      header.add(o, { row : 0, column : 5, rowSpan : 2 });
       o = new qx.ui.basic.Label("Downloads");
-      setAttrs(o,
-               aiagallery.widget.mystuff.Summary.Width.numDownloads,
-               { textAlign : "right" });
-      header.add(o);
+      o.setFont(font);
+      header.add(o, { row : 2, column : 5 });
 
+      o = new qx.ui.basic.Image("aiagallery/viewed.png");    // Views
+      header.add(o, { row : 0, column : 6, rowSpan : 2 });
       o = new qx.ui.basic.Label("Views");
-      setAttrs(o,
-               aiagallery.widget.mystuff.Summary.Width.numViewed,
-               { textAlign : "right" });
-      header.add(o);
+      o.setFont(font);
+      header.add(o, { row : 2, column : 6 });
 
+      o = new qx.ui.basic.Image("aiagallery/comments.png");  // Comments
+      header.add(o, { row : 0, column : 7, rowSpan : 2 });
       o = new qx.ui.basic.Label("Comments");
-      setAttrs(o,
-               aiagallery.widget.mystuff.Summary.Width.numComments,
-               { textAlign : "right" });
-      header.add(o);
+      o.setFont(font);
+      header.add(o, { row : 2, column : 7 });
       
       canvas.add(header);
       
+      // Add a tiny bit of space below the header
+      canvas.add(new qx.ui.core.Spacer(2, 2));
+
       // Initially the header should be invisible, until adding apps
       // (children) causes it to become visible
       header.setVisibility("excluded");
