@@ -31,7 +31,7 @@ qx.Class.define("aiagallery.test.AppsTest",
                                              title : "some title",
                                              tags  : 
                                              [
-                                               "Development", 
+                                               "Business", 
                                                "some tag"
                                              ],
                                              image1 : "data://xxx",

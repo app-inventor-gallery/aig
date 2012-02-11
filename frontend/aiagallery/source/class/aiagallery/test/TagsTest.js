@@ -42,12 +42,25 @@ qx.Class.define("aiagallery.test.TagsTest",
               jsonrpc : "2.0",
               result  :
                 [
-                  "Development", 
-                  "Educational",
+                  "Business",
+                  "Comics",
+                  "Communication",
+                  "Education",
+                  "Entertainment",
+                  "Finance",
                   "Games",
-                  "Graphics",
-                  "Internet",
-                  "Multimedia"
+                  "Health & Fitness",
+                  "Lifestyle",
+                  "Media & Video",
+                  "Music & Audio",
+                  "News & Magazines",
+                  "Photography",
+                  "Productivity",
+                  "Social",
+                  "Sports",
+                  "Transportation",
+                  "Travel & Local",
+                  "Weather"
                 ]
             },
             response);

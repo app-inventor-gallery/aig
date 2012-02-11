@@ -25,19 +25,23 @@ qx.Class.define("aiagallery.test.LikingSimpleTest",
       // Adding a new app.
       var myAppData = dbifSim.addOrEditApp(null,
                                            {
-                                             owner    : 1002,
+                                             owner    : "1002",
                                              description: "hello",
                                              title : "a title",
                                              tags :
                                              [
                                                "tag", 
                                                "anotherTag",
-                                               "Development"
+                                               "Business"
                                              ],
                                              source : "sources",
                                              image1 : "data://xxx"
                                            },
                                            error);
+
+      // Ensure that the app got added properly
+      this.assertNotEquals(error, myAppData,
+                           "addOrEditApp failed: " + error.stringify());
 
       // Was this app initialized correctly with zero likes?
       this.assert(myAppData.numLikes === 0, "Num likes correctly inited to 0");

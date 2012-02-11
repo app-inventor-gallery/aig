@@ -328,9 +328,6 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
         return error;
       }
 
-      // Convert the owner id from string type to number
-      ownerId = Number(ownerId);
-
       // Get the display name for this app's owner
       var visitors = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
                                                  ownerId);

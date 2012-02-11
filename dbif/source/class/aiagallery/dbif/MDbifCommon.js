@@ -86,6 +86,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       
       // Be sure this visitor is in the database
       if (typeof value == "object" &&
+          value !== null &&
           typeof value.id == "string" &&
           value.id.length > 0)
       {

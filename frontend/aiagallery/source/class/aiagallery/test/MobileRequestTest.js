@@ -215,23 +215,25 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       // Need an error object to call RPCs with
       var error = new liberated.rpc.error.Error("2.0");
       
-      //FIXXXXX
-            
       dbifSim.setWhoAmI(
         {
-          id          : 1002,
-          email       : "bill@thekid.edu",
+          id          : "1002",
+          email       : "billy@thekid.edu",
           isAdmin     : false,
           logoutUrl   : "undefined",
           permissions : [],
           userId      : "Billy The Kid"
         });
 
+      // Ensure the database is properly initialized
+      liberated.sim.Dbif.setDb(
+        qx.lang.Object.clone(aiagallery.dbif.MSimData.Db, true));
+
       // Handcrafting a bunch of Apps with various words in their text fields
       var myApps = 
         [
           {
-            owner       : 1002,
+            owner       : "1002",
             description : "This one's beautiful",
             title       : "The Shooting Game",
             tags        : ["shooter", "shooting", "game", "Games"],
@@ -241,36 +243,40 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
           
           {
             source      : "somerandomstring",
-            owner       : 1002,
+            owner       : "1002",
             description : "This one's scoop and poop",
             title       : "Your Mother Jokes",
-            tags        : ["funny", "Development"],
+            tags        : ["funny", "Business"],
             image1      : "data://xxx"
           },
 
           {
             source      : "somerandomstring",
-            owner       : 1002,
+            owner       : "1002",
             description : "This one's sexy",
             title       : "Laughapalooza",
-            tags        : ["Educational"],
+            tags        : ["Education"],
             image1      : "data://xxx"
           },
             
           {
             source      : "somerandomstring",
-            owner       : 1002,
+            owner       : "1002",
             description : "This one's scoop interesting in any way",
             title       : "Microsoft Windows for Android",
-            tags        : ["Development", "broken"],
+            tags        : ["Business", "broken"],
             image1      : "data://xxx"
           }
         ];
 
-      myApps.forEach(function(obj)
-                     {
-                         dbifSim.addOrEditApp(null, obj, error);
-                     });
+      myApps.forEach(
+        function(obj)
+        {
+          var ret = dbifSim.addOrEditApp(null, obj, error);
+          this.assertNotEquals(error, ret,
+                               "addOrEditApp failed: " + error.stringify());
+        },
+        this);
 
 
       
@@ -315,7 +321,6 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       // Ensure that an error WAS returned on bad request
       this.assert(mobileRequest === error,
                  "Error not properly returned from bad request 'search'!");
-
     },
     
     

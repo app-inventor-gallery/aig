@@ -25,7 +25,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
       
       dbifSim.setWhoAmI(
         {
-          id : 1002,
+          id : "1002",
           email : "billy@thekid.edu",
           isAdmin: false,
           logoutUrl: "undefined",
@@ -34,13 +34,14 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
         });
 
       // Ensure the database is properly initialized
-      liberated.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
+      liberated.sim.Dbif.setDb(
+        qx.lang.Object.clone(aiagallery.dbif.MSimData.Db, true));
 
       // Handcrafting a bunch of Apps with various words in their text fields
       var myApps = 
         [
           {
-            owner       : 1002,
+            owner       : "1002",
             description : "This one's beautiful",
             title       : "The Shooting Game",
             tags        : ["shooter", "shooting", "game", "Games"],
@@ -50,36 +51,40 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
           
           {
             source      : "somerandomstring",
-            owner       : 1002,
+            owner       : "1002",
             description : "This one's sexy and beautiful",
             title       : "Your Mother Jokes",
-            tags        : ["funny", "Development"],
+            tags        : ["funny", "Business"],
             image1      : "data://xxx"
           },
 
           {
             source      : "somerandomstring",
-            owner       : 1002,
+            owner       : "1002",
             description : "This one's sexy",
             title       : "Laughapalooza",
-            tags        : ["Educational"],
+            tags        : ["Business"],
             image1      : "data://xxx"
           },
             
           {
             source      : "somerandomstring",
-            owner       : 1002,
+            owner       : "1002",
             description : "This one's not interesting in any way",
             title       : "Microsoft Windows for Android",
-            tags        : ["Development", "broken"],
+            tags        : ["Business", "broken"],
             image1      : "data://xxx"
           }
         ];
 
-      myApps.forEach(function(obj)
-                     {
-                         dbifSim.addOrEditApp(null, obj, error);
-                     });
+      myApps.forEach(
+        function(obj)
+        {
+          var ret = dbifSim.addOrEditApp(null, obj, error);
+          this.assertNotEquals(error, ret,
+                               "addOrEditApp failed: " + error.stringify());
+        },
+        this);
 
       // Test with one word present in title of 1 app
       queryResults = dbifSim.keywordSearch("mother", null, null, error);

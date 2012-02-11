@@ -100,13 +100,6 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
         //
         // "Category" tags
         //
-        "games" : 
-        {
-          "value" : "Games",
-          "value_lc" : "games",
-          "type" : "category",
-          "count" : 1
-        },
         "business" :
         {
           "value" : "Business",
@@ -148,6 +141,13 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
           "value_lc" : "finance",
           "type" : "category",
           "count" : 0
+        },
+        "games" : 
+        {
+          "value" : "Games",
+          "value_lc" : "games",
+          "type" : "category",
+          "count" : 1
         },
         "health & fitness" :
         {
@@ -297,13 +297,6 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
         {
           "value" : "Space",
           "value_lc" : "space",
-          "type" : "normal",
-          "count" : 1
-        },
-        "transportation" : 
-        {
-          "value" : "Transportation",
-          "value_lc" : "transportation",
           "type" : "normal",
           "count" : 1
         },
