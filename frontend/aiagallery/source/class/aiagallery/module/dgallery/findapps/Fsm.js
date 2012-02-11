@@ -82,9 +82,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
           
           "execute" :
           {
-            
             "searchBtn" : "Transition_Idle_to_AwaitRpcResult_via_search"
-            
           },
           
           // When we get an appear event, retrieve the category tags list. We
@@ -297,7 +295,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
           var             request;
           var             criteriaArray;
           
-          
           // Determine on which widget we received the event
           var friendly = fsm.getFriendlyName(event.getTarget());
           
@@ -337,7 +334,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
               {
                 // Gather all info for this criterium
                 myAttr = criteriaObj.attributeBox.getSelection()[0].getModel();
-                //myQual = criteriaObj.qualifierBox.getSelection()[0].getModel();
+//              myQual = criteriaObj.qualifierBox.getSelection()[0].getModel();
                 myVal = criteriaObj.valueBox.getValue();
                 
                 // Build object with everything we know so far, to be added onto
@@ -426,19 +423,14 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
             this.callRpc(fsm,
                          "aiagallery.features",
                          "intersectKeywordAndQuery",
-                         [{
-                           criteria : criteria,
-                           keywordString : keywordString,
-                           requestedFields : 
-                             // Requested fields and the return field name
-                             {
-                               uid    : "uid",
-                               title  : "label", // remap name for Gallery
-                               image1 : "icon",  // remap name for Gallery
-                               tags   : "tags"
-                             },
-                           queryFields : null // not yet implemented
-                         }]);
+                         [
+                           {
+                             criteria : criteria,
+                             keywordString : keywordString,
+                             requestedFields : null,
+                             queryFields : null // not yet implemented
+                           }
+                         ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
