@@ -412,8 +412,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           // Issue an Add Or Edit Application call.
           request = this.callRpc(fsm,
                      "aiagallery.features",
-// Need new admin edit app feature!
-                     "addOrEditApp",
+                     "mgmtEditApp",
                      [ uid, requestData ]);
 
           // Save the user id in the request data too
@@ -424,8 +423,8 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
 
           // When we get the result, we'll need to know what type of request
           // we made.
-// Fixme too.
-          request.setUserData("requestType", "AddOrEditApp");
+
+          request.setUserData("requestType", "mgmtEditApp");
 
 //          // Save the permissions and status
 //          request.setUserData("internal", internal);
@@ -573,10 +572,8 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
 */
 
           // Put the data where it belongs. Preserve hidden data and sort order.
-          // Note: 'result' is an array with exactly one element, a map of
-          // app data, which is just what we need here.
 //          dataModel.setRowsAsMapArray( [ rowData ], cellInfo.row, true, false);
-          dataModel.setRowsAsMapArray(result, cellInfo.row, true, false);
+          dataModel.setRowsAsMapArray( [ result ] , cellInfo.row, true, false);
 // Might need to munge tags and status here!
 
           // Save the data so that the cell editor's getCellEditorValue()
