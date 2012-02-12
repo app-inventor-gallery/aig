@@ -261,19 +261,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       case "deleteVisitor":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
-      case "getVisitorList":
-        if (qx.core.Environment.get("qx.debug"))
-        {
-          return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
-        }
-        else
-        {
-          // At present, do not allow access to visitor list on App Engine
-          // except to administrator. Once we know the deepPermissionCheck is
-          // functioning entirely correctly, this can be changed to that
-          // check.
-          return false;
-        }
+      case "getVisitorListAndPGroups":
+        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       case "editProfile":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);

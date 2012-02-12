@@ -137,9 +137,9 @@ qx.Class.define("aiagallery.dbif.Constants",
       //
       // MVisitors
       //
-      "addOrEditVisitor" : "Add and edit visitors",
-      "deleteVisitor"    : "Delete visitors",
-      "getVisitorList"   : "Retrieve list of visitors",
+      "addOrEditVisitor"           : "Add and edit visitors",
+      "deleteVisitor"              : "Delete visitors",
+      "getVisitorListAndPGroups"   : "Retrieve list of visitors",
       
       //
       // MWhoAmI

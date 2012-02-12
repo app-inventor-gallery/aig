@@ -18,10 +18,6 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                          this.deleteVisitor,
                          [ "id" ]);
 
-    this.registerService("aiagallery.features.getVisitorList",
-                         this.getVisitorList,
-                         [ "bStringize" ]);
-    
     this.registerService("aiagallery.features.editProfile",
                          this.editProfile,
                          [ "profileParams" ]);
@@ -182,9 +178,6 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       visitor = new aiagallery.dbif.ObjVisitors(id);
       visitorData = visitor.getData();
       
-      // Remember whether it already existed.
-      ret = visitor.getBrandNew();
-      
       // Provide the new data
       visitor.setData(
         {
@@ -200,7 +193,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       // Write the new data
       visitor.put();
 
-      return ret;
+      return visitor.getData();
     },
     
     deleteVisitor : function(id)
@@ -222,34 +215,6 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       // We were successful
       return true;
-    },
-    
-    getVisitorList : function(bStringize)
-    {
-      var             visitor;
-      var             visitorList;
-      
-      // For each visitor...
-      visitorList = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors");
-
-      // If we were asked to stringize the values...
-      if (bStringize)
-      {
-        // ... then do so
-        for (visitor in visitorList)
-        {
-          var             thisGuy = visitorList[visitor];
-          thisGuy.permissions = 
-            thisGuy.permissions ? thisGuy.permissions.join(", ") : "";
-          thisGuy.permissionGroups = 
-            thisGuy.permissionGroups ? thisGuy.permissionGroups.join(", ") : "";
-          thisGuy.status =
-            aiagallery.dbif.Constants.StatusToName[thisGuy.status];
-        }
-      }
-      
-      // We've built the whole list. Return it.
-      return visitorList;
     },
     
     editProfile : function(profileParams, error)
