@@ -276,9 +276,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // Retrieve this app
       app = new aiagallery.dbif.ObjAppData(requestData.uid);
       
-      // Get the app property data from the app object
-      appData = app.getData();
-
       // If it's indicating as brand new, the user may have deleted it.
       if (app.getBrandNew())
       {
@@ -286,6 +283,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         return;
       }
       
+      // Get the app property data from the app object
+      appData = app.getData();
+
       try
       {
         //
@@ -339,7 +339,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
            // off to get them in FIFO order.
           sourceBlobId = appData.newsource.pop();
           
-          // Note that we need to remove the old blob
+          // Note that we need to remove the blob upon error
           removeBlobs.push(sourceBlobId);
 
           // Retrieve the blob
@@ -355,8 +355,14 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           // Decode the data
           fileData = aiagallery.dbif.Decoder64.decode(fileData);
           
+          // Disregard the MIME type of the uploaded ZIP file and use one that
+          // is known to be appropriate.
+          mimeType = "application/zip";
+
           // Write it to a new blob
-          destBlobId = liberated.dbif.Entity.putBlob(fileData, mimeType);
+          destBlobId = liberated.dbif.Entity.putBlob(fileData, 
+                                                     mimeType,
+                                                     appData.sourceFileName);
           
           // Remember that we added this blob, in case of later error
           addedBlobs.push(destBlobId);
@@ -627,6 +633,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                 }
                 break;
 
+              case "sourceFileName":
+                // strip off any leading path
+                appData.sourceFileName =
+                  attributes.sourceFileName.replace(/.*[\/\\]/g, "");
+                break;
+
               case "image1":
                 // Ensure we have a data url
                 if (! qx.lang.Type.isString(attributes.image1) ||
@@ -730,7 +742,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           sourceKey = liberated.dbif.Entity.putBlob(attributes.source);
 
           // Prepend the blob id to the key list of new source files
-          appData.source.unshift(sourceKey);
+          appData.newsource.unshift(sourceKey);
 
           // Save the blob id to remove it, in case something fails
           addedBlobs.push(sourceKey);
@@ -869,6 +881,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                   var             sourceBlobId;
                   var             destBlobId;
                   var             fileData;
+                  var             mimeType;
 
                   // Retrieve the app object
                   appObj = new aiagallery.dbif.ObjAppData(requestData.uid);
@@ -931,6 +944,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
                     // Retrieve the blob
                     fileData = liberated.dbif.Entity.getBlob(sourceBlobId);
+
+                    // Parse out the mimeType. This always starts at index 5
+                    // and ends with a semicolon
+                    mimeType = fileData.substring(5, fileData.indexOf(";"));
+
+                    // Parse out the actual url
+                    fileData = fileData.substring(fileData.indexOf(",") + 1);
 
                     // Decode the data
                     fileData = aiagallery.dbif.Decoder64.decode(fileData);

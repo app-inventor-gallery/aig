@@ -95,8 +95,13 @@ qx.Class.define("appengine.Application",
       var             Db;
       var             blobstoreService;
       var             blobKey;
+      var             blobInfo;
+      var             blobInfoFactory;
+      var             datastoreService;
       var             BlobKey;
       var             BlobstoreServiceFactory;
+      var             BlobInfoFactory;
+      var             Datastore;
 
       // We likely received something like:
       //   tag=by_developer%3AJoe%20Blow%3A0%3A10%3AuploadTime
@@ -116,13 +121,29 @@ qx.Class.define("appengine.Application",
           Packages.com.google.appengine.api.blobstore.BlobKey;
         BlobstoreServiceFactory = 
           Packages.com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+        BlobInfoFactory =
+          Packages.com.google.appengine.api.blobstore.BlobInfoFactory;
 
-        // Get a blobstore service
+        // Gain access to the datastore service
+        Datastore = Packages.com.google.appengine.api.datastore;
+        datastoreService = 
+        Datastore.DatastoreServiceFactory.getDatastoreService();
+
+        // Get a blobstore service and a blob info factory
         blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+        blobInfoFactory = new BlobInfoFactory(datastoreService);
 
         // Convert the (string) blobId to a blob key
         blobKey = new BlobKey(querySplit[1]);
         
+        // Get the blob info which includes the filename
+        blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
+        
+        response.setContentLength(blobInfo.getSize()); 
+        response.setHeader("content-type", blobInfo.getContentType()); 
+        response.setHeader("content-disposition", "attachment; filename=" + 
+                           blobInfo.getFilename()); 
+
         // Serve the blob
         blobstoreService.serve(blobKey, response);
         break;

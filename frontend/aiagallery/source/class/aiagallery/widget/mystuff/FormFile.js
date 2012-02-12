@@ -210,6 +210,7 @@ qx.Class.define("aiagallery.widget.mystuff.FormFile",
       var             mimeType;
       var             debugStr;
       var             message;
+      var             filename;
       
       // Retrieve the data URL from the upload button, and save it.
       content = e.getData().content;
@@ -226,7 +227,8 @@ qx.Class.define("aiagallery.widget.mystuff.FormFile",
       if(qx.lang.Array.contains(aiagallery.main.Constant.VALID_SOURCE_TYPES,
                                 mimeType)) 
       {
-        this.setValue(this.uploadButton.getFileName());
+        filename = this.uploadButton.getFileName().replace(/.*[\/\\]/g, "");
+        this.setValue(filename);
         this.setContent(content);
       }
       else
