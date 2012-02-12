@@ -239,7 +239,8 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
                          "getAppListAll",
 // Superfluous 5th param?   ->  ->  ->  ->  ->  ->  vvvv
 //                         [true, null, null, null, true]);
-                         [true, null, null, null]);
+//                         [true, null, null, null]);    // to bStringize...
+                       [null, null, null, null]);    // or not to bStringize?
 // Two issues:
 // - Should 1st param, bStringize, be true (as in mystuff) or null (as in myapps)?
 // - Less importantly--specify a default sortCriteria?
@@ -349,7 +350,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
       fsm.addState(state);
 
       /*
-       * Transition: Idle to AwaitRpcResult
+       * Transition: EditApp to AwaitRpcResult
        *
        * Cause: "execute" on "Ok" button in cell editor
        *
@@ -384,13 +385,30 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           appTitle = cellEditor.getUserData("titleField").getValue();
           description = cellEditor.getUserData("descriptionField").getValue();
 
+// also required:  owner, tags, source, image1
+// Get them from the table, for the moment
+
+          var row = cellInfo.row;
+          var table = cellInfo.table;
+          var dataModel = table.getTableModel();
+          var rowData = dataModel.getRowDataAsMap(row);
+
+          var owner = rowData.owner;
+          var tags = rowData.tags;
+          var source = rowData.source;
+          var image1 = rowData.image1;
+
           // Save the request data
           var requestData =
             {
               title       : appTitle,
-              description : description
+              description : description,
+              owner       : owner,
+              tags        : tags,
+              source      : source,
+              image1      : image1
             };
-
+ 
           // Issue an Add Or Edit Application call.
           request = this.callRpc(fsm,
                      "aiagallery.features",
@@ -439,7 +457,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
 
           // Retrieve the cell editor and cell info
           cellEditor = this.getUserData("cellEditor");
-          cellInfo = this.getUserData("cellInfo");
+//          cellInfo = this.getUserData("cellInfo");
 
           // Retrieve the table object
           var table = fsm.getObject("table");
@@ -450,6 +468,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           // close the cell editor
           cellEditor.close();
 
+/* // This won't happen since not adding apps...
           // If we created this cell editor (cellInfo has only 'table')...
           if (typeof(cellInfo.row) == "undefined")
           {
@@ -457,6 +476,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
             cellEditor.destroy();
             cellEditor = null;
           }
+*/
 
           // We can remove the cell editor and cell info from our own user
           // data now.
@@ -489,7 +509,9 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var             cellInfo;
           var             rpcRequest;
           var             requestData;
-          var             internal;
+          var             response;
+          var             result;
+//          var             internal;
           var             table;
           var             dataModel;
           var             permissions;
@@ -502,7 +524,10 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           cellEditor = this.getUserData("cellEditor");
           cellInfo = this.getUserData("cellInfo");
           requestData = rpcRequest.getUserData("requestData");
-          internal = rpcRequest.getUserData("internal");
+          response = rpcRequest.getUserData("rpc_response");
+          result = response.data.result;
+
+//          internal = rpcRequest.getUserData("internal");
 
           // We'll also need the Table object, from the FSM
           table = fsm.getObject("table");
@@ -510,33 +535,54 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           // Get the table's data model
           dataModel = table.getTableModel();
 
+/* Don't need any of this stuff!
+          var fields =
+            [
+              "uid",
+              "title",
+              "description",
+              "image1",
+              "source",
+              "sourceFileName",
+              "tags"
+            ];
+
           // Create the row data for the table
-          rowData.push(requestData.displayName);
-          rowData.push(requestData.email);
+          fields.forEach(
+            function(field)
+            {
+              
+            });
 
-          // Munge the internal permissions from an array into a comma-separated
-          // string, and add it it to the row data
-          permissions = internal.permissions.join(", ");
-          rowData.push(permissions);
+          // Create the row data for the table
+          rowData.uid          = result.uid;
+          rowData.title        = result.title;
+          rowData.description  = result.description;
+          rowData.image1       = result.image1;
+          rowData.image2       = result.image2;
+          rowData.image3       = result.image3;
+          rowData.prevAuthors  = result.prevAuthors;
+          rowData.tags         = result.tags.join(", ");
+          rowData.sourceFileName = result.sourceFileName;
+          rowData.apkFileName = result.apkFileName;
+          rowData.uploadTime   = result.uploadTime;
+          rowData.numLikes     = result.numLikes;
+          rowData.numDownloads = result.numDownloads;
+          rowData.numViewed    = result.numViewed;
+          rowData.status       = statusCodes[result.status];
+*/
 
-          // Add the status to the row data
-          rowData.push(internal.status);
+          // Put the data where it belongs. Preserve hidden data and sort order.
+          // Note: 'result' is an array with exactly one element, a map of
+          // app data, which is just what we need here.
+//          dataModel.setRowsAsMapArray( [ rowData ], cellInfo.row, true, false);
+          dataModel.setRowsAsMapArray(result, cellInfo.row, true, false);
+// Might need to munge tags and status here!
 
-          // If there's cell info available (they're editing), ...
-          if (cellInfo && cellInfo.row !== undefined)
-          {
-            // ... then save the data in the row being edited.
-            dataModel.setRows( [ rowData ], cellInfo.row, false);
-
-            // Save the data so that the cell editor's getCellEditorValue()
-            // method can retrieve it.
-            cellEditor.setUserData("newData", rowData);
-          }
-          else
-          {
-            // Otherwise, add a new row. Do not clear sorting.
-            dataModel.addRows( [ rowData ], null, false);
-          }
+          // Save the data so that the cell editor's getCellEditorValue()
+          // method can retrieve it.
+// ??
+          cellEditor.setUserData("newData", rowData);
 
           // close the cell editor
           cellEditor.close();
