@@ -320,6 +320,11 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
         // (3rd param "clearSorting", changed from T default to F so sorting preserved)
         table.getTableModel().setDataAsMapArray(response.data.result.apps, true, false);
         break;
+// Todo:  If no longer stringizing app rpc results, need to fix up status and tag displays
+//   both here, and when get rpc result from editing.
+// Maybe better idea:  Use special cell renderers
+//   qx.ui.table.cellrenderer.Replace looks tailor-made for that
+//   (use replaceMap for status and replaceFunction for arrays like tags)
 
       case "EditApp":
         // Nothing more to do but close the cell editor
