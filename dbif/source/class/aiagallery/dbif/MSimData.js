@@ -27,7 +27,7 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
             "flagIt",
             "addOrEditVisitor",
             "deleteVisitor", 
-            "getVisitorList",
+            "getVisitorListAndPGroups",
             "likesPlusOne", 
             "getDatabaseEntities"
           ],
