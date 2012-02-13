@@ -12,11 +12,11 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
   {
     this.registerService("aiagallery.features.addOrEditVisitor",
                          this.addOrEditVisitor,
-                         [ "userId", "attributes" ]);
+                         [ "id", "attributes" ]);
 
     this.registerService("aiagallery.features.deleteVisitor",
                          this.deleteVisitor,
-                         [ "userId" ]);
+                         [ "id" ]);
 
     this.registerService("aiagallery.features.getVisitorList",
                          this.getVisitorList,
@@ -25,23 +25,65 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     this.registerService("aiagallery.features.editProfile",
                          this.editProfile,
                          [ "profileParams" ]);
+
+    this.registerService("aiagallery.features.getVisitorListAndPGroups",
+                         this.getVisitorListAndPGroups,
+                         [ "bStringize" ]);
   },
   
   statics :
   {
+    getVisitorPermissions : function(visitorData)
+    {
+      var             pGroups;
+      var             permissions = visitorData.permissions || [];
+      var             permMap = {};
+      
+      // Add each permission to a map, so we can detect duplicates later
+      permissions.forEach(
+        function(perm)
+        {
+          permMap[perm] = true;
+        });
+      
+      // Get the permission groups that this visitor is a member of
+      pGroups = visitorData.permissionGroups || [];
+      pGroups.forEach(
+        function(pGroup)
+        {
+          var             thisGroupPermissions;
+          
+          thisGroupPermissions = liberated.dbif.Entity.query(
+            "aiagallery.dbif.ObjPermissionGroup",
+            pGroup);
+          
+          thisGroupPermissions.forEach(
+            function(thisGroupPermission)
+            {
+              thisGroupPermission.permissions.forEach(
+                function(perm)
+                {
+                  permMap[perm] = true;
+                });
+            });
+        });
+      
+      return qx.lang.Object.getKeys(permMap);
+    },
+
     /**
-     * Exchange userId for user's displayName
+     * Exchange id for user's displayName
      * 
-     *@param userId {String}
-     * Visitor's userId
+     *@param id {String}
+     * Visitor's id
      * 
      *@return {String}
      * Visitor's display name 
      */
-    _getDisplayName : function(userId, error)
+    _getDisplayName : function(id, error)
     {
       
-      var visitor = new aiagallery.dbif.ObjVisitors(userId);
+      var visitor = new aiagallery.dbif.ObjVisitors(id);
      
       if (qx.core.Environment.get("qx.debug"))
       {
@@ -51,7 +93,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                                       "Need error object");
       }
 
-      // Was our userId faulty in some way?
+      // Was our id faulty in some way?
       if (typeof visitor === "undefined" || 
           visitor === null ||
           visitor.getBrandNew())
@@ -72,17 +114,18 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       // No problems, give them the display name
       return visitor.getData().displayName;
-    },
+    }
     
     /**
-     * Exchange user's displayName for userId
+     * Exchange user's displayName for id
      * 
      *@param displayName {String}
      * Visitor's display name
      * 
      *@return {String} 
-     * Visitor's userId
+     * Visitor's id
      */
+/*
     _getVisitorId : function(displayName, error)
     {
       
@@ -108,32 +151,35 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       // No problems, give them the ID
       return owners[0].id;
-      
     }
-            
+*/
   },
   
   members :
   {
-    addOrEditVisitor : function(userId, attributes)
+    addOrEditVisitor : function(id, attributes)
     {
+      var             email;
       var             displayName;
       var             permissions;
+      var             permissionGroups;
       var             status;
       var             statusIndex;
       var             visitor;
       var             visitorData;
       var             ret;
       
+      email = attributes.email;
       displayName = attributes.displayName;
       permissions = attributes.permissions;
+      permissionGroups = attributes.permissionGroups; 
       
       // Get the status value. If the status string isn't found, we'll use
       // "Active" when we set the database.
       status = aiagallery.dbif.Constants.StatusToName.indexOf(status);
       
       // Get the old visitor entry
-      visitor = new aiagallery.dbif.ObjVisitors(userId);
+      visitor = new aiagallery.dbif.ObjVisitors(id);
       visitorData = visitor.getData();
       
       // Remember whether it already existed.
@@ -142,9 +188,12 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       // Provide the new data
       visitor.setData(
         {
-          id          : userId,
+          id          : id,
+          email       : email,
           displayName : displayName || visitorData.displayName || "<>",
           permissions : permissions || visitorData.permissions || [],
+          permissionGroups :
+            permissionGroups || visitorData.permissionGroups || [],
           status      : status != -1 ? status : (visitorData.status || 2)
         });
       
@@ -154,12 +203,12 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       return ret;
     },
     
-    deleteVisitor : function(userId)
+    deleteVisitor : function(id)
     {
       var             visitor;
 
       // Retrieve this visitor
-      visitor = new aiagallery.dbif.ObjVisitors(userId);
+      visitor = new aiagallery.dbif.ObjVisitors(id);
 
       // See if this visitor exists.
       if (visitor.getBrandNew())
@@ -192,8 +241,10 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
           var             thisGuy = visitorList[visitor];
           thisGuy.permissions = 
             thisGuy.permissions ? thisGuy.permissions.join(", ") : "";
+          thisGuy.permissionGroups = 
+            thisGuy.permissionGroups ? thisGuy.permissionGroups.join(", ") : "";
           thisGuy.status =
-            [ "Banned", "Pending", "Active" ][thisGuy.status];
+            aiagallery.dbif.Constants.StatusToName[thisGuy.status];
         }
       }
       
@@ -218,7 +269,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       whoami = this.getWhoAmI();
 
       // Retrieve the current user's visitor object
-      me = new aiagallery.dbif.ObjVisitors(whoami.email);
+      me = new aiagallery.dbif.ObjVisitors(whoami.id);
       
       // Get my object data
       meData = me.getData();
@@ -249,7 +300,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
               break;
 
             case "number":
-              bValid = (fields[fieldName] == "Number");
+              bValid = (fields[fieldName] == "Integer" || 
+                        fields[fieldName] == "Float");
               break;
 
             default:
@@ -282,6 +334,52 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       // We need to return something. true is as good as anything else.
       return true;
+    },
+
+    /**
+     * Get all the permission groups and visitors
+     *
+     * @return {Array || Error}
+     *   This a map permission groups and visitors, or an error if
+     *   something went wrong
+     *
+     */
+    getVisitorListAndPGroups : function(bStringize)
+    {
+      var             visitor;
+      var             visitorList;
+      
+      // For each visitor...
+      visitorList = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors");
+
+      // If we were asked to stringize the values...
+      if (bStringize)
+      {
+        // ... then do so
+        for (visitor in visitorList)
+        {
+          var thisGuy = visitorList[visitor];
+          thisGuy.permissions = 
+            thisGuy.permissions ? thisGuy.permissions.join(", ") : "";
+          thisGuy.permissionGroups = 
+            thisGuy.permissionGroups ? thisGuy.permissionGroups.join(", ") : "";
+          thisGuy.status =
+            aiagallery.dbif.Constants.StatusToName[thisGuy.status];
+        }
+      }    
+
+      // Get the current list of permission groups
+      var pGroupList = this.getPermissionGroups(); 
+      
+      // Construct a map
+      var map = 
+      {
+        "visitors" : visitorList,
+        "pGroups"  : pGroupList
+      }; 
+      
+      // We've built the whole list. Return it.
+      return map;
     }
   }
 });

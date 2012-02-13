@@ -13,7 +13,7 @@
 qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
 {
   type : "singleton",
-  extend : qx.core.Object,
+  extend : qx.ui.core.Widget,
 
   members :
   {
@@ -24,6 +24,271 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
      *   The module descriptor for the module.
      */
     buildGui : function(module)
+    {
+      var             o;
+      var             canvas = module.canvas;
+      var             vBox;
+      var             tabView;
+      var             searchResults;
+      var             font;
+      var             _this;
+
+      // Save the finite state machine reference
+      this.__fsm = module.fsm;
+
+      // Make it easy to provide some space around the edges
+      canvas.setLayout(new qx.ui.layout.Canvas());
+
+      // The canvas is composed of search and results area, vertically aligned
+      vBox = new qx.ui.container.Composite(new qx.ui.layout.VBox(0));
+      canvas.add(vBox, { edge : 10 });
+      
+      // The search area is a tabview, for selecting the type of search
+      tabView = new qx.ui.tabview.TabView();
+      tabView.set(
+        {
+          barPosition : "left"
+        });
+      
+      // Allow results section to grow or shrink based on tabview page's needs
+      tabView.getChildControl("pane").setDynamic(true);
+      
+      // Add the search option pages
+      o = new qx.ui.tabview.Page(this.tr("Text search"));
+      o.set(
+        {
+          layout    : new qx.ui.layout.VBox()
+        });
+      tabView.add(o);
+      
+      o = new qx.ui.tabview.Page(this.tr("Browse categories"));
+      this._addCategoryBrowser(o);
+      tabView.add(o);
+      
+      o = new qx.ui.tabview.Page(this.tr("Advanced"));
+      this._addAdvancedSearch(o);
+      o.set(
+        {
+          layout    : new qx.ui.layout.VBox()
+        });
+      tabView.add(o);
+      
+      // Add the tabView to the top of the vBox
+      vBox.add(tabView);
+      
+      // Add a bit of space before the search results
+      vBox.add(new qx.ui.core.Spacer(10, 10));
+
+      // Add the search results label
+      font = qx.bom.Font.fromString("10px sans-serif bold");
+      o = new qx.ui.basic.Label("Search Results");
+      o.set(
+        {
+          font : font
+        });
+      vBox.add(o);
+
+      // Allow access to our GUI from within the delegate functions
+      _this = this;
+
+      // Add the list for all of the search results
+      this.searchResults = new qx.ui.list.List();
+      this.searchResults.set(
+        {
+          itemHeight : 120,
+          labelPath  : "title",
+          iconPath   : "image1",
+          delegate   :
+          {
+            createItem : function()
+            {
+              return new aiagallery.module.dgallery.findapps.SearchResult();
+            },
+            
+            bindItem : function(controller, item, id) 
+            {
+              [
+                "uid",
+                "image1",
+                "title",
+                "numLikes",
+                "numDownloads",
+                "numViewed",
+                "numComments",
+                "displayName",
+                "description",
+                "creationTime",
+                "uploadTime"
+              ].forEach(
+                function(name)
+                {
+                  controller.bindProperty(name, name, null, item, id);
+                });
+            },
+
+            configureItem : function(item) 
+            {
+              // Listen for clicks on the title or image, to view the app
+              item.addListener("viewApp",
+                               _this.__fsm.eventListener,
+                               _this.__fsm);
+            }
+          }
+        });
+
+      vBox.add(this.searchResults, { flex : 1 });
+    },
+
+    _addCategoryBrowser : function(container)
+    {
+      var             list;
+      var             hBox;
+      
+      // Put the three lists into a horizontal box
+      container.setLayout(new qx.ui.layout.HBox(0));
+
+      // create and add the lists.
+      [
+        "browse0",
+        "browse1",
+        "browse2"
+      ].forEach(
+        function(listName)
+        {
+          list = new qx.ui.form.List();
+          list.set(
+            {
+              width  : 150,
+              height : 100
+            });
+          list.addListener("changeSelection",
+                           this.__fsm.eventListener,
+                           this.__fsm);
+          container.add(list);
+          this.__fsm.addObject(listName, list);
+        },
+        this);
+
+      // Add a spacer to take up the remaining space in the hbox
+      container.add(new qx.ui.core.Spacer(), { flex : 1 });
+    },
+
+    _addAdvancedSearch : function(container)
+    {
+      var             vbox;
+      var             searchCriteriaArr = [];
+
+      // Begin creating the search gui
+      // vbox contains the whole rest of the shabang
+      vbox = new qx.ui.container.Composite();
+      vbox.setLayout(new qx.ui.layout.VBox()) ;
+
+      // criteria will house all of the "lines of refinement"
+      var criteria = new qx.ui.container.Composite();
+      criteria.setLayout( new qx.ui.layout.VBox());
+  
+      // criteria VBox gets wrapped by Scroll for functionality
+      var criteriascroll = new qx.ui.container.Scroll().set(
+        {
+          maxHeight : 90
+        });
+      criteriascroll.add(criteria);
+       
+      // Start with a single line of refinement
+      var myRefineLine = this.buildSearchRefineLine(this.__fsm);
+      
+      // Store the criteria object in the criteria container
+      searchCriteriaArr.push(myRefineLine.criteria);
+     
+      // Wrapping all stuff relevant to search in one object
+      var searchWrapper = new qx.core.Object();
+      searchWrapper.setUserData("array", searchCriteriaArr);
+      searchWrapper.setUserData("widget",criteria);
+      searchWrapper.setUserData("buildRefineFunc", this.buildSearchRefineLine);
+      
+      // Going to need access in reset function to this object by the criteria
+      criteria.setUserData("searchObject", searchWrapper);
+      
+      // Store the search object in the FSM so everyone has access to the data
+      this.__fsm.addObject("searchCriteria", searchWrapper);
+      
+      // And install the container widget
+      criteria.add(myRefineLine.widget);
+      
+      // buttonbar is where the search, reset, and possibly more buttons go
+      var buttonbar = new qx.ui.container.Composite();
+      buttonbar.set(
+        {
+          layout         : new qx.ui.layout.HBox()
+        });
+      
+      var searchbtn = new qx.ui.form.Button("Search On This");
+      this.__fsm.addObject("searchBtn", searchbtn);
+      searchbtn.addListener("execute", this.__fsm.eventListener, this.__fsm);
+      
+      var resetbtn = new qx.ui.form.Button("Reset All Fields");
+      resetbtn.addListener(
+        "execute",
+        function() 
+        {
+          var searchObj = this.getUserData("searchObject");
+          var newLine   = searchObj.getUserData("buildRefineFunc")();
+
+          // Set the Search Criteria Array to an empty array and clean the
+          // widget
+          searchObj.setUserData("array", []);
+          this.removeAll();
+
+          // Add a brand new first line
+          this.add(newLine.widget);
+          searchObj.getUserData("array").push(newLine.criteria);
+
+        },
+        // Pass criteria widget as context so we can access (and clean) it.  
+        criteria);
+      
+      var addcriteriabtn = new qx.ui.form.Button("Add Search Criteria");
+      
+      // When the button is hit, create a new refinement line
+      addcriteriabtn.addListener(
+        "execute",
+        function() 
+        {
+          // Gather everything we'll need, mostly unpacking the searchObject
+          var         searchObject   = this.__fsm.getObject("searchCriteria");
+          var         criteriaWidget = searchObject.getUserData("widget");
+          var         array          = searchObject.getUserData("array");
+          var         newRefineLine  = 
+            searchObject.getUserData("buildRefineFunc")();
+
+          // Add the widget to the GUI, and the data to the data array
+          criteriaWidget.add(newRefineLine.widget);
+          array.push(newRefineLine.criteria);
+
+        }, 
+        this);
+      
+      // Add buttons onto button bar, with a little space
+      buttonbar.add(resetbtn);
+      buttonbar.add(new qx.ui.core.Spacer(5));
+      buttonbar.add(searchbtn);
+      buttonbar.add(new qx.ui.core.Spacer(5));
+      buttonbar.add(addcriteriabtn);
+      
+      // Add the Scroll-wrapped criteria on top of the buttonbar
+      vbox.add(criteriascroll, { flex : 1 });
+
+      // Add some space before the button bar
+      vbox.add(new qx.ui.core.Spacer(10, 10));
+
+      // Add the button bar
+      vbox.add(buttonbar);
+
+      container.add(vbox);
+    },
+
+/*
+    _old_buildGui : function(module)
     {
       var             o;
       var             fsm = module.fsm;
@@ -193,6 +458,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       fsm.addObject("gallery", gallery);
       vBox.add(gallery, { flex : 1 });
     },
+*/
 
     /**
      * Construct and return a search refining line
@@ -212,12 +478,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       var       criteriaObject;
       
       // This HBox will contain an entire line of refinement
-      lineHBox = new qx.ui.groupbox.GroupBox();
-      lineHBox.set(
-        {
-          layout          : new qx.ui.layout.HBox(),
-          padding         : 0
-        });
+      lineHBox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
       
       // Create the Attribute Select Box
       attrSelect = new qx.ui.form.SelectBox();
@@ -359,7 +620,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       var             fsm = module.fsm;
       var             response = rpcRequest.getUserData("rpc_response");
       var             requestType = rpcRequest.getUserData("requestType");
-      var             gallery;
       var             apps;
       var             categories;
       var             tagMap;
@@ -369,8 +629,10 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       var             browse1 = fsm.getObject("browse1");
       var             browse2 = fsm.getObject("browse2");
       var             querySource = rpcRequest.getUserData("querySource");
+      var             model;
       var             nextList;
       var             selection;
+      var             parent;
 
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -399,44 +661,34 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         break;
       
       case "intersectKeywordAndQuery":
-        gallery = fsm.getObject("gallery");
-        
+        // Retrieve the app list and list of categories
         apps = response.data.result;
         
-        // FIXME: KLUDGE: should be able to update without remove/add!!!
-        var parent = gallery.getLayoutParent();
-        parent.remove(gallery);
-        gallery = new aiagallery.widget.virtual.Gallery(apps);
-        gallery.addListener("changeSelection", fsm.eventListener, fsm);
-        fsm.addObject("gallery", gallery);
-        parent.add(gallery);
+        // Build a model for the search results list
+        model = qx.data.marshal.Json.createModel(apps);
+
+        // Add the data to the list
+        this.searchResults.setModel(model);
         break;
         
         
       case "appQuery":
-        // Get the gallery object
-        gallery = fsm.getObject("gallery");
-        
         // Retrieve the app list and list of categories
         apps = response.data.result.apps;
         categories = response.data.result.categories;
-
-        // FIXME: KLUDGE: should be able to update without remove/add!!!
-        var parent = gallery.getLayoutParent();
-        parent.remove(gallery);
-        gallery = new aiagallery.widget.virtual.Gallery(apps);
-        gallery.addListener("changeSelection", fsm.eventListener, fsm);
-        fsm.addObject("gallery", gallery);
-        parent.add(gallery);
-
         
-        if (querySource != "searchBtn"){
-          
+        // Build a model for the search results list
+        model = qx.data.marshal.Json.createModel(apps);
+
+        // Add the data to the list
+        this.searchResults.setModel(model);
+        
+        if (querySource != "searchBtn")
+        {
           // Create a list of tags to exclude from this next level
           excludeTags = [];
 
           // Get the previous selections
-  
           switch(querySource)
           {          
           case "browse1":

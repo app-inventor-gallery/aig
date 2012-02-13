@@ -13,19 +13,18 @@ qx.Class.define("aiagallery.test.DeepPermissionCheckTest",
 
   members :
   {
-    __db : {
-      
+    __db : 
+    {
       visitors:
       {
-        "jarjar@binks.org" :
+        2000 :
         {
+          id           : 2000,
           displayName  : "mynewdisplayname",
-          id           : "jarjar@binks.org",
+          email        : "jarjar@binks.org",
           permissions  : ["addOrEditApp"],
           status       : 2
         }
-        
-      
       },
       tags:     {},
       search:   {},
@@ -48,11 +47,12 @@ qx.Class.define("aiagallery.test.DeepPermissionCheckTest",
       
       this.dbifSim.setWhoAmI(
         {
-          email : "jarjar@binks.org",
-          isAdmin: false,
-          logoutUrl: "undefined",
-          permissions: [],
-          userId :  "nameSetWhoAmI"
+          id          : 2000,
+          email       : "jarjar@binks.org",
+          isAdmin     : false,
+          logoutUrl   : "undefined",
+          permissions : ["addOrEditApp"],
+          displayName : "nameSetWhoAmI"
         });
       
       // Use a personalized database
@@ -66,13 +66,15 @@ qx.Class.define("aiagallery.test.DeepPermissionCheckTest",
       liberated.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
     },
     
-    "test: MDBifCommon._deepPermissionCheck()" : function()
+    "test 01: MDBifCommon._deepPermissionCheck()" : function()
     {
-      this.assert(aiagallery.dbif.MDbifCommon._deepPermissionCheck("addOrEditApp"),
-                  "permission check found permission properly");
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon._deepPermissionCheck("addOrEditApp"),
+        "permission check found permission properly");
       
-      this.assertFalse(aiagallery.dbif.MDbifCommon._deepPermissionCheck("getAppInfo"),
-                       "permission check failed appropriately");
+      this.assertFalse(
+        aiagallery.dbif.MDbifCommon._deepPermissionCheck("getAppInfo"),
+        "permission check failed appropriately");
     }
   }
 });

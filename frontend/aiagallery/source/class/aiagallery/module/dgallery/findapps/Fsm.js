@@ -74,17 +74,15 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
             "browse1" : "Transition_Idle_to_AwaitRpcResult_via_browse",
 
             // When a finder selection is made in the third list
-            "browse2" : "Transition_Idle_to_AwaitRpcResult_via_browse",
-            
-            "gallery" : "Transition_Idle_to_Idle_via_gallerySelection"
-
+            "browse2" : "Transition_Idle_to_AwaitRpcResult_via_browse"
           },
           
+          // click on app title or image
+          "viewApp" : "Transition_Idle_to_Idle_via_viewApp",
+
           "execute" :
           {
-            
             "searchBtn" : "Transition_Idle_to_AwaitRpcResult_via_search"
-            
           },
           
           // When we get an appear event, retrieve the category tags list. We
@@ -251,16 +249,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
                          "aiagallery.features",
                          "appQuery",
                          [
-                           // Root of the criteria tree
-                           criteria,
-                           
-                           // Requested fields and the return field name
-                           {
-                             uid    : "uid",
-                             title  : "label", // remap name for Gallery
-                             image1 : "icon",  // remap name for Gallery
-                             tags   : "tags"
-                           }
+                           criteria
                          ]);
 
           // When we get the result, we'll need to know what type of request
@@ -306,7 +295,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
           var             request;
           var             criteriaArray;
           
-          
           // Determine on which widget we received the event
           var friendly = fsm.getFriendlyName(event.getTarget());
           
@@ -346,7 +334,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
               {
                 // Gather all info for this criterium
                 myAttr = criteriaObj.attributeBox.getSelection()[0].getModel();
-                //myQual = criteriaObj.qualifierBox.getSelection()[0].getModel();
+//              myQual = criteriaObj.qualifierBox.getSelection()[0].getModel();
                 myVal = criteriaObj.valueBox.getValue();
                 
                 // Build object with everything we know so far, to be added onto
@@ -435,19 +423,14 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
             this.callRpc(fsm,
                          "aiagallery.features",
                          "intersectKeywordAndQuery",
-                         [{
-                           criteria : criteria,
-                           keywordString : keywordString,
-                           requestedFields : 
-                             // Requested fields and the return field name
-                             {
-                               uid    : "uid",
-                               title  : "label", // remap name for Gallery
-                               image1 : "icon",  // remap name for Gallery
-                               tags   : "tags"
-                             },
-                           queryFields : null // not yet implemented
-                         }]);
+                         [
+                           {
+                             criteria : criteria,
+                             keywordString : keywordString,
+                             requestedFields : null,
+                             queryFields : null // not yet implemented
+                           }
+                         ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
@@ -464,14 +447,14 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
       /*
        * Transition: Idle to Idle
        *
-       * Cause: An item is selected from the gallery
+       * Cause: An item is selected from the search results
        *
        * Action:
        *  Create (if necessary) and switch to an application-specific tab
        */
 
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_Idle_via_gallerySelection",
+        "Transition_Idle_to_Idle_via_viewApp",
       {
         "nextState" : "State_Idle",
 
@@ -479,12 +462,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          var             eventData = event.getData();
-          var             item = eventData.item;
+          var             item = event.getData();
           
           // Add a module for the specified app
           aiagallery.module.dgallery.appinfo.AppInfo.addAppView(item.uid, 
-                                                                item.label);
+                                                                item.title);
         }
       });
 

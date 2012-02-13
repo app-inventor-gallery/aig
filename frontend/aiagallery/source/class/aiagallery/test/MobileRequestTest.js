@@ -13,7 +13,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
 
   members :
   {
-    "test: Mobile Request all" : function()
+    "test 01: Mobile Request all" : function()
     {
       
       // Get access to the RPC implementations. This includes the mixins for
@@ -46,7 +46,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
 
     },
     
-    "test: Mobile Request tag" : function()
+    "test 02: Mobile Request tag" : function()
     {
       
       // Get access to the RPC implementations. This includes the mixins for
@@ -82,7 +82,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
 
     },
     
-    "test: Mobile Request featured" : function()
+    "test 03: Mobile Request featured" : function()
     {
       
       // Get access to the RPC implementations. This includes the mixins for
@@ -117,7 +117,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       
     },
     
-    "test: Mobile Request developer" : function()
+    "test 04: Mobile Request developer" : function()
     {
       
       // Get access to the RPC implementations. This includes the mixins for
@@ -130,7 +130,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       var error = new liberated.rpc.error.Error("2.0");
       
       // testing by_developer
-      mobileRequest = dbifSim.mobileRequest("by_developer:Joe Blow:0:1",
+      mobileRequest = dbifSim.mobileRequest("by_developer:1003:0:1",
                                            error);
 
       // Ensure that an error was not returned
@@ -140,12 +140,12 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       
       this.assertArray(mobileRequest, "mobile request developer returns array");
       
-      this.assertKeyInMap( "uid",
-                           mobileRequest[0],
-                           "apps retrieved from mobile developer");
+      this.assertKeyInMap("uid",
+                          mobileRequest[0],
+                          "apps retrieved from mobile developer");
 
       // Now a bad request
-      mobileRequest = dbifSim.mobileRequest("by_developer:Joe Blow:badef", error);      
+      mobileRequest = dbifSim.mobileRequest("by_developer:1003:badef", error);
       
       // Ensure that an error WAS returned on bad request
       this.assert(mobileRequest === error,
@@ -153,9 +153,8 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
 
     },
     
-    "test: Mobile Request getinfo" : function()
+    "test 05: Mobile Request getinfo" : function()
     {
-      
       // Get access to the RPC implementations. This includes the mixins for
       // all RPCs.
       var dbifSim = aiagallery.dbif.DbifSim.getInstance();
@@ -183,9 +182,13 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       
       this.assertObject(mobileRequest, "mobile request getinfo returns object");
       
-      this.assertKeyInMap( "owner",
-                           mobileRequest,
-                           "apps retrieved from mobile getinfo");
+      this.assertKeyInMap("owner",
+                          mobileRequest,
+                          "apps retrieved from mobile getinfo");
+
+      this.assertKeyInMap("displayName",
+                          mobileRequest,
+                          "apps retrieved from mobile getinfo");
 
       // Now a bad request
       mobileRequest = dbifSim.mobileRequest("getinfo:abcd", error);      
@@ -199,7 +202,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
 
     },
     
-    "test: Mobile Request search" : function()
+    "test 06: Mobile Request search" : function()
     {
       
       // Get access to the RPC implementations. This includes the mixins for
@@ -212,61 +215,68 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       // Need an error object to call RPCs with
       var error = new liberated.rpc.error.Error("2.0");
       
-      //FIXXXXX
-            
       dbifSim.setWhoAmI(
         {
-          email : "billy@thekid.edu",
-          isAdmin: false,
-          logoutUrl: "undefined",
-          permissions: [],
-          userId :  "Billy The Kid"
+          id          : "1002",
+          email       : "billy@thekid.edu",
+          isAdmin     : false,
+          logoutUrl   : "undefined",
+          permissions : [],
+          userId      : "Billy The Kid"
         });
+
+      // Ensure the database is properly initialized
+      liberated.sim.Dbif.setDb(
+        qx.lang.Object.clone(aiagallery.dbif.MSimData.Db, true));
 
       // Handcrafting a bunch of Apps with various words in their text fields
       var myApps = 
         [
           {
-            owner       : "billy@thekid.edu",
+            owner       : "1002",
             description : "This one's beautiful",
             title       : "The Shooting Game",
             tags        : ["shooter", "shooting", "game", "Games"],
             source      : "somerandomstring",
-            image1      : "xxx"
+            image1      : "data://xxx"
           },
           
           {
             source      : "somerandomstring",
-            owner       : "billy@thekid.edu",
+            owner       : "1002",
             description : "This one's scoop and poop",
             title       : "Your Mother Jokes",
-            tags        : ["funny", "Development"],
-            image1      : "xxx"
+            tags        : ["funny", "Business"],
+            image1      : "data://xxx"
           },
 
           {
             source      : "somerandomstring",
-            owner       : "billy@thekid.edu",
+            owner       : "1002",
             description : "This one's sexy",
             title       : "Laughapalooza",
-            tags        : ["Educational"],
-            image1      : "xxx"
+            tags        : ["Education"],
+            image1      : "data://xxx"
           },
             
           {
             source      : "somerandomstring",
-            owner       : "billy@thekid.edu",
+            owner       : "1002",
             description : "This one's scoop interesting in any way",
             title       : "Microsoft Windows for Android",
-            tags        : ["Development", "broken"],
-            image1      : "xxx"
+            tags        : ["Business", "broken"],
+            image1      : "data://xxx"
           }
         ];
 
-      myApps.forEach(function(obj)
-                     {
-                         dbifSim.addOrEditApp(null, obj, error);
-                     });
+      myApps.forEach(
+        function(obj)
+        {
+          var ret = dbifSim.addOrEditApp(null, obj, error);
+          this.assertNotEquals(error, ret,
+                               "addOrEditApp failed: " + error.stringify());
+        },
+        this);
 
 
       
@@ -311,11 +321,10 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       // Ensure that an error WAS returned on bad request
       this.assert(mobileRequest === error,
                  "Error not properly returned from bad request 'search'!");
-
     },
     
     
-    "test: Mobile Request bad parameters fail" : function()
+    "test 07: Mobile Request bad parameters fail" : function()
     {
       
       // Get access to the RPC implementations. This includes the mixins for

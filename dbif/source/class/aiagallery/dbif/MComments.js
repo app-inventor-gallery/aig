@@ -172,14 +172,14 @@ qx.Mixin.define("aiagallery.dbif.MComments",
           commentObjData = commentObj.getData();
 
           // Set up all the rest of the data
-          commentObjData.visitor     = whoami.email;
+          commentObjData.visitor     = whoami.id;
           commentObjData.text        = text;
 
           // Save this in the database
           commentObj.put();
 
-          // Replace the visitor id with his display name.
-          commentObjData.visitor     = whoami.userId;
+          // Add his display name, for return.
+          commentObjData.displayName     = whoami.displayName;
 
           // This includes newly-created key
           return commentObjData;  
@@ -302,8 +302,8 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       {
         commentList.forEach(function(obj)
           {
-            // Replace this owner with his display name
-            obj.visitor = 
+            // Add this visitor's display name
+            obj.displayName = 
               aiagallery.dbif.MVisitors._getDisplayName(obj.visitor, error);
             
             // Did we fail to find this owner?

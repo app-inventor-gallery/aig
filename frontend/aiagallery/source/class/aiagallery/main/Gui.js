@@ -197,6 +197,7 @@ qx.Class.define("aiagallery.main.Gui",
         pagePane.add(hbox);
 
         mainTabs = new qx.ui.tabview.TabView();
+        mainTabs.setAppearance("radioview");
         
         // We're going to control the tab view via the link bar
         mainTabs.getChildControl("bar").exclude();
@@ -240,9 +241,10 @@ qx.Class.define("aiagallery.main.Gui",
                 };
 
                 // Set the header to display just-retrieved values
+                _this.whoAmI.setId(e.id);
                 _this.whoAmI.setIsAdmin(e.isAdmin);
                 _this.whoAmI.setEmail(e.email);
-                _this.whoAmI.setDisplayName(e.userId);
+                _this.whoAmI.setDisplayName(e.displayName);
                 _this.whoAmI.setHasSetDisplayName(e.hasSetDisplayName);
                 _this.whoAmI.setLogoutUrl(e.logoutUrl);
                 
@@ -333,8 +335,6 @@ qx.Class.define("aiagallery.main.Gui",
                 bAllowed = false;
                 [ 
                   // These permissions allow access to the page
-                  "addOrEditApp",
-                  "deleteApp",
                   "getAppListAll"
                 ].forEach(
                   function(rpcFunc)
@@ -364,23 +364,61 @@ qx.Class.define("aiagallery.main.Gui",
                   
                   // We've instantiated a new module which needs to be added
                   bAddModules = true;
-                }
+                }      
 
-                // If we instantiated at least one of the management modules...
-                if (bAddModules)
+              // Determine whether they have access to the permission
+              // management page.
+              bAllowed = false;
+              [ 
+                // These permissions allow access to the page
+                // FIXME: Kept same as Application page for now
+                "addOrEditPermissionGroup",
+                "deletePermissionGroup"
+              ].forEach(
+                function(rpcFunc)
                 {
-                  // ... then add them.
-                  aiagallery.Application.addModules(moduleList);
+                  if (qx.lang.Array.contains(e.permissions, rpcFunc))
+                  {
+                    bAllowed = true;
+                  }
+                });
+
+              // If they're allowed access to the page...
+              if (e.isAdmin || bAllowed)
+              {
+                // ... then create it
+                module = new aiagallery.main.Module(
+                  "Management",
+                  "aiagallery/test.png",
+                  "Permissions",
+                  aiagallery.module.mgmt.permissions.Permissions);
+
+                // Start up the new module
+                if (! moduleList["Management"])
+                {
+                  moduleList["Management"] = {};
                 }
-              },
-              "whoAmI",
-              []);
+                moduleList["Management"]["Permissions"] = module;
+                  
+                // We've instantiated a new module which needs to be added
+                bAddModules = true;
+              }
+
+              // If we instantiated at least one of the management modules...
+              if (bAddModules)
+              {
+                // ... then add them.
+                aiagallery.Application.addModules(moduleList);
+              }
+            },
+            "whoAmI",
+            []);
+            
 
             // Load the Channel API. If we're on App Engine, it'll succeed
-            var loader = new qx.io.ScriptLoader();
-            loader.load(
-              "/_ah/channel/jsapi", 
-              function(status)
+            var loader = new qx.bom.request.Script();
+            loader.onload = 
+              function createChannel(status)
               {
                 // Did we successfully load the Channel API?
                 switch(status)
@@ -439,6 +477,7 @@ qx.Class.define("aiagallery.main.Gui",
 
                         // Parse the JSON message
                         data = qx.lang.Json.parse(data.data);
+                        channelMessage("message", data);
 
                         // Dispatch a message for any subscribers to
                         // this type.
@@ -462,6 +501,9 @@ qx.Class.define("aiagallery.main.Gui",
                       socket.onclose = function(data)
                       {
                         channelMessage("close", data);
+                        
+                        // Re-establish the channel
+                        createChannel("success");
                       };
 
                       // Save the channel token (if provided)
@@ -477,7 +519,9 @@ qx.Class.define("aiagallery.main.Gui",
                   break;
 
                 }
-            });
+              };
+            loader.open("GET", "/_ah/channel/jsapi");
+            loader.send();
           });
       }
       

@@ -43,7 +43,21 @@
 
   "config-warnings" :
   {
-    "job-shadowing" : ["source", "build-resources", "build-script", "build-files"]
+    "job-shadowing" :
+    [
+      "source",
+      "build-resources",
+      "build-script",
+      "build-files"
+    ],
+    
+    "exclude" :
+    [
+      "qx.event.GlobalError",
+      "qx.core.Init",
+      "qx.event.Timer",
+      "qx.util.TimerManager"
+    ]
   },
 
   // You only need to edit the remainder of this file, if you want to customize
@@ -86,7 +100,9 @@
       "exclude" :
       [
         "qx.event.GlobalError",
-        "qx.core.Init"
+        "qx.core.Init",
+        "qx.event.Timer",
+        "qx.util.TimerManager"
       ],
 
       "environment" :

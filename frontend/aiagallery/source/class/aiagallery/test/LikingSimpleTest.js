@@ -13,7 +13,7 @@ qx.Class.define("aiagallery.test.LikingSimpleTest",
   members :
   {
 
-    "test: Simple Plus One Liking" : function()
+    "test 01: Simple Plus One Liking" : function()
     {
       // Get access to the RPC implementations. This includes the mixins for
       // all RPCs.
@@ -25,19 +25,23 @@ qx.Class.define("aiagallery.test.LikingSimpleTest",
       // Adding a new app.
       var myAppData = dbifSim.addOrEditApp(null,
                                            {
-                                             owner    : "me",
+                                             owner    : "1002",
                                              description: "hello",
                                              title : "a title",
                                              tags :
                                              [
                                                "tag", 
                                                "anotherTag",
-                                               "Development"
+                                               "Business"
                                              ],
                                              source : "sources",
-                                             image1 : "xxx"
+                                             image1 : "data://xxx"
                                            },
                                            error);
+
+      // Ensure that the app got added properly
+      this.assertNotEquals(error, myAppData,
+                           "addOrEditApp failed: " + error.stringify());
 
       // Was this app initialized correctly with zero likes?
       this.assert(myAppData.numLikes === 0, "Num likes correctly inited to 0");

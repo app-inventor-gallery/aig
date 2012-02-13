@@ -12,6 +12,24 @@ qx.Theme.define("aiagallery.theme.Appearance",
 
   appearances :
   {
+    "tabview/pane" :
+    {
+      style : function(states)
+      {
+        var useCSS = qx.core.Environment.get("css.gradient.linear") &&
+          qx.core.Environment.get("css.borderradius");
+        return {
+          decorator : useCSS ? "tabview-pane-css" : "tabview-pane",
+          minHeight : 0,
+
+          marginBottom : states.barBottom ? -1 : 0,
+          marginTop : states.barTop ? -1 : 0,
+          marginLeft : states.barLeft ? -1 : 0,
+          marginRight : states.barRight ? -1 : 0
+        };
+      }
+    },
+
     "pagepane" :
     {
       alias : "widget",
@@ -26,6 +44,20 @@ qx.Theme.define("aiagallery.theme.Appearance",
       }
     },
 
+    "searchResult" :
+    {
+      alias : "atom",
+
+      style : function(states)
+      {
+        return {
+          margin : 10,
+          padding : 10,
+          decorator : "search-result-separator"
+        };
+      }
+    },
+
 
     //
     // Radio View
@@ -36,7 +68,7 @@ qx.Theme.define("aiagallery.theme.Appearance",
       style : function(states)
       {
         return {
-          contentPadding : 16
+          contentPadding : 0
         };
       }
     },
@@ -59,7 +91,7 @@ qx.Theme.define("aiagallery.theme.Appearance",
       style : function(states)
       {
         return {
-          decorator : "tabview-pane",
+          decorator : "radioview-pane",
           minHeight : 60,
 
           marginBottom : states.barBottom ? -1 : 0,
@@ -224,6 +256,46 @@ qx.Theme.define("aiagallery.theme.Appearance",
           font : font,
           padding : padding,
           margin : [1, 0]
+        };
+      }
+    },
+    
+    "formimage" :
+    {
+      //
+      // copied from "list", with backgroundColor altered
+      //
+
+//      alias : "scrollarea",
+      alias : "widget",
+
+      style : function(states)
+      {
+        var decorator;
+
+        var focused = !!states.focused;
+        var invalid = !!states.invalid;
+        var disabled = !!states.disabled;
+
+        if (focused && invalid && !disabled) {
+          decorator = "formimage-focused-invalid";
+        } else if (focused && !invalid && !disabled) {
+          decorator = "formimage-focused";
+        } else if (disabled) {
+          decorator = "formimage-disabled";
+        } else if (!focused && invalid && !disabled) {
+          decorator = "border-invalid";
+        } else {
+          decorator = "formimage";
+        }
+
+        if (qx.core.Environment.get("css.gradient.linear")) {
+          decorator += "-css";
+        }
+
+        return {
+//          backgroundColor : "green",
+          decorator : decorator
         };
       }
     }

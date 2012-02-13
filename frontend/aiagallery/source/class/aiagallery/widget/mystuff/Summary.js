@@ -13,6 +13,7 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
   construct : function()
   {
     var             height;
+    var             layout;
 
     this.base(arguments);
     
@@ -26,7 +27,9 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
       });
     
     // Create a layout. Summary is always an HBox
-    this.setLayout(new qx.ui.layout.HBox(10));
+    layout = new qx.ui.layout.HBox(10);
+    layout.setAlignY("middle");
+    this.setLayout(layout);
     
     // Create each of the child controls
     this.getChildControl("icon");
@@ -103,11 +106,11 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
       icon         : 20,
       image1       : 0,         // set in defer: function
       title        : 200,
-      status       : 120,
-      numLikes     : 60,
-      numDownloads : 60,
-      numViewed    : 60,
-      numComments  : 60
+      status       : 80,
+      numLikes     : 70,
+      numDownloads : 70,
+      numViewed    : 70,
+      numComments  : 70
     }
   },
 
@@ -160,15 +163,16 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
         break;
 
       case "status":
-        control = new qx.ui.basic.Label();
+        control = new qx.ui.basic.Atom();
         width = aiagallery.widget.mystuff.Summary.Width.status;
         control.set(
           {
-            anonymous : true,
-            rich      : true,
-            width     : width,
-            minWidth  : width,
-            maxWidth  : width
+            iconPosition : "right",
+            anonymous    : true,
+            rich         : true,
+            width        : width,
+            minWidth     : width,
+            maxWidth     : width
           });
         this._addAt(control, 3);
         break;
@@ -259,6 +263,7 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
       var             StatusToName = aiagallery.dbif.Constants.StatusToName;
       var             color;
       var             bgColor;
+      var             icon = null;
       
       switch(value)
       {
@@ -266,32 +271,55 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
         color = "white";
         bgColor = "red";
         break;
+
       case Status.Pending:
         color = "black";
-        bgColor = "yellow";
+        bgColor = "orange";
         break;
+
       case Status.Active:
         color = "green";
         bgColor = null;
         break;
-      case Status.Incomplete:
-        color = "red";
-        bgColor = null;
-        break;
-      case Status.Processing:
-        color = "black";
-        bgColor = "yellow";
-        break;
-      case Status.Invalid:
-        color = "white";
-        bgColor = "red";
-        break;
+
       case Status.Unpublished:
         color = "darkgray";
         bgColor = null;
         break;
+
+      case Status.Invalid:
+        color = "white";
+        bgColor = "red";
+        break;
+
+      case Status.Incomplete:
+        color = "red";
+        bgColor = null;
+        break;
+
+      case Status.Editing:
+        color = "black";
+        bgColor = null;
+        break;
+
+      case Status.NotSaved:
+        color = "black";
+        bgColor = "orange";
+        break;
+
+      case Status.Uploading:
+        color = "black";
+        bgColor = null;
+        icon = "aiagallery/ajax-loader.gif";
+        break;
+
+      case Status.Processing:
+        color = "black";
+        bgColor = "yellow";
+        break;
       }
-      control.setValue(
+
+      control.setLabel(
           "<span style='" +
           " padding:4px;" +
           " color:" + color + ";" +
@@ -299,6 +327,8 @@ qx.Class.define("aiagallery.widget.mystuff.Summary",
           "'>" +
           StatusToName[value] +
           "</span>");
+      
+      control.setIcon(icon);
     },
 
     // property apply

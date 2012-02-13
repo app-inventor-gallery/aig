@@ -90,7 +90,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // These are the 3 fields of interest to a viewer
       // (the rest is metadata -- app ID, tree ID, numChildren)
       var commentText = comment["text"];
-      var commentAuthor = comment["visitor"];
+      var commentAuthor = comment["displayName"];
       var commentTime = comment["timestamp"];
       // var treeId = comment["treeId"];
 
@@ -286,7 +286,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
         // Create a label describing who created the app.
         createdBy = new qx.ui.basic.Label('Created by <b>' +
-                                              result.owner + '</b>');
+                                              result.displayName + '</b>');
 
         // Make it purty with rich formatting.
         createdBy.set(
@@ -320,8 +320,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
         // Create a download button to allow to user to download the application
         downloadBtn = 
-          new qx.ui.form.Button("Download",
-                          "qx/icon/Tango/16/apps/internet-download-manager.png");
+          new qx.ui.form.Button("Download", "aiagallery/downloads.png");
         
         // Makes download button smaller and centers it
         downloadBtn.set(
@@ -333,8 +332,23 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         fsm.addObject("downloadBtn", downloadBtn);
         downloadBtn.addListener(
           "execute",
-          function(e) {
-            location.href = 'rpc?getdata=' + appId + ':source';
+          function(e) 
+          {
+            if (result.source && result.source[0])
+            {
+              if (qx.core.Environment.get("qx.debug"))
+              {
+                alert("Would be downloading blob " + result.source[0]);
+              }
+              else
+              {
+                location.href = 'rpc?getblob=' + result.source[0];
+              }
+            }
+            else
+            {
+              alert("No source data found!");
+            }
           },
           null);
 
@@ -344,8 +358,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
         // Create a button to allow users to "like" things.
         this.likeItButton =
-          new qx.ui.form.Button("Like it!",
-                                "qx/icon/Oxygen/16/emotes/face-smile.png");
+          new qx.ui.form.Button("Like it!", "aiagallery/thumbs-up.png");
         fsm.addObject("likeItButton", this.likeItButton);
         this.likeItButton.addListener("execute", fsm.eventListener, fsm);
 

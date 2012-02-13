@@ -27,7 +27,7 @@ qx.Class.define("aiagallery.test.CommentsTest",
       this.error = new liberated.rpc.error.Error("2.0");
     },
     
-    "test: Addition, retrieval, and deletion of comment" : function()
+    "test 01: Addition, retrieval, and deletion of comment" : function()
     {
       var             test;
       var             myCommentData;
@@ -40,9 +40,10 @@ qx.Class.define("aiagallery.test.CommentsTest",
 
       this.dbifSim.setWhoAmI(
         {
-          email     : "joe@blow.com",
-          userId    : "Joe Blow",
-          isAdmin   : false
+          id          : 1001,
+          email       : "joe@blow.com",
+          displayName : "Joe Blow",
+          isAdmin     : false
         });
 
       
@@ -131,9 +132,9 @@ qx.Class.define("aiagallery.test.CommentsTest",
                         retrievedComment.getData().numChildren,
                         "comment numChildren incremented");
       
-      // Ensure that the userId, not display name is stored in this comment
+      // Ensure that the visitor id, not display name, is stored in this comment
       this.assertEquals(retrievedComment.getData().visitor,
-                        "joe@blow.com",
+                        1001,
                        "comment.visitor is whoami.email, not whoami.userId");
       
       // Call the getComments() RPC and save the length of the result.
@@ -185,7 +186,7 @@ qx.Class.define("aiagallery.test.CommentsTest",
                        "bad deleteComment() input, hopefully no deletion");
     },
     
-    "test: Retrieve comment with invalid appId" : function()
+    "test 02: Retrieve comment with invalid appId" : function()
     {
       var             test;
       var             validAppId = 151;

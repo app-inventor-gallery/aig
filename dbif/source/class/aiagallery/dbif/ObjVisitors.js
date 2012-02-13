@@ -22,6 +22,7 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
           "id"             : id,
           "displayName"    : null,
           "permissions"    : [],
+          "permissionGroups": [],
           "status"         : aiagallery.dbif.Constants.Status.Active,
           "channelTokens"  : [],
           "recentSearches" : [],
@@ -42,8 +43,11 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
 
     var databaseProperties =
       {
-        /** The user's email address */
+        /** The user's numeric id, converted to a string */
         "id" : "String",
+        
+        /** The user's email address */
+        "email" : "String",
 
         /** How the user's name is displayed in the gallery */
         "displayName" : "String",
@@ -51,8 +55,10 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
         /** A list of explicit permissions assigned to this user */
         "permissions" : "StringArray",
         
-        /** A list of names of permission groups assigned to this user. Each of
-         *  these groups gives this user additional explicit permissions */
+        /** 
+         * A list of names of permission groups assigned to this user. Each of
+         *  these groups gives this user additional explicit permissions 
+         */
         "permissionGroups" : "StringArray",
 
         /** Active, Pending, or Banned (by their numeric values) */

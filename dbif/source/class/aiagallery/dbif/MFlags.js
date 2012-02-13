@@ -60,7 +60,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
       var            Data;
       var            flagsList;
 
-      var            visitorId= this.getWhoAmI().email;
+      var            visitorId = this.getWhoAmI().id;
       var            maxFlags = aiagallery.dbif.Constants.MAX_FLAGGED;
       var            statusVals = aiagallery.dbif.Constants.Status;
       var            flagTypeVal = aiagallery.dbif.Constants.FlagType;
@@ -139,7 +139,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
               // otherwise set the app to pending and send an email
               appDataObj.status = statusVals.Pending;    
               var appName = appDataObj.title;
-              var visitorName = this.getWhoAmI().userId;
+              var visitorName = this.getWhoAmI().email;
 
               var props = new java.util.Properties();
               var session = javax.mail.Session.getDefaultInstance(props, null);
@@ -248,7 +248,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
               var session = javax.mail.Session.getDefaultInstance(props, 
                                                                   null);
 
-              var visitorName = this.getWhoAmI().userId;
+              var visitorName = this.getWhoAmI().email;
               var msgBody =
                 "The comment " + commentNum + " was flagged by " +
                 visitorName +", " + visitorId;

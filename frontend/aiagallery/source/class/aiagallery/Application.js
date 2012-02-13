@@ -22,6 +22,37 @@ qx.Class.define("aiagallery.Application",
 
   statics :
   {
+    /** 
+     * Internal storage of the dateFormat object used by {@link getDateFormat} 
+     */
+    __dateFormatObj : null,
+
+    /** The application-wide format for displaying dates */
+    __dateFormat : "yyyy-MM-dd hh:mm a",
+
+    /**
+     * Get the application-wide DateFormat object. The actual format used is
+     * stored in {@link __dateFormat}.
+     * 
+     * @return {qx.util.format.DateFormat}
+     *   The object whose format() object may be passed a date object to be
+     *   converted to our application-wide format.
+     */
+    getDateFormat : function()
+    {
+      var             dateFormat;
+      
+      // Retrieve the pre-allocated date format, or allocate a new one
+      dateFormat =
+        aiagallery.Application.__dateFormatObj ||
+        new qx.util.format.DateFormat(aiagallery.Application.__dateFormat);
+      
+      // Save the date format object, in case it wasn't previously saved
+      aiagallery.Application.__dateFormatObj = dateFormat;
+      
+      return dateFormat;
+    },
+
     /**
      * Set the global cursor to indicate an action is in progress
      *
@@ -157,58 +188,25 @@ qx.Class.define("aiagallery.Application",
  */
 
 /*  The main Gallery */
-if (false)
-{
-  new aiagallery.main.Module(
-    "Gallery",
-    "aiagallery/module/go-home.png",
-    "Home",
-    aiagallery.module.dgallery.home.Home);
+new aiagallery.main.Module(
+  "Home",
+  "aiagallery/module/go-home.png",
+  "Home",
+  aiagallery.module.dgallery.home.Home);
 
-  new aiagallery.main.Module(
-    "Gallery",
-    "aiagallery/module/system-search.png",
-    "Find Apps",
-    aiagallery.module.dgallery.findapps.FindApps);
+new aiagallery.main.Module(
+  "Find Apps",
+  "aiagallery/module/system-search.png",
+  "Find Apps",
+  aiagallery.module.dgallery.findapps.FindApps);
 
-  new aiagallery.main.Module(
-    "Gallery",
-    "aiagallery/module/emblem-favorite.png",
-    "My Stuff",
-    aiagallery.module.dgallery.mystuff.MyStuff);
+new aiagallery.main.Module(
+  "My Apps",
+  "aiagallery/module/emblem-favorite.png",
+  "My Apps",
+  aiagallery.module.dgallery.myapps.MyApps);
 
-  new aiagallery.main.Module(
-    "Gallery",
-    null,
-    "Learn",
-    aiagallery.module.dgallery.learn.Learn);
-}
-else
-{
-  new aiagallery.main.Module(
-    "Home",
-    "aiagallery/module/go-home.png",
-    "Home",
-    aiagallery.module.dgallery.home.Home);
 
-  new aiagallery.main.Module(
-    "Find Apps",
-    "aiagallery/module/system-search.png",
-    "Find Apps",
-    aiagallery.module.dgallery.findapps.FindApps);
-
-  new aiagallery.main.Module(
-    "My Apps",
-    "aiagallery/module/emblem-favorite.png",
-    "Old (ugly)",
-    aiagallery.module.dgallery.mystuff.MyStuff);
-
-  new aiagallery.main.Module(
-    "My Apps",
-    "aiagallery/module/emblem-favorite.png",
-    "New (not yet operational)",
-    aiagallery.module.dgallery.myapps.MyApps);
-}
 
 if (qx.core.Environment.get("qx.debug"))
 {

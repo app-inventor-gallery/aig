@@ -60,12 +60,6 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
         // offset, count, and sort order.
         return this.__getByOwner(fields, error);
         
-      case "uploads":
-        // I don't understand what this one is supposed to do. Parameters are
-        // described as userid, offset, count, and sort order. I suspect that
-        // userid is display name, but what should be returned?
-        return null;
-        
       case "getinfo":
         // Get information about an application
         return this.__getAppInfo(fields, error);
@@ -116,7 +110,11 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       var results = liberated.dbif.Entity.query(
         "aiagallery.dbif.ObjAppData",
         // We want everything, so null search criteria
-        null,
+        {
+          type : "element",
+          field: "status",
+          value: aiagallery.dbif.Constants.Status.Active
+        },
         // This is where resultCriteria goes
         this.__buildResultCriteria( offset, count, order, field));
 
@@ -124,12 +122,12 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       {
         results.forEach(function(obj)
         {
-          // Replace this owner with his display name
-          obj["owner"] =
+          // Add this owner's display name
+          obj["displayName"] =
             aiagallery.dbif.MVisitors._getDisplayName(obj["owner"], error);
 
           // Did we fail to find this owner?
-          if (obj["owner"] === error)
+          if (obj["displayName"] === error)
           {
             // Yup. Abort the request.
             throw error;
@@ -255,9 +253,21 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       var results = liberated.dbif.Entity.query(
         "aiagallery.dbif.ObjAppData",
         {
-          type  : "element",
-          field : "tags",
-          value : tagName 
+          type : "op",
+          method : "and",
+          children : 
+          [
+            {
+              type  : "element",
+              field : "status",
+              value : aiagallery.dbif.Constants.Status.Active 
+            },
+            {
+              type  : "element",
+              field : "tags",
+              value : tagName 
+            }
+          ]
         },
         // This is where resultCriteria goes
         this.__buildResultCriteria(offset, count, order, field));
@@ -267,11 +277,11 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
         results.forEach(function(obj)
         {
           // Replace this owner with his display name
-          obj["owner"] =
+          obj["displayName"] =
             aiagallery.dbif.MVisitors._getDisplayName(obj["owner"], error);
 
           // Did we fail to find this owner?
-          if (obj["owner"] === error)
+          if (obj["displayName"] === error)
           {
             // Yup. Abort the request.
             throw error;
@@ -304,19 +314,34 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
         qx.lang.Array.insertBefore(fields, null, error);
       }
 
-      var displayName = fields.shift();
+      var ownerId = fields.shift();
       var offset = fields.shift();
       var count = fields.shift();
       var order = fields.shift();
       var field = fields.shift();
       
-      // displayName is required
-      if (typeof displayName !== "string")
+      // ownerId is required
+      if (ownerId.length == 0)
       {
         error.setCode(3);
-        error.setMessage("No developer's name given");
+        error.setMessage("No developer's id given");
         return error;
       }
+
+      // Get the display name for this app's owner
+      var visitors = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
+                                                 ownerId);
+
+      // We must have found this visitor
+      if (visitors.length != 1)
+      {
+        error.setCode(4);
+        error.setMessage("Developer (owner) not found: " + ownerId);
+        return error;
+      }
+      
+      var displayName = visitors[0].displayName;
+
       var offsetTypeCheck = offset === null || !isNaN(parseInt(offset,10));
       var countTypeCheck = count === null || !isNaN(parseInt(count,10));
       var orderTypeCheck = order === null || typeof order === "string";
@@ -330,32 +355,33 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
         return error;
       }      
       
-      // First I'm going to trade the displayName for the real owner Id
-      var ownerId =
-        aiagallery.dbif.MVisitors._getVisitorId(displayName, error);
-      
-      // Was an error returned?
-      if (ownerId === error)
-      {
-        // Yup. We need to return it.
-        return error;
-      }
-      
       // Then use the ownerId to query for all Apps
       var results = liberated.dbif.Entity.query(
         "aiagallery.dbif.ObjAppData",
         {
-          type  : "element",
-          field : "owner",
-          value : ownerId
+          type : "op",
+          method : "and",
+          children : 
+          [
+            {
+              type  : "element",
+              field : "status",
+              value : aiagallery.dbif.Constants.Status.Active 
+            },
+            {
+              type  : "element",
+              field : "owner",
+              value : ownerId
+            }
+          ]
         },
         // This is where resultCriteria goes
         this.__buildResultCriteria( offset, count, order, field));
       
-      // Then make sure the ownerId doesn't get returned
+      // Return display names too
       results.forEach(function(obj)
         {
-          obj["owner"] = displayName;
+          obj["displayName"] = displayName;
         });
      
       return this.__stripDataURLs(results);
@@ -385,10 +411,9 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       var requestedFields = 
       {
         owner              : "owner",
+        displayName        : "displayName",
         title              : "title",
         description        : "description",
-        //FIXME: Uncomment next line when previous authors are implemented
-        //previousAuthors    : "previousAuthors",
         tags               : "tags",
         uploadTime         : "uploadTime",
         creationTime       : "creationTime",

@@ -94,6 +94,12 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
           },
 
           { 
+            heading : this.tr("Email"),
+            id      : "email",
+            colSet  : { width : 90 }
+          },
+
+          { 
             heading : this.tr("Display Name"),
             id      : "displayName",
             colSet  : { width : 90 }

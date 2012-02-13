@@ -28,8 +28,9 @@ qx.Class.define("aiagallery.dbif.DbifSim",
     // Save the logged-in user. The whoAmI property is in MDbifCommon.
     this.setWhoAmI(
       {
-        email             : "jarjar@binks.org",
-        userId            : "obnoxious",
+        id                : "1001",
+        email             : "jane@uphill.org",
+        displayName       : "Jane Doe",
         isAdmin           : true,
         logoutUrl         : 
           [
@@ -66,10 +67,12 @@ qx.Class.define("aiagallery.dbif.DbifSim",
   
   statics :
   {
-    __userNumber : 0,
+    __userNumber : 100,
 
     changeWhoAmI : function(context)
     {
+      var userId = {};
+
       var formData =  
       {
         'username'   : 
@@ -99,9 +102,10 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           // Add this visitor to the list
           formData.username.options.push(
             {
-              label : visitor.id,
-              value : visitor.id
+              label : visitor.email
             });
+          
+          userId[visitor.email] = visitor.id;
         });
 
       dialog.Dialog.form(
@@ -117,13 +121,14 @@ qx.Class.define("aiagallery.dbif.DbifSim",
 
           // Try to get this user's display name. Does the visitor exist?
           visitor = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
-                                                result.username);
+                                                userId[result.username]);
           if (visitor.length > 0 && visitor[0].displayName)
           {
             // Yup, he exists and has a known display name.
             displayName = visitor[0].displayName;
             bHasSetDisplayName = true;
-            permissions = visitor[0].permissions;
+            permissions =
+              aiagallery.dbif.MVisitors.getVisitorPermissions(visitor[0]);
           }
           else
           {
@@ -136,8 +141,9 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           // Save the backend whoAmI information
           aiagallery.dbif.DbifSim.getInstance().setWhoAmI(
           {
+            id                : userId[result.username],
             email             : result.username,
-            userId            : displayName,
+            displayName       : displayName,
             isAdmin           : true,
             logoutUrl         :
               [

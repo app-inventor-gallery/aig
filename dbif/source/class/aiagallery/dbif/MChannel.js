@@ -123,13 +123,14 @@ qx.Mixin.define("aiagallery.dbif.MChannel",
           var             ChannelServiceFactory;
 
           // Get the current visitor object
-          visitor = new aiagallery.dbif.ObjVisitors(whoami.email);
+          visitor = new aiagallery.dbif.ObjVisitors(whoami.id);
 
           // This visitor had better exist!
           if (visitor.getBrandNew())
           {
             java.lang.System.err.println(
-              "getChannelToken: visitor missing: " + whoami.email);
+              "getChannelToken: visitor missing: " +
+              whoami.id + "(" + whoami.email + ")");
             return null;
           }
 
@@ -140,7 +141,7 @@ qx.Mixin.define("aiagallery.dbif.MChannel",
 
           // Build a client id. The same user could be logged in in more than
           // one place, so use his id and a (hopefully) unique timestamp
-          clientId = this.__makeClientId(whoami.email);
+          clientId = this.__makeClientId(whoami.id);
 
           // Create a token 
           token = String(channelService.createChannel(clientId));

@@ -27,7 +27,7 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
     layout.setColumnAlign(3, "left", "top");
     layout.setColumnAlign(4, "right", "top");
     layout.setColumnAlign(5, "left", "top");
-    layout.setColumnAlign(6, "left", "bottom");
+    layout.setColumnAlign(6, "left", "top");
 
     // make rows flexible so buttons are right height
     layout.setRowFlex(3, 1);
@@ -60,12 +60,12 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
     addItems : function(items, names, title, options) 
     {
       var             position = {};
+      var             hiddenPosition;
+      var             label;
 
       // add the items
       for (var i = 0; i < items.length; i++) 
       {
-        var label = this._createLabel(names[i], items[i]);
-        
         // Begin to specify the position
         position =
           {
@@ -80,20 +80,38 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
           position.rowSpan = options[i].rowSpan;
         }
 
-        // Add the label
-        this._add(label, position);
+        label = this._createLabel(names[i] || "", items[i]);
 
         // Retrieve the peer input field
         var item = items[i];
-        
-        // Join the label and input field
-        label.setBuddy(item);
 
-        // Setting visibility of item should also alter its label
-        this._connectVisibility(item, label);
+        if (names[i] == null)
+        {
+          // Don't display labels with null names
+          label.setVisibility("excluded");
+          hiddenPosition =
+            {
+              row    : position.row + 100,
+              column : position.column + 100
+            };
 
-        // Position for the input field, in the next column
-        ++position.column;
+          // Add the label
+          this._add(label, hiddenPosition);
+        }
+        else
+        {
+          // Join the label and input field
+          label.setBuddy(item);
+
+          // Setting visibility of item should also alter its label
+          this._connectVisibility(item, label);
+
+          // Add the label
+          this._add(label, position);
+
+          // Position for the input field, in the next column
+          ++position.column;
+        }
 
         // If column span is specified, it's the input field that gets it
         if (options[i].colSpan)
@@ -104,6 +122,19 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
 
         // Add the input field
         this._add(item, position);
+
+        // Keep track of the largest column number used
+        if (position.column < 100 &&
+            position.column + (position.colSpan || 0) > this.__maxCol)
+        {
+          this.__maxCol = position.column + (position.colSpan || 0);
+        }
+
+        // Keep track of the largest row number used
+        if (position.row + (position.rowSpan || 0) > this.__maxRow)
+        {
+          this.__maxRow = position.row + (position.rowSpan || 0);
+        }
 
         // store the names for translation
         if (qx.core.Environment.get("qx.dynlocale")) 
@@ -136,7 +167,7 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
           hBox = new qx.ui.layout.HBox();
           hBox.set(
             {
-              alignX  : "right",
+              alignX  : "center",
               spacing : 5
             });
           this._buttonRow.setLayout(hBox);
@@ -146,7 +177,7 @@ qx.Class.define("aiagallery.widget.mystuff.DetailRenderer",
                     {
                       row     : this.__maxRow + 1,
                       column  : 0,
-                      colSpan : this.__maxCol
+                      colSpan : this.__maxCol + 1
                     });
         }
 

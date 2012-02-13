@@ -40,10 +40,13 @@ qx.Class.define("aiagallery.dbif.Constants",
       Banned      : 0,
       Pending     : 1,
       Active      : 2,
-      Incomplete  : 3,
-      Processing  : 4,
-      Invalid     : 5,
-      Unpublished : 6
+      Unpublished : 3,
+      Invalid     : 4,
+      Incomplete  : 5,
+      Editing     : 6,
+      NotSaved    : 7,
+      Uploading   : 8,
+      Processing  : 9
     },
     
     /** Reverse mapping of status: values to names */
@@ -52,11 +55,23 @@ qx.Class.define("aiagallery.dbif.Constants",
       "Banned", 
       "Under review",
       "Active",
-      "Incomplete",
-      "Processing",
+      "Unpublished",
       "Invalid",
-      "Unpublished"
+      "Incomplete",
+      "Editing",
+      "Not saved!",
+      "Uploading",
+      "Processing"
     ],
+
+    /** Maximum length of input fields */
+    FieldLength :
+    {
+      Title       : 30,
+      Description : 480,
+      Tags        : 20,
+      Comment     : 480
+    },
 
     /** Mapping of FlagType names to values */
     FlagType      : 
@@ -150,6 +165,9 @@ qx.Class.define("aiagallery.dbif.Constants",
       // [ title ]
       "App submitted" : "Application submitted, being processed",
       
+      // [ title (if available) ]
+      "App incomplete" : "Application submitted but is incomplete",
+
       // [ title, imageNumber ]
       "Invalid image" : "An invalid image was uploaded",
       

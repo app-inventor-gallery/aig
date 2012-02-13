@@ -17,10 +17,11 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
       
       visitors:
       {
-        "jarjar@binks.org" :
+        "2000" :
         {
+          id           : "2000",
           displayName  : "mynewdisplayname",
-          id           : "jarjar@binks.org",
+          email        : "jarjar@binks.org",
           permissions  : ["getAppList", "addOrEditApp", "deleteApp", "getAppListAll",
                           "appQuery", "getAppInfo", "addComment", "deleteComment",
                           "getComments", "mobileRequest", "getCategoryTags", 
@@ -28,9 +29,35 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
                          "editProfile", "whoAmI"],
           status       : 2
         }
-        
-      
       },
+      "permissiongroup" :
+      {
+        "ALL" :
+        {
+          "name" : "ALL",
+          "permissions" : ["addOrEditApp", "deleteApp", 
+                         "getAppListAll", "addComment", "deleteComment", 
+                         "flagIt", "addOrEditVisitor", "deleteVisitor", 
+                         "getVisitorList", "likesPlusOne", 
+                         "getDatabaseEntities"],
+          "description" : "All permissions"
+        },
+        "SOME" :
+        {
+          "name" : "SOME",
+          "permissions" : ["addOrEditApp", "deleteApp", 
+                         "getAppListAll", "addComment", "deleteComment", 
+                         "flagIt", "likesPlusOne"],
+          "description" : "Some permissions"
+        },
+         "ONE" :
+        {
+          "name" : "SOME",
+          "permissions" : ["addOrEditApp"],
+          "description" : "Some permissions"
+        }
+      },
+      
       tags:     {},
       search:   {},
       likes:    {},
@@ -44,7 +71,8 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
     // Instantiate this to aiagalelry.dbif.DbifSim.getInstance()
     dbifSim : null,
     
-    // This string is to be appended to assertions, to be specific about test conditions
+    // This string is to be appended to assertions, to be specific about test
+    // conditions
     permissionLevel : "all permissions",
     
     setUp: function()
@@ -55,11 +83,12 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
       
       this.dbifSim.setWhoAmI(
         {
-          email : "jarjar@binks.org",
-          isAdmin: false,
-          logoutUrl: "undefined",
-          permissions: [],
-          userId :  "nameSetWhoAmI"
+          id          : "2000",
+          email       : "jarjar@binks.org",
+          isAdmin     : false,
+          logoutUrl   : "undefined",
+          permissions : this.dbifSim.getGroupPermissions("ALL").permissions,
+          displayName : "nameSetWhoAmI"
         });
       
       // Use a personalized database
@@ -74,101 +103,416 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
       liberated.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
     },
     
-    "test: attempt to getAppList" : function()
+    // Unit tests for Individual Permissions
+    
+    "test 01: attempt to getAppList" : function()
     {
       // Must be logged in
-      this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.getAppList"), "getAppList with " + this.permissionLevel);
+      this.assert(
+        aiagallery.dbif.MDbifCommon.authenticate(
+          "aiagallery.features.getAppList"),
+        "getAppList with " + this.permissionLevel);
     },
     
-    "test: attempt to addOrEditApp" : function()
+    "test 02: attempt to addOrEditApp" : function()
     {
       // Must be logged in
-      this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.addOrEditApp"), "addOrEditApp with " + this.permissionLevel);
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon.authenticate(
+          "aiagallery.features.addOrEditApp"),
+        "addOrEditApp with " + this.permissionLevel);
     },
     
-    "test: attempt to deleteApp" : function()
+    "test 03: attempt to deleteApp" : function()
     {
       // Check Permissions
-      this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.deleteApp"), "deleteApp with " + this.permissionLevel);
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon.authenticate(
+          "aiagallery.features.deleteApp"), 
+        "deleteApp with " + this.permissionLevel);
     },
     
-    "test: attempt to getAppListAll" : function()
+    "test 04: attempt to getAppListAll" : function()
     {
       // FIXME: TEMPORARILY ANON, SHOULD BE CHECK PERMISSIONS
-      this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.getAppListAll"), "getAppListAll with " + this.permissionLevel);
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon.authenticate(
+          "aiagallery.features.getAppListAll"), 
+        "getAppListAll with " + this.permissionLevel);
     },
     
-    "test: attempt to appQuery" : function()
+    "test 05: attempt to appQuery" : function()
     {
       // Anonymous
-      this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.appQuery"), "appQuery with " + this.permissionLevel);
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon.authenticate(
+          "aiagallery.features.appQuery"),
+        "appQuery with " + this.permissionLevel);
     },
 
-    "test: attempt to getAppInfo" : function()
+    "test 06: attempt to getAppInfo" : function()
     {
       // Anonymous
-      this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.getAppInfo"), "getAppInfo with " + this.permissionLevel);
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon.authenticate(
+          "aiagallery.features.getAppInfo"), 
+        "getAppInfo with " + this.permissionLevel);
     },    
     
-    "test: attempt to addComment" : function()
+    "test 07: attempt to addComment" : function()
     {
       // Must be logged in
-      this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.addComment"), "addComment with " + this.permissionLevel);
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon.authenticate(
+          "aiagallery.features.addComment"), 
+        "addComment with " + this.permissionLevel);
     },
     
-    "test: attempt to deleteComment" : function()
+    "test 08: attempt to deleteComment" : function()
     {
       // Check Permissions
-      this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.deleteComment"), "deleteComment with " + this.permissionLevel);
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon.authenticate(
+          "aiagallery.features.deleteComment"), 
+        "deleteComment with " + this.permissionLevel);
     },    
 
-    "test: attempt to getComments" : function()
+    "test 09: attempt to getComments" : function()
     {
       // Anonymous
-      this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.getComments"), "getComments with " + this.permissionLevel);
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon.authenticate(
+          "aiagallery.features.getComments"),
+        "getComments with " + this.permissionLevel);
     },
 
-    "test: attempt to mobileRequest" : function()
+    "test 10: attempt to mobileRequest" : function()
     {
       // Anonymous
-      this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.mobileRequest"), "mobileRequest with " + this.permissionLevel);
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon.authenticate(
+          "aiagallery.features.mobileRequest"),
+        "mobileRequest with " + this.permissionLevel);
     },
 
-    "test: attempt to getCategoryTags" : function()
+    "test 11: attempt to getCategoryTags" : function()
     {
       // Anonymous
-      this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.getCategoryTags"), "getCategoryTags with " + this.permissionLevel);
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon.authenticate(
+          "aiagallery.features.getCategoryTags"), 
+        "getCategoryTags with " + this.permissionLevel);
     },
 
-    "test: attempt to addOrEditVisitor" : function()
+    "test 12: attempt to addOrEditVisitor" : function()
     {
       // Check Permissions
-      this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.addOrEditVisitor"), "addOrEditVisitor with " + this.permissionLevel);
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon.authenticate(
+          "aiagallery.features.addOrEditVisitor"), 
+        "addOrEditVisitor with " + this.permissionLevel);
     },
 
-    "test: attempt to deleteVisitor" : function()
+    "test 13: attempt to deleteVisitor" : function()
     {
       // Check permissions
-      this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.deleteVisitor"), "deleteVisitor with " + this.permissionLevel);
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon.authenticate(
+          "aiagallery.features.deleteVisitor"),
+        "deleteVisitor with " + this.permissionLevel);
     },
     
-    "test: attempt to getVisitorList" : function()
+    "test 14: attempt to getVisitorList" : function()
     {
       // Check permissions
-      this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.getVisitorList"), "getVisitorList with " + this.permissionLevel);
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon.authenticate(
+          "aiagallery.features.getVisitorList"), 
+        "getVisitorList with " + this.permissionLevel);
     },
 
-    "test: attempt to editProfile" : function()
+    "test 15: attempt to editProfile" : function()
     {
       // Must be logged in
-      this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.editProfile"), "editProfile with " + this.permissionLevel);
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon.authenticate(
+          "aiagallery.features.editProfile"), 
+        "editProfile with " + this.permissionLevel);
     },
 
-    "test: attempt to whoAmI" : function()
+    "test 16: attempt to whoAmI" : function()
     {
       // Anonymous
-      this.assert(aiagallery.dbif.MDbifCommon.authenticate("aiagallery.features.whoAmI"), "whoAmI with " + this.permissionLevel);
-    } 
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon.authenticate(
+          "aiagallery.features.whoAmI"),
+        "whoAmI with " + this.permissionLevel);
+    }, 
     
+    // Unit Tests for Group Permissions
+    
+    "test 17: succeed permission test with addOrEditApp (PGroups)" : function()
+    {
+      //Start with fresh DB
+      var myDB = qx.lang.Object.clone(this.__db, true);
+        
+      // Use a personalized database
+      liberated.sim.Dbif.setDb(myDB);
+        
+      //Get instance
+      myDB = aiagallery.dbif.DbifSim.getInstance();
+       
+      // Create new objVisitor
+      var visitor = new aiagallery.dbif.ObjVisitors("2001");
+    
+      // Provide the new data
+      visitor.setData(
+        {
+          id          : "2001",
+          email       : "paul@thetester.com",
+          displayName : "paulissocool",
+          permissions :  [],
+          permissionGroups : ["ALL"],
+          status : 2
+        });
+      
+      // Expand the permission groups
+      var permissions = 
+        aiagallery.dbif.MVisitors.getVisitorPermissions(visitor.getData());
+    
+      // Write the new data
+      visitor.put();
+    
+      myDB.setWhoAmI(
+        {
+          id               : "2001",
+          email            : "paul@thetester.com",
+          isAdmin          : false,
+          logoutUrl        : "undefined",
+          permissions      : permissions,
+          permissionGroups : ["ALL"],
+          displayName      : "pGroupTests"
+        });
+    
+      var myObjData = 
+        new aiagallery.dbif.ObjVisitors("2001").getData();
+    
+      this.assertTrue(aiagallery.dbif.MDbifCommon._deepPermissionCheck(
+        "addOrEditApp"), "with permission group: " + 
+        myObjData.permissionGroups.join(", "));
+    },
+    
+    "test 18: fail permission test with addOrEditApp (PGroups)" : function()
+    {
+    
+      //Start with fresh DB
+      var myDB = qx.lang.Object.clone(this.__db, true);
+        
+      // Use a personalized database
+      liberated.sim.Dbif.setDb(myDB);
+        
+      //Get instance
+      myDB = aiagallery.dbif.DbifSim.getInstance();
+       
+      // Create new objVisitor
+      var visitor = new aiagallery.dbif.ObjVisitors("2001");
+    
+      // Provide the new data
+      visitor.setData(
+        {
+          id          : "2001",
+          email       : "paul@thetester.com",
+          displayName : "paulissocool",
+          permissions :  [],
+          permissionGroups : [],
+          status : 2
+        });
+      
+       // Write the new data
+       visitor.put();
+    
+      // Expand the permission groups
+      var permissions = 
+        aiagallery.dbif.MVisitors.getVisitorPermissions(visitor.getData());
+    
+       myDB.setWhoAmI(
+       {
+         id               : "2001",
+         email            : "paul@thetester.com",
+         isAdmin          : false,
+         logoutUrl        : "undefined",
+         permissions      : permissions,
+         permissionGroups : [],
+         displayName      : "pGroupTests"
+       });
+        
+      var myObjData = 
+        new aiagallery.dbif.ObjVisitors("2001").getData();
+    
+      this.assertFalse(
+        aiagallery.dbif.MDbifCommon._deepPermissionCheck("addOrEditApp"), 
+        "with permission group: " + 
+        myObjData.permissionGroups.join(", "));
+    },
+    
+    "test 19: User has two pGroups, second one has valid permission (PGroups)" 
+      : function()
+    {
+    
+      //Start with fresh DB
+      var myDB = qx.lang.Object.clone(this.__db, true);
+        
+      // Use a personalized database
+      liberated.sim.Dbif.setDb(myDB);
+        
+      //Get instance
+      myDB = aiagallery.dbif.DbifSim.getInstance();
+       
+      // Create new objVisitor
+      var visitor = new aiagallery.dbif.ObjVisitors("2001");
+    
+      // Provide the new data
+      visitor.setData(
+        {
+          id          : "2001",
+          email       : "paul@thetester.com",
+          displayName : "paulissocool",
+          permissions :  [],
+          permissionGroups : ["SOME", "ALL"],
+          status : 2
+        });
+      
+       // Write the new data
+       visitor.put();
+    
+      // Expand the permission groups
+      var permissions = 
+        aiagallery.dbif.MVisitors.getVisitorPermissions(visitor.getData());
+    
+       myDB.setWhoAmI(
+       {
+         id               : "2001",
+         email            : "paul@thetester.com",
+         isAdmin          : false,
+         logoutUrl        : "undefined",
+         permissions      : permissions,
+         displayName      : "pGroupTests"
+       });
+        
+      var myObjData = 
+        new aiagallery.dbif.ObjVisitors("2001").getData();
+    
+      this.assertTrue(
+        aiagallery.dbif.MDbifCommon._deepPermissionCheck("getDatabaseEntities"),
+        "with permission group: " + 
+        myObjData.permissionGroups.join(", "));
+    },
+    
+    "test 20: User has two pGroups, neither has valid permissions (PGroups)" 
+      : function()
+    {
+    
+      //Start with fresh DB
+      var myDB = qx.lang.Object.clone(this.__db, true);
+        
+      // Use a personalized database
+      liberated.sim.Dbif.setDb(myDB);
+        
+      //Get instance
+      myDB = aiagallery.dbif.DbifSim.getInstance();
+       
+      // Create new objVisitor
+      var visitor = new aiagallery.dbif.ObjVisitors("2001");
+    
+      // Provide the new data
+      visitor.setData(
+        {
+          id               : "2001",   
+          email            : "paul@thetester.com",
+          displayName      : "paulissocool",
+          permissions      :  [],
+          permissionGroups : ["SOME", "ONE"],
+          status : 2
+        });
+      
+       // Write the new data
+       visitor.put();
+    
+      // Expand the permission groups
+      var permissions = 
+        aiagallery.dbif.MVisitors.getVisitorPermissions(visitor.getData());
+    
+       myDB.setWhoAmI(
+       {
+         id               : "2001",
+         email            : "paul@thetester.com",
+         isAdmin          : false,
+         logoutUrl        : "undefined",
+         permissions      : permissions,
+         permissionGroups : ["SOME", "ONE"],
+         displayName      :  "pGroupTests"
+        });
+        
+      var myObjData = 
+        new aiagallery.dbif.ObjVisitors("2001").getData();
+    
+      this.assertFalse(
+        aiagallery.dbif.MDbifCommon._deepPermissionCheck("getDatabaseEntities"),
+        "with permission group: " + 
+        myObjData.permissionGroups.join(", "));
+    },
+     "test 21: User has a pgroup, but does not have valid permission (PGroups)" 
+      : function()
+    {
+    
+      //Start with fresh DB
+      var myDB = qx.lang.Object.clone(this.__db, true);
+        
+      // Use a personalized database
+      liberated.sim.Dbif.setDb(myDB);
+        
+      //Get instance
+      myDB = aiagallery.dbif.DbifSim.getInstance();
+       
+      // Create new objVisitor
+      var visitor = new aiagallery.dbif.ObjVisitors("2001");
+    
+      // Provide the new data
+      visitor.setData(
+        {
+          id          : "2001",
+          email       : "paul@thetester.com",
+          displayName : "paulissocool",
+          permissions :  [],
+          permissionGroups : ["SOME"],
+          status : 2
+        });
+      
+       // Write the new data
+       visitor.put();
+    
+      // Expand the permission groups
+      var permissions = 
+        aiagallery.dbif.MVisitors.getVisitorPermissions(visitor.getData());
+    
+       myDB.setWhoAmI(
+       {
+         id               : "2001",
+         email            : "paul@thetester.com",
+         isAdmin          : false,
+         logoutUrl        : "undefined",
+         permissions      : permissions,
+         permissionGroups : ["SOME"],
+         displayName      : "pGroupTests"
+        });
+        
+      var myObjData = 
+        new aiagallery.dbif.ObjVisitors("2001").getData();
+    
+      this.assertFalse(
+        aiagallery.dbif.MDbifCommon._deepPermissionCheck("addOrEditVisitor"),
+        "with permission group: " + 
+        myObjData.permissionGroups.join(", "));
+    }
   }
 });

@@ -13,7 +13,7 @@ qx.Class.define("aiagallery.test.Base160Test",
 
   members :
   {
-    "test: MComments._numToBase160()" : function()
+    "test 01: MComments._numToBase160()" : function()
     {
       // Get access to the RPC implementations. This includes the mixins for
       // all RPCs.
@@ -29,7 +29,7 @@ qx.Class.define("aiagallery.test.Base160Test",
       this.assertEquals("0010", onesixty, "160");
     },
     
-    "test: MComments._incrementBase160()" : function()
+    "test 02: MComments._incrementBase160()" : function()
     {
       // Get access to the RPC implementations. This includes the mixins for
       // all RPCs.

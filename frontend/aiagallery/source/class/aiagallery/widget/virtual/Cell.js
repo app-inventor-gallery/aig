@@ -22,26 +22,14 @@ qx.Class.define("aiagallery.widget.virtual.Cell",
   {
     _createWidget : function()
     {
-      var widget = new qx.ui.basic.Atom().set(
-        {
-          iconPosition: "top"
-        });
+      var widget = new aiagallery.widget.AppThumb();
       
-      widget.getChildControl("label").set(
+      // Reset the background color
+      widget.set(
         {
-          padding : [0, 4]
+          backgroundColor : null
         });
-      
-      widget.getChildControl("icon").set(
-        {
-          padding : 4,
-          scale : true,
-          minHeight : 110,
-          minWidth  : 110,
-          maxHeight : 110,
-          maxWidth  : 110
-        });
-      
+
       return widget;
     },
 
@@ -50,8 +38,10 @@ qx.Class.define("aiagallery.widget.virtual.Cell",
     {
       widget.set(
         {
-          icon  : data.icon,
-          label : data.label
+          icon        : data.icon,
+          label       : data.label,
+          displayName : data.displayName,
+          owner       : data.owner
         });
     },
 
@@ -60,17 +50,24 @@ qx.Class.define("aiagallery.widget.virtual.Cell",
     {
       var label = widget.getChildControl("label");
       var icon = widget.getChildControl("icon");
+      var owner = widget.getChildControl("owner");
 
       if (states.selected)
       {
         label.setDecorator("selected");
         label.setTextColor("text-selected");
+        owner.setDecorator("selected");
+
+        // do not set owner text color, as it overrides the android-green
+        // owner.setTextColor("text-selected");
         icon.setDecorator("group");
       }
       else
       {
         label.resetDecorator();
         label.resetTextColor();
+        owner.resetDecorator();
+        // owner.resetTextColor();
         icon.resetDecorator();
       }
     }

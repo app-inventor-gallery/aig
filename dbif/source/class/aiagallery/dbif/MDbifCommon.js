@@ -20,7 +20,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
     aiagallery.dbif.MSearch,
     aiagallery.dbif.MLiking,
     aiagallery.dbif.MFlags,
-    aiagallery.dbif.MDbMgmt
+    aiagallery.dbif.MDbMgmt,
+    aiagallery.dbif.MPermissionGroup
   ],
 
   construct : function()
@@ -34,7 +35,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
   {
     /**
      * Information about the currently-logged-in user. The value is a map
-     * containing the fields: email, userId, and isAdmin.
+     * containing the fields: id, email, displayName, and isAdmin.
      */
     whoAmI :
     {
@@ -50,8 +51,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
     /**
      * Add a log message for the specified visitor.
      * 
-     * @param visitor {String}
-     *   The email address identifying a specific existing visitor
+     * @param visitor {Number}
+     *   The id of a specific existing visitor
      * 
      * @param messageCode {String}
      *   A key from the aiagallery.dbif.Constants.LogMessage map
@@ -82,6 +83,29 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
     _applyWhoAmI : function(value, old)
     {
       aiagallery.dbif.MDbifCommon.__whoami = value;
+      
+      // Be sure this visitor is in the database
+      if (typeof value == "object" &&
+          value !== null &&
+          typeof value.id == "string" &&
+          value.id.length > 0)
+      {
+        liberated.dbif.Entity.asTransaction(
+          function()
+          {
+            var             visitor;
+            var             data;
+
+            visitor = new aiagallery.dbif.ObjVisitors(value.id);
+            if (visitor.getBrandNew())
+            {
+              data = visitor.getData();
+              data.email = value.email;
+              data.displayName = value.displayName;
+              visitor.put();
+            }
+          });
+      }
     }
   },
 
@@ -130,7 +154,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       {
         // Nope. Retrieve our visitor object
         me = new aiagallery.dbif.ObjVisitors(
-          aiagallery.dbif.MDbifCommon.__whoami.email);
+          aiagallery.dbif.MDbifCommon.__whoami.id);
 
         // Is it brand new, or does not contain a display name yet?
         meData = me.getData();
@@ -139,7 +163,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
           // True. Save it.
           if (! meData.displayName)
           {
-            meData.displayName = aiagallery.dbif.MDbifCommon.__whoami.userId;
+            meData.displayName =
+              aiagallery.dbif.MDbifCommon.__whoami.displayName;
           }
 
           me.put();
@@ -251,7 +276,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         }
 
       case "editProfile":
-        return ! bAnonymous;    // Access is allowed if they're logged in
+        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       //
       // MWhoAmI
@@ -269,7 +294,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MLiking
       //
       case "likesPlusOne":
-        return ! bAnonymous;   // Access allowed if logged in
+        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       //
       // MDbMgmt
@@ -297,13 +322,9 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         return false;
       }
 
-      var email = whoami.email;
-      var myObjData = new aiagallery.dbif.ObjVisitors(email).getData();
-      var permissionArr = myObjData["permissions"];
-      var permissionGroupArr = myObjData["permissionGroups"];
-      var permission;
-      var group;
-      var data;
+      // Retrieve this user's full list of permissions (already expanded to
+      // include permissions gleaned from permission groups).
+      var permissionArr = whoami.permissions || [];
 
       // Standard check: Does my permission list contain this method?
       if (permissionArr != null &&
@@ -313,37 +334,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         return true;
       }
 
-// Permission Groups Untested, disabling for now
-      if(false)
-      {
-        // Deeper check: Do any of my permission groups give me access to this
-        // method?
-        if (permissionGroupArr != null)
-        {
-          // For every permission group of which I am a member...
-          permissionGroupArr.forEach(
-            function (group)
-            {
-
-              // Retrieve the list of permissions it gives me
-              data = new aiagallery.dbif.ObjPermissonGriou(group).getData();
-              permissionArr = data["permissions"];
-
-              // Same as standard check: does this group contain this method?
-              if (permissionArr != null &&
-                  qx.lang.Array.contains(permissionArr, methodName))
-              {
-                // Yes, allow me.
-                return true;
-              }
-
-              return false;
-            });
-        }
-      }
-
-      // Did not find this permission, dissalow.
-      return false;
+      // Permission not found 
+      return false; 
     }
   }
 });

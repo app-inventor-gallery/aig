@@ -15,7 +15,6 @@ qx.Class.define("aiagallery.test.AppsTest",
   {
     "test 01: App addition and deletion" : function()
     {
-      
       // Get access to the RPC implementations. This includes the mixins for
       // all RPCs.
       var dbifSim = aiagallery.dbif.DbifSim.getInstance();
@@ -26,16 +25,16 @@ qx.Class.define("aiagallery.test.AppsTest",
       // Adding then deleting an App to see it go smoothly.
       var myAppData = dbifSim.addOrEditApp(null, 
                                            {
-                                             owner      : "me",
+                                             owner      : 1002,
                                              description: 
                                              "A bunch of Totally Awesome words",
                                              title : "some title",
                                              tags  : 
                                              [
-                                               "Development", 
+                                               "Business", 
                                                "some tag"
                                              ],
-                                             image1 : "xxx",
+                                             image1 : "data://xxx",
                                              source : "somesource"
                                            },
                                           error);
@@ -178,9 +177,6 @@ qx.Class.define("aiagallery.test.AppsTest",
       this.assertEquals(3,
                         appList.length,
                        "appListByList gets correct # of results");
-      
     }
-    
-    
   }
 });

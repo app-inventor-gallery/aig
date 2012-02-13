@@ -237,6 +237,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var             fsm = module.fsm;
       var             response = rpcRequest.getUserData("rpc_response");
       var             requestType = rpcRequest.getUserData("requestType");
+      var             i;
 
       if (response.type == "failed")
       {
@@ -293,15 +294,14 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         parent.add(likedApps);
         
         // Fill the featured apps ribbon with data
-        for (var i = 0; i < featuredAppsList.length; i++)
+        for (i = 0; i < featuredAppsList.length; i++)
         {
           var appFeatured = featuredAppsList[i];
-          
-          // FIXME: Need to fetch visitor's displayName to show instead of id
           var appThumbFeatured = 
             new aiagallery.widget.AppThumb(appFeatured.title,
-                                           appFeatured.owner,
-                                           appFeatured.image1);
+                                           appFeatured.displayName,
+                                           appFeatured.image1,
+                                           appFeatured.owner);
           featuredApps.add(appThumbFeatured);
           
           // Associate the app data with the UI widget so it can be passed
@@ -313,19 +313,22 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
             "click", 
             function(e)
             {
-              fsm.fireImmediateEvent("homeRibbonAppClick", this, 
+              fsm.fireImmediateEvent(
+                "homeRibbonAppClick", 
+                this, 
                 e.getCurrentTarget().getUserData("App Data"));
             });
         }
 
         // Fill the newest apps ribbon with data
-        for (var i = 0; i < newestAppsList.length; i++)
+        for (i = 0; i < newestAppsList.length; i++)
         {
           var appNewest = newestAppsList[i];
           var appThumbNewest = 
             new aiagallery.widget.AppThumb(appNewest.title, 
-                                           appNewest.owner,
-                                           appNewest.image1);
+                                           appNewest.displayName,
+                                           appNewest.image1,
+                                           appNewest.owner);
           newestApps.add(appThumbNewest);
 
           // Associate the app data with the UI widget so it can be passed
@@ -337,20 +340,23 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
             "click", 
             function(e)
             {
-              fsm.fireImmediateEvent("homeRibbonAppClick", this, 
+              fsm.fireImmediateEvent(
+                "homeRibbonAppClick", 
+                this, 
                 e.getCurrentTarget().getUserData("App Data"));
             });
         }
 
         // Fill the most liked apps ribbon with data
-        for (var i = 0; i < likedAppsList.length; i++)
+        for (i = 0; i < likedAppsList.length; i++)
         {
           var appLiked = likedAppsList[i];
 
           var appThumbLiked = 
             new aiagallery.widget.AppThumb(appLiked.title,
-                                           appLiked.owner,
-                                           appLiked.image1);
+                                           appLiked.displayName,
+                                           appLiked.image1,
+                                           appLiked.owner);
           likedApps.add(appThumbLiked);
 
           // Associate the app data with the UI widget so it can be passed
@@ -362,7 +368,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
             "click", 
             function(e)
             {
-              fsm.fireImmediateEvent("homeRibbonAppClick", this, 
+              fsm.fireImmediateEvent(
+                "homeRibbonAppClick", 
+                this, 
                 e.getCurrentTarget().getUserData("App Data"));
             });
         }

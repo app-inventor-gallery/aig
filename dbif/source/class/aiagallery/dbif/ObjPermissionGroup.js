@@ -44,7 +44,7 @@ qx.Class.define("aiagallery.dbif.ObjPermissionGroup",
         "description" : "String",
 
         /** The name of this group, i.e. Administrator, guest, moderator etc */
-        "name"  : "Key"
+        "name"  : "String"
       };
 
     // Register our property types

@@ -69,8 +69,8 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       var             UserServiceFactory;
       var             userService;
       var             user;
-      var             whoami;
-      var             userId;
+      var             email;
+      var             displayName;
       var             visitor;
       var             googleUserId;
       var             googleNickname;
@@ -87,8 +87,9 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       {
         this.setWhoAmI(
           {
+            id                : "",
             email             : "anonymous",
-            userId            : "",
+            displayName       : "",
             isAdmin           : false,
             logoutUrl         : "",
             permissions       : [],
@@ -97,35 +98,37 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
         return;
       }
 
-      whoami = String(user.getEmail());
+      email = String(user.getEmail());
       googleNickname = String(user.getNickname());
       googleUserId = String(user.getUserId());
 
       // Try to get this user's display name. Does the visitor exist?
-      visitor =
-        liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", whoami);
+      visitor = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                            googleUserId);
       if (visitor.length > 0)
       {
         // Yup, he exists.
-        userId = visitor[0].displayName || googleNickname || googleUserId;
-        permissions = visitor[0].permissions || [];
+        displayName = visitor[0].displayName || googleNickname || googleUserId;
+        permissions = 
+          aiagallery.dbif.MVisitors.getVisitorPermissions(visitor[0]);
       }
       else
       {
         // He doesn't exist. Just use the unique number.
-        userId = googleNickname || googleUserId;
+        displayName = googleNickname || googleUserId;
         permissions = [];
       }
 
       // Save the logged-in user. The whoAmI property is in MDbifCommon.
       this.setWhoAmI(
         {
-          email             : whoami,
-          userId            : userId,
+          id                : googleUserId,
+          email             : email,
+          displayName       : displayName,
           isAdmin           : userService.isUserAdmin(),
           logoutUrl         : userService.createLogoutURL("/"),
           permissions       : permissions,
-          hasSetDisplayName : userId != googleUserId
+          hasSetDisplayName : displayName != googleUserId
         });
     }
   },

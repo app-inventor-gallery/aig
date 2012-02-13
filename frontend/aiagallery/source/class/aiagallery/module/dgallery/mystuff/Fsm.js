@@ -822,7 +822,6 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           var             dataModel;
           var             permissions;
           var             rowData = {};
-          var             whoami;
           var             statusCodes = aiagallery.dbif.Constants.StatusToName;
 
           // Retrieve the RPC request
@@ -841,12 +840,8 @@ qx.Class.define("aiagallery.module.dgallery.mystuff.Fsm",
           // Get the table's data model
           dataModel = table.getTableModel();
           
-          // Find out who we are
-          whoami = aiagallery.main.Gui.getInstance().whoAmI.getEmail();
-
           // Create the row data for the table
           rowData.uid          = result.uid;
-          rowData.owner        = whoami;
           rowData.title        = result.title;
           rowData.description  = result.description;
           rowData.image1       = result.image1;

@@ -27,16 +27,17 @@ qx.Class.define("aiagallery.test.VisitorsTest",
       this.error = new liberated.rpc.error.Error("2.0");
     },
     
-    "test: Owner Id and Display Name exchange" : function()
+    "test 01: Owner Id and Display Name exchange" : function()
     {
       var db =
       {
         visitors:
         {
-          "joe@blow.com" :
+          1001 :
           {
+            id           : 1001,
             displayName  : "Joe Blow",
-            id           : "joe@blow.com",
+            email        : "joe@blow.com",
             permissions  : [],
             status       : aiagallery.dbif.Constants.Status.Active
           }
@@ -55,37 +56,34 @@ qx.Class.define("aiagallery.test.VisitorsTest",
 
       this.dbifSim.setWhoAmI(
         {
-          email     : "joe@blow.com",
-          userId    : "Joe Blow",
-          isAdmin   : false
+          id          : 1001,
+          email       : "joe@blow.com",
+          displayName : "Joe Blow",
+          isAdmin     : false
         });
       
       var whoAmI = this.dbifSim.whoAmI();
 
-      var requestEmail = aiagallery.dbif.MVisitors._getVisitorId(whoAmI.userId,
-                                                                 this.error);
-
       var requestDisplayName = aiagallery.dbif.MVisitors._getDisplayName(
-        whoAmI.email, 
+        whoAmI.id,
         this.error);
 
-      this.assertEquals(whoAmI.email, requestEmail, "Proper email returned");
-
-      this.assertEquals(whoAmI.userId, requestDisplayName, "display name");
+      this.assertEquals(whoAmI.displayName, requestDisplayName, "display name");
 
       // Reset the db for other tests
       liberated.sim.Dbif.setDb(aiagallery.dbif.MSimData.Db);
     },
 
     
-    "test: edit profile with displayName" : function()
+    "test 02: edit profile with displayName" : function()
     {
       // Log in as a known existing user
       this.dbifSim.setWhoAmI(
         {
-          email     : "joe@blow.com",
-          userId    : "Joe Blow",
-          isAdmin   : false
+          id          : 1001,
+          email       : "joe@blow.com",
+          displayName : "Joe Blow",
+          isAdmin     : false
         });
       
       var result = this.dbifSim.editProfile(
@@ -96,7 +94,7 @@ qx.Class.define("aiagallery.test.VisitorsTest",
       
       // Retrieve the visitor object for Joe
       var joe = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
-                                            this.dbifSim.getWhoAmI().email)[0];
+                                            this.dbifSim.getWhoAmI().id)[0];
       
       // Ensure that his display name is what it should be
       this.assertEquals("Cokehead", joe.displayName);

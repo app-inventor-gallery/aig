@@ -89,12 +89,14 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
                          this.tr("Display Name"),
                          this.tr("Email"),
                          this.tr("Permissions"),
+                         this.tr("Permission Groups"),
                          this.tr("Status")
                        ],
                        [
                          "displayName",
-                         "id",
+                         "email",
                          "permissions",
+                         "permissionGroups",
                          "status"
                        ]);
 
@@ -135,13 +137,15 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       resizeBehavior.set(0, { width:"1*", minWidth:200 }); // Display Name
       resizeBehavior.set(1, { width:"1*", minWidth:200 }); // Email
       resizeBehavior.set(2, { width:200                }); // Permissions
-      resizeBehavior.set(3, { width:60                 }); // Status
+      resizeBehavior.set(3, { width:200                }); // Permission Groups
+      resizeBehavior.set(4, { width:60                 }); // Status
 
       var editor = new aiagallery.module.mgmt.users.CellEditorFactory();
       tcm.setCellEditorFactory(0, editor);
       tcm.setCellEditorFactory(1, editor);
       tcm.setCellEditorFactory(2, editor);
       tcm.setCellEditorFactory(3, editor);
+      tcm.setCellEditorFactory(4, editor);
 
       // Listen for changeSelection events so we can enable/disable buttons
       var selectionModel = table.getSelectionModel();
@@ -230,8 +234,15 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       case "getVisitorList":
         table = fsm.getObject("table");
         
+        // Split out the data from the map
+        // Save the pgroup info for the cellEditorWindow
+        var pGroups = response.data.result.pGroups; 
+        table.setUserData("pGroups", pGroups);
+        
+        var vistors = response.data.result.visitors; 
+        
         // Set the entire data model given the result array
-        table.getTableModel().setDataAsMapArray(response.data.result);
+        table.getTableModel().setDataAsMapArray(vistors);
         break;
 
       case "addOrEditVisitor":
