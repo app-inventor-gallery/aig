@@ -16,7 +16,7 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
       {
         "Whitelist" :
         {
-          "name" : "ALL",
+          "name" : "Whitelist",
           "permissions" : 
           [
             "addOrEditApp",
