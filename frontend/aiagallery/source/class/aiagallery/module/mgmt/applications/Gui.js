@@ -300,8 +300,8 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
       {
       case "getAppListAll":
         table = fsm.getObject("table");
+
         // Set the entire data model given the result array
-        console.log(response.data.result.apps);
         table.getTableModel().setDataAsMapArray(response.data.result.apps);
         break;
 
