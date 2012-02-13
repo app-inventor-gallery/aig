@@ -26,7 +26,7 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
             "flagIt",
             "likesPlusOne"
           ],
-          "description" : "All permissions"
+          "description" : "Normal user whitelist"
         },
         "ALL" :
         {
