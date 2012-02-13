@@ -38,15 +38,17 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                          this.intersectKeywordAndQuery,
                          [ "queryArgs" ]);
 
-
     this.registerService("aiagallery.features.getAppListByList",
                          this.getAppListByList,
                          [ "uidArr", "requestedFields" ]);
-
     
     this.registerService("aiagallery.features.getAppInfo",
                          this.getAppInfo,
                          [ "uid", "bStringize", "requestedFields" ]);
+
+    this.registerService("aiagallery.features.mgmtEditApp",
+                         this.mgmtEditApp,
+                         [ "uid", "attributes" ]);
   },
 
   statics :
@@ -1013,7 +1015,533 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       
       return appData;
     },
-    
+
+
+    mgmtEditApp : function(uid, attributes, error)
+    {
+
+// ** Edit me! **
+      var             i;
+      var             title;
+      var             description;
+      var             image;
+      var             previousAuthors;
+      var             source;
+      var             tags;
+      var             tagObj;
+      var             tagData;
+      var             oldTags;
+      var             bHasCategory;
+      var             categories;
+      var             uploadTime;
+      var             status;
+      var             statusIndex;
+      var             appData;
+      var             appObj;
+      var             hTask = null;
+      var             fTask = null;
+      var             queue;
+      var             options;
+      var             bNew;
+      var             whoami;
+      var             missing = [];
+      var             addedBlobs = [];
+      var             removeBlobs = [];
+      var             image1Key;
+      var             sourceKey = null;
+      var             field;
+      var             requestData;
+      var             messageData;
+      var             messageBus;
+
+// Following needs tweaking
+      var             allowableFields =
+        [
+//          "uid",                // ??
+          "title",
+          "description",
+          "image1",
+          "source",
+          "sourceFileName",
+          "tags",
+          "status"
+        ];
+      var             requiredFields =
+        [
+//          "owner",              // ??
+          "title",
+          "description",
+          "image1",
+          "source",
+          "tags"
+        ];
+      
+      try
+      {
+
+        // Get an App object for the given uid
+        appObj = new aiagallery.dbif.ObjAppData(uid);
+
+        // Retrieve the data
+        appData = appObj.getData();
+
+// Need to worry about authorization???
+
+        // Does the app exist?
+        if (appObj.getBrandNew())
+        {
+          // No--that's a problem!
+          error.setCode(1);
+          error.setMessage("Unrecognized UID");
+          return error;
+        }
+
+        // Issue a query for all category tags
+        categories = liberated.dbif.Entity.query("aiagallery.dbif.ObjTags", 
+                                                 {
+                                                   type  : "element",
+                                                   field : "type",
+                                                   value : "category"
+                                                 },
+                                                 null);
+
+        // We want to look at only the value field of each category
+        categories = categories.map(
+          function(o)
+          {
+            return o.value;
+          });
+
+        // Save the existing tags list
+        oldTags = appData.tags;
+
+        // Copy fields from the attributes parameter into this db record
+        allowableFields.forEach(
+          function(field)
+          {
+            // Was this field provided in the parameter attributes?
+            if (attributes[field])
+            {
+              // Handle certain fields specially
+              switch(field)
+              {
+              case "title":
+                // Validate the length
+                if (attributes.title.length > 
+                    aiagallery.dbif.Constants.FieldLength.Title)
+                {
+                  // The field data is too long
+                  error.setCode(3);
+                  error.setMessage("Field data too long");
+                  error.setData(
+                    {
+                      field  : "title",
+                      maxLen : aiagallery.dbif.Constants.FieldLength.Title
+                    });
+                  throw error;
+                }
+
+                // Replace what's in the db entry
+                appData[field] = attributes[field];
+                break;
+
+              case "description":
+                // Validate the length
+                if (attributes.description.length > 
+                    aiagallery.dbif.Constants.FieldLength.Description)
+                {
+                  // The field data is too long
+                  error.setCode(3);
+                  error.setMessage("Field data too long");
+                  error.setData(
+                    {
+                      field  : "description",
+                      maxLen : aiagallery.dbif.Constants.FieldLength.Description
+                    });
+                  throw error;
+                }
+
+                // Replace what's in the db entry
+                appData[field] = attributes[field];
+                break;
+/* // Hold off on this for now...
+              case "source":
+                // If there's no newsource member...
+                if (! appData.newsource)
+                {
+                  // ... then create it
+                  appData.newsource = [];
+                }
+                break;
+*/
+/* // Hold off on this for now...
+              case "image1":
+                // Ensure we have a data url
+                if (! qx.lang.Type.isString(attributes.image1) ||
+                    attributes.image1.substring(0, 5) != "data:")
+                {
+                  // The image is invalid. Let 'em know.
+                  error.setCode(4);
+                  error.setMessage("Invalid image data");
+                  throw error;
+                }
+
+                // Save the field data
+                appData.image1 = attributes.image1;
+
+                // Indicate that this file needs later processing.
+                appData.newimage1 = attributes.image1;
+                break;
+*/
+              case "tags":
+                // Validate the length
+                if (attributes.tags.length > 
+                    aiagallery.dbif.Constants.FieldLength.Tags)
+                {
+                  // The field data is too long
+                  error.setCode(3);
+                  error.setMessage("Field data too long");
+                  error.setData(
+                    {
+                      field  : "tags",
+                      maxLen : aiagallery.dbif.Constants.FieldLength.Tags
+                    });
+                  throw error;
+                }
+
+                // Replace what's in the db entry
+                appData.tags = attributes.tags;
+
+                // Ensure that at least one of the specified tags is a category
+                bHasCategory = false;
+                tags = appData.tags;
+                for (i = 0; i < tags.length; i++)
+                {
+                  // Is this tag a category?
+                  if (qx.lang.Array.contains(categories, tags[i]))
+                  {
+                    // Yup. Mark it.
+                    bHasCategory = true;
+
+                    // No need to look further.
+                    break;
+                  }
+                }
+                break;
+
+              default:
+                // Replace what's in the db entry
+                appData[field] = attributes[field];
+                break;
+              }
+            }
+          });
+
+        // If tags were specified, did we find at least one category tag?
+        if (attributes.tags && ! bHasCategory)
+        {
+          // Nope. Let 'em know.
+          error.setCode(5);
+          error.setMessage("At least one category is required");
+          return error;
+        }
+
+        // See if any fields are missing
+        for (field in
+             qx.lang.Object.getKeys(appObj.getDatabaseProperties().fields))
+        {
+          if (qx.lang.Array.contains(requiredFields, field) &&
+              typeof appData[field] == "undefined")
+          {
+            // Mark the required field as missing
+            missing.push(field);
+          }
+        }
+        
+        // Were there any missing, required fields?
+        if (missing.length > 0)
+        {
+          appData.status = aiagallery.dbif.Constants.Status.Incomplete;
+        }
+        else
+        {
+          appData.status = aiagallery.dbif.Constants.Status.Processing;
+        }
+/*
+        // If a new source file was uploaded...
+        if (attributes.source)
+        {
+          // ... then update the upload time to now
+          appData.uploadTime = aiagallery.dbif.MDbifCommon.currentTimestamp();
+
+          // Save the data
+          sourceKey = liberated.dbif.Entity.putBlob(attributes.source);
+
+          // Prepend the blob id to the key list of new source files
+          appData.source.unshift(sourceKey);
+
+          // Save the blob id to remove it, in case something fails
+          addedBlobs.push(sourceKey);
+        }
+*/
+      }
+      catch(e)
+      {
+        // Something failed. Remove any blobs we added.
+        addedBlobs.forEach(
+          function(blobId)
+          {
+            liberated.dbif.Entity.removeBlob(blobId);
+          });
+        
+        // Return or rethrow the error
+        if (e instanceof liberated.rpc.error.Error)
+        {
+          // It's a properly generated error, so return it
+          return e;
+        }
+        else
+        {
+          // Something unexpected
+          throw e;
+        }
+      }
+      
+      try
+      {
+        appData = liberated.dbif.Entity.asTransaction(
+          function()
+          {
+            // If tags were provided...
+            if (attributes.tags)
+            {
+              // Add new tags to the database, and update counts of formerly-
+              // existing tags. Remove "normal" tags with a count of 0.
+              appData.tags.forEach(
+                function(tag)
+                {
+                  // If the tag existed previously, ignore it.
+                  if (qx.lang.Array.contains(oldTags, tag))
+                  {
+                    // Remove it from oldTags
+                    qx.lang.Array.remove(oldTags, tag);
+                    return;
+                  }
+
+                  // It didn't exist. Create or retrieve existing tag.
+                  tagObj = new aiagallery.dbif.ObjTags(tag);
+                  tagData = tagObj.getData();
+
+                  // If we created it, data is initialized. Otherwise...
+                  if (! tagObj.getBrandNew())
+                  {
+                    // ... it existed, so we need to increment its count
+                    ++tagData.count;
+                  }
+
+                  // Save the tag object
+                  tagObj.put();
+                });
+
+              // Anything left in oldTags are those which were removed.
+              oldTags.forEach(
+                function(tag)
+                {
+                  tagObj = new aiagallery.dbif.ObjTags(tag);
+                  tagData = tagObj.getData();
+
+                  // The record has to exist already. Decrement this tag's
+                  // count.
+                  --tagData.count;
+
+                  // Ensure it's a "normal" tag
+                  if (tagData.type != "normal")
+                  {
+                    // It's not, so we have nothing more we need to do.
+                    return;
+                  }
+
+                  // If the count is less than 1...
+                  if (tagData.count < 1)
+                  {
+                    // ... then we can remove the tag
+                    tagObj.removeSelf();
+                  }
+                });
+            }
+
+            // Save this record in the database
+            appObj.put();
+
+            // If there were were missing fields...
+            if (appData.status != aiagallery.dbif.Constants.Status.Processing)
+            {
+              // ... then add a log entry so they know the app is incomplete
+              this.logMessage(appData.owner, "App incomplete", appData.title);
+
+              // Return partial data including newly-created key (if adding)
+              return appObj.getData();
+            }
+
+            // Add all words in text fields to word Search record
+            aiagallery.dbif.MApps._populateSearch(appObj.getData());
+
+            requestData =
+              {
+                type : "postAppUpload",
+                uid  : appData.uid
+              };
+
+            // If we're on App Engine...
+            switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+            {
+            case "appengine":
+              // ... then create a task to clean up the data for this app
+              var TaskQueue = Packages.com.google.appengine.api.taskqueue;
+              var Queue = TaskQueue.Queue;
+              var QueueFactory = TaskQueue.QueueFactory;
+              var TaskOptions = TaskQueue.TaskOptions;
+              var jsonRequest = qx.lang.Json.stringify(requestData);
+
+              queue = QueueFactory.getDefaultQueue();
+              options = TaskOptions.Builder.withUrl("/task");
+              options.payload(jsonRequest);
+              hTask = queue.add(options);
+              break;
+              
+            default:
+              fTask = qx.lang.Function.bind(
+                function(uid)
+                {
+                  var             appObj;
+                  var             appData;
+                  var             sourceBlobId;
+                  var             destBlobId;
+                  var             fileData;
+
+                  // Retrieve the app object
+                  appObj = new aiagallery.dbif.ObjAppData(requestData.uid);
+
+                  // Get the app property data from the app object
+                  appData = appObj.getData();
+
+                  // In the simulator we don't actually munge the data
+                  // urls. We can therefore just move them to their proper
+                  // resting place.
+                  if (appData.newimage1)
+                  {
+                    appData.image1 = appData.newimage1;
+                  }
+
+                  appData.newimage1 = null;
+
+                  // Post-processing is now complete.
+                  appData.status = aiagallery.dbif.Constants.Status.Active;
+
+                  // Write out the resulting data
+                  appObj.put();
+
+                  // Success
+                  this.logMessage(appData.owner,
+                                  "App available",
+                                  appData.title);
+
+                  // Dispatch a message for any subscribers to this type.
+                  // Don't do this in the build environment, because
+                  // TimerManager requires threads (in Rhino) which are
+                  // unavailable in App Engine.
+                  if (qx.core.Environment.get("qx.debug"))
+                  {
+                    qx.util.TimerManager.getInstance().start(
+                    function()
+                    {
+                      messageData =
+                        {
+                          type   : "app.postupload",
+                          title  : appData.title,
+                          appId  : appData.uid,
+                          status : appData.status
+                        };
+                      messageBus = qx.event.message.Bus.getInstance();
+                      messageBus.dispatchByName(messageData.type, messageData);
+                    },
+                    null,
+                    this,
+                    null,
+                    250);
+                  }
+
+                  // See if there are any source files to process.
+                  while (appData.newsource && appData.newsource.length > 0)
+                  {
+                     // There are. They were unshifted() onto their array, so
+                     // pop() them off to get them in FIFO order.
+                    sourceBlobId = appData.newsource.pop();
+
+                    // Retrieve the blob
+                    fileData = liberated.dbif.Entity.getBlob(sourceBlobId);
+
+                    // Decode the data
+                    fileData = aiagallery.dbif.Decoder64.decode(fileData);
+
+                    // Write it to a new blob
+                    destBlobId = liberated.dbif.Entity.putBlob(fileData);
+
+                    // Add the new blob id to the source blob list
+                    appData.source.unshift(destBlobId);
+
+                    // Remove the old blob
+                    liberated.dbif.Entity.removeBlob(sourceBlobId);
+                  }
+                },
+                this);
+              break;
+            }
+            
+            // Add a log entry so they know the app has been submitted
+            this.logMessage(appData.owner, "App submitted", appData.title);
+
+            // Return entity data including newly-created key (if adding)
+            return appObj.getData();
+          },
+          [],
+          this);
+      }
+      catch (e)
+      {
+        // The transaction failed. Remove any blobs we added.
+        addedBlobs.forEach(
+          function(blobId)
+          {
+            liberated.dbif.Entity.removeBlob(blobId);
+          });
+        
+        // If we had started the postprocessing task...
+        if (hTask !== null)
+        {
+          // ... then delete it
+          queue.deleteTask(hTask);
+        }
+
+        // Rethrow the error
+        throw e;
+      }
+      
+      // There was no error, so remove any old, no-longer-in-use blobs
+      removeBlobs.forEach(
+        function(blobId)
+        {
+          liberated.dbif.Entity.removeBlob(blobId);
+        });
+
+      // If we'd created a post-processing task, run it now
+      if (fTask)
+      {
+        fTask(appData.uid);
+      }
+      
+      return appData;
+    },
     
 
     deleteApp : function(uid, error)
