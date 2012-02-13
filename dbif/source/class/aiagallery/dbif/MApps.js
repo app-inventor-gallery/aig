@@ -1050,72 +1050,51 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             image1Key;
       var             sourceKey = null;
       var             field;
-          var             requestData;
+      var             requestData;
       var             messageData;
       var             messageBus;
+
+// Following needs tweaking
       var             allowableFields =
         [
-          "uid",
+//          "uid",                // ??
           "title",
           "description",
           "image1",
           "source",
           "sourceFileName",
-          "tags"
+          "tags",
+          "status"
         ];
       var             requiredFields =
         [
-          "owner",
+//          "owner",              // ??
           "title",
           "description",
-          "tags",
+          "image1",
           "source",
-          "image1"
+          "tags"
         ];
       
       try
       {
-        // Don't let the caller override the owner
-        delete attributes["owner"];
 
-        // Determine who the logged-in user is
-        whoami = this.getWhoAmI();
-
-        // Get an AppData object. If uid is non-null, retrieve the prior data.
+        // Get an App object for the given uid
         appObj = new aiagallery.dbif.ObjAppData(uid);
 
         // Retrieve the data
         appData = appObj.getData();
 
-        // If we were given a record identifier...
-        if (uid !== null)
-        {
-          // ... it must have already existed or it's an error
-          if (appObj.getBrandNew())
-          {
-            // It didn't!
-            error.setCode(1);
-            error.setMessage("Unrecognized UID");
-            return error;
-          }
+// Need to worry about authorization???
 
-          // Ensure that the logged-in user owns this application.
-          if (appData.owner != whoami.id)
-          {
-            // He doesn't. Someone's doing something nasty!
-            error.setCode(2);
-            error.setMessage("Not owner");
-            return error;
-          }
-        }
-        else
+        // Does the app exist?
+        if (appObj.getBrandNew())
         {
-          // Initialize the owner field
-          appData.owner = whoami.id;
+          // No--that's a problem!
+          error.setCode(1);
+          error.setMessage("Unrecognized UID");
+          return error;
         }
-
-        // Set the application owner
-        attributes.owner = whoami.id;
 
         // Issue a query for all category tags
         categories = liberated.dbif.Entity.query("aiagallery.dbif.ObjTags", 
@@ -1143,7 +1122,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             // Was this field provided in the parameter attributes?
             if (attributes[field])
             {
-              // Handle source field specially
+              // Handle certain fields specially
               switch(field)
               {
               case "title":
@@ -1185,7 +1164,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                 // Replace what's in the db entry
                 appData[field] = attributes[field];
                 break;
-
+/* // Hold off on this for now...
               case "source":
                 // If there's no newsource member...
                 if (! appData.newsource)
@@ -1194,7 +1173,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                   appData.newsource = [];
                 }
                 break;
-
+*/
+/* // Hold off on this for now...
               case "image1":
                 // Ensure we have a data url
                 if (! qx.lang.Type.isString(attributes.image1) ||
@@ -1212,7 +1192,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                 // Indicate that this file needs later processing.
                 appData.newimage1 = attributes.image1;
                 break;
-
+*/
               case "tags":
                 // Validate the length
                 if (attributes.tags.length > 
@@ -1287,7 +1267,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         {
           appData.status = aiagallery.dbif.Constants.Status.Processing;
         }
-
+/*
         // If a new source file was uploaded...
         if (attributes.source)
         {
@@ -1303,6 +1283,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           // Save the blob id to remove it, in case something fails
           addedBlobs.push(sourceKey);
         }
+*/
       }
       catch(e)
       {
