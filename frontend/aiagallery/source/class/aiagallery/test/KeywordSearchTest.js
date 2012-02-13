@@ -23,6 +23,9 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
       // We need an error object
       var error = new liberated.rpc.error.Error("2.0");
       
+      // This is used for the malformed string tests below
+      var badSearchData = "Th.z st!@#$%wef^&*we(()  #$% MY!!!!! cala#ity is suppo$ed to be malformed";
+
       dbifSim.setWhoAmI(
         {
           id : "1002",
@@ -74,6 +77,15 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
             title       : "Microsoft Windows for Android",
             tags        : ["Business", "broken"],
             image1      : "data://xxx"
+          },
+
+	  {
+            source      : "somerandomstring",
+            owner       : "1002",
+            description : badSearchData,
+            title       : "--DROP TABLEz LOLZ",
+            tags        : ["Games", "broken"],
+            image1      : "data://xxx"
           }
         ];
 
@@ -95,6 +107,9 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
 
       this.assertEquals(1, queryResults.length,
                         "Expected 1 result; got " + queryResults.length);
+
+      // Save the UID for later
+      var uidToEdit = queryResults[0].uid;
 
       // Test with one word present in 2 apps
       queryResults = dbifSim.keywordSearch("beautiful", null, null, error);
@@ -150,21 +165,21 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
 
       // Updating an App to see that old information is disposed
       var appUpdate = {
-	  source      : "somerandomstring",
-	  owner       : "1002",
-	  description : "The word intervestingh is spelled wrong this time",
-	  title       : "Microsoft Windows for Android",
-	  tags        : ["Business", "broken"],
-	  image1      : "data://xxx"
-      };
-
+        source      : "somerandomstring",
+        owner       : "1002",
+	description : "This one's sexy and beautiful",
+	title       : "Your Father Jokes",
+	tags        : ["funny", "Business"],
+	image1      : "data://xxx"
+      }
+      
       // Make sure the thing updates fine, first
-      var editingApp = dbifSim.addOrEditApp(null, appUpdate, error);      
+      var editingApp = dbifSim.addOrEditApp(uidToEdit, appUpdate, error);      
       this.assertNotEquals(error, editingApp,
 			   "Editing App failed: " + error.stringify());
 
       // Test with one word which is no longer present
-      queryResults = dbifSim.keywordSearch("interesting", null, null, error);
+      queryResults = dbifSim.keywordSearch("mother", null, null, error);
 
       // Ensure that an error was not returned
       this.assert(queryResults !== error,
@@ -172,7 +187,27 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
 
       this.assertEquals(0, queryResults.length,
                         "Expected 0 results; got " + queryResults.length);
+      
+      // Looking for bad search data
+      var badDataArr = badSearchData.split(" ");
+      queryResults = [];
 
+      for (str in badDataArr) 
+      {
+	  queryResults = queryResults.concat(dbifSim.keywordSearch(str,
+								   null,
+								   null,
+								   error));
+      }
+
+      for (obj in queryResults)
+      {
+	  this.assert(obj !== error,
+		      "Error: " + error.getCode() + ": " + error.getMessage());
+	  
+	  this.assertMatch(obj, /[a-z0-9]{2,}/gi, "Bad search data getting " +
+			   "through!!");
+      }
     }
   }
 });  

@@ -144,13 +144,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var wordsToAdd;
       var searchObj;
       var appId = dataObj["uid"];
-
-
-			// This matches all strings of numbers or letters, case insensitive,
-			// of length greater than 2.
-			// This filter should be improved and maintained.
-			var acceptable_word = /[0-9a-z]{2,}/gi
-			
+      
+      
+      // This matches all strings of numbers or letters, case insensitive,
+      // of length greater than 2.
+      // This filter should be improved and maintained.
+      var acceptable_word = /[0-9a-z]{2,}/gi;
+      
       for (appDataField in dataObj)
       {
         // Go through each field in the App Data Object
@@ -161,7 +161,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         case "description":
           // Split up the words and...
           wordsToAdd = dataObj[appDataField].match(acceptable_word);
-          wordsToAdd.forEachfunction(word)
+          wordsToAdd.forEach(function(word)
               {
                 // Make sure to only add lower case words to the search
                 // database
