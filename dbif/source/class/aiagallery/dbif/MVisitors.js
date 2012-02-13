@@ -14,6 +14,10 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                          this.addOrEditVisitor,
                          [ "id", "attributes" ]);
 
+    this.registerService("aiagallery.features.whitelistVisitor",
+                         this.whitelistVisitor,
+                         [ "id", "bAllowAccess" ]);
+
     this.registerService("aiagallery.features.deleteVisitor",
                          this.deleteVisitor,
                          [ "id" ]);
@@ -196,6 +200,61 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       return visitor.getData();
     },
     
+    whitelistVisitor : function(email, bAllowAccess, error)
+    {
+      var             visitor;
+      var             visitorData;
+      var             pGroups;
+
+      return liberated.dbif.Entity.asTransaction(
+        function()
+        {
+          // Find this visitor by his email address
+          visitorData = liberated.dbif.Entity.query(
+            "aiagallery.dbif.ObjVisitors",
+            {
+              type : "element",
+              field : "email",
+              value : email
+            });
+          
+          if (visitorData.length != 1)
+          {
+            error.setCode(1);
+            error.setMessage("Visitor " + email + " was not found.");
+            return error;
+          }
+
+          // Retrieve this visitor object
+          visitor = new aiagallery.dbif.ObjVisitors(visitorData[0].id);
+          if (visitor.getBrandNew())
+          {
+            error.setCode(2);
+            error.setMessage("Internal error: " +
+                             "Visitor with id " + id + " was not found.");
+            return error;
+          }
+
+          // Retrieve the visitor data object
+          visitorData = visitor.getData();
+
+          // First remove "Whitelist" from the list of permission groups
+          pGroups = visitorData.permissionGroups || [];
+          qx.lang.Array.remove(pGroups, aiagallery.dbif.Constants.WHITELIST);
+
+          // Now, if we're told to allow access, add it in
+          pGroups.push(aiagallery.dbif.Constants.WHITELIST);
+
+          // Replace the old list of permission groups
+          visitorData.permissionGroups = pGroups;
+
+          // Save the visitor
+          visitor.put();
+
+          return visitorData;
+        });
+    },
+
     deleteVisitor : function(id)
     {
       var             visitor;

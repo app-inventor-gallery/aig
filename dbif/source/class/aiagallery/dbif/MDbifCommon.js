@@ -258,6 +258,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MVisitors
       //
       case "addOrEditVisitor":
+      case "whitelistVisitor":
       case "deleteVisitor":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
