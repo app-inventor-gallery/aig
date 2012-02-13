@@ -141,12 +141,38 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
                                            null,
                                            error);
 
-      // Ensure that an error was not returned
+      // ensure that an error was not returned
       this.assert(queryResults !== error,
                   "Error: " + error.getCode() + ": " + error.getMessage());
       
       this.assertEquals(0, queryResults.length,
                         "Expected 0 results; got " + queryResults.length);
+
+      // Updating an App to see that old information is disposed
+      var appUpdate = {
+	  source      : "somerandomstring",
+	  owner       : "1002",
+	  description : "The word intervestingh is spelled wrong this time",
+	  title       : "Microsoft Windows for Android",
+	  tags        : ["Business", "broken"],
+	  image1      : "data://xxx"
+      };
+
+      // Make sure the thing updates fine, first
+      var editingApp = dbifSim.addOrEditApp(null, appUpdate, error);      
+      this.assertNotEquals(error, editingApp,
+			   "Editing App failed: " + error.stringify());
+
+      // Test with one word which is no longer present
+      queryResults = dbifSim.keywordSearch("interesting", null, null, error);
+
+      // Ensure that an error was not returned
+      this.assert(queryResults !== error,
+                  "Error: " + error.getCode() + ": " + error.getMessage());
+
+      this.assertEquals(0, queryResults.length,
+                        "Expected 0 results; got " + queryResults.length);
+
     }
   }
 });  
