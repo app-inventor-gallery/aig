@@ -24,7 +24,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
       var error = new liberated.rpc.error.Error("2.0");
       
       // This is used for the malformed string tests below
-      var badSearchData = "Th.z st!@#$%wef^&*we(()  #$% MY!!!!! cala#ity is suppo$ed to be malformed";
+      var badSearchData = "Th.z st!@#$%wef^&*we(() #$% MY!!!!! cala#ity is suppo$ed to be malformed";
 
       dbifSim.setWhoAmI(
         {
@@ -82,8 +82,8 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
 	  {
             source      : "somerandomstring",
             owner       : "1002",
-            description : badSearchData,
-            title       : "--DROP TABLEz LOLZ",
+            description : "Th.z st!@#$%wef^&*we(() #$% MY!!!!! cala#ity is suppo$ed to be malformed",
+            title       : "DROP TABLEz LOLZ",
             tags        : ["Games", "broken"],
             image1      : "data://xxx"
           }
@@ -98,37 +98,36 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
         },
         this);
 
+      var i = 1;
+
       // Test with one word present in title of 1 app
-      queryResults = dbifSim.keywordSearch("mother", null, null, error);
+      queryResults = dbifSim.keywordSearch("LOLZ", null, null, error);
 
       // Ensure that an error was not returned
       this.assert(queryResults !== error,
                   "Error: " + error.getCode() + ": " + error.getMessage());
 
-      this.assertEquals(1, queryResults.length,
+      this.assertEquals(1, queryResults.length, "#" + i++ + " " +
                         "Expected 1 result; got " + queryResults.length);
-
-      // Save the UID for later
-      var uidToEdit = queryResults[0].uid;
 
       // Test with one word present in 2 apps
       queryResults = dbifSim.keywordSearch("beautiful", null, null, error);
 
       // Ensure that an error was not returned
-      this.assert(queryResults !== error,
+      this.assert(queryResults !== error, "#" + i++ + " " +
                   "Error: " + error.getCode() + ": " + error.getMessage());
 
-      this.assertEquals(2, queryResults.length,
+      this.assertEquals(2, queryResults.length, "#" + i++ + " " +
                         "Expected 2 results; got " + queryResults.length);
 
       // Test with 2 words present in 1 app, each present in 4 total
       queryResults = dbifSim.keywordSearch("this not", null, null, error);
 
       // Ensure that an error was not returned
-      this.assert(queryResults !== error,
+      this.assert(queryResults !== error, "#" + i++ + " " +
                   "Error: " + error.getCode() + ": " + error.getMessage());
       
-      this.assertEquals(0, queryResults.length,
+      this.assertEquals(0, queryResults.length, "#" + i++ + " " +
                         "Both stop words so expect 0 results; got" +
                         queryResults.length);
 
@@ -136,10 +135,10 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
       queryResults = dbifSim.keywordSearch("beautiful sexy", null, null, error);
 
       // Ensure that an error was not returned
-      this.assert(queryResults !== error,
+      this.assert(queryResults !== error, "#" + i++ + " " +
                   "Error: " + error.getCode() + ": " + error.getMessage());
       
-      this.assertEquals(3, queryResults.length,
+      this.assertEquals(3, queryResults.length, "#" + i++ + " " +
                         "Expected 3 results; got " + queryResults.length);
     
       var firstResultDescription = queryResults[0]["description"];
@@ -147,7 +146,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
       
       // First result should contain both keywords
       this.assert(qx.lang.Array.contains(descSplit, "beautiful") &&
-                  qx.lang.Array.contains(descSplit, "sexy"),
+                  qx.lang.Array.contains(descSplit, "sexy"), "#" + i++ + " " +
                   "Results ordered correctly for 2 keyword search");
       
       //Test with 1 word not present in any app
@@ -157,10 +156,10 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
                                            error);
 
       // ensure that an error was not returned
-      this.assert(queryResults !== error,
+      this.assert(queryResults !== error, "#" + i++ + " " +
                   "Error: " + error.getCode() + ": " + error.getMessage());
       
-      this.assertEquals(0, queryResults.length,
+      this.assertEquals(0, queryResults.length, "#" + i++ + " " +
                         "Expected 0 results; got " + queryResults.length);
 
       // Updating an App to see that old information is disposed
@@ -173,41 +172,55 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
 	image1      : "data://xxx"
       }
       
+      // Test to make sure word from old version of App exists
+      queryResults = dbifSim.keywordSearch("mother", null, null, error);
+
+      this.assertEquals(queryResults.length, 1, "#" + i++ + " " +
+			   "Things not right before edit" + error.stringify());
+
+      // Save the UID for later
+      var uidToEdit = queryResults[0].uid;
+
       // Make sure the thing updates fine, first
       var editingApp = dbifSim.addOrEditApp(uidToEdit, appUpdate, error);      
-      this.assertNotEquals(error, editingApp,
+      this.assertNotEquals(error, editingApp, "#" + i++ + " " +
 			   "Editing App failed: " + error.stringify());
 
       // Test with one word which is no longer present
       queryResults = dbifSim.keywordSearch("mother", null, null, error);
 
       // Ensure that an error was not returned
-      this.assert(queryResults !== error,
+      this.assert(queryResults !== error, "#" + i++ + " " +
                   "Error: " + error.getCode() + ": " + error.getMessage());
 
-      this.assertEquals(0, queryResults.length,
+      this.assertEquals(0, queryResults.length, "#" + i++ + " " +
                         "Expected 0 results; got " + queryResults.length);
       
       // Looking for bad search data
       var badDataArr = badSearchData.split(" ");
       queryResults = [];
 
-      for (str in badDataArr) 
+      // Test that bad data gets zero results
+      badDataArr.forEach(function(str)
       {
-	  queryResults = queryResults.concat(dbifSim.keywordSearch(str,
-								   null,
-								   null,
-								   error));
-      }
+        queryResults = queryResults.concat(dbifSim.keywordSearch(str,
+								     null,
+								     null,
+								     error));
+	
+	this.assert(queryResults[0] !== error, "#" + i++ + " " +
+		    "Error: " + error.getCode() + 
+		    ": " + error.getMessage());
+	
+	// It's bad if the search word is not valid but there are results
+	if (str.match(/[a-z0-9]{2,}/gi) == null)
+	{
+	    this.assert(queryResults.length == 0, 
+		    "Bad search data getting through!!: " + str + ", " +
+		    queryResults[0]);
+	}
+      }, this);
 
-      for (obj in queryResults)
-      {
-	  this.assert(obj !== error,
-		      "Error: " + error.getCode() + ": " + error.getMessage());
-	  
-	  this.assertMatch(obj, /[a-z0-9]{2,}/gi, "Bad search data getting " +
-			   "through!!");
-      }
     }
   }
 });  

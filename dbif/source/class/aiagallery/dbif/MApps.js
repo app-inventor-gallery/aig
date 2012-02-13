@@ -553,6 +553,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             error.setMessage("Not owner");
             return error;
           }
+
+	  // Delete all data in the search db, we only want the newest stuff
+          aiagallery.dbif.MApps._removeAppFromSearch(uid);	  
+
         }
         else
         {
