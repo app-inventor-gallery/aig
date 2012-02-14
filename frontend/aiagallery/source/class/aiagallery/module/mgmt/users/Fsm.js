@@ -79,7 +79,8 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           {
             // When a cell is double-clicked, or the Edit button is pressed,
             // either of which open a cell editor for the row data
-            "table" : "Transition_Idle_to_AddOrEditVisitor_via_cellEditorOpening"
+            "table" :
+              "Transition_Idle_to_AddOrEditVisitor_via_cellEditorOpening"
           },
 
           // Request to call some remote procedure call which is specified by
@@ -269,7 +270,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
        * Cause: "appear" on canvas
        *
        * Action:
-       *  Start our timer
+       *  Retrieve the list of visitors and permission groups
        */
 
       trans = new qx.util.fsm.Transition(
@@ -602,22 +603,10 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           // If there's cell info available (they're editing), ...
           if (cellInfo && cellInfo.row !== undefined)
           {
-/*
-            // ... then save the data in the row being edited.
-            dataModel.setRows( [ rowData ], cellInfo.row, false);
-*/
-            
             // Save the data so that the cell editor's getCellEditorValue()
             // method can retrieve it.
             cellEditor.setUserData("newData", rowData);
           }
-/*
-          else
-          {
-            // Otherwise, add a new row. Do not clear sorting.
-            dataModel.addRows( [ rowData ], null, false);
-          }
-*/
           
           // close the cell editor
           cellEditor.close();
