@@ -287,7 +287,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
             this.callRpc(fsm,
                          "aiagallery.features",
                          "getVisitorListAndPGroups",
-                         [ true ]);
+                         [ false ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
@@ -626,6 +626,10 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           // data now.
           this.setUserData("cellEditor", null);
           this.setUserData("cellInfo", null);
+
+          // Otherewise, call the standard result handler
+          var gui = aiagallery.module.mgmt.users.Gui.getInstance();
+          gui.handleResponse(module, rpcRequest);
 
           // Dispose of the request
           if (rpcRequest.request)

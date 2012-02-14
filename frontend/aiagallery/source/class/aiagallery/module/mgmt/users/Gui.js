@@ -143,6 +143,11 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       resizeBehavior.set(4, { width:200                }); // Permission Groups
       resizeBehavior.set(5, { width:60                 }); // Status
 
+      // Use our own cell renderer for the status field, to convert from the
+      // numeric value to the textual one.
+      tcm.setDataCellRenderer(
+        5, new aiagallery.module.mgmt.users.StatusCellRenderer());
+
       var editor = new aiagallery.module.mgmt.users.CellEditorFactory();
       tcm.setCellEditorFactory(0, editor);
       tcm.setCellEditorFactory(1, editor);
@@ -258,9 +263,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
         if (typeof row != "undefined")
         {
           // Set the row's data model given the result
-          tableModel.setRowsAsMapArray([ response.data.result ],
-                                       rpcRequest.getUserData("row"),
-                                       true);
+          tableModel.setRowsAsMapArray([ response.data.result ], row, true);
         }
         else
         {

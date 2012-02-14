@@ -134,7 +134,7 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
       permissions.setSelectionMode("multi");
 
       // Split the existing permissions so we can easily search for them
-      var permissionList = rowData["permissions"].split(/ *, */);
+      var permissionList = rowData["permissions"];
 
       // Add each of the permission values
       qx.lang.Object.getKeys(aiagallery.dbif.Constants.Permissions).forEach(
@@ -180,7 +180,7 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
       var pGroupList = cellInfo.table.getUserData("pGroups");
 
       // Get the groups the user is a part of 
-      var userPGroups = rowData["permissionGroups"].split(/ *, */);
+      var userPGroups = rowData["permissionGroups"];
 
       // Add each of the permission group values
       pGroupList.forEach(function(perm) 
