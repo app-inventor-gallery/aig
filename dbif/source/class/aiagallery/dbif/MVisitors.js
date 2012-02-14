@@ -222,7 +222,11 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       var             visitor;
       var             visitorData;
       var             pGroups;
-      var             ret = {};
+      var             ret =
+        {
+          successes : [],
+          failures  : []
+        };
 
       emailAddresses.forEach(
         function(email)
@@ -243,7 +247,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
               if (visitorData.length != 1)
               {
                 // Indicate that we failed to update this visitor
-                ret[email] = false;
+                ret.failures.push(email);
                 return;
               }
 
@@ -254,7 +258,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
               if (visitor.getBrandNew())
               {
                 // Indicate that we failed to update this visitor
-                ret[email] = false;
+                ret.failures.push(email);
                 return;
               }
 
@@ -282,7 +286,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
               visitor.put();
               
               // Indicate that we successfully updated this visitor
-              ret[email] = true;
+              ret.successes.push(email);
             });
         });
       

@@ -63,7 +63,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
         {
           "changeSelection" :
           {
-            //When a user selects a project group on list1 this is called
+            // When a user selects a project group on list1 this is called
             "pGroupNameList" : 
               "Transition_Idle_to_AwaitRpcResult_via_changeSelection"
           },
@@ -71,18 +71,25 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
           // On the clicking of a button, execute is fired
           "execute" :
           {
-            //When a user clicks the add Permission Group button
+            // When a user clicks the add Permission Group button
             "addPermissionGroup" : 
               "Transition_Idle_to_AwaitRpcResult_via_addPermissionGroup",
 
-            //When a user clicks the save button
+            // When a user clicks the save button
             "savePermissionGroup" : 
               "Transition_Idle_to_AwaitRpcResult_via_savePermissionGroup",
 
-            //When a user clicks the delete button
+            // When a user clicks the delete button
             "deletePermissionGroup" : 
-              "Transition_Idle_to_AwaitRpcResult_via_deletePermissionGroup"
-            
+              "Transition_Idle_to_AwaitRpcResult_via_deletePermissionGroup",
+
+            // When a user clicks the addToWhitelist button
+            "addToWhitelist" :
+              "Transition_Idle_to_AwaitRpcResult_via_addRemoveWhitelist",
+
+            // When a user clicks the addToWhitelist button
+            "removeFromWhitelist" :
+              "Transition_Idle_to_AwaitRpcResult_via_addRemoveWhitelist"
           },
           
           // When we get an appear event, retrieve the permission group 
@@ -291,6 +298,75 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
           // we made.
           request.setUserData("requestType", "deletePermissionGroup");
 
+        }
+      });
+
+      state.addTransition(trans);
+
+      /*
+       * Transition: Idle to Awaiting RPC Result
+       *
+       * Cause: "Add To Whitelist" or "Remove From Whitelist" button pressed
+       *
+       * Action:
+       *  Convert the email addresses in the whitelistAddrs text area into an
+       *  array of addresses, and send them to be added to or removed from the
+       *  whitelist.
+       */
+        
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_addRemoveWhitelist",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var             addresses;
+          var             whitelistAddrs;
+          var             addToWhitelist;
+          var             bAllowAccess;
+          
+          // Get the text area widget
+          whitelistAddrs = fsm.getObject("whitelistAddrs");
+
+          // Get the addToWhitelist button.
+          addToWhitelist = fsm.getObject("addToWhitelist");
+
+          // Retrieve the list of addresses in the whitelistAddrs text area
+          addresses = whitelistAddrs.getValue().split("\n");
+          
+          // Trim ancillary whitespace and remove entirely blank entries
+          for (var i = addresses.length - 1; i >= 0; i--)
+          {
+            addresses[i] = qx.lang.String.trim(addresses[i]);
+            if (addresses[i].length === 0)
+            {
+              qx.lang.Array.removeAt(addresses, i);
+            }
+          }
+          
+          // Determine which button was pressed, to decide whether to grant or
+          // remove whitelist membership. If the target of the event was the
+          // addToWhitelist button, then we grant membership. Otherwise, the
+          // target was the removeFromWhitelist button, so we remove whitelist
+          // membership.
+          bAllowAccess = (event.getTarget() == addToWhitelist);
+
+          // Issue the remote procedure call to execute the query
+          var request =
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "whitelistVisitors",
+                         [
+                           addresses,
+                           bAllowAccess
+                         ]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "whitelistVisitors");
         }
       });
 

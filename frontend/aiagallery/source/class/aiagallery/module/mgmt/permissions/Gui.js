@@ -51,8 +51,6 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       var             possiblePermissionList;
       var             pDataArray; 
       var             label;
-      var             emailAddrs;
-      var             failures;
       
       // Misc vars
       var             bEnable;
@@ -241,13 +239,16 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       // Add a text area in which to enter email addresses
       label = new qx.ui.basic.Label("Enter email addresses");
       grid.add(label, { row : 0, column : 0 });
-      emailAddrs = new qx.ui.form.TextArea();
-      emailAddrs.set(
+      this.whitelistAddrs = new qx.ui.form.TextArea();
+      this.whitelistAddrs.set(
         {
           width  : 200,
           height : 200
         });
-      grid.add(emailAddrs, { row : 1, column : 0, rowSpan : 3 });
+      fsm.addObject("whitelistAddrs", 
+                    this.whitelistAddrs, 
+                    "main.fsmUtils.disable_during_rpc");
+      grid.add(this.whitelistAddrs, { row : 1, column : 0, rowSpan : 3 });
       
       // Add a button to add the selection to the whitelist
       addToWhitelist = new qx.ui.form.Button("Add to whitelist");
@@ -257,6 +258,10 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
           maxHeight : 30
         });
       grid.add(addToWhitelist, { row : 1, column : 1 });
+      fsm.addObject("addToWhitelist", 
+                    addToWhitelist, 
+                    "main.fsmUtils.disable_during_rpc");
+      addToWhitelist.addListener("execute", fsm.eventListener, fsm);
 
       // Add a button to remove the selection from the whitelist
       removeFromWhitelist = new qx.ui.form.Button("Remove from whitelist");
@@ -266,17 +271,22 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
           maxHeight : 30
         });
       grid.add(removeFromWhitelist, { row : 2, column : 1 });
+      fsm.addObject("removeFromWhitelist", 
+                    removeFromWhitelist, 
+                    "main.fsmUtils.disable_during_rpc");
+      removeFromWhitelist.addListener("execute", fsm.eventListener, fsm);
       
       // Add a list to display failures
       label = new qx.ui.basic.Label("Failures");
       grid.add(label, { row : 0, column : 2 });
-      failures = new qx.ui.form.List();
-      failures.set(
+      this.failures = new qx.ui.form.TextArea();
+      this.failures.set(
         {
-          width  : 200,
-          height : 200
+          width    : 200,
+          height   : 200,
+          readOnly : true
         });
-      grid.add(failures, { row : 1, column : 2, rowSpan : 3 });
+      grid.add(this.failures, { row : 1, column : 2, rowSpan : 3 });
 
       // Add the grid to the whitelist group
       whitelistGroup.add(grid);
@@ -312,6 +322,11 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       var             addBtn = fsm.getObject("addPermissionGroup"); 
       var             pGroupDescriptionField = 
                         fsm.getObject("pGroupDescriptionField");
+      var             returnedList;
+      var             dataArray;
+      var             numSuccess;
+      var             numFail;
+      var             failureList;
       
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -330,9 +345,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       // Dispatch to the appropriate handler, depending on the request type
       switch(requestType)
       {
- 
       case "appear" :
-      
         //Got the array of permission groups 
         //If the array is not empty we need to do something
         var pArray = response.data.result;
@@ -368,7 +381,6 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
             // Set Selection using controller
             this.permissionController.setSelection(dataArray); 
           }          
-
         }
         
         //There was nothing in the array make sure buttons are disabled
@@ -378,7 +390,6 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
 
         //Ensure Add Btn is disabled
         addBtn.setEnabled(false);
-   
         break; 
  
       case "addOrEditPermissionGroup" : 
@@ -412,24 +423,23 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         possiblePermissionList.resetSelection(); 
         
         // Make things easier to read
-        var returnedList = response.data.result.permissions;
+        returnedList = response.data.result.permissions;
         
         // Convert to a data Array.
-        var dataArray = new qx.data.Array(returnedList);
+        dataArray = new qx.data.Array(returnedList);
         
         // Set Selectiong using controller
         this.permissionController.setSelection(dataArray); 
             
         // Ensure Add Btn is disabled
         addBtn.setEnabled(false);
-        
         break; 
 
       case "deletePermissionGroup" :
         if (response.data.result == "false") 
         {
           // Delete failed
-          alert("An error occurred trying to delete this permission group.")
+          alert("An error occurred trying to delete this permission group.");
           break;
         }
         
@@ -444,11 +454,9 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         
         // Ensure Add Btn is disabled
         addBtn.setEnabled(false);
-        
         break; 
         
       case "getGroupPermissions" :
-      
         // I need this since if I put it all in one switch I 
         // Cannot detect just a changeSelection and thus
         // it will keep looping         
@@ -460,19 +468,24 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
         pGroupDescriptionField.setValue(response.data.result.description);    
         
         // Make things easier to read
-        var returnedList = response.data.result.permissions;
+        returnedList = response.data.result.permissions;
         
         // Convert to a data Array.
-        var dataArray = new qx.data.Array(returnedList);
+        dataArray = new qx.data.Array(returnedList);
         
         // Set Selectiong using controller
         this.permissionController.setSelection(dataArray); 
 
       case "addOrEditPermissionGroup_save" :
-      
         // Everything is all set 
-
         break;       
+
+      case "whitelistVisitors" :
+        // The return value is a map containing two arrays: successes and
+        // failures. All we need to do is add the failures to the failure
+        // list.
+        this.failures.setValue(response.data.result.failures.join("\n"));
+        break;
 
       default:
         throw new Error("Unexpected request type: " + requestType);
