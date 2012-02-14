@@ -58,7 +58,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         {
           layout    : new qx.ui.layout.VBox()
         });
-      this._addTextSearch(o);
+//      this._addTextSearch(o);
       tabView.add(o);
       
       o = new aiagallery.widget.radioview.Page(this.tr("Browse categories"));
