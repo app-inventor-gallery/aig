@@ -88,6 +88,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       model.setColumns([ 
                          this.tr("Display Name"),
                          this.tr("Email"),
+                         this.tr("Id"),
                          this.tr("Permissions"),
                          this.tr("Permission Groups"),
                          this.tr("Status")
@@ -95,6 +96,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
                        [
                          "displayName",
                          "email",
+                         "id",
                          "permissions",
                          "permissionGroups",
                          "status"
@@ -136,9 +138,10 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       // let the Name and Email fields take up the remaining space.
       resizeBehavior.set(0, { width:"1*", minWidth:200 }); // Display Name
       resizeBehavior.set(1, { width:"1*", minWidth:200 }); // Email
-      resizeBehavior.set(2, { width:200                }); // Permissions
-      resizeBehavior.set(3, { width:200                }); // Permission Groups
-      resizeBehavior.set(4, { width:60                 }); // Status
+      resizeBehavior.set(2, { width:"1*", minWidth:200 }); // Id
+      resizeBehavior.set(3, { width:200                }); // Permissions
+      resizeBehavior.set(4, { width:200                }); // Permission Groups
+      resizeBehavior.set(5, { width:60                 }); // Status
 
       var editor = new aiagallery.module.mgmt.users.CellEditorFactory();
       tcm.setCellEditorFactory(0, editor);
@@ -146,6 +149,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       tcm.setCellEditorFactory(2, editor);
       tcm.setCellEditorFactory(3, editor);
       tcm.setCellEditorFactory(4, editor);
+      tcm.setCellEditorFactory(5, editor);
 
       // Listen for changeSelection events so we can enable/disable buttons
       var selectionModel = table.getSelectionModel();
@@ -218,7 +222,8 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       var             requestType = rpcRequest.getUserData("requestType");
       var             cellEditor;
       var             table;
-      var             deletedRow;
+      var             tableModel;
+      var             row;
 
       if (response.type == "failed")
       {
@@ -231,7 +236,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       // Dispatch to the appropriate handler, depending on the request type
       switch(requestType)
       {
-      case "getVisitorList":
+      case "getVisitorListAndPGroups":
         table = fsm.getObject("table");
         
         // Split out the data from the map
@@ -246,14 +251,31 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
         break;
 
       case "addOrEditVisitor":
-        // Nothing more to do but close the cell editor
+        table = fsm.getObject("table");
+        tableModel = table.getTableModel();
+        row = rpcRequest.getUserData("row");
+
+        if (typeof row != "undefined")
+        {
+          // Set the row's data model given the result
+          tableModel.setRowsAsMapArray([ response.data.result ],
+                                       rpcRequest.getUserData("row"),
+                                       true);
+        }
+        else
+        {
+          // It's a new row. Add it. Do not clear sorting.
+          tableModel.addRowsAsMapArray([ response.data.result ],
+                                       null, true, false);
+        }
+        
         break;
 
       case "deleteVisitor":
         // Delete the row from the table
         table = fsm.getObject("table");
-        deletedRow = rpcRequest.getUserData("deletedRow");
-        table.getTableModel().removeRows(deletedRow, 1, false);
+        row = rpcRequest.getUserData("deletedRow");
+        table.getTableModel().removeRows(row, 1, false);
         break;
         
       default:

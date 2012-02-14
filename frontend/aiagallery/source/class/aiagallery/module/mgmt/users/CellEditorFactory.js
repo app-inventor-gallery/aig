@@ -38,14 +38,22 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
         // We're editing. Get the current row data.
         bEditing = true;
         dataModel = cellInfo.table.getTableModel();
-        rowData = dataModel.getRowData(cellInfo.row);
-        title = this.tr("Edit User: ") + rowData[0];
+        rowData = dataModel.getRowDataAsMap(cellInfo.row);
+        title = this.tr("Edit User: ") + rowData["email"];
       }
       else
       {
         bEditing = false;
         title = this.tr("Add New User");
-        rowData = [ "", "", "", "" ];
+        rowData = 
+          {
+            displayName      : "",
+            email            : "",
+            id               : "",
+            permissions      : "",
+            permissionGroups : "",
+            status           : ""
+          };
       }
       
       var layout = new qx.ui.layout.Grid(9, 2);
@@ -83,6 +91,7 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
       [
         this.tr("DisplayName"),
         this.tr("Email"),
+        this.tr("Id"),
         this.tr("Permissions"),
         this.tr("Permission Groups"),
         this.tr("Status")
@@ -94,21 +103,30 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
               allowShrinkX: false,
               paddingTop: 3
             });
-          cellEditor.add(o, {row: i++, column : 0});
+          cellEditor.add(o, {row : i++, column : 0});
         });
 
       // Create the editor field for the user name
       var displayName = new qx.ui.form.TextField("");
-      displayName.setValue(rowData[0]);
+      displayName.setValue(rowData["displayName"]);
       cellEditor.add(displayName, { row : 0, column : 1 });
       
       // Create the editor field for the email address
       var email = new qx.ui.form.TextField("");
-      email.setValue(rowData[1]);
+      email.setValue(rowData["email"]);
       cellEditor.add(email, { row : 1, column : 1 });
       
-      // If we're editing, don't allow them to change the email (userId) value
-      bEditing && email.setEnabled(false);
+      // Create the editor field for the email address
+      var id = new qx.ui.form.TextField("");
+      id.setValue(rowData["id"]);
+      cellEditor.add(id, { row : 2, column : 1 });
+      
+      // If we're editing, don't allow them to change the email or id values
+      if (bEditing)
+      {
+        email.setEnabled(false);
+        id.setEnabled(false);
+      }
       
       // Create the editor field for permissions
       var permissions = new qx.ui.form.List();
@@ -116,7 +134,7 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
       permissions.setSelectionMode("multi");
 
       // Split the existing permissions so we can easily search for them
-      var permissionList = rowData[2].split(/ *, */);
+      var permissionList = rowData["permissions"].split(/ *, */);
 
       // Add each of the permission values
       qx.lang.Object.getKeys(aiagallery.dbif.Constants.Permissions).forEach(
@@ -151,7 +169,7 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
           }
         });
       
-      cellEditor.add(permissions, { row : 2, column : 1 });
+      cellEditor.add(permissions, { row : 3, column : 1 });
 
       // Create the editor field for permission groups
       var pGroups = new qx.ui.form.List();
@@ -162,7 +180,7 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
       var pGroupList = cellInfo.table.getUserData("pGroups");
 
       // Get the groups the user is a part of 
-      var userPGroups = rowData[3].split(/ *, */);
+      var userPGroups = rowData["permissionGroups"].split(/ *, */);
 
       // Add each of the permission group values
       pGroupList.forEach(function(perm) 
@@ -197,21 +215,18 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
           }
         });
       
-      cellEditor.add(pGroups, { row : 3, column : 1 });
+      cellEditor.add(pGroups, { row : 4, column : 1 });
 
       var status = new qx.ui.form.SelectBox();
 
       // Add each of the status values by pulling the array from Constants.js
       qx.lang.Object.getKeys(aiagallery.dbif.Constants.Status).forEach(
         function(stat)
-        //[
-        //  { i8n: this.tr("Active"),  internal: "Active" },
-        //  { i8n: this.tr("Pending"), internal: "Pending" },
-        //  { i8n: this.tr("Banned"),  internal: "Banned" }
-        //].forEach(function(stat) 
         {
+          var             item;
+
           // Create a new list item with the current status' name
-          var item = new qx.ui.form.ListItem(stat);
+          item = new qx.ui.form.ListItem(stat);
           
           // Set the internal name of the status to the display name for now
           item.setUserData("internal", stat);
@@ -220,19 +235,21 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
           status.add(item);
           
           // Is this the current status?
-          if (stat == rowData[3])
+          if (rowData["status"] == stat)
           {
             status.setSelection( [ item ] );
           }
-        });
+        },
+        this);
       
-      cellEditor.add(status, { row : 4, column : 1 });
+      cellEditor.add(status, { row : 5, column : 1 });
       
       // Save the input fields for access by getCellEditorValue() and the FSM
       cellEditor.setUserData("displayName", displayName);
       cellEditor.setUserData("email", email);
+      cellEditor.setUserData("id", id);
       cellEditor.setUserData("permissions", permissions);
-      cellEditor.setUserData("pgroups", pGroups)
+      cellEditor.setUserData("pgroups", pGroups);
       cellEditor.setUserData("status", status);
 
       // buttons
@@ -247,7 +264,7 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
         {
           paddingTop: 11
         });
-      cellEditor.add(buttonPane, {row:5, column: 0, colSpan: 2});
+      cellEditor.add(buttonPane, {row : 6, column : 0, colSpan : 2});
 
       // Retrieve the finite state machine
       fsm = cellInfo.table.getUserData("fsm");

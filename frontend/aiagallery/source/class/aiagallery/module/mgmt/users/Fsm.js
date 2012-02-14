@@ -72,14 +72,14 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
             "deleteUser" : "Transition_Idle_to_AwaitRpcResult_via_deleteUser",
 
             // When the Add User button is pressed
-            "addUser" : "Transition_Idle_to_AddOrEditUser_via_addUser"
+            "addUser" : "Transition_Idle_to_AddOrEditVisitor_via_addUser"
           },
 
           "cellEditorOpening" :
           {
             // When a cell is double-clicked, or the Edit button is pressed,
             // either of which open a cell editor for the row data
-            "table" : "Transition_Idle_to_AddOrEditUser_via_cellEditorOpening"
+            "table" : "Transition_Idle_to_AddOrEditVisitor_via_cellEditorOpening"
           },
 
           // Request to call some remote procedure call which is specified by
@@ -150,7 +150,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
       state.addTransition(trans);
 
       /*
-       * Transition: Idle to AddOrEditUser
+       * Transition: Idle to AddOrEditVisitor
        *
        * Cause: "execute" on "Add User" button
        *
@@ -159,9 +159,9 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
        */
 
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AddOrEditUser_via_addUser",
+        "Transition_Idle_to_AddOrEditVisitor_via_addUser",
       {
-        "nextState" : "State_AddOrEditUser",
+        "nextState" : "State_AddOrEditVisitor",
 
         "context" : this,
 
@@ -200,7 +200,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
       state.addTransition(trans);
 
       /*
-       * Transition: Idle to AddOrEditUser
+       * Transition: Idle to AddOrEditVisitor
        *
        * Cause: "cellEditorOpening" on the Table. This can occur as a result
        * of either a press of the "Edit" button, or by double-clicking on the
@@ -211,9 +211,9 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
        */
 
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AddOrEditUser_via_cellEditorOpening",
+        "Transition_Idle_to_AddOrEditVisitor_via_cellEditorOpening",
       {
-        "nextState" : "State_AddOrEditUser",
+        "nextState" : "State_AddOrEditVisitor",
 
         "context" : this,
 
@@ -291,7 +291,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "getVisitorList");
+          request.setUserData("requestType", "getVisitorListAndPGroups");
         }
       });
 
@@ -322,11 +322,11 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
       state.addTransition(trans);
 
       // ------------------------------------------------------------ //
-      // State: AddOrEditUser
+      // State: AddOrEditVisitor
       // ------------------------------------------------------------ //
 
       /*
-       * State: AddOrEditUser
+       * State: AddOrEditVisitor
        *
        * Actions upon entry
        *  - If the event that got us here was "completed", update the GUI
@@ -338,7 +338,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
        *    AwaitRpcResult state
        */
 
-      state = new qx.util.fsm.State("State_AddOrEditUser",
+      state = new qx.util.fsm.State("State_AddOrEditVisitor",
       {
         "context" : this,
 
@@ -380,13 +380,13 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           "execute" :
           {
             // When the Ok button is pressed in the cell editor
-            "ok" : "Transition_AddOrEditUser_to_AwaitRpcResult_via_ok",
+            "ok" : "Transition_AddOrEditVisitor_to_AwaitRpcResult_via_ok",
             
-            "cancel" : "Transition_AddOrEditUser_to_Idle_via_cancel"
+            "cancel" : "Transition_AddOrEditVisitor_to_Idle_via_cancel"
           },
           
           // When we received a "completed" event on RPC
-          "completed" : "Transition_AddOrEditUser_to_Idle_via_completed"
+          "completed" : "Transition_AddOrEditVisitor_to_Idle_via_completed"
         }
       });
 
@@ -403,7 +403,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
        */
 
       trans = new qx.util.fsm.Transition(
-        "Transition_AddOrEditUser_to_AwaitRpcResult_via_ok",
+        "Transition_AddOrEditVisitor_to_AwaitRpcResult_via_ok",
       {
         "nextState" : "State_AwaitRpcResult",
 
@@ -415,6 +415,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           var             cellInfo;
           var             displayName;
           var             email;
+          var             id;
           var             selection;
           var             pGroups;
           var             internal = 
@@ -433,6 +434,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           // Retrieve the values from the cell editor
           displayName = cellEditor.getUserData("displayName").getValue();
           email = cellEditor.getUserData("email").getValue();
+          id = cellEditor.getUserData("id").getValue();
           selection = cellEditor.getUserData("permissions").getSelection();
           selection.forEach(
             function(item)
@@ -456,37 +458,37 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           // Save the request data
           var requestData = 
             {
-              displayName : displayName,
-              permissions : internal.permissions,
+              id               : id,
+              email            : email,
+              displayName      : displayName,
+              permissions      : internal.permissions,
               permissionGroups : internal.permissionGroups, 
-              status      : internal.status 
+              status           : internal.status 
             };
 
           // Issue a Add Or Edit Visitor call.
           request = this.callRpc(fsm,
                      "aiagallery.features",
                      "addOrEditVisitor",
-                     [ email, requestData ]);
-
-          // Save the user id in the request data too
-          requestData.email = email;
-
-          // Save the request data
-          request.setUserData("requestData", requestData);
+                     [ id, requestData ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "AddOrEditVisitor");
+          request.setUserData("requestType", "addOrEditVisitor");
+          
+          // Save the data for this request
+          request.setUserData("requestData", requestData);
+          request.setUserData("internal", internal);
 
           // Save the permissions and status
-          request.setUserData("internal", internal);
+          request.setUserData("row", cellInfo.row);
         }
       });
 
       state.addTransition(trans);
 
       /*
-       * Transition: AddOrEditUser to Idle
+       * Transition: AddOrEditVisitor to Idle
        *
        * Cause: "execute" on the Cancel button in the cell editor
        *
@@ -495,7 +497,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
        */
 
       trans = new qx.util.fsm.Transition(
-        "Transition_AddOrEditUser_to_Idle_via_cancel",
+        "Transition_AddOrEditVisitor_to_Idle_via_cancel",
       {
         "nextState" : "State_Idle",
 
@@ -537,7 +539,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
       state.addTransition(trans);
 
       /*
-       * Transition: AddOrEditUser to Idle
+       * Transition: AddOrEditVisitor to Idle
        *
        * Cause: "completed" event from RPC
        *
@@ -546,7 +548,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
        */
 
       trans = new qx.util.fsm.Transition(
-        "Transition_AddOrEditUser_to_Idle_via_completed",
+        "Transition_AddOrEditVisitor_to_Idle_via_completed",
       {
         "nextState" : "State_Idle",
 
@@ -562,7 +564,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           var             table;
           var             dataModel;
           var             permissions;
-          var             permissionGroups
+          var             permissionGroups;
           var             rowData = [];
 
           // Retrieve the RPC request
@@ -583,6 +585,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           // Create the row data for the table
           rowData.push(requestData.displayName);
           rowData.push(requestData.email);
+          rowData.push(requestData.id);
 
           // Munge the internal permissions from an array into a comma-separated
           // string, and add it it to the row data
@@ -599,18 +602,22 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
           // If there's cell info available (they're editing), ...
           if (cellInfo && cellInfo.row !== undefined)
           {
+/*
             // ... then save the data in the row being edited.
             dataModel.setRows( [ rowData ], cellInfo.row, false);
+*/
             
             // Save the data so that the cell editor's getCellEditorValue()
             // method can retrieve it.
             cellEditor.setUserData("newData", rowData);
           }
+/*
           else
           {
             // Otherwise, add a new row. Do not clear sorting.
             dataModel.addRows( [ rowData ], null, false);
           }
+*/
           
           // close the cell editor
           cellEditor.close();
