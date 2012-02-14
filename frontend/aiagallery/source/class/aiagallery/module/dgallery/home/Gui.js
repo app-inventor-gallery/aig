@@ -144,7 +144,8 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       
       // Featured Apps section
       var featuredAppsLayout = new qx.ui.layout.VBox();
-      var featuredApps = new qx.ui.container.Composite(featuredAppsLayout);
+      this.featuredAppsContainer = 
+        new qx.ui.container.Composite(featuredAppsLayout);
 
       // Featured Apps heading
       var featuredAppsHeader = new qx.ui.basic.Label();
@@ -153,7 +154,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           value      : "<h3>Featured Apps</h3>",
           rich       : true
         });
-      featuredApps.add(featuredAppsHeader);
+      this.featuredAppsContainer.add(featuredAppsHeader);
       
       // slide bar of Featured Apps
       var featuredAppsSlideBar = new qx.ui.container.SlideBar();
@@ -163,10 +164,10 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         });
       
       fsm.addObject("Featured Apps", featuredAppsSlideBar);
-      featuredApps.add(featuredAppsSlideBar);
+      this.featuredAppsContainer.add(featuredAppsSlideBar);
       
       // add Featured Apps section to the page
-      canvas.add(featuredApps);
+      canvas.add(this.featuredAppsContainer);
 
       // Newest Apps section
       var newestAppsLayout = new qx.ui.layout.VBox();
@@ -319,6 +320,10 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
                 e.getCurrentTarget().getUserData("App Data"));
             });
         }
+
+        // Hide the featured apps ribbon if it's empty
+        this.featuredAppsContainer.setVisibility(
+          featuredAppsList.length == 0 ? "excluded" : "visible");
 
         // Fill the newest apps ribbon with data
         for (i = 0; i < newestAppsList.length; i++)
