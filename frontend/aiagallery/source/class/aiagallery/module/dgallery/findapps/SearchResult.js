@@ -204,7 +204,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
             minHeight : 100,
             maxHeight : 100
           });
-        control.addListener("click", this._onViewApp, this);
+        control.addListener("mousedown", this._onViewApp, this);
         this._add(control, { row : 0, column : 0, rowSpan : 4 });
         break;
         
@@ -217,7 +217,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
             width : 300,
             font  : font
           });
-        control.addListener("click", this._onViewApp, this);
+        control.addListener("mousedown", this._onViewApp, this);
         this._add(control, { row : 0, column : 1 });
         break;
         
