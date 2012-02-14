@@ -33,11 +33,15 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       var             hBox;
       var             vBoxBtns;
       var             vBoxText; 
+      var             whitelistGroup;
+      var             grid;
       
       // Button vars
       var             addPermissionGroup;
       var             savePermissionGroup;
       var             deletePermissionGroup;
+      var             addToWhitelist;
+      var             removeFromWhitelist;
       
       // GUI Elements
       var             pGroupNameField; 
@@ -46,7 +50,12 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       var             pGroupNameList;
       var             possiblePermissionList;
       var             pDataArray; 
-      var             textFieldLabel;
+      var             label;
+      var             emailAddrs;
+      var             failures;
+      
+      // Misc vars
+      var             bEnable;
 
       // Create a layout for this page
       canvas.setLayout(new qx.ui.layout.VBox());   
@@ -122,8 +131,8 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       vBoxText = new qx.ui.container.Composite(layout);
       
       // Create a label for describing the textfields 
-      textFieldLabel = new qx.ui.basic.Label("Permission Group Name:");
-      vBoxText.add(textFieldLabel);
+      label = new qx.ui.basic.Label("Permission Group Name:");
+      vBoxText.add(label);
       
       // Create textfield for entering in a pGroup name
       pGroupNameField = new qx.ui.form.TextField;
@@ -162,8 +171,8 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       });
       
       //Create a label for describing the textfields 
-      textFieldLabel = new qx.ui.basic.Label("Description:");
-      vBoxText.add(textFieldLabel);
+      label = new qx.ui.basic.Label("Description:");
+      vBoxText.add(label);
       
       vBoxText.add(pGroupDescriptionField);
       
@@ -188,9 +197,9 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       //Disable delete/save button unless something is selected
       pGroupNameList.addListener("changeSelection", function(e) 
       {
-        var bEnable = (pGroupNameList.getSelection().length != 0);
+        bEnable = (pGroupNameList.getSelection().length != 0);
         savePermissionGroup.setEnabled(bEnable);
-        deletePermissionGroup.setEnabled(bEnable)
+        deletePermissionGroup.setEnabled(bEnable);
       }, this); 
 
       pGroupInfo.add(pGroupNameList);
@@ -220,6 +229,60 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       // Add to the page
       canvas.add(hBox);
 
+      // Create the group box for whitelist modification
+      whitelistGroup = new qx.ui.groupbox.GroupBox("Whitelist management");
+      whitelistGroup.setLayout(new qx.ui.layout.VBox());
+      
+      // We'll put the whitelist fields in a grid
+      layout = new qx.ui.layout.Grid(10, 10);
+      layout.setRowFlex(2, true);
+      grid = new qx.ui.container.Composite(layout);
+
+      // Add a text area in which to enter email addresses
+      label = new qx.ui.basic.Label("Enter email addresses");
+      grid.add(label, { row : 0, column : 0 });
+      emailAddrs = new qx.ui.form.TextArea();
+      emailAddrs.set(
+        {
+          width  : 200,
+          height : 200
+        });
+      grid.add(emailAddrs, { row : 1, column : 0, rowSpan : 3 });
+      
+      // Add a button to add the selection to the whitelist
+      addToWhitelist = new qx.ui.form.Button("Add to whitelist");
+      addToWhitelist.set(
+        {
+          height    : 30,
+          maxHeight : 30
+        });
+      grid.add(addToWhitelist, { row : 1, column : 1 });
+
+      // Add a button to remove the selection from the whitelist
+      removeFromWhitelist = new qx.ui.form.Button("Remove from whitelist");
+      removeFromWhitelist.set(
+        {
+          height    : 30,
+          maxHeight : 30
+        });
+      grid.add(removeFromWhitelist, { row : 2, column : 1 });
+      
+      // Add a list to display failures
+      label = new qx.ui.basic.Label("Failures");
+      grid.add(label, { row : 0, column : 2 });
+      failures = new qx.ui.form.List();
+      failures.set(
+        {
+          width  : 200,
+          height : 200
+        });
+      grid.add(failures, { row : 1, column : 2, rowSpan : 3 });
+
+      // Add the grid to the whitelist group
+      whitelistGroup.add(grid);
+      
+      // Add the whitelist group to the canvas
+      canvas.add(whitelistGroup);
     },
 
     

@@ -14,8 +14,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                          this.addOrEditVisitor,
                          [ "id", "attributes" ]);
 
-    this.registerService("aiagallery.features.whitelistVisitor",
-                         this.whitelistVisitor,
+    this.registerService("aiagallery.features.whitelistVisitors",
+                         this.whitelistVisitors,
                          [ "id", "bAllowAccess" ]);
 
     this.registerService("aiagallery.features.deleteVisitor",
@@ -200,59 +200,94 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       return visitor.getData();
     },
     
-    whitelistVisitor : function(email, bAllowAccess, error)
+    /**
+     * Add or remove a list of visitors, identified by their email addresses,
+     * from the whitelist.
+     *
+     * @param emailAddresses {Array}
+     *   List of the email addresses of visitors whose whitelist access should
+     *   be altered.
+     *
+     * @param bAllowAccess {Boolean}
+     *   Whether all of the visitors should have whitelist access enabled (or
+     *   removed).
+     *
+     * @return {Map}
+     *   The key fields in the map are the email addresses specified in
+     *   emailAddresses. The values are booleans indicating whether the email
+     *   address was found and updated.
+     */
+    whitelistVisitors : function(emailAddresses, bAllowAccess, error)
     {
       var             visitor;
       var             visitorData;
       var             pGroups;
+      var             ret = {};
 
-      return liberated.dbif.Entity.asTransaction(
-        function()
+      emailAddresses.forEach(
+        function(email)
         {
-          // Find this visitor by his email address
-          visitorData = liberated.dbif.Entity.query(
-            "aiagallery.dbif.ObjVisitors",
+          liberated.dbif.Entity.asTransaction(
+            function()
             {
-              type : "element",
-              field : "email",
-              value : email
+              // Find this visitor by his email address
+              visitorData = liberated.dbif.Entity.query(
+                "aiagallery.dbif.ObjVisitors",
+                {
+                  type : "element",
+                  field : "email",
+                  value : email
+                });
+
+              // Ensure that we found this visitor
+              if (visitorData.length != 1)
+              {
+                // Indicate that we failed to update this visitor
+                ret[email] = false;
+                return;
+              }
+
+              // Retrieve this visitor object
+              visitor = new aiagallery.dbif.ObjVisitors(visitorData[0].id);
+              
+              // Since the query returned him, he better not be brand new!
+              if (visitor.getBrandNew())
+              {
+                // Indicate that we failed to update this visitor
+                ret[email] = false;
+                return;
+              }
+
+              // Retrieve this visitor data, and specifically, the permission
+              // groups array.
+              visitorData = visitor.getData();
+              pGroups = visitorData.permissionGroups || [];
+
+              // First remove "Whitelist" from the list of permission groups.
+              // (It may or may not actually be there.)
+              qx.lang.Array.remove(pGroups,
+                                   aiagallery.dbif.Constants.WHITELIST);
+
+              // Now, if we're told to allow access, ...
+              if (bAllowAccess)
+              {
+                // ... then add it in
+                pGroups.push(aiagallery.dbif.Constants.WHITELIST);
+              }
+
+              // Replace the old list of permission groups
+              visitorData.permissionGroups = pGroups;
+
+              // Save the visitor
+              visitor.put();
+              
+              // Indicate that we successfully updated this visitor
+              ret[email] = true;
             });
-          
-          if (visitorData.length != 1)
-          {
-            error.setCode(1);
-            error.setMessage("Visitor " + email + " was not found.");
-            return error;
-          }
-
-          // Retrieve this visitor object
-          visitor = new aiagallery.dbif.ObjVisitors(visitorData[0].id);
-          if (visitor.getBrandNew())
-          {
-            error.setCode(2);
-            error.setMessage("Internal error: " +
-                             "Visitor with id " + id + " was not found.");
-            return error;
-          }
-
-          // Retrieve the visitor data object
-          visitorData = visitor.getData();
-
-          // First remove "Whitelist" from the list of permission groups
-          pGroups = visitorData.permissionGroups || [];
-          qx.lang.Array.remove(pGroups, aiagallery.dbif.Constants.WHITELIST);
-
-          // Now, if we're told to allow access, add it in
-          pGroups.push(aiagallery.dbif.Constants.WHITELIST);
-
-          // Replace the old list of permission groups
-          visitorData.permissionGroups = pGroups;
-
-          // Save the visitor
-          visitor.put();
-
-          return visitorData;
         });
+      
+      // Give 'em the map of success/failure indications
+      return ret;
     },
 
     deleteVisitor : function(id)
