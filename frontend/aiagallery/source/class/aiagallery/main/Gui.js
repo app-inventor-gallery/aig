@@ -579,7 +579,6 @@ qx.Class.define("aiagallery.main.Gui",
 
         for (moduleName in moduleList[menuItem])
         {
-
           // We found a module.  Increment our counter
           numModules++;
         }

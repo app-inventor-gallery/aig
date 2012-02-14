@@ -44,33 +44,33 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       canvas.add(vBox, { edge : 10 });
       
       // The search area is a tabview, for selecting the type of search
-      tabView = new qx.ui.tabview.TabView();
-      tabView.set(
-        {
-          barPosition : "left"
-        });
+      tabView = new aiagallery.widget.radioview.RadioView();
+
+      // Use a single row for subtabs
+      tabView.setRowCount(1);
       
       // Allow results section to grow or shrink based on tabview page's needs
       tabView.getChildControl("pane").setDynamic(true);
       
       // Add the search option pages
-      o = new qx.ui.tabview.Page(this.tr("Text search"));
+      o = new aiagallery.widget.radioview.Page(this.tr("Text search"));
       o.set(
         {
           layout    : new qx.ui.layout.VBox()
         });
+      this._addTextSearch(o);
       tabView.add(o);
       
-      o = new qx.ui.tabview.Page(this.tr("Browse categories"));
+      o = new aiagallery.widget.radioview.Page(this.tr("Browse categories"));
       this._addCategoryBrowser(o);
       tabView.add(o);
       
-      o = new qx.ui.tabview.Page(this.tr("Advanced"));
-      this._addAdvancedSearch(o);
+      o = new aiagallery.widget.radioview.Page(this.tr("Advanced"));
       o.set(
         {
           layout    : new qx.ui.layout.VBox()
         });
+      this._addAdvancedSearch(o);
       tabView.add(o);
       
       // Add the tabView to the top of the vBox
@@ -188,11 +188,14 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       criteria.setLayout( new qx.ui.layout.VBox());
   
       // criteria VBox gets wrapped by Scroll for functionality
-      var criteriascroll = new qx.ui.container.Scroll().set(
+      var criteriascroll = new qx.ui.container.Scroll();
+      criteriascroll.set(
         {
+//          height    : 30,
+//          minHeight : 30,
           maxHeight : 90
         });
-      criteriascroll.add(criteria);
+      criteriascroll.add(criteria, { flex : 1 });
        
       // Start with a single line of refinement
       var myRefineLine = this.buildSearchRefineLine(this.__fsm);
