@@ -1,13 +1,13 @@
 /**
  * Copyright (c) 2011 Derrell Lipman
- * 
+ *
  * License:
- *   LGPL: http://www.gnu.org/licenses/lgpl.html 
+ *   LGPL: http://www.gnu.org/licenses/lgpl.html
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
 /**
- * User management finite state machine
+ * Application management finite state machine
  */
 qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
 {
@@ -57,7 +57,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
               rpcRequest.request = null;
             }
           }
-          
+
           // Be sure that edit and delete buttons enable status is correct
           var selectionModel = fsm.getObject("table").getSelectionModel();
           var bHasSelection = ! selectionModel.isSelectionEmpty();
@@ -70,24 +70,21 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           "execute" :
           {
             // When the Delete Application button is pressed
-            "deleteApp" : "Transition_Idle_to_AwaitRpcResult_via_deleteApp",
-
-            // When the Add Application button is pressed
-            "addApp" : "Transition_Idle_to_AddOrEditApp_via_addApp"
+            "deleteApp" : "Transition_Idle_to_AwaitRpcResult_via_deleteApp"
           },
 
           "cellEditorOpening" :
           {
             // When a cell is double-clicked, or the Edit button is pressed,
             // either of which open a cell editor for the row data
-            "table" : "Transition_Idle_to_AddOrEditApp_via_cellEditorOpening"
+            "table" : "Transition_Idle_to_EditApp_via_cellEditorOpening"
           },
 
           // Request to call some remote procedure call which is specified by
           // the event data.
           "callRpc" : "Transition_Idle_to_AwaitRpcResult_via_generic_rpc_call",
 
-          // When we get an appear event, retrieve the visitor list
+          // When we get an appear event, retrieve the application list
           "appear"    :
           {
             "main.canvas" : "Transition_Idle_to_AwaitRpcResult_via_appear"
@@ -107,10 +104,10 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
       /*
        * Transition: Idle to AwaitRpcResult
        *
-       * Cause: "execute" on "Delete User" button
+       * Cause: "execute" on "Delete App" button
        *
        * Action:
-       *  Issue a remote procedure call to delete the selected user
+       *  Issue a remote procedure call to delete the selected app
        */
 
       trans = new qx.util.fsm.Transition(
@@ -128,21 +125,22 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var table = fsm.getObject("table");
           var selectionModel = table.getSelectionModel();
           var selection = selectionModel.getSelectedRanges()[0].minIndex;
-          var data = table.getTableModel().getData()[selection];
+          var data = table.getTableModel().getDataAsMapArray()[selection];
 
+//console.log("mgmt/apps--Transition_Idle_to_AwaitRpcResult_via_deleteApp -- data[]: " + qx.lang.Json.stringify(data));
           // Issue a Delete App call
           var request =
             this.callRpc(fsm,
                           "aiagallery.features",
                           "deleteApp",
                           [
-                            data[1] // the email address is their user id
+                            data.uid
                           ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
           request.setUserData("requestType", "deleteApp");
-          
+
           // We also need to know what row got deleted
           request.setUserData("deletedRow", selection);
         }
@@ -151,57 +149,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
       state.addTransition(trans);
 
       /*
-       * Transition: Idle to AddOrEditApp
-       *
-       * Cause: "execute" on "Add Application" button
-       *
-       * Action:
-       *  Open an empty editor to add a new application
-       */
-
-      trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AddOrEditApp_via_addApp",
-      {
-        "nextState" : "State_AddOrEditApp",
-
-        "context" : this,
-
-        "ontransition" : function(fsm, event)
-        {
-          var cellEditor;
-
-          // Retrieve the table object
-          var table = fsm.getObject("table");
-
-          // Get the cell editor factory for all columns of the table
-          var cellEditorFactory =
-            table.getTableColumnModel().getCellEditorFactory(0);
-          
-          // Generate a simple cellInfo object
-          var cellInfo = { table : table };
-
-          // Get a cell editor
-          cellEditor = cellEditorFactory.createCellEditor(cellInfo);
-          
-          // Make it modal
-          cellEditor.setModal(true);
-          
-          // Disallow the window's close button
-          cellEditor.setShowClose(false);
-          
-          // Open the cell editor
-          cellEditor.open();
-          
-          // Save the cell editor and cell info
-          this.setUserData("cellEditor", cellEditor);
-          this.setUserData("cellInfo", cellInfo);
-        }
-      });
-        
-      state.addTransition(trans);
-
-      /*
-       * Transition: Idle to AddOrEditUser
+       * Transition: Idle to EditApp
        *
        * Cause: "cellEditorOpening" on the Table. This can occur as a result
        * of either a press of the "Edit" button, or by double-clicking on the
@@ -212,9 +160,9 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
        */
 
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AddOrEditUser_via_cellEditorOpening",
+        "Transition_Idle_to_EditApp_via_cellEditorOpening",
       {
-        "nextState" : "State_AddOrEditUser",
+        "nextState" : "State_EditApp",
 
         "context" : this,
 
@@ -223,13 +171,13 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var data = event.getData();
           var cellEditor = data.cellEditor;
           var cellInfo = data.cellInfo;
-          
+
           // Save the cell editor and information of which row we're editing
           this.setUserData("cellEditor", cellEditor);
           this.setUserData("cellInfo", cellInfo);
         }
       });
-        
+
       state.addTransition(trans);
 
       /*
@@ -265,7 +213,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
       state.addTransition(trans);
 
       /*
-       * Transition: Idle to Idle
+       * Transition: Idle to AwaitRpcResult
        *
        * Cause: "appear" on canvas
        *
@@ -283,13 +231,19 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
         "ontransition" : function(fsm, event)
         {
           // Issue the remote procedure call to get the application list.
-          // Request that the permissions and status be converted to strings 
+          // Request that the permissions and status be converted to strings
           // for us.
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
                          "getAppListAll",
-                         [true, null, null, null, true]);
+// Superfluous 5th param?   ->  ->  ->  ->  ->  ->  vvvv
+//                         [true, null, null, null, true]);
+//                         [true, null, null, null]);    // to bStringize...
+                       [null, null, null, null]);    // or not to bStringize?
+// Two issues:
+// - Should 1st param, bStringize, be true (as in mystuff) or null (as in myapps)?
+// - Less importantly--specify a default sortCriteria?
 
           // When we get the result, we'll need to know what type of request
           // we made.
@@ -324,11 +278,11 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
       state.addTransition(trans);
 
       // ------------------------------------------------------------ //
-      // State: AddOrEditApp
+      // State: EditApp
       // ------------------------------------------------------------ //
 
       /*
-       * State: AddOrEditApp
+       * State: EditApp
        *
        * Actions upon entry
        *  - If the event that got us here was "completed", update the GUI
@@ -340,7 +294,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
        *    AwaitRpcResult state
        */
 
-      state = new qx.util.fsm.State("State_AddOrEditApp",
+      state = new qx.util.fsm.State("State_EditApp",
       {
         "context" : this,
 
@@ -357,7 +311,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
             // response objects.
             rpcRequest = this.popRpcRequest();
             response = rpcRequest.getUserData("rpc_response");
-            
+
             // Did it fail?
             if (response.type == "failed")
             {
@@ -369,7 +323,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
             {
               // It succeeded. Resubmit the event to move us back to Idle
               fsm.eventListener(event);
-              
+
               // Push the RPC request back on the stack so it's available for
               // the next transition.
               this.pushRpcRequest(rpcRequest);
@@ -382,13 +336,13 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           "execute" :
           {
             // When the Ok button is pressed in the cell editor
-            "ok" : "Transition_AddOrEditApp_to_AwaitRpcResult_via_ok",
-            
-            "cancel" : "Transition_AddOrEditApp_to_Idle_via_cancel"
+            "ok" : "Transition_EditApp_to_AwaitRpcResult_via_ok",
+
+            "cancel" : "Transition_EditApp_to_Idle_via_cancel"
           },
-          
+
           // When we received a "completed" event on RPC
-          "completed" : "Transition_AddOrEditApp_to_Idle_via_completed"
+          "completed" : "Transition_EditApp_to_Idle_via_completed"
         }
       });
 
@@ -396,7 +350,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
       fsm.addState(state);
 
       /*
-       * Transition: Idle to AwaitRpcResult
+       * Transition: EditApp to AwaitRpcResult
        *
        * Cause: "execute" on "Ok" button in cell editor
        *
@@ -405,7 +359,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
        */
 
       trans = new qx.util.fsm.Transition(
-        "Transition_AddOrEditApp_to_AwaitRpcResult_via_ok",
+        "Transition_EditApp_to_AwaitRpcResult_via_ok",
       {
         "nextState" : "State_AwaitRpcResult",
 
@@ -415,8 +369,9 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
         {
           var             cellEditor;
           var             cellInfo;
-          var             displayName;
-          var             email;
+          var             uid;
+          var             appTitle;
+          var             description;
           var             selection;
           var             internal = { permissions : [], status : null };
           var             request;
@@ -426,52 +381,60 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           cellInfo = this.getUserData("cellInfo");
 
           // Retrieve the values from the cell editor
-          displayName = cellEditor.getUserData("displayName").getValue();
-          email = cellEditor.getUserData("email").getValue();
-          selection = cellEditor.getUserData("permissions").getSelection();
-          selection.forEach(
-            function(item)
-            {
-              // Add to our permission list the "internal" (English) permission
-              internal.permissions.push(item.getUserData("internal"));
-            
-            });
-          selection = cellEditor.getUserData("status").getSelection()[0];
-          internal.status = selection.getUserData("internal");
-          
-          // Save the request data
-          var requestData = 
-            {
-              displayName : displayName,
-              permissions : internal.permissions,
-              status      : internal.status 
-            };
+          uid            = cellEditor.getUserData("uid");
+          appTitle = cellEditor.getUserData("titleField").getValue();
+          description = cellEditor.getUserData("descriptionField").getValue();
 
-          // Issue a Add Or Edit Application call.
+// also required:  owner, tags, source, image1
+// Get them from the table, for the moment
+
+          var row = cellInfo.row;
+          var table = cellInfo.table;
+          var dataModel = table.getTableModel();
+          var rowData = dataModel.getRowDataAsMap(row);
+
+          var owner = rowData.owner;
+          var tags = rowData.tags;
+          var source = rowData.source;
+          var image1 = rowData.image1;
+
+          // Save the request data
+          var requestData =
+            {
+              title       : appTitle,
+              description : description,
+              owner       : owner,
+              tags        : tags,
+              source      : source,
+              image1      : image1
+            };
+ 
+          // Issue an Add Or Edit Application call.
           request = this.callRpc(fsm,
                      "aiagallery.features",
-                     "addOrEditApp",
-                     [ email, requestData ]);
+                     "mgmtEditApp",
+                     [ uid, requestData ]);
 
           // Save the user id in the request data too
-          requestData.email = email;
+          requestData.uid = uid;
 
           // Save the request data
           request.setUserData("requestData", requestData);
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "AddOrEditApp");
 
-          // Save the permissions and status
-          request.setUserData("internal", internal);
+          request.setUserData("requestType", "mgmtEditApp");
+
+//          // Save the permissions and status
+//          request.setUserData("internal", internal);
         }
       });
 
       state.addTransition(trans);
 
       /*
-       * Transition: AddOrEditApp to Idle
+       * Transition: EditApp to Idle
        *
        * Cause: "execute" on the Cancel button in the cell editor
        *
@@ -480,7 +443,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
        */
 
       trans = new qx.util.fsm.Transition(
-        "Transition_AddOrEditApp_to_Idle_via_cancel",
+        "Transition_EditApp_to_Idle_via_cancel",
       {
         "nextState" : "State_Idle",
 
@@ -493,17 +456,18 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
 
           // Retrieve the cell editor and cell info
           cellEditor = this.getUserData("cellEditor");
-          cellInfo = this.getUserData("cellInfo");
-          
+//          cellInfo = this.getUserData("cellInfo");
+
           // Retrieve the table object
           var table = fsm.getObject("table");
-          
+
           // Tell the table we're no longer editing
           table.cancelEditing();
 
           // close the cell editor
           cellEditor.close();
-          
+
+/* // This won't happen since not adding apps...
           // If we created this cell editor (cellInfo has only 'table')...
           if (typeof(cellInfo.row) == "undefined")
           {
@@ -511,6 +475,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
             cellEditor.destroy();
             cellEditor = null;
           }
+*/
 
           // We can remove the cell editor and cell info from our own user
           // data now.
@@ -522,16 +487,16 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
       state.addTransition(trans);
 
       /*
-       * Transition: AddOrEditApp to Idle
+       * Transition: EditApp to Idle
        *
        * Cause: "completed" event from RPC
        *
        * Action:
-       *  Write the edited or added User data to the table
+       *  Write the edited App data to the table
        */
 
       trans = new qx.util.fsm.Transition(
-        "Transition_AddOrEditApp_to_Idle_via_completed",
+        "Transition_EditApp_to_Idle_via_completed",
       {
         "nextState" : "State_Idle",
 
@@ -543,7 +508,9 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var             cellInfo;
           var             rpcRequest;
           var             requestData;
-          var             internal;
+          var             response;
+          var             result;
+//          var             internal;
           var             table;
           var             dataModel;
           var             permissions;
@@ -551,50 +518,72 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
 
           // Retrieve the RPC request
           rpcRequest = this.popRpcRequest();
-          
+
           // Get the cell editor and the request data from the RPC request
           cellEditor = this.getUserData("cellEditor");
           cellInfo = this.getUserData("cellInfo");
           requestData = rpcRequest.getUserData("requestData");
-          internal = rpcRequest.getUserData("internal");
+          response = rpcRequest.getUserData("rpc_response");
+          result = response.data.result;
+
+//          internal = rpcRequest.getUserData("internal");
 
           // We'll also need the Table object, from the FSM
           table = fsm.getObject("table");
-          
+
           // Get the table's data model
           dataModel = table.getTableModel();
-          
+
+/* Don't need any of this stuff!
+          var fields =
+            [
+              "uid",
+              "title",
+              "description",
+              "image1",
+              "source",
+              "sourceFileName",
+              "tags"
+            ];
+
           // Create the row data for the table
-          rowData.push(requestData.displayName);
-          rowData.push(requestData.email);
+          fields.forEach(
+            function(field)
+            {
+              
+            });
 
-          // Munge the internal permissions from an array into a comma-separated
-          // string, and add it it to the row data
-          permissions = internal.permissions.join(", ");
-          rowData.push(permissions);
-          
-          // Add the status to the row data
-          rowData.push(internal.status);
+          // Create the row data for the table
+          rowData.uid          = result.uid;
+          rowData.title        = result.title;
+          rowData.description  = result.description;
+          rowData.image1       = result.image1;
+          rowData.image2       = result.image2;
+          rowData.image3       = result.image3;
+          rowData.prevAuthors  = result.prevAuthors;
+          rowData.tags         = result.tags.join(", ");
+          rowData.sourceFileName = result.sourceFileName;
+          rowData.apkFileName = result.apkFileName;
+          rowData.uploadTime   = result.uploadTime;
+          rowData.numLikes     = result.numLikes;
+          rowData.numDownloads = result.numDownloads;
+          rowData.numViewed    = result.numViewed;
+          rowData.status       = statusCodes[result.status];
+*/
 
-          // If there's cell info available (they're editing), ...
-          if (cellInfo && cellInfo.row !== undefined)
-          {
-            // ... then save the data in the row being edited.
-            dataModel.setRows( [ rowData ], cellInfo.row, false);
-            
-            // Save the data so that the cell editor's getCellEditorValue()
-            // method can retrieve it.
-            cellEditor.setUserData("newData", rowData);
-          }
-          else
-          {
-            // Otherwise, add a new row. Do not clear sorting.
-            dataModel.addRows( [ rowData ], null, false);
-          }
-          
+          // Put the data where it belongs. Preserve hidden data and sort order.
+//          dataModel.setRowsAsMapArray( [ rowData ], cellInfo.row, true, false);
+          dataModel.setRowsAsMapArray( [ result ] , cellInfo.row, true, false);
+// Might need to munge tags and status here!
+
+          // Save the data so that the cell editor's getCellEditorValue()
+          // method can retrieve it.
+// ??
+          cellEditor.setUserData("newData", rowData);
+
           // close the cell editor
           cellEditor.close();
-          
+
           // We can remove the cell editor and cell info from our own user
           // data now.
           this.setUserData("cellEditor", null);
