@@ -179,13 +179,13 @@ qx.Class.define("aiagallery.test.PermissionsLoggedOutTest",
         "deleteVisitor with " + this.permissionLevel);
     },
     
-    "test 14: attempt to getVisitorList" : function()
+    "test 14: attempt to getVisitorListAndPGroups" : function()
     {
       // Check permissions
       this.assertFalse(
         aiagallery.dbif.MDbifCommon.authenticate(
-          "aiagallery.features.getVisitorList"), 
-        "getVisitorList with " + this.permissionLevel);
+          "aiagallery.features.getVisitorListAndPGroups"), 
+        "getVisitorListAndPGroups with " + this.permissionLevel);
     },
 
     "test 15: attempt to editProfile" : function()

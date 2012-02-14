@@ -12,7 +12,7 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
   {
     
     this.registerService("aiagallery.features.keywordSearch",
-                         this.editProfile,
+                         this.keywordSearch,
                          [ "keywordString",
                            "queryFields",
                            "requestedFields"]);

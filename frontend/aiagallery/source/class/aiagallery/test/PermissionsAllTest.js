@@ -22,11 +22,25 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
           id           : "2000",
           displayName  : "mynewdisplayname",
           email        : "jarjar@binks.org",
-          permissions  : ["getAppList", "addOrEditApp", "deleteApp", "getAppListAll",
-                          "appQuery", "getAppInfo", "addComment", "deleteComment",
-                          "getComments", "mobileRequest", "getCategoryTags", 
-                          "addOrEditVisitor", "deleteVisitor", "getVisitorList",
-                         "editProfile", "whoAmI"],
+          permissions  : 
+            [
+              "getAppList",
+              "addOrEditApp", 
+              "deleteApp",
+              "getAppListAll",
+              "appQuery",
+              "getAppInfo", 
+              "addComment",
+              "deleteComment",
+              "getComments",
+              "mobileRequest", 
+              "getCategoryTags",
+              "addOrEditVisitor",
+              "deleteVisitor", 
+              "getVisitorListAndPGroups",
+              "editProfile",
+              "whoAmI"
+            ],
           status       : 2
         }
       },
@@ -35,25 +49,45 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
         "ALL" :
         {
           "name" : "ALL",
-          "permissions" : ["addOrEditApp", "deleteApp", 
-                         "getAppListAll", "addComment", "deleteComment", 
-                         "flagIt", "addOrEditVisitor", "deleteVisitor", 
-                         "getVisitorList", "likesPlusOne", 
-                         "getDatabaseEntities"],
+          "permissions" :
+            [
+              "addOrEditApp",
+              "deleteApp", 
+              "getAppListAll", 
+              "addComment",
+              "deleteComment", 
+              "flagIt",
+              "addOrEditVisitor",
+              "deleteVisitor", 
+              "getVisitorListAndPGroups",
+              "likesPlusOne", 
+              "editProfile",
+              "getDatabaseEntities"
+            ],
           "description" : "All permissions"
         },
         "SOME" :
         {
           "name" : "SOME",
-          "permissions" : ["addOrEditApp", "deleteApp", 
-                         "getAppListAll", "addComment", "deleteComment", 
-                         "flagIt", "likesPlusOne"],
+          "permissions" : 
+            [
+              "addOrEditApp", 
+              "deleteApp", 
+              "getAppListAll",
+              "addComment",
+              "deleteComment", 
+              "flagIt",
+              "likesPlusOne"
+            ],
           "description" : "Some permissions"
         },
          "ONE" :
         {
-          "name" : "SOME",
-          "permissions" : ["addOrEditApp"],
+          "name" : "ONE",
+          "permissions" :
+            [
+              "addOrEditApp"
+            ],
           "description" : "Some permissions"
         }
       },
@@ -77,6 +111,9 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
     
     setUp: function()
     {
+      // Use a personalized database
+      liberated.sim.Dbif.setDb(this.__db);
+      
       // Get access to the RPC implementations. This includes the mixins for
       // all RPCs.      
       this.dbifSim = aiagallery.dbif.DbifSim.getInstance();
@@ -90,11 +127,6 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
           permissions : this.dbifSim.getGroupPermissions("ALL").permissions,
           displayName : "nameSetWhoAmI"
         });
-      
-      // Use a personalized database
-      liberated.sim.Dbif.setDb(this.__db);
-      
-      this.currentPermissionsStr = "no permissions";
     },
 
     tearDown: function() 
@@ -222,18 +254,18 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
         "deleteVisitor with " + this.permissionLevel);
     },
     
-    "test 14: attempt to getVisitorList" : function()
+    "test 14: attempt to getVisitorListAndPGroups" : function()
     {
       // Check permissions
       this.assertTrue(
         aiagallery.dbif.MDbifCommon.authenticate(
-          "aiagallery.features.getVisitorList"), 
-        "getVisitorList with " + this.permissionLevel);
+          "aiagallery.features.getVisitorListAndPGroups"), 
+        "getVisitorListAndPGroups with " + this.permissionLevel);
     },
 
     "test 15: attempt to editProfile" : function()
     {
-      // Must be logged in
+      // Check permissions
       this.assertTrue(
         aiagallery.dbif.MDbifCommon.authenticate(
           "aiagallery.features.editProfile"), 
@@ -290,7 +322,6 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
           isAdmin          : false,
           logoutUrl        : "undefined",
           permissions      : permissions,
-          permissionGroups : ["ALL"],
           displayName      : "pGroupTests"
         });
     
@@ -342,7 +373,6 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
          isAdmin          : false,
          logoutUrl        : "undefined",
          permissions      : permissions,
-         permissionGroups : [],
          displayName      : "pGroupTests"
        });
         
@@ -449,7 +479,6 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
          isAdmin          : false,
          logoutUrl        : "undefined",
          permissions      : permissions,
-         permissionGroups : ["SOME", "ONE"],
          displayName      :  "pGroupTests"
         });
         
@@ -502,7 +531,6 @@ qx.Class.define("aiagallery.test.PermissionsAllTest",
          isAdmin          : false,
          logoutUrl        : "undefined",
          permissions      : permissions,
-         permissionGroups : ["SOME"],
          displayName      : "pGroupTests"
         });
         
