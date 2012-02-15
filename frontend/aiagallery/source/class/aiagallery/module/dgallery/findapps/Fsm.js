@@ -82,7 +82,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
 
           "execute" :
           {
-            "searchBtn" : "Transition_Idle_to_AwaitRpcResult_via_search"
+            "butSearch" : "Transition_Idle_to_AwaitRpcResult_via_search"
           },
           
           // When we get an appear event, retrieve the category tags list. We
