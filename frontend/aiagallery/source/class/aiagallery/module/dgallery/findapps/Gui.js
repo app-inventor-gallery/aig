@@ -48,6 +48,29 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       
       // The search area is a tabview, for selecting the type of search
       tabView = new aiagallery.widget.radioview.RadioView();
+      tabView.addListener(
+        "changeSelection",
+        function(e)
+        {
+          // Determine which page was selected
+          if (e.getTarget().getSelection()[0] == this.pageTextSearch)
+          {
+            // It's the text search page, so clear the advanced page
+            this._clearAdvanced();
+          }
+          else
+          {
+            // The advanced page was selected, so clear text search field
+            this.txtTextSearch.setValue("");
+          }
+          
+          // Clear out the search results with an empty model
+          if (this.searchResults)
+          {
+            this.searchResults.setModel(qx.data.marshal.Json.createModel([]));
+          }
+        },
+        this);
 
       // Use a single row for subtabs
       tabView.setRowCount(1);
@@ -56,21 +79,23 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       tabView.getChildControl("pane").setDynamic(true);
       
       // Add the search option pages
-      o = new aiagallery.widget.radioview.Page(this.tr("Text search"));
-      o.set(
+      this.pageTextSearch =
+        new aiagallery.widget.radioview.Page(this.tr("Text search"));
+      this.pageTextSearch.set(
         {
           layout    : new qx.ui.layout.VBox()
         });
-      this._addTextSearch(o);
-      tabView.add(o);
+      this._addTextSearch(this.pageTextSearch);
+      tabView.add(this.pageTextSearch);
       
-      o = new aiagallery.widget.radioview.Page(this.tr("Advanced"));
-      o.set(
+      this.pageAdvanced =
+        new aiagallery.widget.radioview.Page(this.tr("Advanced"));
+      this.pageAdvanced.set(
         {
           layout    : new qx.ui.layout.VBox()
         });
-      this._addAdvancedSearch(o);
-      tabView.add(o);
+      this._addAdvancedSearch(this.pageAdvanced);
+      tabView.add(this.pageAdvanced);
       
       // Add the tabView to the top of the vBox
       vBox.add(tabView);
@@ -140,7 +165,35 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
 
     _clearAdvanced : function()
     {
-      
+      // Remove all selections from the category browser
+      [
+        "browse0",
+        "browse1",
+        "browse2"
+      ].forEach(
+        function(listName)
+        {
+          var             list;
+          
+          // Do not cause searches to occur while clearing the lists
+          this.__bPreventFsmEvent = true;
+
+          list = this.__fsm.getObject(listName);
+          if (list)
+          {
+            list.setSelection( [] );
+          }
+          
+          // Allow normal FSM events again
+          this.__bPreventFsmEvent = false;
+        },
+        this);
+
+      // Clear out the search criteria too
+      if (this.butClear)
+      {
+        this.butClear.execute();
+      }
     },
 
     _addTextSearch : function(container)
@@ -180,7 +233,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         {
           width : 300
         });
-      this.txtTextSearch.addListener("input", this._clearAdvanced);
+      this.txtTextSearch.addListener("input", this._clearAdvanced, this);
+      this.__fsm.addObject("txtTextSearch", this.txtTextSearch);
       hBox.add(this.txtTextSearch);
       
       // Create the button for initiating the search
@@ -190,14 +244,10 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
           maxHeight : 20
         });
       hBox.add(this.butTextSearch);
-      
-      this.butTextSearch.addListener(
-        "execute",
-        function(e)
-        {
-        },
-        this);
-      
+      this.__fsm.addObject("butTextSearch", this.butTextSearch);
+      this.butTextSearch.addListener("execute",
+                                     this.__fsm.eventListener,
+                                     this.__fsm);
     },
 
     _addAdvancedSearch : function(container)
@@ -269,7 +319,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
               this.__bPreventFsmEvent = true;
 
               // Add a new criterion
-              butClear.execute();
+              this.butClear.execute();
 //              butAddCriterion.execute();
 
               // Ok, allow FSM events from the search criteria again
@@ -347,7 +397,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         {
           width : 100
         });
-      this.__fsm.addObject("butSearch", butSearch);
+      this.__fsm.addObject("butAdvSearch", butSearch);
       butSearch.addListener(
         "execute",
         function(e)
@@ -375,12 +425,12 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       // Separate the Search button from the others
       buttonbar.add(new qx.ui.core.Spacer(40, 10));
 
-      var butClear = new qx.ui.form.Button(this.tr("Clear"));
-      butClear.set(
+      this.butClear = new qx.ui.form.Button(this.tr("Clear"));
+      this.butClear.set(
         {
           width : 100
         });
-      butClear.addListener(
+      this.butClear.addListener(
         "execute",
         function() 
         {
@@ -399,7 +449,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         },
         // Pass criteria widget as context so we can access (and clean) it.  
         criteria);
-      buttonbar.add(butClear);
+      buttonbar.add(this.butClear);
       
       var butAddCriterion =
         new qx.ui.form.Button(this.tr("Add Criterion"));

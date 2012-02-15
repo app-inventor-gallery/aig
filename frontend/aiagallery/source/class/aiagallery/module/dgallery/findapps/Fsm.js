@@ -82,7 +82,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
 
           "execute" :
           {
-            "butSearch" : "Transition_Idle_to_AwaitRpcResult_via_search"
+            // click on the Search button in Advanced Search
+            "butAdvSearch"  : "Transition_Idle_to_AwaitRpcResult_via_advsearch",
+
+            // click on the Search button in Text Search
+            "butTextSearch" : "Transition_Idle_to_AwaitRpcResult_via_textsearch"
           },
           
           // When we get an appear event, retrieve the category tags list. We
@@ -265,17 +269,74 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
       state.addTransition(trans);
 
 
-        /*
+      /*
        * Transition: Idle to Awaiting RPC Result
        *
-       * Cause: "Search" button pressed
+       * Cause: "Search" button pressed in Text Search
        *
        * Action:
        *  Initiate a request for the list of  matching applications.
        */
         
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_search",
+        "Transition_Idle_to_AwaitRpcResult_via_textsearch",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var             i;
+          var             criteria;
+          var             keywordString;
+          var             request;
+          var             criteriaArray;
+          
+          // We're building a series of AND criteria
+          criteria =
+            {
+              type     : "op",
+              method   : "and",
+              children : []
+            };
+          
+          // Retrieve the requested search words
+          keywordString = fsm.getObject("txtTextSearch").getValue();
+          
+          // Issue the remote procedure call to execute the query
+          request =
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "intersectKeywordAndQuery",
+                         [
+                           {
+                             criteria : criteria,
+                             keywordString : keywordString,
+                             requestedFields : null,
+                             queryFields : null // not yet implemented
+                           }
+                         ]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "intersectKeywordAndQuery");
+        }
+      });
+
+      state.addTransition(trans);
+
+      /*
+       * Transition: Idle to Awaiting RPC Result
+       *
+       * Cause: "Search" button pressed in Advanced Search
+       *
+       * Action:
+       *  Initiate a request for the list of  matching applications.
+       */
+        
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_advsearch",
       {
         "nextState" : "State_AwaitRpcResult",
 
