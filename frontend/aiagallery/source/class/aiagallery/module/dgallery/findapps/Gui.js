@@ -17,6 +17,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
 
   members :
   {
+    /** Whether FSM events should be temporarily prevented */
+    __bPreventFsmEvent : false,
+
     /**
      * Build the raw graphical user interface.
      *
@@ -157,7 +160,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       font = qx.bom.Font.fromString("10px sans-serif bold");
       description = 
         new qx.ui.basic.Label(this.tr("Search for words found in the title, " +
-                                      "description, categories, and/or tags."));
+                                      "description, categories, or tags."));
       description.set(
         {
           font : font
@@ -249,9 +252,34 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
               width  : 130,
               height : 124
             });
-          list.addListener("changeSelection",
-                           this.__fsm.eventListener,
-                           this.__fsm);
+          
+          list.addListener(
+            "changeSelection",
+            function(e)
+            {
+              // If we got here from a different event handler...
+              if (this.__bPreventFsmEvent)
+              {
+                // then do nothing
+                return;
+              }
+
+              // Make a change to the search criteria without generating an
+              // FSM event. The event will be generated afterwards
+              this.__bPreventFsmEvent = true;
+
+              // Add a new criterion
+              butClear.execute();
+//              butAddCriterion.execute();
+
+              // Ok, allow FSM events from the search criteria again
+              this.__bPreventFsmEvent = false;
+
+              qx.lang.Function.bind(
+                this.__fsm.eventListener, this.__fsm)(e);
+            },
+            this);
+
           hBox.add(list);
           this.__fsm.addObject(listName, list);
         },
@@ -298,7 +326,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       var searchWrapper = new qx.core.Object();
       searchWrapper.setUserData("array", searchCriteriaArr);
       searchWrapper.setUserData("widget",criteria);
-      searchWrapper.setUserData("buildRefineFunc", this.buildSearchRefineLine);
+      searchWrapper.setUserData(
+        "buildRefineFunc", 
+        qx.lang.Function.bind(this.buildSearchRefineLine, this));
       
       // Going to need access in reset function to this object by the criteria
       criteria.setUserData("searchObject", searchWrapper);
@@ -312,6 +342,39 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       // buttonbar is where the search, reset, and possibly more buttons go
       var buttonbar = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
       
+      var butSearch = new qx.ui.form.Button(this.tr("Search"));
+      butSearch.set(
+        {
+          width : 100
+        });
+      this.__fsm.addObject("butSearch", butSearch);
+      butSearch.addListener(
+        "execute",
+        function(e)
+        {
+          // If we got here from a different event handler...
+          if (this.__bPreventFsmEvent)
+          {
+            // then do nothing
+            return;
+          }
+
+          // Make a change to the search criteria without generating an
+          // FSM event. The event will be generated afterwards
+          this.__bPreventFsmEvent = true;
+
+          qx.lang.Function.bind(
+            this.__fsm.eventListener, this.__fsm)(e);
+
+          // Ok, allow FSM events from the search criteria again
+          this.__bPreventFsmEvent = false;
+        },
+        this);
+      buttonbar.add(butSearch);
+      
+      // Separate the Search button from the others
+      buttonbar.add(new qx.ui.core.Spacer(40, 10));
+
       var butClear = new qx.ui.form.Button(this.tr("Clear"));
       butClear.set(
         {
@@ -364,15 +427,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         }, 
         this);
       buttonbar.add(butAddCriterion);
-      
-      var butSearch = new qx.ui.form.Button(this.tr("Search"));
-      butSearch.set(
-        {
-          width : 100
-        });
-      this.__fsm.addObject("butSearch", butSearch);
-      butSearch.addListener("execute", this.__fsm.eventListener, this.__fsm);
-      buttonbar.add(butSearch);
       
       // Add the Scroll-wrapped criteria on top of the buttonbar
       vBox.add(criteriascroll, { flex : 1 });
@@ -586,7 +640,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       attrSelect.add(new qx.ui.form.ListItem(this.tr("All Text Fields"),
                                              null,
                                              "alltext"));      
-      attrSelect.add(new qx.ui.form.ListItem(this.tr("Tag"),
+      attrSelect.add(new qx.ui.form.ListItem(this.tr("Category or Tag"),
                                              null,
                                              "tags"));
       attrSelect.add(new qx.ui.form.ListItem(this.tr("Title"),
