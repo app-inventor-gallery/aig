@@ -167,16 +167,16 @@ qx.Class.define("aiagallery.module.dgallery.home.Fsm",
           // Determine on which link box we received the event
           var friendly = fsm.getFriendlyName(event.getTarget());
           
-          // Get the subtabs
-          var subTabs = qx.core.Init.getApplication().getUserData("subTabs");
+          // Get the tabs container
+          var mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
 
-          subTabs.getChildren().forEach(
+          mainTabs.getChildren().forEach(
             function(thisPage)
             {
               if (thisPage.getLabel() == friendly)
               {          
                 // Select the existing application page
-                subTabs.setSelection([ thisPage ]);
+                mainTabs.setSelection([ thisPage ]);
               }
             });
         }

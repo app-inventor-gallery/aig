@@ -65,7 +65,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 	  "</ul>",
 
 	  "<p>Get started by clicking on <b>Find Apps</b>, and go ahead ",
-	  "and add your own projects by clicking on <b>My Stuff</b>.",
+	  "and add your own projects by clicking on <b>My Apps</b>.",
 
 	  "<p>Also, you can browse and download projects directly to your ",
 	  "Android phone by using our companion ",
@@ -124,17 +124,17 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // Add spacer
       linkRow.add(new qx.ui.core.Widget(), { flex : 1 });
 
-      // Add "My Stuff" box to link row
+      // Add "My Apps" box to link row
       text =
         [
-	 "Go to <b>My Stuff</b> to review and change your uploaded projects."
+	 "Go to <b>My Apps</b> to review and change your uploaded projects."
         ].join("");
-      var myStuff = new aiagallery.module.dgallery.home.LinkBox(
-        "<b>My Stuff</b><br>" + text,
+      var myApps = new aiagallery.module.dgallery.home.LinkBox(
+        "<b>My Apps</b><br>" + text,
         "aiagallery/myStuff.png");
-      myStuff.addListener("click", fsm.eventListener, fsm);
-      linkRow.add(myStuff);
-      fsm.addObject("My Stuff", myStuff);
+      myApps.addListener("click", fsm.eventListener, fsm);
+      linkRow.add(myApps);
+      fsm.addObject("My Apps", myApps);
 
       // Add spacer
       linkRow.add(new qx.ui.core.Widget(), { flex : 1 });
