@@ -126,7 +126,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
           {
             createItem : function()
             {
-              return new aiagallery.module.dgallery.findapps.SearchResult();
+              var             FindApps = aiagallery.module.dgallery.findapps;
+              return new FindApps.SearchResult("searchResult");
             },
             
             bindItem : function(controller, item, id) 

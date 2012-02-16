@@ -12,7 +12,18 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
   implement : [qx.ui.form.IModel],
   include   : [qx.ui.form.MModelProperty],
 
-  construct : function()
+  /**
+   * Information about an App
+   *
+   * @param format {String}
+   *   A keyword indicating the format in which to display the App
+   *   information. This string may be any one of the generic terms:
+   *   "searchResult", "homeRibbon", or "byAuthor", indicating, respectively,
+   *   whether to lay out all of the information as in a search result on the
+   *   Find Apps page, vertically as in the home page ribbons, or horizontally
+   *   as in the By This Author box on the App Info page.
+   */
+  construct : function(format)
   {
     var             grid;
     
@@ -24,18 +35,44 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     
     // Specify the format of date output
     this.dateFormat = aiagallery.Application.getDateFormat();
+    
+    // Select the appropriate grid layout
+    this.gridConfig =
+      {
+        searchResult :
+        {
+          image1       : { row : 0, column : 0, rowSpan : 4 },
+          title        : { row : 0, column : 1 },
+          numLikes     : { row : 0, column : 2, rowSpan : 2 },
+          numDownloads : { row : 0, column : 3, rowSpan : 2 },
+          numViewed    : { row : 0, column : 4, rowSpan : 2 },
+          numComments  : { row : 0, column : 5, rowSpan : 2 },
+          displayName  : { row : 1, column : 1 },
+          description  : { row : 2, column : 1, colSpan : 5 },
+          creationTime : { row : 3, column : 1 },
+          uploadTime   : { row : 3, column : 2, colSpan : 4 }
+        },
+
+        homeRibbon :
+        {
+        },
+        
+        byAuthor :
+        {
+        }
+      }[format];
 
     // Pre-create each of the child controls
-    this.getChildControl("image1");
-    this.getChildControl("title");
-    this.getChildControl("numLikes");
-    this.getChildControl("numViewed");
-    this.getChildControl("numDownloads");
-    this.getChildControl("numComments");
-    this.getChildControl("displayName");
-    this.getChildControl("description");
-    this.getChildControl("creationTime");
-    this.getChildControl("uploadTime");
+    this.gridConfig.image1       && this.getChildControl("image1");
+    this.gridConfig.title        && this.getChildControl("title");
+    this.gridConfig.numLikes     && this.getChildControl("numLikes");
+    this.gridConfig.numDownloads && this.getChildControl("numDownloads");
+    this.gridConfig.numViewed    && this.getChildControl("numViewed");
+    this.gridConfig.numComments  && this.getChildControl("numComments");
+    this.gridConfig.displayName  && this.getChildControl("displayName");
+    this.gridConfig.description  && this.getChildControl("description");
+    this.gridConfig.creationTime && this.getChildControl("creationTime");
+    this.gridConfig.uploadTime   && this.getChildControl("uploadTime");
   },
   
   events:
@@ -205,7 +242,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
             maxHeight : 100
           });
         control.addListener("mousedown", this._onViewApp, this);
-        this._add(control, { row : 0, column : 0, rowSpan : 4 });
+        this._add(control, this.gridConfig.image1);
         break;
         
       case "title":
@@ -218,7 +255,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
             font  : font
           });
         control.addListener("mousedown", this._onViewApp, this);
-        this._add(control, { row : 0, column : 1 });
+        this._add(control, this.gridConfig.title);
         break;
         
       case "numLikes":
@@ -234,7 +271,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
             maxHeight : 20,
             scale     : true
           });
-        this._add(control, { row : 0, column : 2, rowSpan : 2 });
+        this._add(control, this.gridConfig.numLikes);
         break;
         
       case "numDownloads":
@@ -250,7 +287,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
             maxHeight : 20,
             scale     : true
           });
-        this._add(control, { row : 0, column : 3, rowSpan : 2 });
+        this._add(control, this.gridConfig.numDownloads);
         break;
 
       case "numViewed":
@@ -266,7 +303,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
             maxHeight : 20,
             scale     : true
           });
-        this._add(control, { row : 0, column : 4, rowSpan : 2 });
+        this._add(control, this.gridConfig.numViewed);
         break;
 
       case "numComments":
@@ -282,7 +319,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
             maxHeight : 20,
             scale     : true
           });
-        this._add(control, { row : 0, column : 5, rowSpan : 2 });
+        this._add(control, this.gridConfig.numComments);
         break;
 
       case "displayName":
@@ -311,7 +348,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
           },
           this);
 
-        this._add(control, { row : 1, column : 1 });
+        this._add(control, this.gridConfig.displayName);
         break;
         
       case "description":
@@ -325,7 +362,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
             minHeight  : 50,
             maxHeight  : 50
           });
-        this._add(control, { row : 2, column : 1, colSpan : 5 });
+        this._add(control, this.gridConfig.description);
         break;
 
       case "creationTime":
@@ -334,7 +371,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
           {
             rich : true
           });
-        this._add(control, { row : 3, column : 1 });
+        this._add(control, this.gridConfig.creationTime);
         break;
         
       case "uploadTime":
@@ -343,7 +380,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
           {
             rich : true
           });
-        this._add(control, { row : 3, column : 2, colSpan : 4 });
+        this._add(control, this.gridConfig.uploadTime);
         break;
       }
 
