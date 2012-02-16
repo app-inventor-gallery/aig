@@ -727,6 +727,11 @@ qx.Class.define("aiagallery.main.Gui",
           hierarchy.setHierarchy(
             qx.lang.Array.clone(hierarchy.getHierarchy()));
           
+          // FIXME: Remove this item from the Module list too. effectively
+          // do this: delete aiagallery.main.Module._list[menuItem] (but
+          // create some function in the Module class to do it.
+          // See also issue #52 for an alternative solution.
+
           // There can only ever be one ephemeral page. See ya!
           break;
         }
