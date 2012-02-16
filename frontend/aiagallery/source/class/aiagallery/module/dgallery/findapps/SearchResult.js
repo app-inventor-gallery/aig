@@ -33,6 +33,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     grid = new qx.ui.layout.Grid(2, 2);
     this.setLayout(grid);
     
+    // Save the format
+    this.format = format;
+
     // Specify the format of date output
     this.dateFormat = aiagallery.Application.getDateFormat();
     
@@ -55,6 +58,13 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
 
         homeRibbon :
         {
+          image1       : { row : 0, column : 0, colSpan : 3 },
+          title        : { row : 1, column : 0, colSpan : 3 },
+          displayName  : { row : 2, column : 0, colSpan : 3 },
+          numLikes     : { row : 3, column : 0 },
+          numDownloads : { row : 3, column : 2 },
+          numViewed    : { row : 4, column : 0 },
+          numComments  : { row : 4, column : 2 }
         },
         
         byAuthor :
@@ -248,13 +258,32 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
       case "title":
         font = qx.bom.Font.fromString("10px sans-serif bold");
         font.setDecoration("underline");
-        control = new qx.ui.basic.Label();
-        control.set(
-          {
-            width : 300,
-            font  : font
-          });
-        control.addListener("mousedown", this._onViewApp, this);
+        
+        // Display the title single-line in searchResult format; possibly
+        // wrapping on multiple lines in the other formats.
+        if (this.format == "searchResult")
+        {
+          control = new qx.ui.basic.Label();
+          control.set(
+            {
+              width : 300,
+              font  : font
+            });
+          control.addListener("mousedown", this._onViewApp, this);
+        }
+        else
+        {
+          control = new qx.ui.form.TextArea();
+          control.set(
+            {
+              font      : qx.bom.Font.fromString("bold 10px sans-serif"),
+              readOnly  : true,
+              autoSize  : true,
+              wrap      : true,
+              anonymous : true,
+              maxHeight : 40
+            });
+        }
         this._add(control, this.gridConfig.title);
         break;
         
@@ -390,43 +419,64 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     // property apply function
     _applyImage1 : function(value, old)
     {
-      this.getChildControl("image1").setSource(value);
+      if (this.gridConfig["image1"])
+      {
+        this.getChildControl("image1").setSource(value);
+      }
     },
     
     // property apply function
     _applyTitle : function(value, old)
     {
-      this.getChildControl("title").setValue(value);
+      if (this.gridConfig["title"])
+      {
+        this.getChildControl("title").setValue(value);
+      }
     },
     
     // property apply function
     _applyNumLikes : function(value, old)
     {
-      this.getChildControl("numLikes").setLabel(value + "");
+      if (this.gridConfig["numLikes"])
+      {
+        this.getChildControl("numLikes").setLabel(value + "");
+      }
     },
     
     // property apply function
     _applyNumDownloads : function(value, old)
     {
-      this.getChildControl("numDownloads").setLabel(value + "");
+      if (this.gridConfig["numDownloads"])
+      {
+        this.getChildControl("numDownloads").setLabel(value + "");
+      }
     },
     
     // property apply function
     _applyNumViewed : function(value, old)
     {
-      this.getChildControl("numViewed").setLabel(value + "");
+      if (this.gridConfig["numViewed"])
+      {
+        this.getChildControl("numViewed").setLabel(value + "");
+      }
     },
     
     // property apply function
     _applyNumComments : function(value, old)
     {
-      this.getChildControl("numComments").setLabel(value + "");
+      if (this.gridConfig["numComments"])
+      {
+        this.getChildControl("numComments").setLabel(value + "");
+      }
     },
     
     // property apply function
     _applyDisplayName : function(value, old)
     {
-      this.getChildControl("displayName").setValue(value);
+      if (this.gridConfig["displayName"])
+      {
+        this.getChildControl("displayName").setValue(value);
+      }
     },
     
     // property transform function
@@ -438,13 +488,19 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     // property apply function
     _applyDescription : function(value, old)
     {
-      this.getChildControl("description").setValue(value);
+      if (this.gridConfig["description"])
+      {
+        this.getChildControl("description").setValue(value);
+      }
     },
     
     // property apply function
     _applyCreationTime : function(value, old)
     {
-      this.getChildControl("creationTime").setValue(value);
+      if (this.gridConfig["creationTime"])
+      {
+        this.getChildControl("creationTime").setValue(value);
+      }
     },
     
     // property transform function
@@ -457,7 +513,10 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     // property apply function
     _applyUploadTime : function(value, old)
     {
-      this.getChildControl("uploadTime").setValue(value);
+      if (this.gridConfig["uploadTime"])
+      {
+        this.getChildControl("uploadTime").setValue(value);
+      }
     },
     
     // property transform function
