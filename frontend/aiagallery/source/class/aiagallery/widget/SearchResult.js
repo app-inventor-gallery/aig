@@ -41,13 +41,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
     // Do format-specific processing
     switch(format)
     {
-    case "searchResult":
-      // Add grid layout characteristics
-      grid.setColumnAlign(0, "center", "middle");
-      grid.setColumnAlign(1, "center", "middle");
-      grid.setColumnAlign(2, "center", "middle");
-      grid.setColumnAlign(3, "center", "middle");
-      
+    case "searchResults":
       // Describe the configuration for this widget
       this.gridConfig =
         {
@@ -322,46 +316,28 @@ qx.Class.define("aiagallery.widget.SearchResult",
         
         // Display the title single-line in searchResults format; possibly
         // wrapping on multiple lines in the other formats.
-        if (this.format == "searchResults")
+        control = new qx.ui.basic.Label();
+        switch(this.format)
         {
-          control = new qx.ui.basic.Label();
-          control.set(
-            {
-              width : 300,
-              font  : font
-            });
-          control.addListener("mousedown", this._onViewApp, this);
+        case "searchResults":
+          textAlign = "left";
+          break;
+
+        case "homeRibbon":
+          textAlign = "center";
+          break;
+
+        case "byAuthor":
+          textAlign = "left";
+          break;
         }
-        else
-        {
-          control = new qx.ui.form.TextArea();
-          switch(this.format)
+        control.set(
           {
-          case "searchResults":
-            textAlign = "left";
-            break;
-
-          case "homeRibbon":
-            textAlign = "center";
-            break;
-
-          case "byAuthor":
-            textAlign = "left";
-            break;
-          }
-          control.set(
-            {
-              appearance : "widget",
-              font       : qx.bom.Font.fromString("bold 10px sans-serif"),
-              readOnly   : true,
-              autoSize   : true,
-              wrap       : true,
-              anonymous  : true,
-              maxHeight  : 40,
-              textAlign  : textAlign,
-              minimalLineHeight : 1
-            });
-        }
+            width     : 300,
+            font      : font,
+            textAlign : textAlign
+          });
+        control.addListener("mousedown", this._onViewApp, this);
         this._add(control, this.gridConfig.title);
         break;
         
@@ -371,7 +347,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           {
             icon         : "aiagallery/thumbs-up.png",
             iconPosition : "top",
-            minWidth     : this.format == "searchResults" ? 60 : 30
+            minWidth     : this.format == "searchResults" ? 60 : 40
           });
         control.getChildControl("icon").set(
           {
@@ -388,7 +364,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           {
             icon         : "aiagallery/downloads.png",
             iconPosition : "top",
-            minWidth     : this.format == "searchResults" ? 60 : 30
+            minWidth     : this.format == "searchResults" ? 60 : 40
           });
         control.getChildControl("icon").set(
           {
@@ -405,7 +381,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           {
             icon         : "aiagallery/viewed.png",
             iconPosition : "top",
-            minWidth     : this.format == "searchResults" ? 60 : 30
+            minWidth     : this.format == "searchResults" ? 60 : 40
           });
         control.getChildControl("icon").set(
           {
@@ -422,7 +398,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           {
             icon         : "aiagallery/comments.png",
             iconPosition : "top",
-            minWidth     : this.format == "searchResults" ? 60 : 30
+            minWidth     : this.format == "searchResults" ? 60 : 40
           });
         control.getChildControl("icon").set(
           {
@@ -436,7 +412,11 @@ qx.Class.define("aiagallery.widget.SearchResult",
       case "displayName":
         // The displayName should be displayed android green
         font = qx.bom.Font.fromString("10px sans-serif");
-        font.setColor("#75940c");   // android-green-dark
+        font.set(
+          {
+            color      : "#75940c",     // android-green-dark
+            decoration : "underline"
+          });
         control = new qx.ui.basic.Label();
         control.set(
           {
@@ -501,7 +481,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
       }
 
       // Column number >= 100 means the control should not be displayed
-      if (this.gridConfig[id].column >= 100)
+      if (this.gridConfig[id].column >= 100 && id != "spacer")
       {
         control.setVisibility("excluded");
       }
