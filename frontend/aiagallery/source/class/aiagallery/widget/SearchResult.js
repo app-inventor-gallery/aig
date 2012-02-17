@@ -6,7 +6,7 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
-qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
+qx.Class.define("aiagallery.widget.SearchResult",
 {
   extend    : qx.ui.container.Composite,
   implement : [qx.ui.form.IModel],
