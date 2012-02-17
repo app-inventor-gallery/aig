@@ -35,7 +35,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     // Use a grid layout to display each of the elements of the result
     grid = new qx.ui.layout.Grid(2, 2);
     
-    if (format != "searchResult")
+    if (format == "homeRibbon")
     {
       grid.setColumnAlign(0, "center", "middle");
       grid.setColumnAlign(1, "center", "middle");
@@ -82,6 +82,17 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         
         byAuthor :
         {
+          image1       : { row : 0, column : 0, rowSpan : 3 },
+          title        : { row : 0, column : 1, colSpan : 4 },
+          displayName  : { row : 1, column : 1, colSpan : 4 },
+          numLikes     : { row : 2, column : 2 },
+          numDownloads : { row : 2, column : 3 },
+          numViewed    : { row : 2, column : 4 },
+          numComments  : { row : 2, column : 5 },
+          
+          description  : { row : 0, column : 100 },
+          creationTime : { row : 0, column : 101 },
+          uploadTime   : { row : 0, column : 102 }
         }
       }[format];
 
@@ -249,6 +260,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     {
       var             control;
       var             font;
+      var             textAlign;
 
       switch(id)
       {
@@ -287,6 +299,20 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         else
         {
           control = new qx.ui.form.TextArea();
+          switch(this.format)
+          {
+          case "searchResult":
+            textAlign = "left";
+            break;
+
+          case "homeRibbon":
+            textAlign = "center";
+            break;
+
+          case "byAuthor":
+            textAlign = "left";
+            break;
+          }
           control.set(
             {
               appearance : "widget",
@@ -296,7 +322,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
               wrap       : true,
               anonymous  : true,
               maxHeight  : 40,
-              textAlign  : this.format == "searchResult" ? "left" : "center",
+              textAlign  : textAlign,
               minimalLineHeight : 1
             });
         }
@@ -309,7 +335,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
           {
             icon         : "aiagallery/thumbs-up.png",
             iconPosition : "top",
-            minWidth     : 40
+            minWidth     : this.format == "searchResult" ? 60 : 30
           });
         control.getChildControl("icon").set(
           {
@@ -326,7 +352,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
           {
             icon         : "aiagallery/downloads.png",
             iconPosition : "top",
-            minWidth     : this.format == "searchResult" ? 60 : 40
+            minWidth     : this.format == "searchResult" ? 60 : 30
           });
         control.getChildControl("icon").set(
           {
@@ -343,7 +369,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
           {
             icon         : "aiagallery/viewed.png",
             iconPosition : "top",
-            minWidth     : this.format == "searchResult" ? 60 : 40
+            minWidth     : this.format == "searchResult" ? 60 : 30
           });
         control.getChildControl("icon").set(
           {
@@ -360,7 +386,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
           {
             icon         : "aiagallery/comments.png",
             iconPosition : "top",
-            minWidth     : this.format == "searchResult" ? 60 : 40
+            minWidth     : this.format == "searchResult" ? 60 : 30
           });
         control.getChildControl("icon").set(
           {

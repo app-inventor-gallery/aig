@@ -119,15 +119,17 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       this.searchResults = new qx.ui.list.List();
       this.searchResults.set(
         {
-          itemHeight : 120,
+          itemHeight : 130,
           labelPath  : "title",
           iconPath   : "image1",
           delegate   :
           {
             createItem : function()
             {
-              var             FindApps = aiagallery.module.dgallery.findapps;
-              return new FindApps.SearchResult("searchResult");
+              var             type;
+                
+              type = "searchResult";
+              return new aiagallery.module.dgallery.findapps.SearchResult(type);
             },
             
             bindItem : function(controller, item, id) 
