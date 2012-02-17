@@ -29,13 +29,22 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     
     this.base(arguments);
 
-    // Use a grid layout to display each of the elements of the result
-    grid = new qx.ui.layout.Grid(2, 2);
-    this.setLayout(grid);
-    
     // Save the format
     this.format = format;
 
+    // Use a grid layout to display each of the elements of the result
+    grid = new qx.ui.layout.Grid(2, 2);
+    
+    if (format != "searchResult")
+    {
+      grid.setColumnAlign(0, "center", "middle");
+      grid.setColumnAlign(1, "center", "middle");
+      grid.setColumnAlign(2, "center", "middle");
+      grid.setColumnAlign(3, "center", "middle");
+    }
+
+    this.setLayout(grid);
+    
     // Specify the format of date output
     this.dateFormat = aiagallery.Application.getDateFormat();
     
@@ -58,13 +67,17 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
 
         homeRibbon :
         {
-          image1       : { row : 0, column : 0, colSpan : 3 },
-          title        : { row : 1, column : 0, colSpan : 3 },
-          displayName  : { row : 2, column : 0, colSpan : 3 },
+          image1       : { row : 0, column : 0, colSpan : 4 },
+          title        : { row : 1, column : 0, colSpan : 4 },
+          displayName  : { row : 2, column : 0, colSpan : 4 },
           numLikes     : { row : 3, column : 0 },
-          numDownloads : { row : 3, column : 2 },
-          numViewed    : { row : 4, column : 0 },
-          numComments  : { row : 4, column : 2 }
+          numDownloads : { row : 3, column : 1 },
+          numViewed    : { row : 3, column : 2 },
+          numComments  : { row : 3, column : 3 },
+          
+          description  : { row : 0, column : 100 },
+          creationTime : { row : 0, column : 101 },
+          uploadTime   : { row : 0, column : 102 }
         },
         
         byAuthor :
@@ -73,16 +86,16 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
       }[format];
 
     // Pre-create each of the child controls
-    this.gridConfig.image1       && this.getChildControl("image1");
-    this.gridConfig.title        && this.getChildControl("title");
-    this.gridConfig.numLikes     && this.getChildControl("numLikes");
-    this.gridConfig.numDownloads && this.getChildControl("numDownloads");
-    this.gridConfig.numViewed    && this.getChildControl("numViewed");
-    this.gridConfig.numComments  && this.getChildControl("numComments");
-    this.gridConfig.displayName  && this.getChildControl("displayName");
-    this.gridConfig.description  && this.getChildControl("description");
-    this.gridConfig.creationTime && this.getChildControl("creationTime");
-    this.gridConfig.uploadTime   && this.getChildControl("uploadTime");
+    this.getChildControl("image1");
+    this.getChildControl("title");
+    this.getChildControl("numLikes");
+    this.getChildControl("numDownloads");
+    this.getChildControl("numViewed");
+    this.getChildControl("numComments");
+    this.getChildControl("displayName");
+    this.getChildControl("description");
+    this.getChildControl("creationTime");
+    this.getChildControl("uploadTime");
   },
   
   events:
@@ -276,12 +289,15 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
           control = new qx.ui.form.TextArea();
           control.set(
             {
-              font      : qx.bom.Font.fromString("bold 10px sans-serif"),
-              readOnly  : true,
-              autoSize  : true,
-              wrap      : true,
-              anonymous : true,
-              maxHeight : 40
+              appearance : "widget",
+              font       : qx.bom.Font.fromString("bold 10px sans-serif"),
+              readOnly   : true,
+              autoSize   : true,
+              wrap       : true,
+              anonymous  : true,
+              maxHeight  : 40,
+              textAlign  : this.format == "searchResult" ? "left" : "center",
+              minimalLineHeight : 1
             });
         }
         this._add(control, this.gridConfig.title);
@@ -291,8 +307,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         control = new qx.ui.basic.Atom();
         control.set(
           {
-            icon      : "aiagallery/thumbs-up.png",
-            minWidth  : 60
+            icon         : "aiagallery/thumbs-up.png",
+            iconPosition : "top",
+            minWidth     : 40
           });
         control.getChildControl("icon").set(
           {
@@ -307,8 +324,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         control = new qx.ui.basic.Atom();
         control.set(
           {
-            icon      : "aiagallery/downloads.png",
-            minWidth  : 60
+            icon         : "aiagallery/downloads.png",
+            iconPosition : "top",
+            minWidth     : this.format == "searchResult" ? 60 : 40
           });
         control.getChildControl("icon").set(
           {
@@ -323,8 +341,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         control = new qx.ui.basic.Atom();
         control.set(
           {
-            icon      : "aiagallery/viewed.png",
-            minWidth  : 60
+            icon         : "aiagallery/viewed.png",
+            iconPosition : "top",
+            minWidth     : this.format == "searchResult" ? 60 : 40
           });
         control.getChildControl("icon").set(
           {
@@ -339,8 +358,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         control = new qx.ui.basic.Atom();
         control.set(
           {
-            icon      : "aiagallery/comments.png",
-            minWidth  : 60
+            icon         : "aiagallery/comments.png",
+            iconPosition : "top",
+            minWidth     : this.format == "searchResult" ? 60 : 40
           });
         control.getChildControl("icon").set(
           {
@@ -413,70 +433,55 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
         break;
       }
 
+      // Column number >= 100 means the control should not be displayed
+      if (this.gridConfig[id].column >= 100)
+      {
+        control.setVisibility("excluded");
+      }
+
       return control || this.base(arguments, id);
     },
     
     // property apply function
     _applyImage1 : function(value, old)
     {
-      if (this.gridConfig["image1"])
-      {
-        this.getChildControl("image1").setSource(value);
-      }
+      this.getChildControl("image1").setSource(value);
     },
     
     // property apply function
     _applyTitle : function(value, old)
     {
-      if (this.gridConfig["title"])
-      {
-        this.getChildControl("title").setValue(value);
-      }
+      this.getChildControl("title").setValue(value);
     },
     
     // property apply function
     _applyNumLikes : function(value, old)
     {
-      if (this.gridConfig["numLikes"])
-      {
-        this.getChildControl("numLikes").setLabel(value + "");
-      }
+      this.getChildControl("numLikes").setLabel(value + "");
     },
     
     // property apply function
     _applyNumDownloads : function(value, old)
     {
-      if (this.gridConfig["numDownloads"])
-      {
-        this.getChildControl("numDownloads").setLabel(value + "");
-      }
+      this.getChildControl("numDownloads").setLabel(value + "");
     },
     
     // property apply function
     _applyNumViewed : function(value, old)
     {
-      if (this.gridConfig["numViewed"])
-      {
-        this.getChildControl("numViewed").setLabel(value + "");
-      }
+      this.getChildControl("numViewed").setLabel(value + "");
     },
     
     // property apply function
     _applyNumComments : function(value, old)
     {
-      if (this.gridConfig["numComments"])
-      {
-        this.getChildControl("numComments").setLabel(value + "");
-      }
+      this.getChildControl("numComments").setLabel(value + "");
     },
     
     // property apply function
     _applyDisplayName : function(value, old)
     {
-      if (this.gridConfig["displayName"])
-      {
-        this.getChildControl("displayName").setValue(value);
-      }
+      this.getChildControl("displayName").setValue(value);
     },
     
     // property transform function
@@ -488,19 +493,13 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     // property apply function
     _applyDescription : function(value, old)
     {
-      if (this.gridConfig["description"])
-      {
-        this.getChildControl("description").setValue(value);
-      }
+      this.getChildControl("description").setValue(value);
     },
     
     // property apply function
     _applyCreationTime : function(value, old)
     {
-      if (this.gridConfig["creationTime"])
-      {
-        this.getChildControl("creationTime").setValue(value);
-      }
+      this.getChildControl("creationTime").setValue(value);
     },
     
     // property transform function
@@ -513,10 +512,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.SearchResult",
     // property apply function
     _applyUploadTime : function(value, old)
     {
-      if (this.gridConfig["uploadTime"])
-      {
-        this.getChildControl("uploadTime").setValue(value);
-      }
+      this.getChildControl("uploadTime").setValue(value);
     },
     
     // property transform function
