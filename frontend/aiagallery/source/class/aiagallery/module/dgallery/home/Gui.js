@@ -267,7 +267,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         featuredApps = new qx.ui.container.SlideBar();
         featuredApps.set(
           {
-            height : 180
+            height : 210
           });
         fsm.addObject("Featured Apps", featuredApps);
         parent.add(featuredApps);
@@ -278,7 +278,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         newestApps = new qx.ui.container.SlideBar();
         newestApps.set(
           {
-            height : 180
+            height : 210
           });
         fsm.addObject("Newest Apps", newestApps);
         parent.add(newestApps);
@@ -289,7 +289,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         likedApps = new qx.ui.container.SlideBar();
         likedApps.set(
           {
-            height : 180
+            height : 210
           });
         fsm.addObject("Most Liked Apps", likedApps);
         parent.add(likedApps);
@@ -299,10 +299,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         {
           var appFeatured = featuredAppsList[i];
           var appThumbFeatured = 
-            new aiagallery.widget.AppThumb(appFeatured.title,
-                                           appFeatured.displayName,
-                                           appFeatured.image1,
-                                           appFeatured.owner);
+            new aiagallery.widget.SearchResult("homeRibbon", appFeatured);
           featuredApps.add(appThumbFeatured);
           
           // Associate the app data with the UI widget so it can be passed
@@ -330,10 +327,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         {
           var appNewest = newestAppsList[i];
           var appThumbNewest = 
-            new aiagallery.widget.AppThumb(appNewest.title, 
-                                           appNewest.displayName,
-                                           appNewest.image1,
-                                           appNewest.owner);
+            new aiagallery.widget.SearchResult("homeRibbon", appNewest);
           newestApps.add(appThumbNewest);
 
           // Associate the app data with the UI widget so it can be passed
@@ -358,10 +352,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           var appLiked = likedAppsList[i];
 
           var appThumbLiked = 
-            new aiagallery.widget.AppThumb(appLiked.title,
-                                           appLiked.displayName,
-                                           appLiked.image1,
-                                           appLiked.owner);
+            new aiagallery.widget.SearchResult("homeRibbon", appLiked);
           likedApps.add(appThumbLiked);
 
           // Associate the app data with the UI widget so it can be passed

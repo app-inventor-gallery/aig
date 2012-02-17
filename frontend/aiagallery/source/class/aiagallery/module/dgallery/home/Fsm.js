@@ -113,7 +113,20 @@ qx.Class.define("aiagallery.module.dgallery.home.Fsm",
           var request =
               this.callRpc(fsm,
                          "aiagallery.features",
-                         "getHomeRibbonData", [null]);
+                           "getHomeRibbonData", 
+                           [ 
+                             // requested fields
+                             {
+                               uid          : "uid",
+                               image1       : "image1",
+                               title        : "title",
+                               numLikes     : "numLikes",
+                               numDownloads : "numDownloads",
+                               numViewed    : "numViewed",
+                               numComments  : "numComments",
+                               displayName  : "displayName"
+                             }
+                           ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.

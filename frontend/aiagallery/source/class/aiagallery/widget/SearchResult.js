@@ -18,12 +18,15 @@ qx.Class.define("aiagallery.widget.SearchResult",
    * @param format {String}
    *   A keyword indicating the format in which to display the App
    *   information. This string may be any one of the generic terms:
-   *   "searchResult", "homeRibbon", or "byAuthor", indicating, respectively,
+   *   "searchResults", "homeRibbon", or "byAuthor", indicating, respectively,
    *   whether to lay out all of the information as in a search result on the
    *   Find Apps page, vertically as in the home page ribbons, or horizontally
    *   as in the By This Author box on the App Info page.
+   * 
+   * @param data {Map?}
+   *   Data to display in this instance
    */
-  construct : function(format)
+  construct : function(format, data)
   {
     var             grid;
     
@@ -35,23 +38,18 @@ qx.Class.define("aiagallery.widget.SearchResult",
     // Use a grid layout to display each of the elements of the result
     grid = new qx.ui.layout.Grid(2, 2);
     
-    if (format == "homeRibbon")
+    // Do format-specific processing
+    switch(format)
     {
+    case "searchResult":
+      // Add grid layout characteristics
       grid.setColumnAlign(0, "center", "middle");
       grid.setColumnAlign(1, "center", "middle");
       grid.setColumnAlign(2, "center", "middle");
       grid.setColumnAlign(3, "center", "middle");
-    }
-
-    this.setLayout(grid);
-    
-    // Specify the format of date output
-    this.dateFormat = aiagallery.Application.getDateFormat();
-    
-    // Select the appropriate grid layout
-    this.gridConfig =
-      {
-        searchResult :
+      
+      // Describe the configuration for this widget
+      this.gridConfig =
         {
           image1       : { row : 0, column : 0, rowSpan : 4 },
           title        : { row : 0, column : 1 },
@@ -62,25 +60,48 @@ qx.Class.define("aiagallery.widget.SearchResult",
           displayName  : { row : 1, column : 1 },
           description  : { row : 2, column : 1, colSpan : 5 },
           creationTime : { row : 3, column : 1 },
-          uploadTime   : { row : 3, column : 2, colSpan : 4 }
-        },
+          uploadTime   : { row : 3, column : 2, colSpan : 4 },
+          
+          spacer       : { row : 0, column : 100 }
+        };
+      break;
+      
+    case "homeRibbon":
+      // Add grid layout characteristics
+      grid.setColumnAlign(0, "center", "middle");
+      grid.setColumnAlign(1, "center", "middle");
+      grid.setColumnAlign(2, "center", "middle");
+      grid.setColumnAlign(3, "center", "middle");
+      grid.setColumnAlign(4, "center", "middle");
 
-        homeRibbon :
+      // This one needs a background color to separate the slidebar items
+      this.set(
+        {
+          marginRight     : 20,
+          padding         : 10,
+          backgroundColor : "#eee9e9"
+        });
+      
+      // Describe the configuration for this widget
+      this.gridConfig =
         {
           image1       : { row : 0, column : 0, colSpan : 4 },
           title        : { row : 1, column : 0, colSpan : 4 },
           displayName  : { row : 2, column : 0, colSpan : 4 },
-          numLikes     : { row : 3, column : 0 },
-          numDownloads : { row : 3, column : 1 },
-          numViewed    : { row : 3, column : 2 },
-          numComments  : { row : 3, column : 3 },
+          spacer       : { row : 3, column : 0, colSpan : 5 },
+          numLikes     : { row : 4, column : 0 },
+          numDownloads : { row : 4, column : 1 },
+          numViewed    : { row : 4, column : 2 },
+          numComments  : { row : 4, column : 3 },
           
           description  : { row : 0, column : 100 },
           creationTime : { row : 0, column : 101 },
           uploadTime   : { row : 0, column : 102 }
-        },
-        
-        byAuthor :
+        };
+      break;
+      
+    case "byAuthor":
+      this.gridConfig =
         {
           image1       : { row : 0, column : 0, rowSpan : 3 },
           title        : { row : 0, column : 1, colSpan : 4 },
@@ -92,9 +113,23 @@ qx.Class.define("aiagallery.widget.SearchResult",
           
           description  : { row : 0, column : 100 },
           creationTime : { row : 0, column : 101 },
-          uploadTime   : { row : 0, column : 102 }
-        }
-      }[format];
+          uploadTime   : { row : 0, column : 102 },
+          
+          spacer       : { row : 0, column : 100 }
+        };
+      break;
+    }
+
+    this.setLayout(grid);
+    
+    // Specify the format of date output
+    this.dateFormat = aiagallery.Application.getDateFormat();
+
+    // If there's data, add it now
+    if (data)
+    {
+      this.set(data);
+    }
 
     // Pre-create each of the child controls
     this.getChildControl("image1");
@@ -107,6 +142,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
     this.getChildControl("description");
     this.getChildControl("creationTime");
     this.getChildControl("uploadTime");
+    this.getChildControl("spacer");
   },
   
   events:
@@ -268,7 +304,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
         control = new qx.ui.basic.Image();
         control.set(
           {
-            source    : "aiagallery/aicg.png",
+            source    : null,
             focusable : false,
             scale     : true,
             minWidth  : 100,
@@ -284,9 +320,9 @@ qx.Class.define("aiagallery.widget.SearchResult",
         font = qx.bom.Font.fromString("10px sans-serif bold");
         font.setDecoration("underline");
         
-        // Display the title single-line in searchResult format; possibly
+        // Display the title single-line in searchResults format; possibly
         // wrapping on multiple lines in the other formats.
-        if (this.format == "searchResult")
+        if (this.format == "searchResults")
         {
           control = new qx.ui.basic.Label();
           control.set(
@@ -301,7 +337,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           control = new qx.ui.form.TextArea();
           switch(this.format)
           {
-          case "searchResult":
+          case "searchResults":
             textAlign = "left";
             break;
 
@@ -335,7 +371,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           {
             icon         : "aiagallery/thumbs-up.png",
             iconPosition : "top",
-            minWidth     : this.format == "searchResult" ? 60 : 30
+            minWidth     : this.format == "searchResults" ? 60 : 30
           });
         control.getChildControl("icon").set(
           {
@@ -352,7 +388,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           {
             icon         : "aiagallery/downloads.png",
             iconPosition : "top",
-            minWidth     : this.format == "searchResult" ? 60 : 30
+            minWidth     : this.format == "searchResults" ? 60 : 30
           });
         control.getChildControl("icon").set(
           {
@@ -369,7 +405,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           {
             icon         : "aiagallery/viewed.png",
             iconPosition : "top",
-            minWidth     : this.format == "searchResult" ? 60 : 30
+            minWidth     : this.format == "searchResults" ? 60 : 30
           });
         control.getChildControl("icon").set(
           {
@@ -386,7 +422,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           {
             icon         : "aiagallery/comments.png",
             iconPosition : "top",
-            minWidth     : this.format == "searchResult" ? 60 : 30
+            minWidth     : this.format == "searchResults" ? 60 : 30
           });
         control.getChildControl("icon").set(
           {
@@ -456,6 +492,11 @@ qx.Class.define("aiagallery.widget.SearchResult",
             rich : true
           });
         this._add(control, this.gridConfig.uploadTime);
+        break;
+        
+      case "spacer":
+        control = new qx.ui.core.Spacer(10, 10);
+        this._add(control, this.gridConfig.spacer);
         break;
       }
 

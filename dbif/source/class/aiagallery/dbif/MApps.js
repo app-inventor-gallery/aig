@@ -2196,18 +2196,23 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     /**
      * Performs three queries to retrive the Featured, Most Liked, and Newest. 
      * This is for the front page ribbon.
-     * 
+     *
+     * @param requestedFields {Map?}
+     *   The list of fields to be returned in all of the results
+     *
      * @return {Map}
      *   The return value is a map with arrays in it. Each array in the map 
      *   corresponds to one of the three search queries.  
      *
      */
-    getHomeRibbonData : function()
+    getHomeRibbonData : function(requestedFields)
     { 
       var             owners;
       var             displayName;
       var             email;
       var             url;
+      var             bAddedOwner = false;
+      var             bAddedDisplayName = false;
 
       // Create and execute query for "Featured" apps.
       var criterion = 
@@ -2216,13 +2221,27 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           field : "tags",
           value : "*Featured*"
         };
+      
+      // Ensure that at least our miniumum set of fields is requested
+      if (! requestedFields)
+      {
+        requestedFields = {};
+      }
+      
+      if (requestedFields.displayName)
+      {
+        requestedFields.owner = "owner";
+        bAddedOwner = true;
+      }
 
       var searchResponseFeatured = 
-          liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",criterion);
+        liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData", criterion);
 
       // Manipulate each App individually, before returning
       searchResponseFeatured.forEach(
-          function(app)
+        function(app)
+        {
+          if (requestedFields.displayName)
           {
             // Add the owner's display name
             owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
@@ -2240,21 +2259,36 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
             // Add his display name
             app["displayName"] = displayName || owners[0].displayName || "<>";
-                      
-            // Do special App Engine processing to scale images
-            if (liberated.dbif.Entity.getCurrentDatabaseProvider() ==
-                "appengine")
+          }
+
+          // If there were requested fields specified...
+          if (requestedFields)
+          {
+            // If we added the owner, ...
+            if (bAddedOwner)
             {
-              // Scale images
-              // Is this image URL provided and is it real (not data:)?
-              url = app.image1;
-              if (url && url.substring(0, 4) == "http")
-              {
-                // Request App Engine to scale to 100px longest side
-                app.image1 += "=s100";
-              }
+              // ... then remove it now
+              delete requestedFields.owner;
             }
-          });
+
+            // Send to the requestedFields function for removal and remapping
+            aiagallery.dbif.MApps._requestedFields(app, requestedFields);
+          }
+
+          // Do special App Engine processing to scale images
+          if (liberated.dbif.Entity.getCurrentDatabaseProvider() ==
+              "appengine")
+          {
+            // Scale images
+            // Is this image URL provided and is it real (not data:)?
+            url = app.image1;
+            if (url && url.substring(0, 4) == "http")
+            {
+              // Request App Engine to scale to 100px longest side
+              app.image1 += "=s100";
+            }
+          }
+        });
 
       //Create and execute query for "Most Liked" apps. 
       criterion = 
@@ -2285,16 +2319,42 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
       // Manipulate each App individually, before returning
       searchResponseLiked.forEach(
-          function(app)
+        function(app)
+        {
+          if (requestedFields.displayName)
           {
             // Add the owner's display name
             owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
                                                  app["owner"]);
 
+            // FIXME: should never occur (but does)
+            if (true)
+            {
+              displayName = null;
+              if (owners.length == 0)
+              {
+                displayName = "<>";
+              }
+            }
+
             // Add his display name
             app["displayName"] = displayName || owners[0].displayName || "<>";
-                      
-          });
+          }
+
+          // If there were requested fields specified...
+          if (requestedFields)
+          {
+            // If we added the owner, ...
+            if (bAddedOwner)
+            {
+              // ... then remove it now
+              delete requestedFields.owner;
+            }
+
+            // Send to the requestedFields function for removal and remapping
+            aiagallery.dbif.MApps._requestedFields(app, requestedFields);
+          }
+        });
 
       //Create and execute query for "Newest" apps.
       criterion = 
@@ -2326,22 +2386,39 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       searchResponseNewest.forEach(
         function(app)
         {
-          // Add with the owner's display name
-          owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
-                                               app["owner"]);
-
-          // FIXME: should never occur (but does)
-          if (true)
+          if (requestedFields.displayName)
           {
-            displayName = null;
-            if (owners.length == 0)
+            // Add with the owner's display name
+            owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
+                                                 app["owner"]);
+
+            // FIXME: should never occur (but does)
+            if (true)
             {
-              displayName = "<>";
+              displayName = null;
+              if (owners.length == 0)
+              {
+                displayName = "<>";
+              }
             }
+
+            // Add his display name
+            app["displayName"] = displayName || owners[0].displayName || "<>";
           }
 
-          // Add his display name
-          app["displayName"] = displayName || owners[0].displayName || "<>";
+          // If there were requested fields specified...
+          if (requestedFields)
+          {
+            // If we added the owner, ...
+            if (bAddedOwner)
+            {
+              // ... then remove it now
+              delete requestedFields.owner;
+            }
+
+            // Send to the requestedFields function for removal and remapping
+            aiagallery.dbif.MApps._requestedFields(app, requestedFields);
+          }
         });
 
       //Construct map of data
