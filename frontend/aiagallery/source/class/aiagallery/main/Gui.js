@@ -504,7 +504,16 @@ qx.Class.define("aiagallery.main.Gui",
                         channelMessage("close", data);
                         
                         // Re-establish the channel
-                        createChannel();
+                        qx.util.TimerManager.getInstance().start(
+                          function()
+                          {
+                            channel.close();
+                            createChannel();
+                          },
+                          0,
+                          this,
+                          null,
+                          5000);
                       };
 
                       // Save the channel token (if provided)

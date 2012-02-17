@@ -67,26 +67,11 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 	  "<p>Get started by clicking on <b>Find Apps</b>, and go ahead ",
 	  "and add your own projects by clicking on <b>My Apps</b>.",
 
-	  "<p>Also, you can browse and download projects directly to your ",
+	  "<p>Also, you can browse projects from your ",
 	  "Android phone by using our companion ",
 	  '<a href="http://www.appinventor.org/mobile-gallery" target="new">',
           "Mobile Community Gallery</a> ",
-	  "app!",
-
-
-	  "<p>&nbsp;</p>",
-
-	  "<p><em>App Inventor Community Gallery is a resource provided ",
-	  "to the App Inventor community.  We are supported by a ",
-	  "grant from Google Inc.  Our site is presently in a beta launch. ",
-	  'Please be nice!  Please see more info ',
-	  '<a href="http://www.cs.uml.edu/ecg/index.php/Projects/AICG" ',
-	  'target="new">',
-	  'here',
-	  '</a> and email us at ',
-	  '<a href="mailto:aigallery@weblab.cs.uml.edu">',
-	  'aigallery@weblab.cs.uml.edu</a> if you ',
-	  "have any questions or comments.  Thanks.</em>"
+	  "app!"
         ].join("");
       message.set(
         {
