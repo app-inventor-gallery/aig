@@ -118,6 +118,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Fsm",
                              // requested fields
                              {
                                uid          : "uid",
+                               owner        : "owner",
                                image1       : "image1",
                                title        : "title",
                                numLikes     : "numLikes",

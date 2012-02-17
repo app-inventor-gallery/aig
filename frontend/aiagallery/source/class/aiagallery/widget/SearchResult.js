@@ -186,6 +186,12 @@ qx.Class.define("aiagallery.widget.SearchResult",
       nullable : false
     },
 
+    owner :
+    {
+      check    : "String",
+      nullable : false
+    },
+
     image1 :
     {
       apply    : "_applyImage1",

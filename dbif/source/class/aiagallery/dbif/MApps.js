@@ -2212,7 +2212,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             email;
       var             url;
       var             bAddedOwner = false;
-      var             bAddedDisplayName = false;
 
       // Create and execute query for "Featured" apps.
       var criterion = 
@@ -2228,7 +2227,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         requestedFields = {};
       }
       
-      if (requestedFields.displayName)
+      if (requestedFields.displayName && ! requestedFields.owner)
       {
         requestedFields.owner = "owner";
         bAddedOwner = true;
