@@ -126,10 +126,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
           {
             createItem : function()
             {
-              var             type;
-                
-              type = "searchResult";
-              return new aiagallery.module.dgallery.findapps.SearchResult(type);
+              return new aiagallery.module.SearchResult("searchResult");
             },
             
             bindItem : function(controller, item, id) 
