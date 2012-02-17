@@ -139,7 +139,7 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
         return error;
       }
       
-      return this.__stripDataURLs(results);
+      return results;
     },
     
     __getBySearch : function(fields, error)
@@ -173,21 +173,19 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
         return error;
       }
       
-      // Requesting all fields except data URLs (source, apk, image1-3)
+      // Request specific fields
       var requestedFields = 
       {
         owner              : "owner",
         title              : "title",
         description        : "description",
-        //FIXME: Uncomment next line when previous authors are implemented
-        //previousAuthors    : "previousAuthors",
         tags               : "tags",
+        image1             : "image1",
         uploadTime         : "uploadTime",
         creationTime       : "creationTime",
         numLikes           : "numLikes",
         numDownloads       : "numDownloads",
         numViewed          : "numViewed",
-        numRootComments    : "numRootComments",
         numComments        : "numComments",
         status             : "status",
         uid                : "uid"
@@ -293,7 +291,7 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
         return error;
       }
       
-      return this.__stripDataURLs(results);
+      return results;
     },
     
     __getByFeatured : function(fields, error)
@@ -384,7 +382,7 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
           obj["displayName"] = displayName;
         });
      
-      return this.__stripDataURLs(results);
+      return results;
     },
     
     __getAppInfo : function(fields, error)
@@ -407,7 +405,7 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       
       // Using the method included by mixin MApps
       
-      // Requesting all fields except data URLs (source, apk, image1-3)
+      // Request specific fields
       var requestedFields = 
       {
         owner              : "owner",
@@ -415,12 +413,12 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
         title              : "title",
         description        : "description",
         tags               : "tags",
+        image1             : "image1",
         uploadTime         : "uploadTime",
         creationTime       : "creationTime",
         numLikes           : "numLikes",
         numDownloads       : "numDownloads",
         numViewed          : "numViewed",
-        numRootComments    : "numRootComments",
         numComments        : "numComments",
         status             : "status"
       };
@@ -467,31 +465,6 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       return this.getCategoryTags(error);
     },
 
-    /**
-     * Strip out dataURL fields from app object array
-     * 
-     * @param appArr {Array}
-     *   Array of App-dataish objects which need to be trimmed
-     * 
-     * @return {Array}
-     *   The mutated array that was passed in
-     */
-    __stripDataURLs : function(appArr)
-    {
-      appArr.forEach(
-        function(appObj)
-        {
-          delete appObj["image1"];
-          delete appObj["image2"];
-          delete appObj["image3"];
-          delete appObj["source"];
-          delete appObj["apk"];
-        });
-      
-      return appArr;
-    },
-
-    
     /**
      * Build a correctly formatted Result Criteria array for rpc queries
      * 
