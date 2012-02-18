@@ -2572,6 +2572,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             likesList;
       var             displayName;
       var             url;
+      var             bAddedOwner = false;
+      var             ret = {};
 
       whoami = this.getWhoAmI();
 
@@ -2591,20 +2593,20 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         return error;
       }
   
-      app = appObj.getData();
+      ret.app = appObj.getData();
 
       //Increment the number of views by 1. 
-      app.numViewed++; 
+      ret.app.numViewed++; 
 
       //Set the "lastViewedDate" to the time this function was called
-      app.lastViewedTime = aiagallery.dbif.MDbifCommon.currentTimestamp(); 
+      ret.app.lastViewedTime = aiagallery.dbif.MDbifCommon.currentTimestamp(); 
 
       //Put back on the database
       appObj.put();
  
       // If the application status is not Active, only the owner can view it.
-      if (app.status != aiagallery.dbif.Constants.Status.Active &&
-          (! whoami || app.owner != whoami.id))
+      if (ret.app.status != aiagallery.dbif.Constants.Status.Active &&
+          (! whoami || ret.app.owner != whoami.id))
       {
         // It doesn't. Let 'em know that the application has just been removed
         // (or there's a programmer error)
@@ -2614,22 +2616,31 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         return error;
       }
  
-      // Issue a query for this visitor
-      owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
-                                           app.owner);
-
-      // FIXME: should never occur (but does)
-      if (true)
+      if (requestedFields.displayName && ! requestedFields.owner)
       {
-        displayName = null;
-        if (owners.length == 0)
-        {
-          displayName = "<>";
-        }
+        requestedFields.owner = "owner";
+        bAddedOwner = true;
       }
 
-      // Add his display name
-      app.displayName = displayName || owners[0].displayName || "<>";
+      if (requestedFields.displayName)
+      {
+        // Issue a query for this visitor
+        owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                             ret.app.owner);
+
+        // FIXME: should never occur (but does)
+        if (true)
+        {
+          displayName = null;
+          if (owners.length == 0)
+          {
+            displayName = "<>";
+          }
+        }
+
+        // Add his display name
+        ret.app.displayName = displayName || owners[0].displayName || "<>";
+      }
 
       // If there's a user signed in...
       if (whoami && whoami.id)
@@ -2662,47 +2673,104 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                                 null);
 
         // If there were any results, this user has already liked it.
-        app.bAlreadyLiked = likesList.length > 0;
+        ret.bAlreadyLiked = likesList.length > 0;
+      }
+
+      // Find all apps other than the current one, by this same author
+      criteria = 
+        {
+          type : "op",
+          method : "and",
+          children : 
+          [
+            {
+              type: "element",
+              field: "owner",
+              value: ret.app.owner
+            },
+            {
+              type: "element",
+              field: "uid",
+              value: uid,
+              filterOp: "!="
+            }
+          ]
+        };
+      
+      // Query for those apps
+      ret.byAuthor = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                                 criteria,
+                                                 null);
+
+      if (requestedFields.displayName)
+      {
+        // Add the author's display name to each app
+        ret.byAuthor.forEach(
+          function(app)
+          {
+            app.displayName = displayName || owners[0].displayName || "<>";
+          });
       }
 
       // If we were asked to stringize the values...
       if (bStringize)
       { 
-        aiagallery.dbif.MApps.__stringizeAppInfo(app);
+        aiagallery.dbif.MApps.__stringizeAppInfo(ret.app);
       }
       
       // If there were requested fields specified...
       if (requestedFields)
       {
+        // If we added the owner, ...
+        if (bAddedOwner)
+        {
+          // ... then remove it now
+          delete requestedFields.owner;
+        }
+
         // If the "comments" field was requested
         if (requestedFields["comments"])
         {
           
-          // Use function from Mixin MComments to add comments to app info
-          // object
-          app.comments = this.getComments(uid, null, null, error);
+          // Use function from Mixin MComments to retrieve comments
+          ret.comments = this.getComments(uid, null, null, error);
         }
         
-        // Send it to the requestedFields function for stripping and remapping
-        aiagallery.dbif.MApps._requestedFields(app, requestedFields);
+        // Send the app itself to the requestedFields function for stripping
+        // and remapping
+        aiagallery.dbif.MApps._requestedFields(ret.app, requestedFields);
+
+        // Send each of the apps by this author to the requestedFields
+        // function for stripping and remapping
+        ret.byAuthor.forEach(
+          function(app)
+          {
+            aiagallery.dbif.MApps._requestedFields(app, requestedFields);
+          });
       }
       
-
       // Do special App Engine processing to scale images
       if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
       {
         // Scale images
         // Is this image URL provided and is it real (not data:)?
-        url = app.image1;
+        url = ret.app.image1;
         if (url && url.substring(0, 4) == "http")
         {
           // Request App Engine to scale to 200px longest side
-          app.image1 += "=s200";
+          ret.app.image1 += "=s200";
         }
+
+        // Do the same for images for each app by this author, but 100px.
+        ret.byAuthor.forEach(
+          function(app)
+          {
+            app.image1 += "=s100";
+          });
       }
 
       // Give 'em what they came for
-      return app;
+      return ret;
     }    
   }
 });

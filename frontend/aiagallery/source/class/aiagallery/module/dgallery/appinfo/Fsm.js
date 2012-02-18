@@ -131,7 +131,25 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
             this.callRpc(fsm,
                          "aiagallery.features",
                          "getAppInfo",
-                         [ module.getUserData("app_uid"), true, null]);
+                         [ 
+                           module.getUserData("app_uid"),
+                           true,
+                           {
+                             uid          : "uid",
+                             owner        : "owner",
+                             image1       : "image1",
+                             title        : "title",
+                             numLikes     : "numLikes",
+                             numDownloads : "numDownloads",
+                             numViewed    : "numViewed",
+                             numComments  : "numComments",
+                             displayName  : "displayName",
+                             description  : "description",
+                             creationTime : "creationTime",
+                             uploadTime   : "uploadTime",
+                             source       : "source"
+                           }
+                         ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.

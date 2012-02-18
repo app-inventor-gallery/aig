@@ -35,6 +35,9 @@ qx.Class.define("aiagallery.widget.SearchResult",
     // Save the format
     this.format = format;
 
+    // Default minimum width is huge. Allow this to be only as large as needed
+    this.setMinWidth(10);
+
     // Use a grid layout to display each of the elements of the result
     grid = new qx.ui.layout.Grid(2, 2);
     
@@ -111,6 +114,30 @@ qx.Class.define("aiagallery.widget.SearchResult",
           
           spacer       : { row : 0, column : 100 }
         };
+      break;
+
+    case "appInfo":
+      // Allow the image to be large without affecting other
+      // layout. Description takes up the excess space.
+      grid.setRowFlex(2, 1);
+
+      // Describe the configuration for this widget
+      this.gridConfig =
+        {
+          image1       : { row : 0, column : 0, rowSpan : 3, colSpan : 4 },
+          title        : { row : 0, column : 4, colSpan : 3 },
+          displayName  : { row : 1, column : 4, colSpan : 3 },
+          description  : { row : 2, column : 4, colSpan : 3 },
+          numLikes     : { row : 3, column : 0 },
+          numDownloads : { row : 3, column : 1 },
+          numViewed    : { row : 3, column : 2 },
+          numComments  : { row : 3, column : 3 },
+          creationTime : { row : 3, column : 4 },
+          spacer       : { row : 3, column : 5 },
+          uploadTime   : { row : 3, column : 6 }
+        };
+      break;
+      
       break;
     }
 
@@ -297,20 +324,33 @@ qx.Class.define("aiagallery.widget.SearchResult",
       var             control;
       var             font;
       var             textAlign;
+      var             size;
 
       switch(id)
       {
       case "image1":
         control = new qx.ui.basic.Image();
+        switch(this.format)
+        {
+        case "searchResults":
+        case "homeRibbon":
+        case "byAuthor":
+          size = 100;
+          break;
+          
+        case "appInfo":
+          size = 200;
+          break;
+        }
         control.set(
           {
             source    : null,
             focusable : false,
             scale     : true,
-            minWidth  : 100,
-            maxWidth  : 100,
-            minHeight : 100,
-            maxHeight : 100
+            minWidth  : size,
+            maxWidth  : size,
+            minHeight : size,
+            maxHeight : size
           });
         control.addListener("mousedown", this._onViewApp, this);
         this._add(control, this.gridConfig.image1);
@@ -325,15 +365,13 @@ qx.Class.define("aiagallery.widget.SearchResult",
         control = new qx.ui.basic.Label();
         switch(this.format)
         {
-        case "searchResults":
-          textAlign = "left";
-          break;
-
         case "homeRibbon":
           textAlign = "center";
           break;
 
+        case "searchResults":
         case "byAuthor":
+        case "appInfo":
           textAlign = "left";
           break;
         }
@@ -345,15 +383,28 @@ qx.Class.define("aiagallery.widget.SearchResult",
           });
         control.addListener("mousedown", this._onViewApp, this);
         this._add(control, this.gridConfig.title);
+//control.setVisibility("excluded");
         break;
         
       case "numLikes":
         control = new qx.ui.basic.Atom();
+        switch(this.format)
+        {
+        case "searchResults":
+        case "appInfo":
+          size = 60;
+          break;
+
+        case "homeRibbon":
+        case "byAuthor":
+          size = 40;
+          break;
+        }
         control.set(
           {
             icon         : "aiagallery/thumbs-up.png",
             iconPosition : "top",
-            minWidth     : this.format == "searchResults" ? 60 : 40
+            minWidth     : size
           });
         control.getChildControl("icon").set(
           {
@@ -366,11 +417,23 @@ qx.Class.define("aiagallery.widget.SearchResult",
         
       case "numDownloads":
         control = new qx.ui.basic.Atom();
+        switch(this.format)
+        {
+        case "searchResults":
+        case "appInfo":
+          size = 60;
+          break;
+
+        case "homeRibbon":
+        case "byAuthor":
+          size = 40;
+          break;
+        }
         control.set(
           {
             icon         : "aiagallery/downloads.png",
             iconPosition : "top",
-            minWidth     : this.format == "searchResults" ? 60 : 40
+            minWidth     : size
           });
         control.getChildControl("icon").set(
           {
@@ -379,15 +442,28 @@ qx.Class.define("aiagallery.widget.SearchResult",
             scale     : true
           });
         this._add(control, this.gridConfig.numDownloads);
+//control.setVisibility("excluded");
         break;
 
       case "numViewed":
         control = new qx.ui.basic.Atom();
+        switch(this.format)
+        {
+        case "searchResults":
+        case "appInfo":
+          size = 60;
+          break;
+
+        case "homeRibbon":
+        case "byAuthor":
+          size = 40;
+          break;
+        }
         control.set(
           {
             icon         : "aiagallery/viewed.png",
             iconPosition : "top",
-            minWidth     : this.format == "searchResults" ? 60 : 40
+            minWidth     : size
           });
         control.getChildControl("icon").set(
           {
@@ -396,15 +472,28 @@ qx.Class.define("aiagallery.widget.SearchResult",
             scale     : true
           });
         this._add(control, this.gridConfig.numViewed);
+//control.setVisibility("excluded");
         break;
 
       case "numComments":
         control = new qx.ui.basic.Atom();
+        switch(this.format)
+        {
+        case "searchResults":
+        case "appInfo":
+          size = 60;
+          break;
+
+        case "homeRibbon":
+        case "byAuthor":
+          size = 40;
+          break;
+        }
         control.set(
           {
             icon         : "aiagallery/comments.png",
             iconPosition : "top",
-            minWidth     : this.format == "searchResults" ? 60 : 40
+            minWidth     : size
           });
         control.getChildControl("icon").set(
           {
@@ -413,6 +502,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
             scale     : true
           });
         this._add(control, this.gridConfig.numComments);
+//control.setVisibility("excluded");
         break;
 
       case "displayName":
@@ -446,20 +536,34 @@ qx.Class.define("aiagallery.widget.SearchResult",
           this);
 
         this._add(control, this.gridConfig.displayName);
+//control.setVisibility("excluded");
         break;
         
       case "description":
         control = new qx.ui.form.TextArea();
+        switch(this.format)
+        {
+        case "searchResults":
+        case "homeRibbon":
+        case "byAuthor":
+          size = 50;
+          break;
+
+        case "appInfo":
+          size = 160;
+          break;
+        }
         control.set(
           {
             appearance : "widget",
             readOnly   : true,
             wrap       : true,
             anonymous  : true,
-            minHeight  : 50,
-            maxHeight  : 50
+            minHeight  : size,
+            maxHeight  : size
           });
         this._add(control, this.gridConfig.description);
+//control.setVisibility("excluded");
         break;
 
       case "creationTime":
@@ -469,6 +573,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
             rich : true
           });
         this._add(control, this.gridConfig.creationTime);
+//control.setVisibility("excluded");
         break;
         
       case "uploadTime":
@@ -478,6 +583,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
             rich : true
           });
         this._add(control, this.gridConfig.uploadTime);
+//control.setVisibility("excluded");
         break;
         
       case "spacer":

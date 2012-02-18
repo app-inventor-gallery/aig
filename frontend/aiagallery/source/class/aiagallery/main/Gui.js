@@ -502,12 +502,12 @@ qx.Class.define("aiagallery.main.Gui",
                       socket.onclose = function(data)
                       {
                         channelMessage("close", data);
+                        socket.close();
                         
                         // Re-establish the channel
                         qx.util.TimerManager.getInstance().start(
                           function()
                           {
-                            channel.close();
                             createChannel();
                           },
                           0,
