@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <datastore-indexes autoGenerate="true">
 
-    <!-- Used 1 time in query history -->
     <datastore-index kind="apps" ancestor="true" source="auto">
         <property name="status" direction="asc"/>
         <property name="numLikes" direction="desc"/>
     </datastore-index>
 
-    <!-- Used 1 time in query history -->
     <datastore-index kind="apps" ancestor="true" source="auto">
         <property name="status" direction="asc"/>
         <property name="uploadTime" direction="desc"/>
     </datastore-index>
 
-    <!-- Used 7 times in query history -->
-    <datastore-index kind="tags" ancestor="true" source="auto">
-        <property name="type" direction="asc"/>
-        <property name="value" direction="asc"/>
-    </datastore-index>
-
-    <!-- Used 2 times in query history -->
     <datastore-index kind="apps" ancestor="true" source="auto">
         <property name="numLikes" direction="asc"/>
     </datastore-index>
 
-    <!-- Used 2 times in query history -->
     <datastore-index kind="apps" ancestor="true" source="auto">
         <property name="numDownloads" direction="asc"/>
+    </datastore-index>
+
+    <datastore-index kind="apps" ancestor="true" source="auto">
+        <property name="owner" direction="asc"/>
+        <property name="uid" direction="asc"/>
+    </datastore-index>
+
+    <datastore-index kind="tags" ancestor="true" source="auto">
+        <property name="type" direction="asc"/>
+        <property name="value" direction="asc"/>
     </datastore-index>
 
 </datastore-indexes>
