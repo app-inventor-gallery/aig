@@ -79,7 +79,19 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       vbox = new qx.ui.container.Composite(new qx.ui.layout.VBox());
       canvas.add(vbox, { row : 0, column : 1, rowSpan : 2 });
 
-      o = new qx.ui.basic.Label("Other apps by this author");
+      // Android-green line
+      o = new qx.ui.container.Composite();
+      o.set(
+        {
+          height    : 4,
+          backgroundColor : "#a5c43c"
+        });
+      vbox.add(o);
+
+      // Spacer before the label
+      vbox.add(new qx.ui.core.Spacer(10, 10));
+
+      o = new qx.ui.basic.Label("By this author");
       o.set(
         {
           font          : font,

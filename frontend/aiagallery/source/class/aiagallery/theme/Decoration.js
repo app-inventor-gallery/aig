@@ -182,7 +182,7 @@ qx.Theme.define("aiagallery.theme.Decoration",
       style :
       {
         widthBottom : 1,
-        colorBottom : "border-separator"
+        colorBottom : "android-green"
       }
     },
 
