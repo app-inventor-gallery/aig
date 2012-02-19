@@ -121,6 +121,11 @@ qx.Class.define("aiagallery.widget.SearchResult",
       break;
 
     case "appInfo":
+      grid.setColumnAlign(0, "center", "middle");
+      grid.setColumnAlign(1, "center", "middle");
+      grid.setColumnAlign(2, "center", "middle");
+      grid.setColumnAlign(3, "center", "middle");
+
       // Allow the image to be large without affecting other
       // layout. Description takes up the excess space.
       grid.setRowFlex(2, 1);
