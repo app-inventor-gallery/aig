@@ -98,20 +98,24 @@ qx.Class.define("aiagallery.widget.SearchResult",
       break;
       
     case "byAuthor":
+      // Allow the image to be large without affecting other
+      // layout. Counts take up the excess space
+      grid.setRowFlex(2, 1);
+
+      // Describe the configuration for this widget
       this.gridConfig =
         {
-          image1       : { row : 0, column : 0, rowSpan : 3 },
+          image1       : { row : 0, column : 0, rowSpan : 4 },
           title        : { row : 0, column : 1, colSpan : 4 },
           displayName  : { row : 1, column : 1, colSpan : 4 },
-          numLikes     : { row : 2, column : 2 },
-          numDownloads : { row : 2, column : 3 },
-          numViewed    : { row : 2, column : 4 },
-          numComments  : { row : 2, column : 5 },
+          numLikes     : { row : 3, column : 2 },
+          numDownloads : { row : 3, column : 3 },
+          numViewed    : { row : 3, column : 4 },
+          numComments  : { row : 3, column : 5 },
           
           description  : { row : 0, column : 100 },
           creationTime : { row : 0, column : 101 },
           uploadTime   : { row : 0, column : 102 },
-          
           spacer       : { row : 0, column : 100 }
         };
       break;
@@ -383,7 +387,6 @@ qx.Class.define("aiagallery.widget.SearchResult",
           });
         control.addListener("mousedown", this._onViewApp, this);
         this._add(control, this.gridConfig.title);
-//control.setVisibility("excluded");
         break;
         
       case "numLikes":
@@ -442,7 +445,6 @@ qx.Class.define("aiagallery.widget.SearchResult",
             scale     : true
           });
         this._add(control, this.gridConfig.numDownloads);
-//control.setVisibility("excluded");
         break;
 
       case "numViewed":
@@ -472,7 +474,6 @@ qx.Class.define("aiagallery.widget.SearchResult",
             scale     : true
           });
         this._add(control, this.gridConfig.numViewed);
-//control.setVisibility("excluded");
         break;
 
       case "numComments":
@@ -502,7 +503,6 @@ qx.Class.define("aiagallery.widget.SearchResult",
             scale     : true
           });
         this._add(control, this.gridConfig.numComments);
-//control.setVisibility("excluded");
         break;
 
       case "displayName":
@@ -536,7 +536,6 @@ qx.Class.define("aiagallery.widget.SearchResult",
           this);
 
         this._add(control, this.gridConfig.displayName);
-//control.setVisibility("excluded");
         break;
         
       case "description":
@@ -563,7 +562,6 @@ qx.Class.define("aiagallery.widget.SearchResult",
             maxHeight  : size
           });
         this._add(control, this.gridConfig.description);
-//control.setVisibility("excluded");
         break;
 
       case "creationTime":
@@ -573,7 +571,6 @@ qx.Class.define("aiagallery.widget.SearchResult",
             rich : true
           });
         this._add(control, this.gridConfig.creationTime);
-//control.setVisibility("excluded");
         break;
         
       case "uploadTime":
@@ -583,7 +580,6 @@ qx.Class.define("aiagallery.widget.SearchResult",
             rich : true
           });
         this._add(control, this.gridConfig.uploadTime);
-//control.setVisibility("excluded");
         break;
         
       case "spacer":
