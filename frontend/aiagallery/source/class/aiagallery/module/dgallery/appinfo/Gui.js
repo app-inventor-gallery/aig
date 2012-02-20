@@ -20,7 +20,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
   // Declares resources to be used for icons
 
-  extend : qx.core.Object,
+  extend : qx.ui.core.Widget,
 
   members :
   {
@@ -36,6 +36,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       var             canvas = module.canvas;
       var             o;
       var             grid;
+      var             commentsGrid;
       var             vbox;
       var             font;
 
@@ -60,20 +61,79 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // Prepare a font for the labels
       font = "bold";
 
-      // Create the comments area
-      vbox = new qx.ui.container.Composite(new qx.ui.layout.VBox());
-      canvas.add(vbox, { row : 1, column : 0 });
+      // Lay out the comments section in a grid
+      grid = new qx.ui.layout.Grid(10, 10);
+      grid.setColumnFlex(0, 1);
+      grid.setRowFlex(1, 1);
+      commentsGrid = new qx.ui.container.Composite(grid);
+      canvas.add(commentsGrid, { row : 1, column : 0 });
 
-      // FIXME: temporary group box
       o = new qx.ui.basic.Label("Comments");
       o.set(
         {
           font          : font,
           paddingBottom : 6
         });
-      vbox.add(o);
-      this.comments = new qx.ui.groupbox.GroupBox();
-      vbox.add(this.comments, { flex : 1 });
+      commentsGrid.add(o, { row : 0, column : 0, colSpan : 3 });
+
+      // Create the scroller to hold all of the comments
+      this.commentsScroller = new qx.ui.container.Scroll();
+      commentsGrid.add(this.commentsScroller,
+                       { row : 1, column : 0, colSpan : 3 });
+      
+      // Add a label for adding a new comment
+      o = new qx.ui.basic.Atom("Add Comment");
+      o.set(
+        {
+          font          : font,
+          paddingBottom : 6
+        });
+      commentsGrid.add(o, { row : 2, column : 0, colSpan : 3 });
+
+      // Add a text field for the new comment
+      this.textNewComment = new qx.ui.form.TextArea();
+      this.textNewComment.set(
+        {
+          height    : 60,
+          maxLength : 1000
+        });
+      this.textNewComment.addListener(
+        "input",
+        function(e)
+        {
+          var             value;
+          
+          value = this.textNewComment.getValue();
+          this.butAddComment.setEnabled(!!(value && value.length > 0));
+          this.butCancelComment.setEnabled(!!(value && value.length > 0));
+        },
+        this);
+      fsm.addObject("textNewComment", this.textNewComment);
+      commentsGrid.add(this.textNewComment,
+                       { row : 3, column : 0, colSpan : 3 });
+      
+      // Add the Add button
+      this.butAddComment = new qx.ui.form.Button(this.tr("Add"));
+      this.butAddComment.set(
+        {
+          enabled   : false     // initially disabled
+        });
+      fsm.addObject("butAddComment", this.butAddComment);
+      commentsGrid.add(this.butAddComment, { row : 4, column : 1 });
+      
+      // Add the Cancel button
+      this.butCancelComment = new qx.ui.form.Button(this.tr("Cancel"));
+      this.butCancelComment.set(
+        {
+          enabled   : false     // initially disabled
+        });
+      this.butCancelComment.addListener(
+        "execute",
+        function(e)
+        {
+          this.textNewcomment.setValue("");
+        });
+      commentsGrid.add(this.butCancelComment, { row : 4, column : 2 });
       
       // Create the by-this-author area
       vbox = new qx.ui.container.Composite(new qx.ui.layout.VBox());
