@@ -2283,8 +2283,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             url = app.image1;
             if (url && url.substring(0, 4) == "http")
             {
-              // Request App Engine to scale to 100px longest side
-              app.image1 += "=s100";
+              // Request App Engine to scale to 300px longest side
+              app.image1 += "=s300";
             }
           }
         });
