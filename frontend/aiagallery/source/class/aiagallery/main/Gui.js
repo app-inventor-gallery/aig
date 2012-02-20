@@ -469,6 +469,9 @@ qx.Class.define("aiagallery.main.Gui",
                       // Open a channel for server push
                       channel = new goog.appengine.Channel(e);
                       socket = channel.open();
+
+                      // Save the channel socket
+                      application.setUserData("channelSocket", socket);
                       
                       // When we receive a message on the channel, post a
                       // message on the message bus.
@@ -496,13 +499,10 @@ qx.Class.define("aiagallery.main.Gui",
                       socket.onerror = function(data)
                       {
                         channelMessage("error", data);
-                      };
 
-                      // Display a message when the channel is closed
-                      socket.onclose = function(data)
-                      {
-                        channelMessage("close", data);
-                        socket.close();
+                        // There's no longer a channel socket
+                        application.setUserData("channelSocket", null);
+                        socket = null;
                         
                         // Re-establish the channel
                         qx.util.TimerManager.getInstance().start(
@@ -511,13 +511,31 @@ qx.Class.define("aiagallery.main.Gui",
                             createChannel();
                           },
                           0,
-                          this,
+                          _this,
                           null,
                           5000);
                       };
 
-                      // Save the channel token (if provided)
-                      application.setUserData("channelSocket", socket);
+                      // Display a message when the channel is closed
+                      socket.onclose = function(data)
+                      {
+                        channelMessage("close", data);
+
+                        // There's no longer a channel socket
+                        application.setUserData("channelSocket", null);
+                        socket = null;
+                        
+                        // Re-establish the channel
+                        qx.util.TimerManager.getInstance().start(
+                          function()
+                          {
+                            createChannel();
+                          },
+                          0,
+                          _this,
+                          null,
+                          5000);
+                      };
                     },
                     "getChannelToken",
                     []);
