@@ -161,6 +161,9 @@ qx.Class.define("aiagallery.Application",
         appender = qx.log.appender.Console;
       }
 
+      this.debug("Starting up at " +
+                 aiagallery.Application.getDateFormat().format(new Date()));
+
       // Determine the path to our progress cursor
       qx.core.Init.getApplication().PROGRESS_CURSOR = "progress";
 
