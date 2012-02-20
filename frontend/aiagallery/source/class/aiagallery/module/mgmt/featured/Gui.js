@@ -128,6 +128,10 @@ qx.Class.define("aiagallery.module.mgmt.featured.Gui",
           });
         break;
 
+      case "setFeaturedApps":
+        // Nothing to do
+        break;
+
       default:
         throw new Error("Unexpected request type: " + requestType);
       }

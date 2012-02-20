@@ -186,6 +186,19 @@ qx.Theme.define("aiagallery.theme.Decoration",
       }
     },
 
+    "home-page-header" :
+    {
+      decorator: qx.ui.decoration.Single,
+
+      style :
+      {
+        widthTop    : 10,
+        widthBottom : 10,
+        colorTop    : "android-green",
+        colorBottom : "android-green"
+      }
+    },
+
     "radioview-pane" :
     {
       decorator : qx.ui.decoration.Single

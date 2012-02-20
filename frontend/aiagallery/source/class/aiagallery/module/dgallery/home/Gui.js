@@ -148,8 +148,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var featuredAppsHeader = new qx.ui.basic.Label();
       featuredAppsHeader.set(
         {
-          value : "Featured Apps",
-          font  : font
+          value     : "Featured Apps",
+          font      : font,
+          decorator : "home-page-header"
         });
       this.featuredAppsContainer.add(featuredAppsHeader);
       
@@ -177,6 +178,10 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 
       // Newest Apps section
       var newestAppsLayout = new qx.ui.layout.VBox();
+      newestAppsLayout.set(
+        {
+          alignX : "center"
+        });
       var newestApps = new qx.ui.container.Composite(newestAppsLayout);
 
       // Newest Apps heading
@@ -184,7 +189,8 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       newestAppsHeader.set(
         {
           value : "Newest Apps",
-          font  : font
+          font  : font,
+          decorator : "home-page-header"
         });
       newestApps.add(newestAppsHeader);
       
@@ -199,6 +205,10 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 
       // Most Liked Apps section
       var likedAppsLayout = new qx.ui.layout.VBox();
+      likedAppsLayout.set(
+        {
+          alignX : "center"
+        });
       var likedApps = new qx.ui.container.Composite(likedAppsLayout);
 
       // Liked Apps heading
@@ -206,7 +216,8 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       likedAppsHeader.set(
         {
           value : "Most Liked Apps",
-          font  : font
+          font  : font,
+          decorator : "home-page-header"
         });
       likedApps.add(likedAppsHeader);
       
@@ -216,7 +227,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       fsm.addObject("Most Liked Apps", likedAppsSlideBar);
       likedApps.add(likedAppsSlideBar);
       
-      // add Newest Apps section to the page
+      // add Most Liked Apps section to the page
       canvas.add(likedApps);
     },
 
