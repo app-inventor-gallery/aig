@@ -143,10 +143,6 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       
       // slide bar of Featured Apps
       var featuredAppsSlideBar = new qx.ui.container.SlideBar();
-      featuredAppsSlideBar.set(
-        {
-          height : 180
-        });
       
       fsm.addObject("Featured Apps", featuredAppsSlideBar);
       this.featuredAppsContainer.add(featuredAppsSlideBar);
@@ -169,10 +165,6 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       
       // slide bar of Newest Apps
       var newestAppsSlideBar = new qx.ui.container.SlideBar();
-      newestAppsSlideBar.set(
-        {
-          height : 180
-        });
       
       fsm.addObject("Newest Apps", newestAppsSlideBar);
       newestApps.add(newestAppsSlideBar);
@@ -195,10 +187,6 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       
       // slide bar of liked Apps
       var likedAppsSlideBar = new qx.ui.container.SlideBar();
-      likedAppsSlideBar.set(
-        {
-          height : 180
-        });
       
       fsm.addObject("Most Liked Apps", likedAppsSlideBar);
       likedApps.add(likedAppsSlideBar);

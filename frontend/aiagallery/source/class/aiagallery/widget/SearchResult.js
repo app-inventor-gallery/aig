@@ -66,14 +66,12 @@ qx.Class.define("aiagallery.widget.SearchResult",
     case "homeRibbon":
       // Add grid layout characteristics
       grid.setColumnAlign(0, "center", "middle");
-      grid.setColumnAlign(1, "center", "middle");
-      grid.setColumnAlign(2, "center", "middle");
-      grid.setColumnAlign(3, "center", "middle");
-      grid.setColumnAlign(4, "center", "middle");
+      grid.setRowFlex(1, 1);
 
       // This one needs a background color to separate the slidebar items
       this.set(
         {
+          width           : 220,
           marginRight     : 20,
           padding         : 10,
           backgroundColor : "#eee9e9"
@@ -82,18 +80,18 @@ qx.Class.define("aiagallery.widget.SearchResult",
       // Describe the configuration for this widget
       this.gridConfig =
         {
-          image1       : { row : 0, column : 0, colSpan : 4 },
-          title        : { row : 1, column : 0, colSpan : 4 },
-          displayName  : { row : 2, column : 0, colSpan : 4 },
-          spacer       : { row : 3, column : 0, colSpan : 5 },
-          numLikes     : { row : 4, column : 0 },
-          numDownloads : { row : 4, column : 1 },
-          numViewed    : { row : 4, column : 2 },
-          numComments  : { row : 4, column : 3 },
-          
-          description  : { row : 0, column : 100 },
-          creationTime : { row : 0, column : 101 },
-          uploadTime   : { row : 0, column : 102 }
+          image1       : { row : 0, column : 0 },
+          spacer       : { row : 1, column : 0 },
+          title        : { row : 2, column : 0 },
+          displayName  : { row : 3, column : 0 },
+
+          numLikes     : { row : 0, column : 100 },
+          numDownloads : { row : 0, column : 101 },
+          numViewed    : { row : 0, column : 102 },
+          numComments  : { row : 0, column : 103 },
+          description  : { row : 0, column : 104 },
+          creationTime : { row : 0, column : 105 },
+          uploadTime   : { row : 0, column : 106 }
         };
       break;
       
@@ -376,17 +374,19 @@ qx.Class.define("aiagallery.widget.SearchResult",
         {
         case "homeRibbon":
           textAlign = "center";
+          size = 200;
           break;
 
         case "searchResults":
         case "byAuthor":
         case "appInfo":
           textAlign = "left";
+          size = 300;
           break;
         }
         control.set(
           {
-            width     : 300,
+            width     : size,
             font      : font,
             textAlign : textAlign
           });
@@ -404,6 +404,9 @@ qx.Class.define("aiagallery.widget.SearchResult",
           break;
 
         case "homeRibbon":
+          size = 0;
+          break;
+
         case "byAuthor":
           size = 40;
           break;
@@ -433,6 +436,9 @@ qx.Class.define("aiagallery.widget.SearchResult",
           break;
 
         case "homeRibbon":
+          size = 0;
+          break;
+
         case "byAuthor":
           size = 40;
           break;
@@ -462,6 +468,9 @@ qx.Class.define("aiagallery.widget.SearchResult",
           break;
 
         case "homeRibbon":
+          size = 0;
+          break;
+
         case "byAuthor":
           size = 40;
           break;
@@ -491,6 +500,9 @@ qx.Class.define("aiagallery.widget.SearchResult",
           break;
 
         case "homeRibbon":
+          size = 0;
+          break;
+
         case "byAuthor":
           size = 40;
           break;
@@ -547,8 +559,11 @@ qx.Class.define("aiagallery.widget.SearchResult",
         control = new qx.ui.form.TextArea();
         switch(this.format)
         {
-        case "searchResults":
         case "homeRibbon":
+          size = 0;
+          break;
+
+        case "searchResults":
         case "byAuthor":
           size = 50;
           break;
