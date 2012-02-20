@@ -1,5 +1,5 @@
 #!/bin/bash
-SDK_BIN="appengine-java-sdk-1.5.0.1/bin"
+SDK_BIN="appengine-java-sdk-1.6.2.1/bin"
 SDK_LIB="$SDK_BIN/../lib"
 SDK_CONFIG="$SDK_BIN/../config/sdk"
 JAR_FILE=""
