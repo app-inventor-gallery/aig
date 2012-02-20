@@ -49,6 +49,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     this.registerService("aiagallery.features.mgmtEditApp",
                          this.mgmtEditApp,
                          [ "uid", "attributes" ]);
+
+    this.registerService("aiagallery.features.setFeaturedApps",
+                         this.setFeaturedApps,
+                         [ "featuredApps" ]);
   },
 
   statics :
@@ -2771,6 +2775,106 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
       // Give 'em what they came for
       return ret;
+    },
+
+    /**
+     * Specify the set of Featured Apps.
+     * 
+     * Any formerly-featured apps are removed from the featured list, and
+     * those specified in the parameter become the new set of featured apps.
+     *
+     * @param featuredApps {Array}
+     *   An array of unique identifier (uid) values, indicating the set of
+     *   apps which are to be featured.
+     *
+     * @param error {liberated.rpc.error.Error}
+     *   All RPCs are passed, as their final argument, an error object. Most
+     *   don't use it, but this one does. If the application being requested
+     *   is not found (which, since the uid of the specific application is
+     *   provided as a parameter, likely means that it was just deleted), an
+     *   error is generated back to the client by setting the code and message
+     *   in this object.
+     *
+     * @return {Boolean}
+     *   Always returns true
+     */
+    setFeaturedApps : function(featuredApps, error)
+    {
+      var             apps;
+      var             criteria;
+
+      // Within a transaction...
+      liberated.dbif.Entity.asTransaction(
+        function()
+        {
+          // Find all apps other than the current one, by this same author
+          criteria = 
+            {
+              type: "element",
+              field: "tags",
+              value: "*Featured*"
+            };
+
+          // Query for those apps
+          apps = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                             criteria,
+                                             null);
+          
+          // Remove the featured tag from each of these apps
+          apps.forEach(
+            function(app)
+            {
+              var             appObj;
+              var             appData;
+              
+              // Retrieve this app as an object
+              appObj = new aiagallery.dbif.ObjAppData(app.uid);
+              
+              // If it's brand new, someone just deleted it. Ignore it.
+              if (appObj.getBrandNew())
+              {
+                return;
+              }
+              
+              // Retrieve its data map
+              appData = appObj.getData();
+              
+              // Remove "*Featured*" from the tags list
+              qx.lang.Array.remove(appData.tags, "*Featured*");
+              
+              // Write the object back to the database
+              appObj.put();
+            });
+          
+          // For each to-be-featured app...
+          featuredApps.forEach(
+            function(uid)
+            {
+              var             appObj;
+              var             appData;
+              
+              // Retrieve this app as an object
+              appObj = new aiagallery.dbif.ObjAppData(uid);
+              
+              // If it's brand new, someone just deleted it. Ignore it.
+              if (appObj.getBrandNew())
+              {
+                return;
+              }
+              
+              // Retrieve its data map
+              appData = appObj.getData();
+              
+              // Add a "*Featured*" tag to feature this app
+              appData.tags.push("*Featured*");
+              
+              // Write the object back to the database
+              appObj.put();
+            });
+        });
+
+      // Always return true
+      return true;
     }    
   }
 });

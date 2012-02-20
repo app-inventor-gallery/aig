@@ -85,6 +85,7 @@ qx.Class.define("aiagallery.module.mgmt.featured.Gui",
       var             result;
       var             apps;
       var             model;
+      var             selection;
 
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -112,6 +113,19 @@ qx.Class.define("aiagallery.module.mgmt.featured.Gui",
 
         // Add the data to the list
         this.listApps.setModel(model);
+        
+        // Retrieve the selection array
+        selection = this.listApps.getSelection();
+
+        // Select any currently-featured apps
+        apps.forEach(
+          function(app, i)
+          {
+            if (qx.lang.Array.contains(app.tags, "*Featured*"))
+            {
+              selection.push(model.getItem(i));
+            }
+          });
         break;
 
       default:
