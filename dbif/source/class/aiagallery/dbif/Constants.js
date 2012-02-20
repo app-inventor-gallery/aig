@@ -96,10 +96,11 @@ qx.Class.define("aiagallery.dbif.Constants",
       //
       // MApps
       //
-      "addOrEditApp"  : "Add and edit applications",
-      "deleteApp"     : "Delete applications",
-      "getAppListAll" : "Get all users application list",
-      "mgmtEditApp"   : "Managment override for application management",
+      "addOrEditApp"    : "Add and edit applications",
+      "deleteApp"       : "Delete applications",
+      "getAppListAll"   : "Get all users application list",
+      "mgmtEditApp"     : "Managment override for application management",
+      "setFeaturedApps" : "Specify the set of featured apps",
 
       /* Anonymous access...
       "getAppList"    : "Get logged in user application list",
