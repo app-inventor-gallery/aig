@@ -18,17 +18,18 @@ qx.Class.define("aiagallery.widget.SearchResult",
    * @param format {String}
    *   A keyword indicating the format in which to display the App
    *   information. This string may be any one of the generic terms:
-   *   "searchResults", "homeRibbon", or "byAuthor", indicating, respectively,
-   *   whether to lay out all of the information as in a search result on the
-   *   Find Apps page, vertically as in the home page ribbons, or horizontally
-   *   as in the By This Author box on the App Info page.
-   * 
+   *   "searchResults", "homeRibbon", "featured", or "byAuthor", indicating,
+   *   respectively, whether to lay out all of the information as in a search
+   *   result on the Find Apps page, vertically as in the home page ribbons,
+   *   or horizontally as in the By This Author box on the App Info page.
+   *
    * @param data {Map?}
    *   Data to display in this instance
    */
   construct : function(format, data)
   {
     var             grid;
+    var             size;
     
     this.base(arguments);
 
@@ -64,14 +65,17 @@ qx.Class.define("aiagallery.widget.SearchResult",
       break;
       
     case "homeRibbon":
+    case "featured":
       // Add grid layout characteristics
       grid.setColumnAlign(0, "center", "middle");
       grid.setRowFlex(1, 1);
 
+      size = format == "homeRibbon" ? 220 : 320;
+
       // This one needs a background color to separate the slidebar items
       this.set(
         {
-          width           : 220,
+          width           : size,
           marginRight     : 20,
           padding         : 10,
           backgroundColor : "#eee9e9"
@@ -345,6 +349,10 @@ qx.Class.define("aiagallery.widget.SearchResult",
           size = 100;
           break;
           
+        case "featured":
+          size = 300;
+          break;
+
         case "appInfo":
           size = 200;
           break;
@@ -373,6 +381,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
         switch(this.format)
         {
         case "homeRibbon":
+        case "featured":
           textAlign = "center";
           size = 200;
           break;
@@ -404,6 +413,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           break;
 
         case "homeRibbon":
+        case "featured":
           size = 0;
           break;
 
@@ -436,6 +446,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           break;
 
         case "homeRibbon":
+        case "featured":
           size = 0;
           break;
 
@@ -468,6 +479,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           break;
 
         case "homeRibbon":
+        case "featured":
           size = 0;
           break;
 
@@ -500,6 +512,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           break;
 
         case "homeRibbon":
+        case "featured":
           size = 0;
           break;
 
@@ -560,6 +573,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
         switch(this.format)
         {
         case "homeRibbon":
+        case "featured":
           size = 0;
           break;
 
