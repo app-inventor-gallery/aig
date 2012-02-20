@@ -54,7 +54,7 @@ qx.Class.define("aiagallery.widget.AppThumb",
     this.getChildControl("spacer");
 
     // The owner should be displayed android green
-    font = qx.bom.Font.fromString("10px sans-serif");
+    font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
     font.setColor("#75940c");   // android-green-dark
     ownerLabel = this.getChildControl("owner");
     ownerLabel.set(
@@ -104,6 +104,9 @@ qx.Class.define("aiagallery.widget.AppThumb",
     _createChildControlImpl : function(id, hash)
     {
       var             control;
+      var             font;
+
+      font = qx.theme.manager.Font.getInstance().resolve("bold");
 
       switch(id)
       {
@@ -111,7 +114,7 @@ qx.Class.define("aiagallery.widget.AppThumb",
         control = new qx.ui.form.TextArea(this.getLabel());
         control.set(
           {
-            font      : qx.bom.Font.fromString("bold 10px sans-serif"),
+            font      : font,
             readOnly  : true,
             autoSize  : true,
             wrap      : true,

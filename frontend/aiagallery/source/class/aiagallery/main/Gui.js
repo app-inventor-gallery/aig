@@ -104,8 +104,13 @@ qx.Class.define("aiagallery.main.Gui",
           "Community Gallery" +
           "</center>" +
           "</div>");
-        o.setRich(true);
-        o.setFont(new qx.bom.Font(22, [ "sans-serif" ]));
+        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+        font.setSize(22);
+        o.set(
+          {
+            rich : true,
+            font : font
+          });
         header.add(o);
 
         // Add a flexible spacer to take up the whole middle
@@ -559,7 +564,7 @@ qx.Class.define("aiagallery.main.Gui",
         hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
         
         // Add a link to the terms of service
-        font = qx.bom.Font.fromString("10px sans-serif bold");
+        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.setDecoration("underline");
         o = new qx.ui.basic.Label("Terms of Service");
         o.set(

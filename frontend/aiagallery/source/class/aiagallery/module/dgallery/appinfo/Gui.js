@@ -58,7 +58,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       canvas.add(this.searchResult, { row : 0, column : 0 });
       
       // Prepare a font for the labels
-      font = qx.bom.Font.fromString("12px sans-serif bold");
+      font = "bold";
 
       // Create the comments area
       vbox = new qx.ui.container.Composite(new qx.ui.layout.VBox());

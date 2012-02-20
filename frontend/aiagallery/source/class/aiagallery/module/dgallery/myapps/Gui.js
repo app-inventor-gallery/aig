@@ -160,7 +160,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       header = new qx.ui.container.Composite(grid);
       
       // Prepare to bold some headings
-      font = qx.bom.Font.fromString("10px sans-serif bold");
+      font = qx.theme.manager.Font.getInstance().resolve("bold");
 
       o = new qx.ui.basic.Label("Title");
       o.setFont(font);

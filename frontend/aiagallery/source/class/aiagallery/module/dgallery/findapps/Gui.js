@@ -104,7 +104,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       vBox.add(new qx.ui.core.Spacer(10, 10));
 
       // Add the search results label
-      font = qx.bom.Font.fromString("10px sans-serif bold");
+      font = qx.theme.manager.Font.getInstance().resolve("bold");
       o = new qx.ui.basic.Label("Search Results");
       o.set(
         {
@@ -211,7 +211,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
 
       // Describe what this search does
       hBox.add(new qx.ui.core.Spacer(16, 10));
-      font = qx.bom.Font.fromString("10px sans-serif bold");
+      font = qx.theme.manager.Font.getInstance().resolve("bold");
       description = 
         new qx.ui.basic.Label(this.tr("Search for words found in the title, " +
                                       "description, categories, or tags."));
@@ -273,7 +273,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
 
       // Add the label
       hBox.add(new qx.ui.core.Spacer(16, 10));
-      font = qx.bom.Font.fromString("10px sans-serif bold");
+      font = qx.theme.manager.Font.getInstance().resolve("bold");
       label = 
         new qx.ui.basic.Label(this.tr("Browse categories"));
       label.set(
@@ -344,9 +344,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       vBox = new qx.ui.container.Composite(new qx.ui.layout.VBox());
 
       // Add the label
-      font = qx.bom.Font.fromString("10px sans-serif bold");
-      label = 
-        new qx.ui.basic.Label(this.tr("Search Criteria"));
+      font = qx.theme.manager.Font.getInstance().resolve("bold");
+      label = new qx.ui.basic.Label(this.tr("Search Criteria"));
       label.set(
         {
           font : font

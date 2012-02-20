@@ -366,7 +366,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
         break;
         
       case "title":
-        font = qx.bom.Font.fromString("10px sans-serif bold");
+        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.setDecoration("underline");
         
         // Display the title single-line in searchResults format; possibly
@@ -512,7 +512,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
 
       case "displayName":
         // The displayName should be displayed android green
-        font = qx.bom.Font.fromString("10px sans-serif");
+        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.set(
           {
             color      : "#75940c",     // android-green-dark
