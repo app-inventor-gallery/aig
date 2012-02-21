@@ -651,7 +651,8 @@ qx.Class.define("aiagallery.main.Gui",
           o.setUserData("page", page);
           o.set(
             {
-              appearance : "pageselector"
+              appearance : "pageselector",
+              cursor     : "pointer"
             });
 
           o.addListener(
