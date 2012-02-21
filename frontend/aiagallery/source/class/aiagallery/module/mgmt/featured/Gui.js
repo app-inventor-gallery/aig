@@ -54,7 +54,24 @@ qx.Class.define("aiagallery.module.mgmt.featured.Gui",
       
       // Button to set the featured apps
       this.butSaveFeatured = new qx.ui.form.Button("Save featured apps");
-      this.butSaveFeatured.addListener("execute", fsm.eventListener, fsm);
+      this.butSaveFeatured.addListener(
+        "execute", 
+        function(e)
+        {
+          var             selection;
+
+          // Ensure that no more than two apps are selected to be featured
+          selection = this.listApps.getSelection();
+          if (selection.length > 2)
+          {
+            alert("A maximum of two featured apps may be set, at present.");
+            return;
+          }
+          
+          // Pass the event to the FSM.
+          fsm.eventListener(e.clone());                                         
+        },
+        this);
       fsm.addObject("butSaveFeatured", 
                     this.butSaveFeatured, 
                     "main.fsmUtils.disable_during_rpc");
