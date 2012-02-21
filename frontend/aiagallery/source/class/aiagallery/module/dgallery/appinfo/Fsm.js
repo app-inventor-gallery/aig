@@ -68,16 +68,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
               qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
           },
 
+          "likeIt"  : "Transition_Idle_to_AwaitRpcResult_via_likeIt",
+
+          "flagIt"  : "Transition_Idle_to_AwaitRpcResult_via_flagIt",
+
           "execute" :
           {
             "butAddComment" :
-            "Transition_Idle_to_AwaitRpcResult_via_submit_comment",
-
-            "likeItButton" : 
-              "Transition_Idle_to_AwaitRpcResult_via_likeItButton",
-
-	    "flagItButton" :
-	      "Transition_Idle_to_AwaitRpcResult_via_flag"
+            "Transition_Idle_to_AwaitRpcResult_via_submit_comment"
           }
         }
       });
@@ -236,7 +234,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
        *  Add a "Like" for this app to the database and to the GUI
        */
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_likeItButton",
+        "Transition_Idle_to_AwaitRpcResult_via_likeIt",
       {
         "nextState" : "State_AwaitRpcResult",
 
@@ -244,11 +242,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          // Event data
-          // FIXME:  Need to reorganize code -- this has
-          // nothing to do with comments
-          var commentWrapper = fsm.getObject("commentWrapper");
-          var appId = commentWrapper.getUserData("appId");
+          var             appId;
+
+          // Retrieve the UID of the current app, and the new comment
+          appId = fsm.getObject("searchResult").getUid();
 
           // Issue the remote procedure call to execute the query
           var request =
@@ -256,8 +253,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
                          "aiagallery.features",
                          "likesPlusOne",
                          [
-                         //Application ID
-                         appId
+                           appId
                          ]);
 
           // Tell Gui the request type
@@ -271,7 +267,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
       state.addTransition(trans);
 
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_flag",
+        "Transition_Idle_to_AwaitRpcResult_via_flagIt",
       {
         "nextState" : "State_AwaitRpcResult",
 
@@ -279,28 +275,20 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          var commentWrapper = fsm.getObject("commentWrapper");
-          var appId = commentWrapper.getUserData("appId");
- /*
-         var request =
-            this.callRpc(fsm,
-                         "aiagallery.features",
-                         "flagIt",
-                         [ 1,"it is obscene",101,"0001"]);
-*/
+          var             appId;
+
+          // Retrieve the UID of the current app, and the new comment
+          appId = fsm.getObject("searchResult").getUid();
+
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
                          "flagIt",
                          [ 
-                           // flag type: 0 = app, 1 = comment
-                           0,
-                           // reason for flagging, needs to be implemented
-                           "needs interface",
-                           // ID of application being banned
-                           appId,
-                           // null field for comment ID 
-                           null
+                           0,               // flag type: 0 = app, 1 = comment
+                           "inappropriate", // reason
+                           appId,           // ID of application being banned
+                           null             // comment ID
                          ]);
 
 

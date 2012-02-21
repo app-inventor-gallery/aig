@@ -60,7 +60,9 @@ qx.Class.define("aiagallery.widget.SearchResult",
           creationTime : { row : 3, column : 1 },
           uploadTime   : { row : 3, column : 2, colSpan : 4 },
           
-          spacer       : { row : 0, column : 100 }
+          spacer       : { row : 0, column : 100 },
+          likeIt       : { row : 0, column : 101 },
+          flagIt       : { row : 0, column : 102 }
         };
       break;
       
@@ -95,7 +97,9 @@ qx.Class.define("aiagallery.widget.SearchResult",
           numComments  : { row : 0, column : 103 },
           description  : { row : 0, column : 104 },
           creationTime : { row : 0, column : 105 },
-          uploadTime   : { row : 0, column : 106 }
+          uploadTime   : { row : 0, column : 106 },
+          likeIt       : { row : 0, column : 107 },
+          flagIt       : { row : 0, column : 108 }
         };
       break;
       
@@ -118,7 +122,9 @@ qx.Class.define("aiagallery.widget.SearchResult",
           description  : { row : 0, column : 100 },
           creationTime : { row : 0, column : 101 },
           uploadTime   : { row : 0, column : 102 },
-          spacer       : { row : 0, column : 100 }
+          spacer       : { row : 0, column : 103 },
+          likeIt       : { row : 0, column : 104 },
+          flagIt       : { row : 0, column : 105 }
         };
       break;
 
@@ -127,6 +133,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
       grid.setColumnAlign(1, "center", "middle");
       grid.setColumnAlign(2, "center", "middle");
       grid.setColumnAlign(3, "center", "middle");
+      grid.setRowAlign(4, "center", "middle");
 
       // Allow the image to be large without affecting other
       // layout. Description takes up the excess space.
@@ -139,16 +146,20 @@ qx.Class.define("aiagallery.widget.SearchResult",
           title        : { row : 0, column : 4, colSpan : 3 },
           displayName  : { row : 1, column : 4, colSpan : 3 },
           description  : { row : 2, column : 4, colSpan : 3 },
-          numLikes     : { row : 3, column : 0 },
-          numDownloads : { row : 3, column : 1 },
-          numViewed    : { row : 3, column : 2 },
-          numComments  : { row : 3, column : 3 },
+          numLikes     : { row : 3, column : 0, rowSpan : 2 },
+          numDownloads : { row : 3, column : 1, rowSpan : 2 },
+          numViewed    : { row : 3, column : 2, rowSpan : 2 },
+          numComments  : { row : 3, column : 3, rowSpan : 2 },
           creationTime : { row : 3, column : 4 },
           spacer       : { row : 3, column : 5 },
-          uploadTime   : { row : 3, column : 6 }
+          uploadTime   : { row : 3, column : 6 },
+          likeIt       : { row : 4, column : 4 },
+          flagIt       : { row : 4, column : 6 }
         };
-      break;
       
+      // Only instantiate likeIt and flagIt controls when needed
+      this.getChildControl("likeIt");
+      this.getChildControl("flagIt");
       break;
     }
 
@@ -184,6 +195,12 @@ qx.Class.define("aiagallery.widget.SearchResult",
     
     /** Fired by click on app title or image */
     "viewApp" : "qx.event.type.Data",
+    
+    /** Fired by click on the "Like It" label */
+    "likeIt"  : "qx.event.type.Event",
+    
+    /** Fired by click on the "Flag It" label */
+    "flagIt"  : "qx.event.type.Event",
     
     /** Fired when the numLikes property is changed */
     "changeNumLikes" : "qx.event.type.Data",
@@ -367,6 +384,13 @@ qx.Class.define("aiagallery.widget.SearchResult",
             minHeight : size,
             maxHeight : size
           });
+        if (this.format != "appInfo")
+        {
+          control.set(
+            {
+              cursor    : "pointer"
+            });
+        }
         control.addListener("mousedown", this._onViewApp, this);
         this._add(control, this.gridConfig.image1);
         break;
@@ -399,6 +423,13 @@ qx.Class.define("aiagallery.widget.SearchResult",
             font      : font,
             textAlign : textAlign
           });
+        if (this.format != "appInfo")
+        {
+          control.set(
+            {
+              cursor    : "pointer"
+            });
+        }
         control.addListener("mousedown", this._onViewApp, this);
         this._add(control, this.gridConfig.title);
         break;
@@ -547,7 +578,8 @@ qx.Class.define("aiagallery.widget.SearchResult",
         control.set(
           {
             textColor : null,       // don't let it override font's color
-            font      : font
+            font      : font,
+            cursor    : "pointer"
           });
 
         // Owner clicks initiate a search for apps of that owner
@@ -616,6 +648,59 @@ qx.Class.define("aiagallery.widget.SearchResult",
         this._add(control, this.gridConfig.uploadTime);
         break;
         
+      case "likeIt":
+        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+        font.set(
+          {
+//            color      : "#75940c",     // android-green-dark
+            decoration : "underline"
+          });
+        control = new qx.ui.basic.Label(this.tr("Like It?"));
+        control.set(
+          {
+//            textColor : null,       // don't let it override font's color
+            font      : font,
+            cursor    : "pointer"
+          });
+        
+        // Fire a "likeIt" event when this label is clicked
+        control.addListener(
+          "click",
+          function(e)
+          {
+            this.fireEvent("likeIt");
+          },
+          this);
+
+        this._add(control, this.gridConfig.likeIt);
+        break;
+        
+      case "flagIt":
+        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+        font.set(
+          {
+//            color      : "#75940c",     // android-green-dark
+            decoration : "underline"
+          });
+        control = new qx.ui.basic.Label(this.tr("Flag as inappropriate?"));
+        control.set(
+          {
+//            textColor : null,       // don't let it override font's color
+            font      : font,
+            cursor    : "pointer"
+          });
+        
+        // Fire a "flagIt" event when this label is clicked
+        control.addListener(
+          "click",
+          function(e)
+          {
+            this.fireEvent("flagIt");
+          },
+          this);
+        this._add(control, this.gridConfig.flagIt);
+        break;
+
       case "spacer":
         control = new qx.ui.core.Spacer(10, 10);
         this._add(control, this.gridConfig.spacer);

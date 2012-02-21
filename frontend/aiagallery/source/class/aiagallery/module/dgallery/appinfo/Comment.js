@@ -19,6 +19,13 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
     // Call the superclass constructor
     this.base(arguments);
 
+    // Don't let the comment be near its container edges
+    this.set(
+    {
+      marginLeft  : 20,
+      marginRight : 20
+    });
+
     layout = new qx.ui.layout.Grid(6, 0);
     layout.setRowFlex(0, 1);    // comment text takes up space as needed
     layout.setColumnWidth(0, 40);
@@ -34,7 +41,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
     // Create each of the child controls
     this.getChildControl("text");
     this.getChildControl("pointer");
-    this.getChildControl("author");
+    this.getChildControl("displayName");
     this.getChildControl("timestamp");
     this.getChildControl("spacer");
     
@@ -48,6 +55,12 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
 
   properties :
   {
+    visitor :
+    {
+      check    : "String",
+      nullable : false
+    },
+
     text :
     {
       check    : "String",
@@ -55,11 +68,11 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
       apply    : "_applyText"
     },
     
-    author :
+    displayName :
     {
       check    : "String",
       nullable : false,
-      apply    : "_applyAuthor"
+      apply    : "_applyDisplayName"
     },
     
     timestamp :
@@ -76,6 +89,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
     _createChildControlImpl : function(id, hash)
     {
       var             control;
+      var             font;
 
       switch(id)
       {
@@ -99,13 +113,41 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
         this._add(control, { row : 1, column : 0 });
         break;
 
-      case "author":
-        control = new qx.ui.basic.Label("Derrell Lipman");
+      case "displayName":
+        // The displayName should be displayed android green
+        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+        font.set(
+          {
+            color      : "#75940c",     // android-green-dark
+            decoration : "underline"
+          });
+        control = new qx.ui.basic.Label();
+        control.set(
+          {
+            textColor : null,       // don't let it override font's color
+            font      : font
+          });
+
+        // Visitor clicks initiate a search for apps of that owner
+        control.addListener(
+          "click",
+          function(e)
+          {
+            // Prevent the default 'click' behavior
+            e.preventDefault();
+            e.stop();
+
+            // Initiate a search
+            alert("Future: initiate search for visitor " +
+                  this.getDisplayName() + " (" + this.getVisitor() + ")");
+          },
+          this);
+
         this._add(control, { row : 1, column : 1 });
         break;
         
       case "timestamp":
-        control = new qx.ui.basic.Label("some time stamp");
+        control = new qx.ui.basic.Label();
         this._add(control, { row : 1, column : 2 });
         break;
         
@@ -125,9 +167,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
     },
 
     // Property apply.
-    _applyAuthor : function(value, old)
+    _applyDisplayName : function(value, old)
     {
-      this.getChildControl("author").setValue(value);
+      this.getChildControl("displayName").setValue(value);
     },
 
     // Property apply.

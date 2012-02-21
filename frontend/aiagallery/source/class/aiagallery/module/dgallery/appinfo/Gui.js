@@ -24,6 +24,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
   members :
   {
+    __likeItListener : null,
+    __flagItListener : null,
+
     /**
      * Build the raw graphical user interface.
      *
@@ -56,6 +59,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       
       // Put the application detail in the top-left
       this.searchResult = new aiagallery.widget.SearchResult("appInfo");
+      this.__flagItListener =
+        this.searchResult.addListener("flagIt", fsm.eventListener, fsm);
       fsm.addObject("searchResult", this.searchResult);
       canvas.add(this.searchResult, { row : 0, column : 0 });
       
@@ -88,7 +93,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       o.add(this.commentsScrollContainer);
 
       // Add a label for adding a new comment
-      o = new qx.ui.basic.Atom("Add Comment");
+      o = new qx.ui.basic.Atom("Add a comment");
       o.set(
         {
           font          : font,
@@ -282,7 +287,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
             // Create a new comment object for this comment
             comment = new aiagallery.module.dgallery.appinfo.Comment();
             comment.setText(commentData.text);
-            comment.setAuthor(commentData.displayName);
+            comment.setVisitor(commentData.visitor);
+            comment.setDisplayName(commentData.displayName);
             comment.setTimestamp(commentData.timestamp);
             
             // Add it to the scroll container
@@ -292,7 +298,21 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
         // Enable or disable the Like It! button, depending on whether they've
         // already Liked this app.
-        // FIXME
+        if (result.bAlreadyLiked)
+        {
+          // He already liked it. Change the label.
+          this.searchResult.getChildControl("likeIt").set(
+            {
+              value : this.tr("You liked it!"),
+              font  : "default"
+            });
+        }
+        else
+        {
+          // He hasn't liked it, so listen for a likeIt event
+          this.__likeItListener =
+            this.searchResult.addListener("likeIt", fsm.eventListener, fsm);
+        }
         
         // Add the Download button
         // FIXME
@@ -307,7 +327,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         // Create a new comment object for this comment
         comment = new aiagallery.module.dgallery.appinfo.Comment();
         comment.setText(result.text);
-        comment.setAuthor(result.displayName);
+        comment.setVisitor(result.visitor);
+        comment.setDisplayName(result.displayName);
         comment.setTimestamp(result.timestamp);
 
         // Add it to the scroll container
@@ -315,6 +336,47 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         
         // Clear the input field
         this.textNewComment.setValue("");
+        break;
+
+      case "likesPlusOne":
+        // Replace the label
+        this.searchResult.getChildControl("likeIt").set(
+          {
+            value : this.tr("You liked it!"),
+            font  : "default"
+          });
+        
+        // Remove the listener.
+        if (this.__likeItListener !== null)
+        {
+          this.searchResult.removeListenerById(this.__likeItListener);
+          this.__likeItListener = null;
+        }
+        
+        // Reset the cursor
+        this.searchResult.getChildControl("likeIt").setCursor("default");
+        
+        // Update the count of likes
+        this.searchResult.setNumLikes(response.data.result);
+        break;
+        
+      case "flagIt":
+        // Replace the label
+        this.searchResult.getChildControl("flagIt").set(
+          {
+            value : this.tr("Flagged as inappropriate."),
+            font  : "default"
+          });
+        
+        // Remove the listener.
+        if (this.__flagItListener !== null)
+        {
+          this.searchResult.removeListenerById(this.__flagItListener);
+          this.__flagItListener = null;
+        }
+        
+        // Reset the cursor
+        this.searchResult.getChildControl("flagIt").setCursor("default");
         break;
 
       default:
