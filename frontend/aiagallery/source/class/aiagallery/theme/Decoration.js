@@ -175,6 +175,24 @@ qx.Theme.define("aiagallery.theme.Decoration",
       }
     },
     
+    "app-comment" :
+    {
+      decorator : [
+        qx.ui.decoration.MBorderRadius,
+        qx.ui.decoration.MLinearBackgroundGradient,
+        qx.ui.decoration.MSingleBorder
+      ],
+
+      style : {
+        width    : 1,
+        widthTop : 2,
+        color    : "android-green",
+        radius   : 6,
+        gradientStart : ["white", 90],
+        gradientEnd : ["white", 100]
+      }
+    },
+    
     "search-result-separator" :
     {
       decorator: qx.ui.decoration.Single,

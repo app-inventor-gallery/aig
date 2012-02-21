@@ -56,13 +56,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       
       // Put the application detail in the top-left
       this.searchResult = new aiagallery.widget.SearchResult("appInfo");
+      fsm.addObject("searchResult", this.searchResult);
       canvas.add(this.searchResult, { row : 0, column : 0 });
       
       // Prepare a font for the labels
       font = "bold";
 
       // Lay out the comments section in a grid
-      grid = new qx.ui.layout.Grid(10, 10);
+      grid = new qx.ui.layout.Grid(10, 0);
       grid.setColumnFlex(0, 1);
       grid.setRowFlex(1, 1);
       commentsGrid = new qx.ui.container.Composite(grid);
@@ -77,10 +78,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       commentsGrid.add(o, { row : 0, column : 0, colSpan : 3 });
 
       // Create the scroller to hold all of the comments
-      this.commentsScroller = new qx.ui.container.Scroll();
-      commentsGrid.add(this.commentsScroller,
-                       { row : 1, column : 0, colSpan : 3 });
+      o = new qx.ui.container.Scroll();
+      commentsGrid.add(o, { row : 1, column : 0, colSpan : 3 });
       
+      // The Scroller may contain only one container, so create that container.
+      this.commentsScrollContainer = 
+        new qx.ui.container.Composite(new qx.ui.layout.VBox());
+      o.add(this.commentsScrollContainer);
+
       // Add a label for adding a new comment
       o = new qx.ui.basic.Atom("Add Comment");
       o.set(
@@ -119,6 +124,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
           enabled   : false     // initially disabled
         });
       fsm.addObject("butAddComment", this.butAddComment);
+      this.butAddComment.addListener("execute", fsm.eventListener, fsm);
       commentsGrid.add(this.butAddComment, { row : 4, column : 1 });
       
       // Add the Cancel button
@@ -190,12 +196,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
                 {
                   controller.bindProperty(name, name, null, item, id);
                 });
-            },
-
-            configureItem : function(item) 
-            {
-              // Listen for clicks on the title or image, to view the app
-              item.addListener("viewApp", fsm.eventListener, fsm);
             }
           }
         });
@@ -223,6 +223,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       var             result;
       var             source;
       var             model;
+      var             comment;
 
       if (response.type == "failed")
       {
@@ -258,12 +259,46 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         model = qx.data.marshal.Json.createModel(result.byAuthor);
         this.byAuthor.setModel(model);
 
+        // Display each of the comments
+        result.comments.forEach(
+          function(commentData)
+          {
+            var             comment;
+            
+            // Create a new comment object for this comment
+            comment = new aiagallery.module.dgallery.appinfo.Comment();
+            comment.setText(commentData.text);
+            comment.setAuthor(commentData.displayName);
+            comment.setTimestamp(commentData.timestamp);
+            
+            // Add it to the scroll container
+            this.commentsScrollContainer.add(comment);
+          },
+          this);
+
         // Enable or disable the Like It! button, depending on whether they've
         // already Liked this app.
         // FIXME
         
         // Add the Download button
         // FIXME
+        break;
+
+      case "addComment":
+        // The result contains all of the information about this comment,
+        // including the display name of the comment author (the current
+        // visitor).
+        result = response.data.result;
+        
+        // Create a new comment object for this comment
+        comment = new aiagallery.module.dgallery.appinfo.Comment();
+        comment.setText(result.text);
+        comment.setAuthor(result.displayName);
+        comment.setTimestamp(result.timestamp);
+
+        // Add it to the scroll container
+        this.commentsScrollContainer.addAt(comment, 0);
+        
         break;
 
       default:

@@ -2737,7 +2737,15 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         {
           
           // Use function from Mixin MComments to retrieve comments
-          ret.comments = this.getComments(uid, null, null, error);
+          ret.comments = this.getComments(uid, 
+                                          [
+                                            {
+                                              type  : "sort",
+                                              field : "timestamp",
+                                              order : "desc"
+                                            }
+                                          ],
+                                          error);
         }
         
         // Send the app itself to the requestedFields function for stripping

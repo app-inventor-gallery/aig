@@ -694,7 +694,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
     // property transform function
     _transformCreationTime : function(value)
     {
-      return("Created&nbsp;&nbsp" +
+      return("Created: " +
              this.dateFormat.format(new Date(Number(value))));
     },
     
@@ -707,7 +707,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
     // property transform function
     _transformUploadTime : function(value)
     {
-      return("Last updated&nbsp;&nbsp" +
+      return("Last updated: " +
              this.dateFormat.format(new Date(Number(value))));
     },
 

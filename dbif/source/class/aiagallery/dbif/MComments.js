@@ -21,7 +21,7 @@ qx.Mixin.define("aiagallery.dbif.MComments",
 
     this.registerService("aiagallery.features.getComments",
                          this.getComments,
-                         [ "appId", "offset", "limit" ]);
+                         [ "appId", "resultCriteria" ]);
   },
 
   statics :
@@ -90,20 +90,15 @@ qx.Mixin.define("aiagallery.dbif.MComments",
         return error;
       }
 
-      // Regardless, we need to have parentNumChildren and parentTreeId filled
-      //   by the end of this if-else block. Where ever we got the numChildren
-      //   from also needs to be incremented and updated.
-      
-      // Need to get and increment the Parent App's numRootComments
-      // and numComments total
-      parentAppObj = new aiagallery.dbif.ObjAppData(appId);
-      
-      parentAppData = parentAppObj.getData();
-
       // Begin a transaction so all or no comments' changes are recorded
       return liberated.dbif.Entity.asTransaction(
         function()
         {
+          // Get and increment the Parent App's numRootComments and
+          // numComments total
+          parentAppObj = new aiagallery.dbif.ObjAppData(appId);
+          parentAppData = parentAppObj.getData();
+
           // Was the parent comment's treeId provided?
           if (typeof(parentTreeId) === "undefined" || parentTreeId === null)
           {
@@ -248,14 +243,9 @@ qx.Mixin.define("aiagallery.dbif.MComments",
      * @param appId {?}
      *   The appId whose comments should be returned
      * 
-     * @param offset {Integer}
-     *   An integer value >= 0 indicating the number of records to skip, in
-     *   the specified sort order, prior to the first one returned in the
-     *   result set.
-     *
-     * @param limit {Integer}
-     *   An integer value > 0 indicating the maximum number of records to return
-     *   in the result set.
+     * @param resultCriteria {Map}
+     *   A result criteria map, as documented at 
+     *   {@link liberated.dbif.Entity.query}
      * 
      * @param error {liberated.rpc.error.Error}
      *   All RPCs are passed, as their final argument, an error object. Most
@@ -269,26 +259,11 @@ qx.Mixin.define("aiagallery.dbif.MComments",
      *   An array containing all of the comments related to this app
      *   
      */
-    getComments : function(appId, offset, limit, error)
+    getComments : function(appId, resultCriteria, error)
     {
       var             commentList;
-      var             resultCriteria = [];
   
 
-      // If an offset is requested...
-      if (typeof(offset) !== "undefined" && offset !== null)
-      {
-        // ... then specify it in the result criteria.
-        resultCriteria.push({ "offset" : offset });
-      }
-      
-      // If a limit is requested...
-      if (typeof(limit) !== "undefined" && limit !== null)
-      {
-        // ... then specify it in the result criteria
-        resultCriteria.push({ "limit" : limit });
-      }
-      
       // Issue a query for all comments, with limit and offset settings applied
       commentList = liberated.dbif.Entity.query("aiagallery.dbif.ObjComments", 
                                                 {

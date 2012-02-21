@@ -164,6 +164,10 @@ qx.Class.define("aiagallery.Application",
       this.debug("Starting up at " +
                  aiagallery.Application.getDateFormat().format(new Date()));
 
+      // Apply patches
+// Unfortunately we still need historical rich labels, so can't do this.
+//      qx.bom.Label.setValue = aiagallery.LabelNoHtmlInjection.setValue;
+
       // Determine the path to our progress cursor
       qx.core.Init.getApplication().PROGRESS_CURSOR = "progress";
 
