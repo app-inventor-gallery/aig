@@ -240,7 +240,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
 // Superfluous 5th param?   ->  ->  ->  ->  ->  ->  vvvv
 //                         [true, null, null, null, true]);
 //                         [true, null, null, null]);    // to bStringize...
-                       [null, null, null, null]);    // or not to bStringize?
+                       [32, null, null, null]);    // image size
 // Two issues:
 // - Should 1st param, bStringize, be true (as in mystuff) or null (as in myapps)?
 // - Less importantly--specify a default sortCriteria?

@@ -21,11 +21,11 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
     this.registerService("aiagallery.features.getAppList",
                          this.getAppList,
-                         [ "bStringize", "sortCriteria", "offset", "limit" ]);
+                         [ "imageSize", "sortCriteria", "offset", "limit" ]);
 
     this.registerService("aiagallery.features.getAppListAll",
                          this.getAppListAll,
-                         [ "bStringize", "sortCriteria", "offset", "limit" ]);
+                         [ "imageSize", "sortCriteria", "offset", "limit" ]);
 
     this.registerService("aiagallery.features.getHomeRibbonData",
                          this.getHomeRibbonData); 
@@ -1749,10 +1749,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     /**
      * Get a portion of the application list.
      *
-     * @param bStringize {Boolean}
-     *   Whether the tags, previousAuthors, and status values should be
-     *   reformed into a string representation rather than being returned in
-     *   their native representation.
+     * @param imageSize {Number}
+     *   The size to scale images. This represents the scaled length of the
+     *   longest side.
      *
      * @param sortCriteria {Array}
      *   An array of maps. Each map contains a single key and value, with the
@@ -1776,7 +1775,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      *   Whether to return all applications (if permissions allow it) rather
      *   than only those applications owned by the logged-in user.
      */
-    _getAppList : function(bStringize, sortCriteria, offset, limit, bAll)
+    _getAppList : function(imageSize, sortCriteria, offset, limit, bAll)
     {
       var             categories;
       var             categoryNames;
@@ -1845,6 +1844,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       appList.forEach(
           function(app)
           {
+            var             url;
+
             // Get the owner's display name
             owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
                                                   app["owner"]);
@@ -1870,11 +1871,18 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               app["email"] = email || owners[0].email || "<>";
             }
 
-            // If we were asked to stringize the values...
-            if (bStringize)
+            // Do special App Engine processing to scale images
+            if (liberated.dbif.Entity.getCurrentDatabaseProvider() ==
+                "appengine")
             {
-              // ... then send each App to the Stringizer
-              aiagallery.dbif.MApps.__stringizeAppInfo(app);
+              // Scale images
+              // Is this image URL provided and is it real (not data:)?
+              url = app.image1;
+              if (url && url.substring(0, 4) == "http")
+              {
+                // Request App Engine to scale the longest side to as specified
+                app.image1 += "=s" + imageSize;
+              }
             }
           });
         
@@ -1909,10 +1917,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     /**
      * Get a the application list of the logged-in user.
      *
-     * @param bStringize {Boolean}
-     *   Whether the tags, previousAuthors, and status values should be
-     *   reformed into a string representation rather than being returned in
-     *   their native representation.
+     * @param imageSize {Number}
+     *   The size to scale images. This represents the scaled length of the
+     *   longest side.
      *
      * @param sortCriteria {Array}
      *   An array of maps. Each map contains a single key and value, with the
@@ -1932,18 +1939,17 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      *   An integer value > 0 indicating the maximum number of records to return
      *   in the result set.
      */
-    getAppList : function(bStringize, sortCriteria, offset, limit)
+    getAppList : function(imageSize, sortCriteria, offset, limit)
     {
-      return this._getAppList(bStringize, sortCriteria, offset, limit, false);
+      return this._getAppList(imageSize, sortCriteria, offset, limit, false);
     },
 
     /**
      * Get a the entire application list.
      *
-     * @param bStringize {Boolean}
-     *   Whether the tags, previousAuthors, and status values should be
-     *   reformed into a string representation rather than being returned in
-     *   their native representation.
+     * @param imageSize {Number}
+     *   The size to scale images. This represents the scaled length of the
+     *   longest side.
      *
      * @param sortCriteria {Array}
      *   An array of maps. Each map contains a single key and value, with the
@@ -1963,9 +1969,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      *   An integer value > 0 indicating the maximum number of records to return
      *   in the result set.
      */
-    getAppListAll : function(bStringize, sortCriteria, offset, limit)
+    getAppListAll : function(imageSize, sortCriteria, offset, limit)
     {
-      return this._getAppList(bStringize, sortCriteria, offset, limit, true);
+      return this._getAppList(imageSize, sortCriteria, offset, limit, true);
     },
 
     /**
@@ -2848,7 +2854,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               appData = appObj.getData();
               
               // Remove "*Featured*" from the tags list
-              qx.lang.Array.remove(appData.tags, "*Featured*");
+              while (qx.lang.Array.remove(appData.tags, "*Featured*"))
+                ;
               
               // Write the object back to the database
               appObj.put();
@@ -2873,6 +2880,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               // Retrieve its data map
               appData = appObj.getData();
               
+              // We retrieved pre-transaction data, so do this again here
+              while (qx.lang.Array.remove(appData.tags, "*Featured*"))
+                ;
+
               // Add a "*Featured*" tag to feature this app
               appData.tags.push("*Featured*");
               

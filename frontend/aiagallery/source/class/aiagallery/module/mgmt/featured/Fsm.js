@@ -125,7 +125,7 @@ qx.Class.define("aiagallery.module.mgmt.featured.Fsm",
             this.callRpc(fsm,
                          "aiagallery.features",
                          "getAppListAll",
-                         [ false ]);
+                         [ 100 ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
