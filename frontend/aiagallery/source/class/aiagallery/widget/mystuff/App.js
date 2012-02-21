@@ -20,7 +20,7 @@ qx.Class.define("aiagallery.widget.mystuff.App",
     // Don't pass label to superclass constructor. It's unused here.
     this.base(arguments);
     
-    // Turn of the separator between summary and detail
+    // Turn off the separator between summary and detail
     this.setShowSeparator(false);
     
     // Arrange to scroll into view when this panel is opened
