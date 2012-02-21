@@ -29,4 +29,9 @@
         <property name="value" direction="asc"/>
     </datastore-index>
 
+    <datastore-index kind="comments" ancestor="true" source="auto">
+        <property name="app" direction="asc"/>
+        <property name="timestamp" direction="desc"/>
+    </datastore-index>
+
 </datastore-indexes>
