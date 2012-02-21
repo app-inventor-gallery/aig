@@ -203,6 +203,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
           // Retrieve the UID of the current app, and the new comment
           appId = fsm.getObject("searchResult").getUid();
           comment = fsm.getObject("textNewComment").getValue();
+          
+          // Trim whitespace from head and tail of the comment
+          comment = qx.lang.String.trim(comment);
 
           // Issue the remote procedure call to execute the query
           request =

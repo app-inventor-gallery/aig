@@ -60,7 +60,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       canvas.add(this.searchResult, { row : 0, column : 0 });
       
       // Prepare a font for the labels
-      font = "bold";
+      font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+      font.setSize(18);
 
       // Lay out the comments section in a grid
       grid = new qx.ui.layout.Grid(10, 0);
@@ -91,6 +92,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       o.set(
         {
           font          : font,
+          marginTop     : 10,
           paddingBottom : 6
         });
       commentsGrid.add(o, { row : 2, column : 0, colSpan : 3 });
@@ -102,17 +104,12 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
           height    : 60,
           maxLength : 1000
         });
-      this.textNewComment.addListener(
-        "input",
-        function(e)
-        {
-          var             value;
-          
-          value = this.textNewComment.getValue();
-          this.butAddComment.setEnabled(!!(value && value.length > 0));
-          this.butCancelComment.setEnabled(!!(value && value.length > 0));
-        },
-        this);
+      this.textNewComment.addListener("input",
+                                      this._onInputOrChange,
+                                      this);
+      this.textNewComment.addListener("changeValue", 
+                                      this._onInputOrChange, 
+                                      this);
       fsm.addObject("textNewComment", this.textNewComment);
       commentsGrid.add(this.textNewComment,
                        { row : 3, column : 0, colSpan : 3 });
@@ -137,8 +134,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         "execute",
         function(e)
         {
-          this.textNewcomment.setValue("");
-        });
+          this.textNewComment.setValue("");
+        },
+        this);
       commentsGrid.add(this.butCancelComment, { row : 4, column : 2 });
       
       // Create the by-this-author area
@@ -203,6 +201,22 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       vbox.add(this.byAuthor, { flex : 1 });
     },
 
+
+    /**
+     * Event handler for input or changeValue events. Enables or disables the
+     * Add and Cancel buttons depending on whether text has been entered.
+     * 
+     * @param e {qx.event.type.Event}
+     *   Unused
+     */
+    _onInputOrChange : function(e)
+    {
+      var             value;
+
+      value = qx.lang.String.trim(this.textNewComment.getValue());
+      this.butAddComment.setEnabled(!!(value && value.length > 0));
+      this.butCancelComment.setEnabled(!!(value && value.length > 0));
+    },
 
     /**
      * Handle the response to a remote procedure call
@@ -299,6 +313,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         // Add it to the scroll container
         this.commentsScrollContainer.addAt(comment, 0);
         
+        // Clear the input field
+        this.textNewComment.setValue("");
         break;
 
       default:
