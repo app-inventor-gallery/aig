@@ -1,4 +1,4 @@
-<!-- Indices written at Tue, 21 Feb 2012 19:35:36 UTC -->
+<!-- Indices written at Tue, 21 Feb 2012 20:44:32 UTC -->
 
 <datastore-indexes>
 
@@ -14,16 +14,10 @@
         <property name="uploadTime" direction="desc"/>
     </datastore-index>
 
-    <!-- Used 2 times in query history -->
-    <datastore-index kind="apps" ancestor="true" source="auto">
-        <property name="owner" direction="asc"/>
-        <property name="uid" direction="asc"/>
-    </datastore-index>
-
     <!-- Used 1 time in query history -->
-    <datastore-index kind="comments" ancestor="true" source="auto">
-        <property name="app" direction="asc"/>
-        <property name="timestamp" direction="desc"/>
+    <datastore-index kind="tags" ancestor="true" source="auto">
+        <property name="type" direction="asc"/>
+        <property name="value" direction="asc"/>
     </datastore-index>
 
 </datastore-indexes>
