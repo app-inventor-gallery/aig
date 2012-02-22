@@ -204,6 +204,9 @@ qx.Class.define("aiagallery.widget.SearchResult",
     /** Fired by click on the "Flag It" label */
     "flagIt"  : "qx.event.type.Event",
     
+    /** Fired by click on the "Download" button */
+    "download" : "qx.event.type.Event",
+    
     /** Fired when the numLikes property is changed */
     "changeNumLikes" : "qx.event.type.Data",
     
@@ -713,7 +716,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
             textColor       : "white",
             textAlign       : "center",
             width           : 140,
-            height          : 36,
+            height          : 34,
             font            : font,
             cursor          : "pointer"
           });
