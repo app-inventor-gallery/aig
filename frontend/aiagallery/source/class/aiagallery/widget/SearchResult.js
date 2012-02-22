@@ -143,8 +143,9 @@ qx.Class.define("aiagallery.widget.SearchResult",
       this.gridConfig =
         {
           image1       : { row : 0, column : 0, rowSpan : 3, colSpan : 4 },
-          title        : { row : 0, column : 4, colSpan : 3 },
-          displayName  : { row : 1, column : 4, colSpan : 3 },
+          title        : { row : 0, column : 4, colSpan : 2 },
+          displayName  : { row : 1, column : 4, colSpan : 2 },
+          download     : { row : 0, column : 6, rowSpan : 2 },
           description  : { row : 2, column : 4, colSpan : 3 },
           numLikes     : { row : 3, column : 0, rowSpan : 2 },
           numDownloads : { row : 3, column : 1, rowSpan : 2 },
@@ -157,7 +158,8 @@ qx.Class.define("aiagallery.widget.SearchResult",
           flagIt       : { row : 4, column : 6 }
         };
       
-      // Only instantiate likeIt and flagIt controls when needed
+      // Only instantiate these controls when needed
+      this.getChildControl("download");
       this.getChildControl("likeIt");
       this.getChildControl("flagIt");
       break;
@@ -652,13 +654,11 @@ qx.Class.define("aiagallery.widget.SearchResult",
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.set(
           {
-//            color      : "#75940c",     // android-green-dark
             decoration : "underline"
           });
         control = new qx.ui.basic.Label(this.tr("Like It?"));
         control.set(
           {
-//            textColor : null,       // don't let it override font's color
             font      : font,
             cursor    : "pointer"
           });
@@ -679,13 +679,11 @@ qx.Class.define("aiagallery.widget.SearchResult",
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.set(
           {
-//            color      : "#75940c",     // android-green-dark
             decoration : "underline"
           });
         control = new qx.ui.basic.Label(this.tr("Flag as inappropriate?"));
         control.set(
           {
-//            textColor : null,       // don't let it override font's color
             font      : font,
             cursor    : "pointer"
           });
@@ -699,6 +697,36 @@ qx.Class.define("aiagallery.widget.SearchResult",
           },
           this);
         this._add(control, this.gridConfig.flagIt);
+        break;
+
+      case "download":
+        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+        font.set(
+          {
+            decoration : "underline"
+          });
+        control = new qx.ui.basic.Label(this.tr("Download Source"));
+        control.set(
+          {
+            backgroundColor : "#a5c43c",
+            decorator       : "download-button",
+            textColor       : "white",
+            textAlign       : "center",
+            width           : 140,
+            height          : 36,
+            font            : font,
+            cursor          : "pointer"
+          });
+        
+        // Fire a "download" event when this label is clicked
+        control.addListener(
+          "click",
+          function(e)
+          {
+            this.fireEvent("download");
+          },
+          this);
+        this._add(control, this.gridConfig.download);
         break;
 
       case "spacer":

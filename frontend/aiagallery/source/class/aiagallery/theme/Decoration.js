@@ -175,6 +175,23 @@ qx.Theme.define("aiagallery.theme.Decoration",
       }
     },
     
+    "download-button" :
+    {
+      decorator : [
+        qx.ui.decoration.MBorderRadius,
+        qx.ui.decoration.MLinearBackgroundGradient,
+        qx.ui.decoration.MSingleBorder
+      ],
+
+      style : {
+        width    : 6,
+        color    : "android-green",
+        radius   : 6,
+        gradientStart : ["android-green", 0],
+        gradientEnd : ["android-green", 100]
+      }
+    },
+    
     "app-comment" :
     {
       decorator : [
