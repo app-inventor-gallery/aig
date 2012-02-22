@@ -64,8 +64,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
           // to determine if it's necessary.
           "appear"    :
           {
-            "main.canvas" :
-              qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
+            "main.canvas" : "Transition_Idle_to_AwaitRpcResult_via_appear"
           },
 
           "likeIt"  : "Transition_Idle_to_AwaitRpcResult_via_likeIt",
