@@ -119,14 +119,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
         font.set(
           {
             color      : "#75940c",     // android-green-dark
-            decoration : "underline",
-            cursor    : "pointer"
+            decoration : "underline"
           });
         control = new qx.ui.basic.Label();
         control.set(
           {
             textColor : null,       // don't let it override font's color
-            font      : font
+            font      : font,
+            cursor    : "pointer"
           });
 
         // Visitor clicks initiate a search for apps of that owner
