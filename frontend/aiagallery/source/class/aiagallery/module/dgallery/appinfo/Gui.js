@@ -314,8 +314,28 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
             this.searchResult.addListener("likeIt", fsm.eventListener, fsm);
         }
         
-        // Add the Download button
-        // FIXME
+        // Arrange to download the source when the download button is clicked
+        this.searchResult.addListener(
+          "download",
+          function(e) 
+          {
+            if (source && source[0])
+            {
+              if (qx.core.Environment.get("qx.debug"))
+              {
+                alert("Would be downloading blob " + source[0]);
+              }
+              else
+              {
+                location.href = 'rpc?getblob=' + source[0];
+              }
+            }
+            else
+            {
+              alert("No source data found!");
+            }
+          },
+          null);
         break;
 
       case "addComment":
