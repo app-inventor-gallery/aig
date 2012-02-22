@@ -2746,7 +2746,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         ret.bAlreadyLiked = likesList.length > 0;
       }
 
-      // Find all apps other than the current one, by this same author
+      // Find all active apps other than the current one, by this same author
       criteria = 
         {
           type : "op",
@@ -2757,6 +2757,11 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               type: "element",
               field: "owner",
               value: ret.app.owner
+            },
+            {
+              type: "element",
+              field: "status",
+              value: aiagallery.dbif.Constants.Status.Active
             },
             {
               type: "element",
