@@ -242,7 +242,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       this.butTextSearch = new qx.ui.form.Button(this.tr("Search"));
       this.butTextSearch.set(
         {
-          maxHeight : 20
+          maxHeight : 26
         });
       hBox.add(this.butTextSearch);
       this.__fsm.addObject("butTextSearch", this.butTextSearch);
@@ -455,7 +455,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         new qx.ui.form.Button(this.tr("Add Criterion"));
       butAddCriterion.set(
         {
-          width : 100
+          width : 120
         });
       
       // When the button is hit, create a new refinement line
@@ -685,6 +685,10 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       
       // Create the Attribute Select Box
       attrSelect = new qx.ui.form.SelectBox();
+      attrSelect.set(
+        {
+          width : 140
+        });
       
       // Store some attributes in it, using the model for a switch in the FSM
       attrSelect.add(new qx.ui.form.ListItem(this.tr("All Text Fields"),
