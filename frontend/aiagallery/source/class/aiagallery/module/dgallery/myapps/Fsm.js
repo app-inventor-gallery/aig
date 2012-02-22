@@ -129,13 +129,12 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
         "ontransition" : function(fsm, event)
         {
           // Issue the remote procedure call to get the list of this visitor's
-          // applications. Request to convert lists into stringts, and
-          // retrieve only the logged-in user's own apps, not all apps.
+          // applications.
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
                          "getAppList",
-                         [ false, null, null, null ]);
+                         [ 100 ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
