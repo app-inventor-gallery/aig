@@ -1793,11 +1793,23 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // Create the criteria for a search of apps of the current user
       if (! bAll)
       {
-        criteria =
+        criteria = 
           {
-            type  : "element",
-            field : "owner",
-            value : whoami.id
+            type : "op",
+            method : "and",
+            children : 
+            [
+              {
+                type: "element",
+                field: "status",
+                value: aiagallery.dbif.Constants.Status.Active
+              },
+              {
+                type: "element",
+                field: "owner",
+                value: whoami.id
+              }
+            ]
           };
       }
       else
@@ -2012,6 +2024,22 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             owners;
       var             displayName;
 
+      // Limit results to only active apps
+      criteria = 
+        {
+          type : "op",
+          method : "and",
+          children : 
+          [
+            {
+              type: "element",
+              field: "status",
+              value: aiagallery.dbif.Constants.Status.Active
+            },
+            criteria
+          ]
+        };
+
       appList = 
         liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData", criteria);
 
@@ -2136,6 +2164,22 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         }
       }
       
+      // Limit results to only active apps
+      queryArgs["criteria"] = 
+        {
+          type : "op",
+          method : "and",
+          children : 
+          [
+            {
+              type: "element",
+              field: "status",
+              value: aiagallery.dbif.Constants.Status.Active
+            },
+            queryArgs["criteria"]
+          ]
+        };
+
       // Was there any criteria given to perform appQuery on?
       if (queryArgs["criteria"]["method"] === "and" &&
           queryArgs["criteria"]["children"].length === 0)
@@ -2147,8 +2191,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       {
         // Yes, use it to perform appQuery
         appQueryResults = this.appQuery(queryArgs["criteria"],
-                                      queryArgs["requestedFields"],
-                                      error);
+                                        queryArgs["requestedFields"],
+                                        error);
       
         // If there was a problem
         if (appQueryResults === error)
@@ -2187,9 +2231,11 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // If we got here, then both keyword search and app query ran so...
       
       // Perform intersection operation            
-      keywordSearchResultArr.forEach(function(keywordAppObj)
+      keywordSearchResultArr.forEach(
+        function(keywordAppObj)
         {
-          appQueryResultArr.forEach(function(appQueryAppObj)
+          appQueryResultArr.forEach(
+            function(appQueryAppObj)
             {
               if (keywordAppObj["uid"] === appQueryAppObj["uid"])
               {
@@ -2218,19 +2264,33 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     getHomeRibbonData : function(requestedFields)
     { 
       var             owners;
+      var             criteria;
       var             displayName;
       var             email;
       var             url;
       var             bAddedOwner = false;
 
       // Create and execute query for "Featured" apps.
-      var criterion = 
+      // Limit results to only active apps
+      criteria =
         {
-          type  : "element",
-          field : "tags",
-          value : "*Featured*"
+          type : "op",
+          method : "and",
+          children : 
+          [
+            {
+              type: "element",
+              field: "status",
+              value: aiagallery.dbif.Constants.Status.Active
+            },
+            {
+              type  : "element",
+              field : "tags",
+              value : "*Featured*"
+            }
+          ]
         };
-      
+
       // Ensure that at least our miniumum set of fields is requested
       if (! requestedFields)
       {
@@ -2244,7 +2304,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       }
 
       var searchResponseFeatured = 
-        liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData", criterion);
+        liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData", criteria);
 
       // Manipulate each App individually, before returning
       searchResponseFeatured.forEach(
@@ -2300,7 +2360,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         });
 
       //Create and execute query for "Most Liked" apps. 
-      criterion = 
+      criteria = 
         {
           type  : "element",
           field : "status",
@@ -2323,7 +2383,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
       var searchResponseLiked = 
         liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
-                                    criterion,
+                                    criteria,
                                     requestedData);
 
       // Manipulate each App individually, before returning
@@ -2366,7 +2426,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         });
 
       //Create and execute query for "Newest" apps.
-      criterion = 
+      criteria = 
         {
           type  : "element",
           field : "status",
@@ -2388,7 +2448,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
       var searchResponseNewest = 
         liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
-                                    criterion,
+                                    criteria,
                                     requestedData);
 
       // Manipulate each App individually, before returning
