@@ -1098,11 +1098,14 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             requestData;
       var             messageData;
       var             messageBus;
+      var             owners;
+      var             displayName;
+      var             email;
 
 // Following needs tweaking
       var             allowableFields =
         [
-//          "uid",                // ??
+//          "uid",                // Can't imagine changing this??
           "title",
           "description",
           "image1",
@@ -1113,7 +1116,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         ];
       var             requiredFields =
         [
-//          "owner",              // ??
+          "owner",
           "title",
           "description",
           "image1",
@@ -1585,6 +1588,28 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         fTask(appData.uid);
       }
       
+      // App management needs email and display name; add them.
+// Should emails be provided (and displayed)?  Security issue?
+
+      // Get the owner's display name
+      owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
+                                                  appData.owner);
+
+      // FIXME: should never occur (but does)
+      if (true)
+      {
+        displayName = null;
+        if (owners.length == 0)
+        {
+          email = "nobody@nowhere.org";
+          displayName = "<>";
+        }
+      }
+
+      // Add display name and email
+      appData.displayName = displayName || owners[0].displayName || "<>";
+      appData.email = email || owners[0].email || "<>";
+
       return appData;
     },
     

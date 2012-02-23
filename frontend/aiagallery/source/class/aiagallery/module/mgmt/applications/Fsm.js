@@ -231,18 +231,13 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
         "ontransition" : function(fsm, event)
         {
           // Issue the remote procedure call to get the application list.
-          // Request that the permissions and status be converted to strings
-          // for us.
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
                          "getAppListAll",
-// Superfluous 5th param?   ->  ->  ->  ->  ->  ->  vvvv
-//                         [true, null, null, null, true]);
-//                         [true, null, null, null]);    // to bStringize...
-                       [32, null, null, null]);    // image size
+                         [32, null, null, null]);    // image size
 // Two issues:
-// - Should 1st param, bStringize, be true (as in mystuff) or null (as in myapps)?
+// - No longer stringizing, so will need to tweak display of affected fields.
 // - Less importantly--specify a default sortCriteria?
 
           // When we get the result, we'll need to know what type of request
@@ -409,7 +404,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
               image1      : image1
             };
  
-          // Issue an Add Or Edit Application call.
+          // Issue an Edit Application call.
           request = this.callRpc(fsm,
                      "aiagallery.features",
                      "mgmtEditApp",
@@ -578,8 +573,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
 
           // Save the data so that the cell editor's getCellEditorValue()
           // method can retrieve it.
-// ??
-          cellEditor.setUserData("newData", rowData);
+          cellEditor.setUserData("newData", result);
 
           // close the cell editor
           cellEditor.close();
