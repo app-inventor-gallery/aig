@@ -225,6 +225,40 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
             // Use this cell renderer for the specified column
             tcm.setDataCellRenderer(col, o);
           }
+
+          // If this is the status column, replace values with names
+          // (Will have to deal with reverse mapping too?)
+          if (elem.id == "status")
+          {
+            var o = new qx.ui.table.cellrenderer.Replace();
+            o.setReplaceFunction(
+              function(value)
+              {
+                // Can it be null?  Better be safe here.
+                if (value === null)
+                {
+                  return "";
+                }
+                return aiagallery.dbif.Constants.StatusToName[value];
+              }
+            );
+            tcm.setDataCellRenderer(col, o);
+          }
+
+
+          // If this is the tags column, replace arrays with strings separated by ', '
+          // (Will have to deal with reverse mapping too?)
+          if (elem.id == "tags")
+          {
+            var o = new qx.ui.table.cellrenderer.Replace();
+            o.setReplaceFunction(
+              function(value)
+              {
+                return value.join(", ");
+              }
+            );
+            tcm.setDataCellRenderer(col, o);
+          }
         },
         this);
 
