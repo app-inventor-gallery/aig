@@ -35,6 +35,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       var             searchResults;
       var             font;
       var             _this;
+      var             criteria;
 
       // Save the finite state machine reference
       this.__fsm = module.fsm;
@@ -46,8 +47,12 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       vBox = new qx.ui.container.Composite(new qx.ui.layout.VBox(0));
       canvas.add(vBox, { edge : 10 });
       
+      criteria = new aiagallery.module.dgallery.findapps.Criteria();
+      vBox.add(criteria);
+
       // The search area is a tabview, for selecting the type of search
       tabView = new aiagallery.widget.radioview.RadioView();
+tabView.setVisibility("excluded");
       tabView.addListener(
         "changeSelection",
         function(e)
