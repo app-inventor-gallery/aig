@@ -92,8 +92,13 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       });
     this.add(grid);
     
-    // Add the Search and Clear buttons
+    // Add the Search button
     this.__butSearch = new qx.ui.form.Button(this.tr("Search"));
+    
+    // Fire a data event with the current query when search button is pressed
+    this.__butSearch.addListener("execute", this._fireQueryChangedEvent, this);
+    
+    // Add the Clear button
     this.__butClear = new qx.ui.form.Button(this.tr("Clear"));
     
     // Arrange for the clear button to clear all fields
@@ -168,7 +173,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             this)
         }
       });
-
     this.add(this.__searchResults, { flex : 1 });
 
     // Instantiate child controls
@@ -200,74 +204,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
   
   events :
   {
-    "viewApp" : "qx.event.Type.Data"
-  },
-
-  properties :
-  {
-    textInTitle :
-    {
-      check    : "String",
-      init     : null,
-      nullable : true,
-      apply    : "_applyTextInTitle"
-    },
+    /** A click on an app in the Search Results list */
+    "viewApp" : "qx.event.type.Data",
     
-    textInDescription :
-    {
-      check    : "String",
-      init     : null,
-      nullable : true,
-      apply    : "_applyTextInDescription"
-    },
-
-    textInTags :
-    {
-      check    : "String",
-      init     : null,
-      nullable : true,
-      apply    : "_applyTextInTags"
-    },
-    
-    categories :
-    {
-      check    : "Array",
-      init     : null,
-      nullable : true,
-      apply    : "_applyCategories"
-    },
-    
-    likesOperator :
-    {
-      check    : "String",
-      init     : null,
-      nullable : true,
-      apply    : "_applyLikesOperator"
-    },
-    
-    likesCount :
-    {
-      check    : "Number",
-      init     : null,
-      nullable : true,
-      apply    : "_applyLikesCount"
-    },
-    
-    downloadsOperator :
-    {
-      check    : "String",
-      init     : null,
-      nullable : true,
-      apply    : "_applyDownloadsOperator"
-    },
-    
-    downloadsCount :
-    {
-      check    : "Number",
-      init     : null,
-      nullable : true,
-      apply    : "_applyDownloadsCount"
-    }
+    /** A new search is requested */
+    "queryChanged" : "qx.event.type.Data"
   },
 
   members :
@@ -292,6 +233,206 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             new qx.ui.form.ListItem(tag));
         },
         this);
+    },
+
+    /**
+     * Get a map that corresponds to the current search
+     */
+    _fireQueryChangedEvent : function(e)
+    {
+      var             getValue;
+      var             fields;
+      var             field;
+      var             fieldData = {};
+      var             data = {};
+      var             json;
+      
+      // Functions to clear each of the types of controls
+      getValue =
+        {
+          "textField" : function(o)
+          {
+            var ret = o.getValue();
+            return ret === null || ret.length == 0 ? null : ret;
+          },
+          
+          "list" : function(o)
+          {
+            var sel = o.getSelection();
+            var ret = sel.length == 0 ? null : sel[0].getLabel();
+            return ret === null || ret.length == 0 ? null : ret;
+          },
+          
+          "listMulti" : function(o)
+          {
+            var ret = o.getSelection().map(
+              function(item)
+              {
+                return item.getLabel();
+              });
+            return ret.length == 0 ? null : ret;
+          },
+          
+          "spinner" : function(o)
+          {
+            return o.getValue();
+          }
+        };
+
+      // Fields to be retrieved, mapped to the function to retrieve them
+      fields =
+        {
+          txtTextSearch  : getValue.textField,
+          txtTitle       : getValue.textField,
+          txtDescription : getValue.textField,
+          txtTags        : getValue.textField,
+          txtAuthorId    : getValue.textField,
+
+          lstLikesOp     : getValue.list,
+          spnLikes       : getValue.spinner,
+          lstDownloadsOp : getValue.list,
+          spnDownloads   : getValue.spinner,
+          lstViewsOp     : getValue.list,
+          spnViews       : getValue.spinner,
+
+          lstCategories  : getValue.listMulti
+        };      
+      
+      // Now do it! For each field...
+      for (field in fields)
+      {
+        // ... call its getValue function with the appropriate control
+        fieldData[field] = fields[field](this.getChildControl(field));
+      }
+      
+      // Exclude fields that had null return values, and map to the format we
+      // want to return data in.
+      qx.lang.Object.getKeys(fieldData).forEach(
+        function(field)
+        {
+          // Is this field null?
+          if (fieldData[field] !== null)
+          {
+            switch(field)
+            {
+            case "txtTextSearch" :
+              // Retrieve the data, convert it to lower case, and remove
+              // embedded extra spaces.
+              data.text =
+                qx.lang.String.trim(fieldData.txtTextSearch.toLowerCase());
+              
+              // Split into an array of words
+              data.text = data.text.split(" ");
+              
+              // Remove non-unique elements, and then sort
+              data.text = qx.lang.Array.unique(data.text).sort();
+              break;
+
+            case "txtTitle" :
+              // Retrieve the data, convert it to lower case, remove embedded
+              // extra spaces, and then split at spaces.
+              data.title =
+                qx.lang.String.trim(fieldData.txtTitle.toLowerCase());
+              
+              // Split into an array of words
+              data.title = data.title.split(" ");
+              
+              // Remove non-unique elements, and then sort
+              data.title = qx.lang.Array.unique(data.title).sort();
+              break;
+
+            case "txtDescription" :
+              // Retrieve the data, convert it to lower case, remove embedded
+              // extra spaces, and then split at spaces.
+              data.description =
+                qx.lang.String.trim(fieldData.txtDescription.toLowerCase());
+              
+              // Split into an array of words
+              data.description = data.description.split(" ");
+              
+              // Remove non-unique elements, and then sort
+              data.description = qx.lang.Array.unique(data.description).sort();
+              break;
+              
+            case "txtTags" :
+              // Retrieve the data, convert it to lower case, remove embedded
+              // extra spaces, and then split at spaces.
+              data.tags =
+                qx.lang.String.trim(fieldData.txtTags.toLowerCase());
+              
+              
+              // Split into an array of words
+              data.tags = data.tags.split(" ");
+
+              // Append any selected categories, convert them to lower case
+              if (fieldData.lstCategories !== null)
+              {
+                fieldData.lstCategories.forEach(
+                  function(category)
+                  {
+                    data.tags.push(category.toLowerCase());
+                  });
+              }
+              
+              // Remove non-unique elements, and then sort
+              data.tags = qx.lang.Array.unique(data.tags).sort();
+              break;
+              
+            case "txtAuthorId" :
+              // Retrieve the data, convert it to lower case, remove embedded
+              // extra spaces, and then split at spaces.
+              data.authorId =
+                qx.lang.String.trim(fieldData.txtAuthorId.toLowerCase());
+              
+              // Split into an array of words
+              data.authorId = data.authorId.split(" ");
+              break;
+              
+            case "lstLikesOp" :
+              data.likes = 
+                [
+                  fieldData.lstLikesOp,
+                  fieldData.spnLikes 
+                ];
+              break;
+              
+            case "lstDownloadsOp" :
+              data.downloads =
+                [
+                  fieldData.lstDownloadsOp, 
+                  fieldData.spnDownloads 
+                ];
+              break;
+              
+            case "lstViewsOp" :
+              data.views =
+                [
+                  fieldData.lstViewsOp, 
+                  fieldData.spnViews 
+                ];
+              break;
+            }
+          }
+        });
+
+      // Convert the return data to JSON
+      json = qx.lang.Json.stringify(data);
+
+      // Is there anything here to query with?
+      if (json == "{}")
+      {
+        // Nope. Show an alert and do not fire the event
+        dialog.Dialog.alert("No search criteria have been provided.");
+      }
+      else
+      {
+this.debug("json=" + json);
+        this.fireDataEvent("queryChanged", 
+                           {
+                             data : data,
+                             json : json
+                           });
+      }
     },
 
     /**
@@ -362,7 +503,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control.set(
           {
             width       : 500,
-            placeholder : "Please enter search words"
+            placeholder : "Please enter search words",
+            tabIndex    : 1
           });
         this.__containerTextSearch._add(control, { row : 1, column : 1 });
         break;
@@ -382,7 +524,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control.set(
           {
             width       : 200,
-            placeholder : "Words in apps' title"
+            placeholder : "Words in apps' title",
+            tabIndex    : 2
           });
 
         control.addListener(
@@ -412,7 +555,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control.set(
           {
             width       : 200,
-            placeholder : "Words in apps' description"
+            placeholder : "Words in apps' description",
+            tabIndex    : 3
           });
 
         control.addListener(
@@ -442,7 +586,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control.set(
           {
             width : 200,
-            placeholder : "Words in apps' tags"
+            placeholder : "Words in apps' tags",
+            tabIndex    : 4
           });
 
         control.addListener(
@@ -457,12 +602,23 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         this.__containerAdvanced._add(control, this.__advConfig.txtTags);
         break;
         
+      case "imgAuthorId" :
+        control =
+          new qx.ui.basic.Image("qx/icon/Tango/16/actions/dialog-apply.png");
+        control.set(
+          {
+            visibility : "hidden"
+          });
+        this.__containerAdvanced._add(control, this.__advConfig.imgAuthorId);
+        break;
+
       case "txtAuthorId" :
         control = new qx.ui.form.TextField();
         control.set(
           {
             width       : 100,
-            placeholder : "Author's unique ID"
+            placeholder : "Author's unique ID",
+            tabIndex    : 5
           });
         control.addListener(
           "input",
@@ -519,7 +675,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
 
         control.set(
           {
-            width : 46
+            width    : 46,
+            tabIndex : 6
           });
         
         control.addListener(
@@ -540,8 +697,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control = new qx.ui.form.Spinner();
         control.set(
           {
-            width   : 100,
-            maximum : 1000000
+            width    : 100,
+            maximum  : 1000000,
+            tabIndex : 7
           });
         this.__containerAdvanced._add(control, this.__advConfig.spnLikes);
         break;
@@ -573,7 +731,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
 
         control.set(
           {
-            width : 46
+            width    : 46,
+            tabIndex : 8
           });
         
         control.addListener(
@@ -594,8 +753,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control = new qx.ui.form.Spinner();
         control.set(
           {
-            width   : 100,
-            maximum : 1000000
+            width    : 100,
+            maximum  : 1000000,
+            tabIndex : 9
           });
         this.__containerAdvanced._add(control, this.__advConfig.spnDownloads);
         break;
@@ -627,7 +787,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
 
         control.set(
           {
-            width : 46
+            width    : 46,
+            tabIndex : 10
           });
         
         control.addListener(
@@ -648,20 +809,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control = new qx.ui.form.Spinner();
         control.set(
           {
-            width   : 100,
-            maximum : 1000000
+            width    : 100,
+            maximum  : 1000000,
+            tabIndex : 11
           });
         this.__containerAdvanced._add(control, this.__advConfig.spnViews);
-        break;
-
-      case "imgAuthorId" :
-        control =
-          new qx.ui.basic.Image("qx/icon/Tango/16/actions/dialog-apply.png");
-        control.set(
-          {
-            visibility : "hidden"
-          });
-        this.__containerAdvanced._add(control, this.__advConfig.imgAuthorId);
         break;
 
       case "imgCategories" :
@@ -679,7 +831,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control.set(
           {
             height        : 80,
-            selectionMode : "multi"
+            selectionMode : "multi",
+            tabIndex      : 12
           });
 
         control.addListener(
@@ -819,7 +972,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       container.add(new qx.ui.core.Spacer(10, 10), { row : 0, column : 10 });
 
       // Add the header
-      o = new qx.ui.basic.Label(this.tr("Find all apps in which all of:"));
+      o = new qx.ui.basic.Label(this.tr("Find apps in which all of:"));
       o.set(
         {
           font : font
