@@ -82,12 +82,43 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
   
   members :
   {
+	
+		/**
+		 * Helper function for populating the search database.
+		 *
+		 *
+		 * Populating the database consists of:
+		 *   Taking each element of keywordStringArray and
+		 *     if the string contains anything useful, parse it into 
+		 *     else trash it 
+		 * NOTE: Should stop words be considered on add instead of search?
+		 **/
+		
+		/* This work is being done in MApps._populateSearch(), WRONGLY.
+		   The code in MApps._populateSearch() should be refactored to below.
+		   As in, MApps._populateSearch() should just call this function.
+		 
+		 
+		addSearchData : function(keywordStringArray)
+		{
+			
+			// Use this regex to match a search acceptable word.
+			// Example acceptable: 'This's', 'alPhA.123', '1234'
+			//       unacceptable: '1', 'a'
+			var acceptableWord = /\A[a-z0-9'\.]\Z/gi
+		
+			// Take each element of keywordStringArray as candidate
+			   // Fill 
+		
+		
+		},
+		*/
+		
     /**
      * Returns an array of App Info objects, which contain a word or words from
      * the keyword string. 
      * 
-     * NOTE: There is no ordering of the returned Apps. This is simply a 
-     * keyword query.
+     * NOTE: The order of the returned apps is described under @return, below.
      * 
      * @param keywordString {String}
      * A space delimited string of words to query on. A returned App will
@@ -110,6 +141,8 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
      * all words from the keyword string if there are any. Following that are
      * all the results which contain one or many but not all of the words. There
      * are no more restrictions on order.
+     *
+		 * FIXME: queryFields needs implementation!
      */
     keywordSearch : function(keywordString, queryFields, requestedFields, error)
     {
@@ -133,8 +166,8 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
         return error;
       }
 
-      // Make sure all keyword searches are doing lowercase. ObjSearch stores
-      // all entries in lowercase
+      // Necessary: Make sure all keyword search queries are in lowercase,
+			//            becase ObjSearch stores all entries in lowercase
       keywordString = keywordString.toLowerCase();
            
       // The keyword string is space delimited, let's tokenize
@@ -144,7 +177,7 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
       keywordArr = qx.lang.Array.exclude(keywordArr,
                                          aiagallery.dbif.MSearch.stopWordArr);
       
-      // Doing individual word queries
+      // FIXME: Doing individual word queries (AAAH!!)
       keywordArr.forEach(function(keyword)
         {
       
@@ -155,22 +188,24 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
               value : keyword
             };
           
-          queryResult = liberated.dbif.Entity.query("aiagallery.dbif.ObjSearch",
-                                                    criteria,
-                                                    null);
+          queryResult = liberated.dbif.Entity.
+													query("aiagallery.dbif.ObjSearch",
+                                criteria,
+                                null);
           
           // Collect all the single word queries in a map
-          queryResult.forEach(function(obj)
-                              {
-                                if (typeof queryResultsMap[obj.appId] ===
-                                    "undefined")
-                                {
-                                  // First we create an array
-                                  queryResultsMap[obj.appId] = [];
-                                }
-                                // Push this keyword into the array
-                                queryResultsMap[obj.appId].push(keyword);
-                              });
+          queryResult.forEach(
+						function(obj)
+            {
+							if (typeof queryResultsMap[obj.appId] === "undefined")
+              {
+                  // We must make sure there is an array for this appId
+                  queryResultsMap[obj.appId] = [];
+              }
+                                
+							// Push this keyword into the array
+              queryResultsMap[obj.appId].push(keyword);
+            });
         });
       
       // All Apps which contained all keywords in the string should come first

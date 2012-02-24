@@ -140,6 +140,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      *  The result of getData() on the app object. Contains all the info in the
      *  database recorded for this App
      *
+     * FIXME: This functionality should be handled by MSearch.addSearchData()!!
+     *
      * ASSUMPTION: There is already a transaction in progress!
      */
     _populateSearch : function(dataObj)
@@ -148,7 +150,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var wordsToAdd;
       var searchObj;
       var appId = dataObj["uid"];
-
+      
+      
+      // This matches all strings of numbers or letters, case insensitive,
+      // of length greater than 2.
+      // This filter should be improved and maintained.
+      var acceptable_word = /[0-9a-z]{2,}/gi;
+      
       for (appDataField in dataObj)
       {
         // Go through each field in the App Data Object
@@ -158,7 +166,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         case "title":
         case "description":
           // Split up the words and...
-          wordsToAdd = dataObj[appDataField].split(" ");
+          wordsToAdd = dataObj[appDataField].match(acceptable_word);
           wordsToAdd.forEach(function(word)
               {
                 // Make sure to only add lower case words to the search
@@ -551,6 +559,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             error.setMessage("Not owner");
             return error;
           }
+
+	  // Delete all data in the search db, we only want the newest stuff
+          aiagallery.dbif.MApps._removeAppFromSearch(uid);	  
+
         }
         else
         {
@@ -2541,7 +2553,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                           uid)[0]);
           });
       
-      // Manipulate each App individually
+      // FIXME: Manipulate each App individually (AAAAAH!!!!)
       appList.forEach(
         function(app)
         {
