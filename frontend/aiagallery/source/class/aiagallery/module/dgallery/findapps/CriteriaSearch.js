@@ -23,7 +23,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     this.setLayout(new qx.ui.layout.VBox(4));
 
     // Create the tabview for selecting the types of search
-    this.__radioView = new aiagallery.widget.radioview.RadioView();
+    this.__radioView = 
+      new aiagallery.widget.radioview.RadioView(this.tr("Search in: "));
     this.add(this.__radioView);
 
     // Use a single row for subtabs
@@ -36,17 +37,13 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     [
       {
         field  : "__containerTextSearch",
-        label  : this.tr("Text search"),
+        label  : this.tr("All text fields"),
         custom : this._textSearchStaticContent
       },
       {
-        field  : "__containerBrowseCategories",
-        label  : this.tr("Browse Categories"),
-        custom : this._browseCategoriesStaticContent
-      },
-      {
         field  : "__containerAdvanced",
-        label  : this.tr("Advanced")
+        label  : this.tr("Specific fields"),
+        custom : this._advancedSearchStaticContent
       }
     ].forEach(
       function(pageInfo)
@@ -166,12 +163,29 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
 
     this.add(this.__searchResults, { flex : 1 });
 
-
     // Instantiate child controls
     this.getChildControl("txtTextSearch");
-    this.getChildControl("browse0");
-    this.getChildControl("browse1");
-    this.getChildControl("browse2");
+    this.getChildControl("imgTitle");
+    this.getChildControl("txtTitle");
+    this.getChildControl("imgDescription");
+    this.getChildControl("txtDescription");
+    this.getChildControl("imgTags");
+    this.getChildControl("txtTags");
+    this.getChildControl("imgAuthorName");
+    this.getChildControl("txtAuthorName");
+    this.getChildControl("imgCategories");
+    this.getChildControl("lstCategories");
+    this.getChildControl("imgLikes");
+    this.getChildControl("lstLikesOp");
+    this.getChildControl("spnLikes");
+    this.getChildControl("imgDownloads");
+    this.getChildControl("lstDownloadsOp");
+    this.getChildControl("spnDownloads");
+    this.getChildControl("imgViews");
+    this.getChildControl("lstViewsOp");
+    this.getChildControl("spnViews");
+    this.getChildControl("imgAuthorId");
+    this.getChildControl("txtAuthorId");
   },
   
   events :
@@ -249,19 +263,25 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
   members :
   {
     /**
+     * Retrieve the search results list object
+     */
+    getSearchResultsList : function()
+    {
+      return this.__searchResults;
+    },
+
+    /**
      * Add the list of categories to the first browse list
      */
     setCategoryList : function(categories)
     {
-      var             browse0 = this.getChildControl("browse0");
-      
-      // Add each of the categories to the first browse list
       categories.forEach(
         function(tag)
         {
-          // Add this tag to the list.
-          browse0.add(new qx.ui.form.ListItem(tag));
-        });
+          this.getChildControl("lstCategories").add(
+            new qx.ui.form.ListItem(tag));
+        },
+        this);
     },
 
     _createChildControlImpl : function(id, hash)
@@ -275,27 +295,213 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control = new qx.ui.form.TextField();
         control.set(
           {
-            width : 500
+            width       : 500,
+            placeholder : "Please enter search words"
           });
         this.__containerTextSearch._add(control, { row : 1, column : 1 });
         break;
 
-      case "browse0" :
-      case "browse1":
-      case "browse2":
+      case "imgTitle" :
+        control = new qx.ui.basic.Image();
+        this.__containerAdvanced._add(control, this.__advConfig.imgTitle);
+        break;
+
+      case "txtTitle" :
+        control = new qx.ui.form.TextField();
+        control.set(
+          {
+            width       : 200,
+            placeholder : "Words in title"
+          });
+        this.__containerAdvanced._add(control, this.__advConfig.txtTitle);
+        break;
+        
+      case "imgDescription" :
+        control = new qx.ui.basic.Image();
+        this.__containerAdvanced._add(control, this.__advConfig.imgDescription);
+        break;
+
+      case "txtDescription" :
+        control = new qx.ui.form.TextField();
+        control.set(
+          {
+            width       : 200,
+            placeholder : "Words in description"
+          });
+        this.__containerAdvanced._add(control, this.__advConfig.txtDescription);
+        break;
+        
+      case "imgTags" :
+        control = new qx.ui.basic.Image();
+        this.__containerAdvanced._add(control, this.__advConfig.imgTags);
+        break;
+
+      case "txtTags" :
+        control = new qx.ui.form.TextField();
+        control.set(
+          {
+            width : 200,
+            placeholder : "Words in apps' tags"
+          });
+        this.__containerAdvanced._add(control, this.__advConfig.txtTags);
+        break;
+        
+      case "imgAuthorName" :
+        control = new qx.ui.basic.Image();
+        this.__containerAdvanced._add(control, this.__advConfig.imgAuthorName);
+        break;
+
+      case "txtAuthorName" :
+        control = new qx.ui.form.TextField();
+        control.set(
+          {
+            width       : 200,
+            placeholder : "Author's display name"
+          });
+        this.__containerAdvanced._add(control, this.__advConfig.txtAuthorName);
+        break;
+        
+      case "imgCategories" :
+        control = new qx.ui.basic.Image();
+        this.__containerAdvanced._add(control, this.__advConfig.imgCategories);
+        break;
+
+      case "lstCategories" :
         control = new qx.ui.form.List();
         control.set(
-        {
-          width  : 130,
-          height : 124
-        });
+          {
+            height : 80
+          });
+        this.__containerAdvanced._add(control, this.__advConfig.lstCategories);
+        break;
         
-        // Determine which list this is, so we know the column to place it in
-        column = 1 + Number(id.charAt(6));
+      case "imgLikes" :
+        control = new qx.ui.basic.Image();
+        this.__containerAdvanced._add(control, this.__advConfig.imgLikes);
+        break;
 
-        // Add the list
-        this.__containerBrowseCategories._add(control,
-                                              { row : 1, column : column });
+      case "lstLikesOp" :
+        control = new qx.ui.form.SelectBox();
+        [
+          "",
+          "<",
+          "<=",
+          "=",
+          ">",
+          ">="
+        ].forEach(
+          function(choice)
+          {
+            control.add(new qx.ui.form.ListItem(choice));
+          });
+
+        control.set(
+          {
+            width : 46
+          });
+        
+        this.__containerAdvanced._add(control, this.__advConfig.lstLikesOp);
+        break;
+        
+      case "spnLikes" :
+        control = new qx.ui.form.Spinner();
+        control.set(
+          {
+            width   : 100,
+            maximum : 1000000
+          });
+        this.__containerAdvanced._add(control, this.__advConfig.spnLikes);
+        break;
+        
+      case "imgDownloads" :
+        control = new qx.ui.basic.Image();
+        this.__containerAdvanced._add(control, this.__advConfig.imgDownloads);
+        break;
+
+      case "lstDownloadsOp" :
+        control = new qx.ui.form.SelectBox();
+        [
+          "",
+          "<",
+          "<=",
+          "=",
+          ">",
+          ">="
+        ].forEach(
+          function(choice)
+          {
+            control.add(new qx.ui.form.ListItem(choice));
+          });
+
+        control.set(
+          {
+            width : 46
+          });
+        
+        this.__containerAdvanced._add(control, this.__advConfig.lstDownloadsOp);
+        break;
+        
+      case "spnDownloads" :
+        control = new qx.ui.form.Spinner();
+        control.set(
+          {
+            width   : 100,
+            maximum : 1000000
+          });
+        this.__containerAdvanced._add(control, this.__advConfig.spnDownloads);
+        break;
+        
+      case "imgViews" :
+        control = new qx.ui.basic.Image();
+        this.__containerAdvanced._add(control, this.__advConfig.imgViews);
+        break;
+
+      case "lstViewsOp" :
+        control = new qx.ui.form.SelectBox();
+        [
+          "",
+          "<",
+          "<=",
+          "=",
+          ">",
+          ">="
+        ].forEach(
+          function(choice)
+          {
+            control.add(new qx.ui.form.ListItem(choice));
+          });
+
+        control.set(
+          {
+            width : 46
+          });
+        
+        this.__containerAdvanced._add(control, this.__advConfig.lstViewsOp);
+        break;
+        
+      case "spnViews" :
+        control = new qx.ui.form.Spinner();
+        control.set(
+          {
+            width   : 100,
+            maximum : 1000000
+          });
+        this.__containerAdvanced._add(control, this.__advConfig.spnViews);
+        break;
+
+      case "imgAuthorId" :
+        control = new qx.ui.basic.Image();
+        this.__containerAdvanced._add(control, this.__advConfig.imgAuthorId);
+        break;
+
+      case "txtAuthorId" :
+        control = new qx.ui.form.TextField();
+        control.set(
+          {
+            width       : 100,
+            placeholder : "Author's unique ID"
+          });
+        this.__containerAdvanced._add(control, this.__advConfig.txtAuthorId);
         break;
       }
       
@@ -304,6 +510,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     
     /**
      * Create the static content in the Text Search page.
+     * 
+     * @param container {qx.ui.core.Widget}
+     *   The container in which the content should be placed. The container's
+     *   layout is a {@link qx.ui.layout.Grid} but it is this method's
+     *   responsibility to specify the grid parameters as required.
      */
     _textSearchStaticContent : function(container)
     {
@@ -338,37 +549,135 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     },
     
     /**
-     * Create the static content in the Text Search page.
+     * Create the static content in the Advanced Search page
+     * 
+     * @param container {qx.ui.core.Widget}
+     *   The container in which the content should be placed. The container's
+     *   layout is a {@link qx.ui.layout.Grid} but it is this method's
+     *   responsibility to specify the grid parameters as required.
      */
-    _browseCategoriesStaticContent : function(container)
+    _advancedSearchStaticContent : function(container)
     {
-      var             layout;
+      var             o;
       var             font;
-      var             text;
-      var             label;
+      var             layout;
 
-      // Center fields in column 1, 2, 3
+      // Configure the layout
       layout = container.getLayout();
-      layout.setRowAlign(0, "center", "middle");
-      layout.setColumnAlign(1, "center", "middle");
-      layout.setColumnAlign(2, "center", "middle");
-      layout.setColumnAlign(3, "center", "middle");
+      layout.setSpacingX(20);
+      
+      // Center the form
       layout.setColumnFlex(0, 1);
-      layout.setColumnFlex(4, 1);
+      layout.setColumnFlex(10, 1);
+      
+      // Right-align the label columns
+      layout.setColumnAlign(2, "right", "middle");
+      layout.setColumnAlign(7, "right", "middle");
+      
+      // Generally left align everything else
+      layout.setRowAlign(0, "left", "middle");
+      layout.setRowAlign(1, "left", "middle");
+      layout.setRowAlign(2, "left", "middle");
+      layout.setRowAlign(3, "left", "middle");
+      layout.setRowAlign(4, "left", "middle");
 
+      // Build the grid configuration
+      this.__advConfig =
+        {
+          header         : { row : 0, column : 1, colSpan : 5 },
+          imgTitle       : { row : 1, column : 1 },
+          lblTitle       : { row : 1, column : 2 },
+          txtTitle       : { row : 1, column : 3 },
+          imgDescription : { row : 2, column : 1 },
+          lblDescription : { row : 2, column : 2 },
+          txtDescription : { row : 2, column : 3 },
+          imgTags        : { row : 3, column : 1 },
+          lblTags        : { row : 3, column : 2 },
+          txtTags        : { row : 3, column : 3 },
+          imgAuthorName  : { row : 4, column : 1 },
+          lblAuthorName  : { row : 4, column : 2 },
+          txtAuthorName  : { row : 4, column : 3 },
+          imgCategories  : { row : 1, column : 4 },
+          lblCategories  : { row : 1, column : 5 },
+          lstCategories  : { row : 2, column : 4, colSpan : 2, rowSpan : 3 },
+          imgLikes       : { row : 1, column : 6 },
+          lblLikes       : { row : 1, column : 7 },
+          lstLikesOp     : { row : 1, column : 8 },
+          spnLikes       : { row : 1, column : 9 },
+          imgDownloads   : { row : 2, column : 6 },
+          lblDownloads   : { row : 2, column : 7 },
+          lstDownloadsOp : { row : 2, column : 8 },
+          spnDownloads   : { row : 2, column : 9 },
+          imgViews       : { row : 3, column : 6 },
+          lblViews       : { row : 3, column : 7 },
+          lstViewsOp     : { row : 3, column : 8 },
+          spnViews       : { row : 3, column : 9 },
+          imgAuthorId    : { row : 4, column : 6 },
+          lblAuthorId    : { row : 4, column : 7 },
+          txtAuthorId    : { row : 4, column : 8, colSpan : 2 }
+        };
+      
       // Get a bold font reference
       font = qx.theme.manager.Font.getInstance().resolve("bold");
 
-      // Add the labels
-      text = this.tr("Browse by apps' categories. Each column further " +
-                     "restricts apps to those with all selected categories.");
-      label = new qx.ui.basic.Label(text);
-      label.set(
+      // Add a left spacer to center the other fields
+      container.add(new qx.ui.core.Spacer(10, 10), { row : 0, column : 0 });
+
+      // Add a right spacer to center the other fields
+      container.add(new qx.ui.core.Spacer(10, 10), { row : 0, column : 10 });
+
+      // Add the header
+      o = new qx.ui.basic.Label(this.tr("Find all apps in which all of:"));
+      o.set(
         {
-          font      : font,
-          textAlign : "center"
+          font : font
         });
-      container.add(label, { row : 0, column : 0, colSpan : 5 });
+      container.add(o, this.__advConfig.header);
+      
+      // Add the title label
+      o = new qx.ui.basic.Label(this.tr("Title contains"));
+      this.assertMap(this.__advConfig.lblTitle);
+      container.add(o, this.__advConfig.lblTitle);
+
+      // Add the description label
+      o = new qx.ui.basic.Label(this.tr("Description contains"));
+      this.assertMap(this.__advConfig.lblDescription);
+      container.add(o, this.__advConfig.lblDescription);
+
+      // Add the tags label
+      o = new qx.ui.basic.Label(this.tr("Tags provided"));
+      this.assertMap(this.__advConfig.lblTags);
+      container.add(o, this.__advConfig.lblTags);
+
+      // Add the author label
+      o = new qx.ui.basic.Label(this.tr("Author's name"));
+      this.assertMap(this.__advConfig.lblAuthorName);
+      container.add(o, this.__advConfig.lblAuthorName);
+
+      // Add the categories label
+      o = new qx.ui.basic.Label(this.tr("Selected categories"));
+      this.assertMap(this.__advConfig.lblCategories);
+      container.add(o, this.__advConfig.lblCategories);
+      
+      // Add the likes label
+      o = new qx.ui.basic.Label(this.tr("Likes"));
+      this.assertMap(this.__advConfig.lblLikes);
+      container.add(o, this.__advConfig.lblLikes);
+      
+      // Add the downloads label
+      o = new qx.ui.basic.Label(this.tr("Downloads"));
+      this.assertMap(this.__advConfig.lblDownloads);
+      container.add(o, this.__advConfig.lblDownloads);
+      
+      // Add the views label
+      o = new qx.ui.basic.Label(this.tr("Views"));
+      this.assertMap(this.__advConfig.lblViews);
+      container.add(o, this.__advConfig.lblViews);
+      
+      // Add the author id label
+      o = new qx.ui.basic.Label(this.tr("Author ID"));
+      this.assertMap(this.__advConfig.lblAuthorId);
+      container.add(o, this.__advConfig.lblAuthorId);
     }
   }
 });

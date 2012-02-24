@@ -889,7 +889,7 @@ tabView.setVisibility("excluded");
         model = qx.data.marshal.Json.createModel(apps);
 
         // Add the data to the list
-        this.searchResults.setModel(model);
+        this.__criteria.getSearchResultsList.setModel(model);
         break;
         
         
@@ -902,7 +902,7 @@ tabView.setVisibility("excluded");
         model = qx.data.marshal.Json.createModel(apps);
 
         // Add the data to the list
-        this.searchResults.setModel(model);
+        this.__criteria.getSearchResultsList.setModel(model);
         
         if (querySource != "searchBtn")
         {
