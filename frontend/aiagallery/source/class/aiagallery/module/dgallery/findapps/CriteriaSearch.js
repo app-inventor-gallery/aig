@@ -6,6 +6,10 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
+/*
+#asset(qx/icon/Tango/16/actions/dialog-apply.png)
+ */
+
 qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
 {
   extend : qx.ui.container.Composite,
@@ -304,7 +308,12 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         break;
 
       case "imgTitle" :
-        control = new qx.ui.basic.Image();
+        control =
+          new qx.ui.basic.Image("qx/icon/Tango/16/actions/dialog-apply.png");
+        control.set(
+          {
+            visibility : "hidden"
+          });
         this.__containerAdvanced._add(control, this.__advConfig.imgTitle);
         break;
 
@@ -315,11 +324,26 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             width       : 200,
             placeholder : "Words in apps' title"
           });
+
+        control.addListener(
+          "input",
+          function(e)
+          {
+            this.getChildControl("imgTitle").setVisibility(
+              e.getTarget().getValue().length > 0 ? "visible" : "hidden");
+          },
+          this);
+
         this.__containerAdvanced._add(control, this.__advConfig.txtTitle);
         break;
         
       case "imgDescription" :
-        control = new qx.ui.basic.Image();
+        control =
+          new qx.ui.basic.Image("qx/icon/Tango/16/actions/dialog-apply.png");
+        control.set(
+          {
+            visibility : "hidden"
+          });
         this.__containerAdvanced._add(control, this.__advConfig.imgDescription);
         break;
 
@@ -330,11 +354,26 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             width       : 200,
             placeholder : "Words in apps' description"
           });
+
+        control.addListener(
+          "input",
+          function(e)
+          {
+            this.getChildControl("imgDescription").setVisibility(
+              e.getTarget().getValue().length > 0 ? "visible" : "hidden");
+          },
+          this);
+
         this.__containerAdvanced._add(control, this.__advConfig.txtDescription);
         break;
         
       case "imgTags" :
-        control = new qx.ui.basic.Image();
+        control =
+          new qx.ui.basic.Image("qx/icon/Tango/16/actions/dialog-apply.png");
+        control.set(
+          {
+            visibility : "hidden"
+          });
         this.__containerAdvanced._add(control, this.__advConfig.imgTags);
         break;
 
@@ -345,26 +384,61 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             width : 200,
             placeholder : "Words in apps' tags"
           });
+
+        control.addListener(
+          "input",
+          function(e)
+          {
+            this.getChildControl("imgTags").setVisibility(
+              e.getTarget().getValue().length > 0 ? "visible" : "hidden");
+          },
+          this);
+
         this.__containerAdvanced._add(control, this.__advConfig.txtTags);
         break;
         
-      case "imgCategories" :
-        control = new qx.ui.basic.Image();
-        this.__containerAdvanced._add(control, this.__advConfig.imgCategories);
-        break;
-
-      case "lstCategories" :
-        control = new qx.ui.form.List();
+      case "txtAuthorId" :
+        control = new qx.ui.form.TextField();
         control.set(
           {
-            height        : 80,
-            selectionMode : "multi"
+            width       : 100,
+            placeholder : "Author's unique ID"
           });
-        this.__containerAdvanced._add(control, this.__advConfig.lstCategories);
+        control.addListener(
+          "input",
+          function(e)
+          {
+            this.getChildControl("imgAuthorId").setVisibility(
+              e.getTarget().getValue().length > 0 ? "visible" : "hidden");
+          },
+          this);
+        this.__containerAdvanced._add(control, this.__advConfig.txtAuthorId);
+        break;
+
+      case "lblAuthorName" :
+        // The author's displayName should be displayed android green
+        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+        font.set(
+          {
+            color      : "#75940c"      // android-green-dark
+          });
+        control = new qx.ui.basic.Label();
+        control.set(
+          {
+            textColor   : null,       // don't let it override font's color
+            width       : 100,
+            font        : font
+          });
+        this.__containerAdvanced._add(control, this.__advConfig.lblAuthorName);
         break;
         
       case "imgLikes" :
-        control = new qx.ui.basic.Image();
+        control =
+          new qx.ui.basic.Image("qx/icon/Tango/16/actions/dialog-apply.png");
+        control.set(
+          {
+            visibility : "hidden"
+          });
         this.__containerAdvanced._add(control, this.__advConfig.imgLikes);
         break;
 
@@ -388,6 +462,17 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             width : 46
           });
         
+        control.addListener(
+          "changeSelection",
+          function(e)
+          {
+            this.getChildControl("imgLikes").setVisibility(
+              e.getTarget().getSelection()[0].getLabel().length > 0
+                ? "visible"
+                : "hidden");
+          },
+          this);
+
         this.__containerAdvanced._add(control, this.__advConfig.lstLikesOp);
         break;
         
@@ -402,7 +487,12 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         break;
         
       case "imgDownloads" :
-        control = new qx.ui.basic.Image();
+        control =
+          new qx.ui.basic.Image("qx/icon/Tango/16/actions/dialog-apply.png");
+        control.set(
+          {
+            visibility : "hidden"
+          });
         this.__containerAdvanced._add(control, this.__advConfig.imgDownloads);
         break;
 
@@ -426,6 +516,17 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             width : 46
           });
         
+        control.addListener(
+          "changeSelection",
+          function(e)
+          {
+            this.getChildControl("imgDownloads").setVisibility(
+              e.getTarget().getSelection()[0].getLabel().length > 0
+                ? "visible"
+                : "hidden");
+          },
+          this);
+
         this.__containerAdvanced._add(control, this.__advConfig.lstDownloadsOp);
         break;
         
@@ -440,7 +541,12 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         break;
         
       case "imgViews" :
-        control = new qx.ui.basic.Image();
+        control =
+          new qx.ui.basic.Image("qx/icon/Tango/16/actions/dialog-apply.png");
+        control.set(
+          {
+            visibility : "hidden"
+          });
         this.__containerAdvanced._add(control, this.__advConfig.imgViews);
         break;
 
@@ -464,6 +570,17 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             width : 46
           });
         
+        control.addListener(
+          "changeSelection",
+          function(e)
+          {
+            this.getChildControl("imgViews").setVisibility(
+              e.getTarget().getSelection()[0].getLabel().length > 0
+                ? "visible"
+                : "hidden");
+          },
+          this);
+
         this.__containerAdvanced._add(control, this.__advConfig.lstViewsOp);
         break;
         
@@ -478,35 +595,45 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         break;
 
       case "imgAuthorId" :
-        control = new qx.ui.basic.Image();
+        control =
+          new qx.ui.basic.Image("qx/icon/Tango/16/actions/dialog-apply.png");
+        control.set(
+          {
+            visibility : "hidden"
+          });
         this.__containerAdvanced._add(control, this.__advConfig.imgAuthorId);
         break;
 
-      case "txtAuthorId" :
-        control = new qx.ui.form.TextField();
+      case "imgCategories" :
+        control =
+          new qx.ui.basic.Image("qx/icon/Tango/16/actions/dialog-apply.png");
         control.set(
           {
-            width       : 100,
-            placeholder : "Author's unique ID"
+            visibility : "hidden"
           });
-        this.__containerAdvanced._add(control, this.__advConfig.txtAuthorId);
+        this.__containerAdvanced._add(control, this.__advConfig.imgCategories);
         break;
 
-      case "lblAuthorName" :
-        // The author's displayName should be displayed android green
-        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
-        font.set(
-          {
-            color      : "#75940c"      // android-green-dark
-          });
-        control = new qx.ui.basic.Label();
+      case "lstCategories" :
+        control = new qx.ui.form.List();
         control.set(
           {
-            textColor   : null,       // don't let it override font's color
-            width       : 100,
-            font        : font
+            height        : 80,
+            selectionMode : "multi"
           });
-        this.__containerAdvanced._add(control, this.__advConfig.lblAuthorName);
+
+        control.addListener(
+          "changeSelection",
+          function(e)
+          {
+            this.getChildControl("imgCategories").setVisibility(
+              e.getTarget().getSelection().length > 0
+                ? "visible"
+                : "hidden");
+          },
+          this);
+
+        this.__containerAdvanced._add(control, this.__advConfig.lstCategories);
         break;
       }
       
