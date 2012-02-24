@@ -10,6 +10,19 @@ qx.Class.define("aiagallery.widget.radioview.RadioView",
 {
   extend : qx.ui.tabview.TabView,
 
+  construct : function(leadIn)
+  {
+    // If there's a lead-in string provided...
+    if (leadIn)
+    {
+      // then set it in the property
+      this.setLeadIn(leadIn);
+    }
+    
+    // Call the superclass constructor
+    this.base(arguments);
+  },
+
   properties :
   {
     appearance :
@@ -21,6 +34,13 @@ qx.Class.define("aiagallery.widget.radioview.RadioView",
     rowCount :
     {
       init : 2
+    },
+    
+    leadIn :
+    {
+      check    : "String",
+      init     : "",
+      nullable : false
     }
   },
 
@@ -40,7 +60,10 @@ qx.Class.define("aiagallery.widget.radioview.RadioView",
       case "bar":
         // Create a box to contain the radio button selection items (in a grid)
         // and, right justified, an optional button bar.
-        var box = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+        var box = new qx.ui.container.Composite(new qx.ui.layout.HBox(6));
+
+        // Add the lead-in string
+        box.add(new qx.ui.basic.Label(this.getLeadIn()));
 
         // The radio button selections are layed out in a grid
         control = new qx.ui.container.Composite(new qx.ui.layout.Grid(20, 4));
