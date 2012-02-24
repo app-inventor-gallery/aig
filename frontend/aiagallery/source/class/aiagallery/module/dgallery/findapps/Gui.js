@@ -30,7 +30,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
     {
       var             o;
       var             canvas = module.canvas;
-//      var             vBox;
       var             tabView;
       var             searchResults;
       var             font;
@@ -43,135 +42,29 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       // Make it easy to provide some space around the edges
       canvas.setLayout(new qx.ui.layout.Canvas());
 
-      // The canvas is composed of search and results area, vertically aligned
-//      vBox = new qx.ui.container.Composite(new qx.ui.layout.VBox(0));
-//      canvas.add(vBox, { edge : 10 });
-      
+// temporary...
+      var hbox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
+      canvas.add(hbox, { top : 10, left : 10 });
+      var json = new qx.ui.form.TextField();
+      json.setWidth(200);
+      hbox.add(json);
+      var but = new qx.ui.form.Button("Set Query");
+      hbox.add(but);
+      but.addListener(
+        "execute",
+        function(e)
+        {
+          this.__criteria.setQuery(json.getValue());
+        },
+        this);
+// ...temporary
+
       // Add the whole search criteria (and its search results)
       this.__criteria =
         new aiagallery.module.dgallery.findapps.CriteriaSearch();
-//      vBox.add(criteria, { flex : 1 });
-      canvas.add(this.__criteria, { edge : 10 });
+      canvas.add(this.__criteria, 
+                 { top : 60, left : 10, bottom : 10, right : 10 });
 
-/*
-      // The search area is a tabview, for selecting the type of search
-      tabView = new aiagallery.widget.radioview.RadioView();
-tabView.setVisibility("excluded");
-      tabView.addListener(
-        "changeSelection",
-        function(e)
-        {
-          // Determine which page was selected
-          if (e.getTarget().getSelection()[0] == this.pageTextSearch)
-          {
-            // It's the text search page, so clear the advanced page
-            this._clearAdvanced();
-          }
-          else
-          {
-            // The advanced page was selected, so clear text search field
-            this.txtTextSearch.setValue("");
-          }
-          
-          // Clear out the search results with an empty model
-          if (this.searchResults)
-          {
-            this.searchResults.setModel(qx.data.marshal.Json.createModel([]));
-          }
-        },
-        this);
-
-      // Use a single row for subtabs
-      tabView.setRowCount(1);
-      
-      // Allow results section to grow or shrink based on tabview page's needs
-      tabView.getChildControl("pane").setDynamic(true);
-      
-      // Add the search option pages
-      this.pageTextSearch =
-        new aiagallery.widget.radioview.Page(this.tr("Text search"));
-      this.pageTextSearch.set(
-        {
-          layout    : new qx.ui.layout.VBox()
-        });
-      this._addTextSearch(this.pageTextSearch);
-      tabView.add(this.pageTextSearch);
-      
-      this.pageAdvanced =
-        new aiagallery.widget.radioview.Page(this.tr("Advanced"));
-      this.pageAdvanced.set(
-        {
-          layout    : new qx.ui.layout.VBox()
-        });
-      this._addAdvancedSearch(this.pageAdvanced);
-      tabView.add(this.pageAdvanced);
-      
-      // Add the tabView to the top of the vBox
-      vBox.add(tabView);
-      
-      // Add a bit of space before the search results
-      vBox.add(new qx.ui.core.Spacer(10, 10));
-
-      // Add the search results label
-      font = qx.theme.manager.Font.getInstance().resolve("bold");
-      o = new qx.ui.basic.Label("Search Results");
-      o.set(
-        {
-          font : font
-        });
-      vBox.add(o);
-
-      // Allow access to our GUI from within the delegate functions
-      _this = this;
-
-      // Add the list for all of the search results
-      this.searchResults = new qx.ui.list.List();
-      this.searchResults.set(
-        {
-          itemHeight : 130,
-          labelPath  : "title",
-          iconPath   : "image1",
-          delegate   :
-          {
-            createItem : function()
-            {
-              return new aiagallery.widget.SearchResult("searchResults");
-            },
-            
-            bindItem : function(controller, item, id) 
-            {
-              [
-                "uid",
-                "owner",
-                "image1",
-                "title",
-                "numLikes",
-                "numDownloads",
-                "numViewed",
-                "numComments",
-                "displayName",
-                "description",
-                "creationTime",
-                "uploadTime"
-              ].forEach(
-                function(name)
-                {
-                  controller.bindProperty(name, name, null, item, id);
-                });
-            },
-
-            configureItem : function(item) 
-            {
-              // Listen for clicks on the title or image, to view the app
-              item.addListener("viewApp",
-                               _this.__fsm.eventListener,
-                               _this.__fsm);
-            }
-          }
-        });
-
-      vBox.add(this.searchResults, { flex : 1 });
-*/
     },
 
     _clearAdvanced : function()
