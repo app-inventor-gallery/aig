@@ -97,7 +97,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     grid.add(new qx.ui.core.Spacer(10, 10), { row : 0, column : 3 });
 
     // Add the search results label
-    font = qx.theme.manager.Font.getInstance().resolve("bold");
+    font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
     font.setSize(18);
     label = new qx.ui.basic.Label("Search Results");
     label.set(
@@ -171,10 +171,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     this.getChildControl("txtDescription");
     this.getChildControl("imgTags");
     this.getChildControl("txtTags");
-    this.getChildControl("imgAuthorName");
-    this.getChildControl("txtAuthorName");
-    this.getChildControl("imgCategories");
-    this.getChildControl("lstCategories");
+    this.getChildControl("txtAuthorId");
+    this.getChildControl("lblAuthorName");
+
     this.getChildControl("imgLikes");
     this.getChildControl("lstLikesOp");
     this.getChildControl("spnLikes");
@@ -186,6 +185,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     this.getChildControl("spnViews");
     this.getChildControl("imgAuthorId");
     this.getChildControl("txtAuthorId");
+
+    this.getChildControl("lstCategories");
   },
   
   events :
@@ -288,6 +289,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     {
       var             control;
       var             column;
+      var             font;
 
       switch(id)
       {
@@ -311,7 +313,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control.set(
           {
             width       : 200,
-            placeholder : "Words in title"
+            placeholder : "Words in apps' title"
           });
         this.__containerAdvanced._add(control, this.__advConfig.txtTitle);
         break;
@@ -326,7 +328,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control.set(
           {
             width       : 200,
-            placeholder : "Words in description"
+            placeholder : "Words in apps' description"
           });
         this.__containerAdvanced._add(control, this.__advConfig.txtDescription);
         break;
@@ -346,21 +348,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         this.__containerAdvanced._add(control, this.__advConfig.txtTags);
         break;
         
-      case "imgAuthorName" :
-        control = new qx.ui.basic.Image();
-        this.__containerAdvanced._add(control, this.__advConfig.imgAuthorName);
-        break;
-
-      case "txtAuthorName" :
-        control = new qx.ui.form.TextField();
-        control.set(
-          {
-            width       : 200,
-            placeholder : "Author's display name"
-          });
-        this.__containerAdvanced._add(control, this.__advConfig.txtAuthorName);
-        break;
-        
       case "imgCategories" :
         control = new qx.ui.basic.Image();
         this.__containerAdvanced._add(control, this.__advConfig.imgCategories);
@@ -370,7 +357,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control = new qx.ui.form.List();
         control.set(
           {
-            height : 80
+            height        : 80,
+            selectionMode : "multi"
           });
         this.__containerAdvanced._add(control, this.__advConfig.lstCategories);
         break;
@@ -503,6 +491,23 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           });
         this.__containerAdvanced._add(control, this.__advConfig.txtAuthorId);
         break;
+
+      case "lblAuthorName" :
+        // The author's displayName should be displayed android green
+        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+        font.set(
+          {
+            color      : "#75940c"      // android-green-dark
+          });
+        control = new qx.ui.basic.Label();
+        control.set(
+          {
+            textColor   : null,       // don't let it override font's color
+            width       : 100,
+            font        : font
+          });
+        this.__containerAdvanced._add(control, this.__advConfig.lblAuthorName);
+        break;
       }
       
       return control || this.base(arguments, id, hash);
@@ -572,7 +577,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       
       // Right-align the label columns
       layout.setColumnAlign(2, "right", "middle");
-      layout.setColumnAlign(7, "right", "middle");
+      layout.setColumnAlign(5, "right", "middle");
       
       // Generally left align everything else
       layout.setRowAlign(0, "left", "middle");
@@ -594,27 +599,27 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           imgTags        : { row : 3, column : 1 },
           lblTags        : { row : 3, column : 2 },
           txtTags        : { row : 3, column : 3 },
-          imgAuthorName  : { row : 4, column : 1 },
-          lblAuthorName  : { row : 4, column : 2 },
-          txtAuthorName  : { row : 4, column : 3 },
-          imgCategories  : { row : 1, column : 4 },
-          lblCategories  : { row : 1, column : 5 },
-          lstCategories  : { row : 2, column : 4, colSpan : 2, rowSpan : 3 },
-          imgLikes       : { row : 1, column : 6 },
-          lblLikes       : { row : 1, column : 7 },
-          lstLikesOp     : { row : 1, column : 8 },
-          spnLikes       : { row : 1, column : 9 },
-          imgDownloads   : { row : 2, column : 6 },
-          lblDownloads   : { row : 2, column : 7 },
-          lstDownloadsOp : { row : 2, column : 8 },
-          spnDownloads   : { row : 2, column : 9 },
-          imgViews       : { row : 3, column : 6 },
-          lblViews       : { row : 3, column : 7 },
-          lstViewsOp     : { row : 3, column : 8 },
-          spnViews       : { row : 3, column : 9 },
-          imgAuthorId    : { row : 4, column : 6 },
-          lblAuthorId    : { row : 4, column : 7 },
-          txtAuthorId    : { row : 4, column : 8, colSpan : 2 }
+          imgAuthorId    : { row : 4, column : 1 },
+          lblAuthorId    : { row : 4, column : 2 },
+          txtAuthorId    : { row : 4, column : 3 },
+          lblAuthorName  : { row : 4, column : 4, colSpan : 3 },
+
+          imgLikes       : { row : 1, column : 4 },
+          lblLikes       : { row : 1, column : 5 },
+          lstLikesOp     : { row : 1, column : 6 },
+          spnLikes       : { row : 1, column : 7 },
+          imgDownloads   : { row : 2, column : 4 },
+          lblDownloads   : { row : 2, column : 5 },
+          lstDownloadsOp : { row : 2, column : 6 },
+          spnDownloads   : { row : 2, column : 7 },
+          imgViews       : { row : 3, column : 4 },
+          lblViews       : { row : 3, column : 5 },
+          lstViewsOp     : { row : 3, column : 6 },
+          spnViews       : { row : 3, column : 7 },
+
+          imgCategories  : { row : 0, column : 8 },
+          lblCategories  : { row : 0, column : 9 },
+          lstCategories  : { row : 1, column : 8, colSpan : 2, rowSpan : 4 }
         };
       
       // Get a bold font reference
@@ -648,11 +653,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       o = new qx.ui.basic.Label(this.tr("Tags provided"));
       this.assertMap(this.__advConfig.lblTags);
       container.add(o, this.__advConfig.lblTags);
-
-      // Add the author label
-      o = new qx.ui.basic.Label(this.tr("Author's name"));
-      this.assertMap(this.__advConfig.lblAuthorName);
-      container.add(o, this.__advConfig.lblAuthorName);
 
       // Add the categories label
       o = new qx.ui.basic.Label(this.tr("Selected categories"));
