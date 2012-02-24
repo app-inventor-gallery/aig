@@ -6,7 +6,7 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
-qx.Class.define("aiagallery.module.dgallery.findapps.Criteria",
+qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
 {
   extend : qx.ui.container.Composite,
   
@@ -14,6 +14,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Criteria",
   {
     var             layout;
     var             grid;
+    var             label;
+    var             font;
 
     this.base(arguments);
     
@@ -61,7 +63,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Criteria",
           layout : new qx.ui.layout.Grid(0, 10)
         });
         
-        // If there's a function for custom labels, ...
+        // If there's a function for customizing this page, ...
         if (pageInfo.custom)
         {
           // ... then call it now. It's called in our own context, with the
@@ -79,7 +81,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Criteria",
     layout.setColumnFlex(0, 1);
     layout.setColumnFlex(3, 1);
     
-    // Now create the grid container
+    // Now create the button bar's grid container
     grid = new qx.ui.container.Composite(layout);
     this.add(grid);
     
@@ -91,6 +93,74 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Criteria",
     grid.add(this.__butClear,               { row : 0, column : 2 });
     grid.add(new qx.ui.core.Spacer(10, 10), { row : 0, column : 3 });
 
+    // Add the search results label
+    font = qx.theme.manager.Font.getInstance().resolve("bold");
+    font.setSize(18);
+    label = new qx.ui.basic.Label("Search Results");
+    label.set(
+      {
+        font : font
+      });
+    this.add(label);
+
+    // Add the list for all of the search results
+    this.__searchResults = new qx.ui.list.List();
+    this.__searchResults.set(
+      {
+        itemHeight : 130,
+        labelPath  : "title",
+        iconPath   : "image1",
+        delegate   :
+        {
+          createItem : qx.lang.Function.bind(
+            function()
+            {
+              return new aiagallery.widget.SearchResult("searchResults");
+            },
+            this),
+
+          bindItem : qx.lang.Function.bind(
+            function(controller, item, id) 
+            {
+              [
+                "uid",
+                "owner",
+                "image1",
+                "title",
+                "numLikes",
+                "numDownloads",
+                "numViewed",
+                "numComments",
+                "displayName",
+                "description",
+                "creationTime",
+                "uploadTime"
+              ].forEach(
+                function(name)
+                {
+                  controller.bindProperty(name, name, null, item, id);
+                });
+            },
+            this),
+
+          configureItem : qx.lang.Function.bind(
+            function(item) 
+            {
+              // Listen for clicks on the title or image, to view the app
+              item.addListener("viewApp",
+                               function(e)
+                               {
+                                 this.fireDataEvent(e.getData());
+                               },
+                               this);
+            },
+            this)
+        }
+      });
+
+    this.add(this.__searchResults, { flex : 1 });
+
+
     // Instantiate child controls
     this.getChildControl("txtTextSearch");
     this.getChildControl("browse0");
@@ -98,6 +168,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Criteria",
     this.getChildControl("browse2");
   },
   
+  events :
+  {
+    "viewApp" : "qx.event.Type.Data"
+  },
+
   properties :
   {
     textInTitle :
@@ -167,6 +242,22 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Criteria",
 
   members :
   {
+    /**
+     * Add the list of categories to the first browse list
+     */
+    setCategoryList : function(categories)
+    {
+      var             browse0 = this.getChildControl("browse0");
+      
+      // Add each of the categories to the first browse list
+      categories.forEach(
+        function(tag)
+        {
+          // Add this tag to the list.
+          browse0.add(new qx.ui.form.ListItem(tag));
+        });
+    },
+
     _createChildControlImpl : function(id, hash)
     {
       var             control;
@@ -225,12 +316,13 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Criteria",
       font = qx.theme.manager.Font.getInstance().resolve("bold");
 
       // Add the labels
-      text = this.tr("Search for words found in the title, description, " +
+      text = this.tr("Search for words found in apps' title, description, " +
                      "categories, or tags");
       label = new qx.ui.basic.Label(text);
       label.set(
         {
-          font : font
+          font      : font,
+          textAlign : "center"
         });
       container.add(label, { row : 0, column : 1 });
 

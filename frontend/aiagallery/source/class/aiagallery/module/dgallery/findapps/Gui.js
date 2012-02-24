@@ -30,7 +30,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
     {
       var             o;
       var             canvas = module.canvas;
-      var             vBox;
+//      var             vBox;
       var             tabView;
       var             searchResults;
       var             font;
@@ -44,12 +44,16 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       canvas.setLayout(new qx.ui.layout.Canvas());
 
       // The canvas is composed of search and results area, vertically aligned
-      vBox = new qx.ui.container.Composite(new qx.ui.layout.VBox(0));
-      canvas.add(vBox, { edge : 10 });
+//      vBox = new qx.ui.container.Composite(new qx.ui.layout.VBox(0));
+//      canvas.add(vBox, { edge : 10 });
       
-      criteria = new aiagallery.module.dgallery.findapps.Criteria();
-      vBox.add(criteria);
+      // Add the whole search criteria (and its search results)
+      this.__criteria =
+        new aiagallery.module.dgallery.findapps.CriteriaSearch();
+//      vBox.add(criteria, { flex : 1 });
+      canvas.add(this.__criteria, { edge : 10 });
 
+/*
       // The search area is a tabview, for selecting the type of search
       tabView = new aiagallery.widget.radioview.RadioView();
 tabView.setVisibility("excluded");
@@ -167,6 +171,7 @@ tabView.setVisibility("excluded");
         });
 
       vBox.add(this.searchResults, { flex : 1 });
+*/
     },
 
     _clearAdvanced : function()
@@ -873,12 +878,7 @@ tabView.setVisibility("excluded");
       switch(requestType)
       {
       case "getCategoryTags":
-        response.data.result.forEach(
-          function(tag)
-          {
-            // Add this tag to the list.
-            browse0.add(new qx.ui.form.ListItem(tag));
-          });
+        this.__criteria.setCategoryList(response.data.result);
         break;
       
       case "intersectKeywordAndQuery":
