@@ -102,7 +102,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     this.__butClear = new qx.ui.form.Button(this.tr("Clear"));
     
     // Arrange for the clear button to clear all fields
-    this.__butClear.addListener("execute", this._clearAllFields, this);
+    this.__butClear.addListener("execute", this._clearFields, this);
 
     grid.add(new qx.ui.core.Spacer(10, 10), { row : 0, column : 0 });
     grid.add(this.__butSearch,              { row : 0, column : 1 });
@@ -226,13 +226,204 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
      */
     setCategoryList : function(categories)
     {
+      // Initialize the lower-case category list
+      this.__lcCategories = [];
+
+      // Add each tag to the category list. At the same time, build a list of
+      // category names in lower case, to compare against when we receive a
+      // query map.
       categories.forEach(
         function(tag)
         {
+          // Add this category as a list item
           this.getChildControl("lstCategories").add(
             new qx.ui.form.ListItem(tag));
+          
+          // Convert the category to lower case and save it for later use
+          this.__lcCategories.push(tag.toLowerCase());
         },
         this);
+    },
+
+    /**
+     * Specify a query.
+     *
+     * @param json {String}
+     *   The input is expected to be JSON representing a map which contains
+     *   any or all of the following fields:
+     *
+     *   text {Array}
+     *     An array of words for the basic search of all text fields. This
+     *     field is ignored if any others are provided.
+     *
+     *   title {Array}
+     *     An array of words for the Title field
+     *
+     *   description {Array}
+     *     An array of words for the Description field
+     *
+     *   tags {Array}
+     *     An array of words that are tags and categories.
+     *
+     *   authorId {String}
+     *     The unique ID of a particular visitor
+     *
+     *   likes {Array}
+     *     The array contains two elements: an operator ("<", "<=", "=", ">",
+     *     ">=") and a number.
+     *
+     *   downloads {Array}
+     *     The array contains two elements: an operator ("<", "<=", "=", ">",
+     *     ">=") and a number.
+     *
+     *   views {Array}
+     *     The array contains two elements: an operator ("<", "<=", "=", ">",
+     *     ">=") and a number.
+     */
+    setQuery : function(json)
+    {
+      var             data;
+      var             field;
+      var             bFoundNonBasic = false;
+      var             tags = [];
+      var             categories = [];
+      var             selection = [];
+
+      var selectByValue = function(list, value)
+      {
+        var             i;
+        var             children = list.getChildren();
+        
+        // Loop through each list item
+        for (i = 0; i < children.length; i++)
+        {
+          // Is this the one we're loking for?
+          if (children[i].getLabel() == value)
+          {
+            // Yup. Set it as the selection
+            list.setSelection([ children[i] ]);
+            
+            // No need to search farther. These are single-seleciton lists.
+            break;
+          }
+        }
+      };
+
+      // Parse the JSON
+      try
+      {
+        data = qx.lang.Json.parse(json);
+      }
+      catch (e)
+      {
+        // If we couldn't parse, then just display an empty query
+        data = {};
+      }
+      
+      // Clear the query fields
+      this._clearFields();
+      
+      // For each field...
+      for (field in data)
+      {
+        // Track if we see a field other than the all-text-fields basic search
+        if (field != "text")
+        {
+          bFoundNonBasic = true;
+        }
+        
+        // Add the query data
+        switch(field)
+        {
+        case "text":
+          if (! bFoundNonBasic)
+          {
+            this.getChildControl("txtTextSearch").
+              setValue(data[field].join(" "));
+          }
+          break;
+          
+        case "title":
+          this.getChildControl("txtTitle").
+            setValue(data[field].join(" "));
+          break;
+          
+        case "description":
+          this.getChildControl("txtDescription").
+            setValue(data[field].join(" "));
+          break;
+          
+        case "tags":
+          // Separate tags and categories, putting each into its own list
+          data[field].forEach(
+            function(tag)
+            {
+              // Is this tag actually a category?
+              if (qx.lang.Array.contains(this.__lcCategories, 
+                                         tag.toLowerCase()))
+              {
+                // Yup. Save it in the category list
+                categories.push(tag);
+              }
+              else
+              {
+                // It's an ordinary tag
+                tags.push(tag);
+              }
+            },
+            this);
+          
+          // Tags are simply added as space-separated text
+          this.getChildControl("txtTags").setValue(tags.join(" "));
+          
+          // Categories need to be selected. In the list, they're not
+          // lower-case, so we'll need to convert to lower case as we search
+          this.getChildControl("lstCategories").getChildren().forEach(
+            function(listItem)
+            {
+              // Is this one of the categories that was specified?
+              if (qx.lang.Array.contains(categories, 
+                                         listItem.getLabel().toLowerCase()))
+              {
+                // ... then save this list item as part of the selection
+                selection.push(listItem);
+              }
+            },
+            this);
+          
+          // Now we can set the category list's selection
+          this.getChildControl("lstCategories").setSelection(selection);
+          break;
+          
+        case "authorId":
+          this.getChildControl("txtAuthorId").setValue(data[field]);
+          break;
+          
+        case "likes":
+          // The first element of the value array is the operator
+          selectByValue(this.getChildControl("lstLikesOp"), data[field][0]);
+          
+          // The second element of the value array is the number
+          this.getChildControl("spnLikes").setValue(data[field][1]);
+          break;
+          
+        case "downloads":
+          // The first element of the value array is the operator
+          selectByValue(this.getChildControl("lstDownloadsOp"), data[field][0]);
+          
+          // The second element of the value array is the number
+          this.getChildControl("spnDownloads").setValue(data[field][1]);
+          break;
+          
+        case "views":
+          // The first element of the value array is the operator
+          selectByValue(this.getChildControl("lstViewsOp"), data[field][0]);
+          
+          // The second element of the value array is the number
+          this.getChildControl("spnViews").setValue(data[field][1]);
+          break;
+        }
+      }
     },
 
     /**
@@ -383,9 +574,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
               // extra spaces, and then split at spaces.
               data.authorId =
                 qx.lang.String.trim(fieldData.txtAuthorId.toLowerCase());
-              
-              // Split into an array of words
-              data.authorId = data.authorId.split(" ");
               break;
               
             case "lstLikesOp" :
@@ -426,7 +614,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       }
       else
       {
-this.debug("json=" + json);
+        // Fire the event. Pass both the map and the JSON since we know we'll
+        // have two listeners, one requring each format.
+alert("json: " + json);
         this.fireDataEvent("queryChanged", 
                            {
                              data : data,
@@ -437,8 +627,11 @@ this.debug("json=" + json);
 
     /**
      * Clear all fields
+     * 
+     * @param bExcludeBasicSearch {Boolean}
+     *   If true, do not clear the "all text fields" basic search field
      */
-    _clearAllFields : function()
+    _clearFields : function(bExcludeBasicSearch)
     {
       var             clear;
       var             fields;
@@ -485,7 +678,13 @@ this.debug("json=" + json);
       // Now do it! For each field...
       for (field in fields)
       {
-        // ... call its clear function with the appropriate control
+        // Exclude clearing all-text-fields basic search field, if so requested
+        if (bExcludeBasicSearch && field == "txtTextSearch")
+        {
+          continue;
+        }
+
+        // Call its clear function with the appropriate control
         fields[field](this.getChildControl(field));
       }
     },
@@ -506,6 +705,16 @@ this.debug("json=" + json);
             placeholder : "Please enter search words",
             tabIndex    : 1
           });
+        
+        // When this control gets focus, clear all of the other fields
+        control.addListener(
+          "focus",
+          function(e)
+          {
+            this._clearFields(true);
+          },
+          this);
+        
         this.__containerTextSearch._add(control, { row : 1, column : 1 });
         break;
 
@@ -534,6 +743,9 @@ this.debug("json=" + json);
           {
             this.getChildControl("imgTitle").setVisibility(
               e.getTarget().getValue().length > 0 ? "visible" : "hidden");
+            
+            // Clear the all-text-fields search
+            this.getChildControl("txtTextSearch").setValue("");
           },
           this);
 
@@ -565,6 +777,9 @@ this.debug("json=" + json);
           {
             this.getChildControl("imgDescription").setVisibility(
               e.getTarget().getValue().length > 0 ? "visible" : "hidden");
+            
+            // Clear the all-text-fields search
+            this.getChildControl("txtTextSearch").setValue("");
           },
           this);
 
@@ -596,6 +811,9 @@ this.debug("json=" + json);
           {
             this.getChildControl("imgTags").setVisibility(
               e.getTarget().getValue().length > 0 ? "visible" : "hidden");
+            
+            // Clear the all-text-fields search
+            this.getChildControl("txtTextSearch").setValue("");
           },
           this);
 
@@ -626,6 +844,9 @@ this.debug("json=" + json);
           {
             this.getChildControl("imgAuthorId").setVisibility(
               e.getTarget().getValue().length > 0 ? "visible" : "hidden");
+            
+            // Clear the all-text-fields search
+            this.getChildControl("txtTextSearch").setValue("");
           },
           this);
         this.__containerAdvanced._add(control, this.__advConfig.txtAuthorId);
@@ -687,6 +908,9 @@ this.debug("json=" + json);
               e.getTarget().getSelection()[0].getLabel().length > 0
                 ? "visible"
                 : "hidden");
+            
+            // Clear the all-text-fields search
+            this.getChildControl("txtTextSearch").setValue("");
           },
           this);
 
@@ -743,6 +967,9 @@ this.debug("json=" + json);
               e.getTarget().getSelection()[0].getLabel().length > 0
                 ? "visible"
                 : "hidden");
+            
+            // Clear the all-text-fields search
+            this.getChildControl("txtTextSearch").setValue("");
           },
           this);
 
@@ -799,6 +1026,9 @@ this.debug("json=" + json);
               e.getTarget().getSelection()[0].getLabel().length > 0
                 ? "visible"
                 : "hidden");
+            
+            // Clear the all-text-fields search
+            this.getChildControl("txtTextSearch").setValue("");
           },
           this);
 
@@ -843,6 +1073,9 @@ this.debug("json=" + json);
               e.getTarget().getSelection().length > 0
                 ? "visible"
                 : "hidden");
+            
+            // Clear the all-text-fields search
+            this.getChildControl("txtTextSearch").setValue("");
           },
           this);
 
