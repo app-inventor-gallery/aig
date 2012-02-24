@@ -1790,7 +1790,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // Get the current user
       whoami = this.getWhoAmI();
 
-      // Create the criteria for a search of apps of the current user
+      // Create the criteria for a search of apps of the current user.
+      // Do not limit to only Active apps. This is for the My Apps listing.
       if (! bAll)
       {
         criteria = 
@@ -1801,11 +1802,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             [
               {
                 type: "element",
-                field: "status",
-                value: aiagallery.dbif.Constants.Status.Active
-              },
-              {
-                type: "element",
                 field: "owner",
                 value: whoami.id
               }
@@ -1814,7 +1810,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       }
       else
       {
-        // We want all objects
+        // We want all. This is for App Management.
         criteria = null;
       }
       
