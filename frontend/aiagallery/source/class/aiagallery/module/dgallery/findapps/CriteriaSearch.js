@@ -95,6 +95,10 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     // Add the Search and Clear buttons
     this.__butSearch = new qx.ui.form.Button(this.tr("Search"));
     this.__butClear = new qx.ui.form.Button(this.tr("Clear"));
+    
+    // Arrange for the clear button to clear all fields
+    this.__butClear.addListener("execute", this._clearAllFields, this);
+
     grid.add(new qx.ui.core.Spacer(10, 10), { row : 0, column : 0 });
     grid.add(this.__butSearch,              { row : 0, column : 1 });
     grid.add(this.__butClear,               { row : 0, column : 2 });
@@ -190,6 +194,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     this.getChildControl("imgAuthorId");
     this.getChildControl("txtAuthorId");
 
+    this.getChildControl("imgCategories");
     this.getChildControl("lstCategories");
   },
   
@@ -287,6 +292,61 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             new qx.ui.form.ListItem(tag));
         },
         this);
+    },
+
+    /**
+     * Clear all fields
+     */
+    _clearAllFields : function()
+    {
+      var             clear;
+      var             fields;
+      var             field;
+      
+      // Functions to clear each of the types of controls
+      clear =
+        {
+          "textField" : function(o)
+          {
+            o.setValue("");
+          },
+          
+          "list" : function(o)
+          {
+            o.resetSelection();
+          },
+          
+          "spinner" : function(o)
+          {
+            o.setValue(0);
+          }
+        };
+
+      // Fields to be cleared, mapped to the function to clear them
+      fields =
+        {
+          txtTextSearch  : clear.textField,
+          txtTitle       : clear.textField,
+          txtDescription : clear.textField,
+          txtTags        : clear.textField,
+          txtAuthorId    : clear.textField,
+
+          lstLikesOp     : clear.list,
+          spnLikes       : clear.spinner,
+          lstDownloadsOp : clear.list,
+          spnDownloads   : clear.spinner,
+          lstViewsOp     : clear.list,
+          spnViews       : clear.spinner,
+
+          lstCategories  : clear.list
+        };      
+      
+      // Now do it! For each field...
+      for (field in fields)
+      {
+        // ... call its clear function with the appropriate control
+        fields[field](this.getChildControl(field));
+      }
     },
 
     _createChildControlImpl : function(id, hash)
