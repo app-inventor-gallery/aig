@@ -60,7 +60,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         // Set its properties
         this[pageInfo.field].set(
         {
-          layout : new qx.ui.layout.Grid(0, 10)
+          layout       : new qx.ui.layout.Grid(0, 10),
+          padding      : 20,
+          decorator    : "criteria-box"
         });
         
         // If there's a function for customizing this page, ...
@@ -83,6 +85,10 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     
     // Now create the button bar's grid container
     grid = new qx.ui.container.Composite(layout);
+    grid.set(
+      {
+        marginTop : 10
+      });
     this.add(grid);
     
     // Add the Search and Clear buttons
@@ -359,7 +365,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       label = new qx.ui.basic.Label(text);
       label.set(
         {
-          font : font
+          font      : font,
+          textAlign : "center"
         });
       container.add(label, { row : 0, column : 0, colSpan : 5 });
     }
