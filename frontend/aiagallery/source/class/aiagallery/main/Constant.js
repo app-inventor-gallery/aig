@@ -22,7 +22,7 @@ qx.Class.define("aiagallery.main.Constant",
     
     // valid upload MIME types
     VALID_IMAGE_TYPES  : ["image/gif", "image/jpeg", "image/png"],
-    VALID_SOURCE_TYPES : [ "application/zip" ],
+    VALID_SOURCE_TYPES : [ "application/zip", "application/x-zip-compres" ],
     VALID_APK_TYPES    : 
     [ 
       "application/vnd.android.package-archive",
