@@ -2104,7 +2104,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      * @param queryArgs {Map}
      *   This map may contain search criteria and requested fields, as
      *   required by {@link aiagallery.dbif.MApps.appQuery}. Additionally, it
-     *   may contain up to three arrays of words to search for. The first of
+     *   may contain up to four arrays of words to search for. The first of
      *   the arrays is a list of words to search for in all text fields
      *   (title, description, and tags). The other three allow providing
      *   different lists of words to search for in any or all of those
@@ -2115,10 +2115,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      *     {
      *       criteria         : {....(see MApps.appQuery() docu....},
      *
-     *       // Either this one...
      *       text             : [ "some", "words", "to", "search", "on" ],
-     *
-     *       // ... or any or all of these
      *       title            : [ "some", "words", "to", "search", "on" ],
      *       description      : [ "some", "words", "to", "search", "on" ],
      *       tags             : [ "some", "words", "to", "search", "on" ]
