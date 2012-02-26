@@ -424,6 +424,15 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           break;
         }
       }
+      
+      // Ensure that we're switched to the Specific Fields search page
+      this.__radioView.setSelection(
+        [
+          this.__radioView.getChildren()[bFoundNonBasic ? 1 : 0]
+        ] );
+
+      // Initiate the search
+      this.__butSearch.execute();
     },
 
     /**
@@ -691,6 +700,7 @@ alert("json: " + json);
 
     _createChildControlImpl : function(id, hash)
     {
+      var             f;
       var             control;
       var             column;
       var             font;
@@ -737,17 +747,17 @@ alert("json: " + json);
             tabIndex    : 2
           });
 
-        control.addListener(
-          "input",
-          function(e)
-          {
-            this.getChildControl("imgTitle").setVisibility(
-              e.getTarget().getValue().length > 0 ? "visible" : "hidden");
-            
-            // Clear the all-text-fields search
-            this.getChildControl("txtTextSearch").setValue("");
-          },
-          this);
+        f = function(e)
+        {
+          this.getChildControl("imgTitle").setVisibility(
+            e.getTarget().getValue().length > 0 ? "visible" : "hidden");
+
+          // Clear the all-text-fields search
+          this.getChildControl("txtTextSearch").setValue("");
+        };
+        
+        control.addListener("input", f, this);
+        control.addListener("changeValue", f, this);
 
         this.__containerAdvanced._add(control, this.__advConfig.txtTitle);
         break;
@@ -771,17 +781,17 @@ alert("json: " + json);
             tabIndex    : 3
           });
 
-        control.addListener(
-          "input",
-          function(e)
-          {
-            this.getChildControl("imgDescription").setVisibility(
-              e.getTarget().getValue().length > 0 ? "visible" : "hidden");
-            
-            // Clear the all-text-fields search
-            this.getChildControl("txtTextSearch").setValue("");
-          },
-          this);
+        f = function(e)
+        {
+          this.getChildControl("imgDescription").setVisibility(
+            e.getTarget().getValue().length > 0 ? "visible" : "hidden");
+
+          // Clear the all-text-fields search
+          this.getChildControl("txtTextSearch").setValue("");
+        };
+
+        control.addListener("input", f, this);
+        control.addListener("changeValue", f, this);
 
         this.__containerAdvanced._add(control, this.__advConfig.txtDescription);
         break;
@@ -805,17 +815,17 @@ alert("json: " + json);
             tabIndex    : 4
           });
 
-        control.addListener(
-          "input",
-          function(e)
-          {
-            this.getChildControl("imgTags").setVisibility(
-              e.getTarget().getValue().length > 0 ? "visible" : "hidden");
-            
-            // Clear the all-text-fields search
-            this.getChildControl("txtTextSearch").setValue("");
-          },
-          this);
+        f = function(e)
+        {
+          this.getChildControl("imgTags").setVisibility(
+            e.getTarget().getValue().length > 0 ? "visible" : "hidden");
+
+          // Clear the all-text-fields search
+          this.getChildControl("txtTextSearch").setValue("");
+        };
+
+        control.addListener("input", f, this);
+        control.addListener("changeValue", f, this);
 
         this.__containerAdvanced._add(control, this.__advConfig.txtTags);
         break;
@@ -838,17 +848,19 @@ alert("json: " + json);
             placeholder : "Author's unique ID",
             tabIndex    : 5
           });
-        control.addListener(
-          "input",
-          function(e)
-          {
-            this.getChildControl("imgAuthorId").setVisibility(
-              e.getTarget().getValue().length > 0 ? "visible" : "hidden");
-            
-            // Clear the all-text-fields search
-            this.getChildControl("txtTextSearch").setValue("");
-          },
-          this);
+
+        f = function(e)
+        {
+          this.getChildControl("imgAuthorId").setVisibility(
+            e.getTarget().getValue().length > 0 ? "visible" : "hidden");
+
+          // Clear the all-text-fields search
+          this.getChildControl("txtTextSearch").setValue("");
+        };
+
+        control.addListener("input", f, this);
+        control.addListener("changeValue", f, this);
+
         this.__containerAdvanced._add(control, this.__advConfig.txtAuthorId);
         break;
 
