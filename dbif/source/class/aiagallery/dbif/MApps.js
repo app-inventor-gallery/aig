@@ -2100,25 +2100,30 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     /**
      * Perform a keyword search on the given string, as well as an appQuery on
      * the given criteria, and return the intersection of the results.
-     * 
+     *
      * @param queryArgs {Map}
-     *   This is a map containing member names that are the 4 unique parameters
-     *   to MApps.appQuery(criteria, requestedFields) and 
-     *   keywordSearch(keywordString, queryFields, requestedFields)
-     *  
-     *   The value of each of those members is the argument to be passed upon
-     *   calling that RPC
-     *  
+     *   This map may contain search criteria and requested fields, as
+     *   required by {@link aiagallery.dbif.MApps.appQuery}. Additionally, it
+     *   may contain up to three arrays of words to search for. The first of
+     *   the arrays is a list of words to search for in all text fields
+     *   (title, description, and tags). The other three allow providing
+     *   different lists of words to search for in any or all of those
+     *   fields.
+     *
      *   For example:
      *  
      *     {
      *       criteria         : {....(see MApps.appQuery() docu....},
-     *       requestedFields  : {....(see MApps.appQuery() docu....},
-     *       keywordString    : "Some words to search on",
-     *       queryFields      : null // not implemented yet,
-     *                               // pass null for safety
+     *
+     *       // Either this one...
+     *       text             : [ "some", "words", "to", "search", "on" ],
+     *
+     *       // ... or any or all of these
+     *       title            : [ "some", "words", "to", "search", "on" ],
+     *       description      : [ "some", "words", "to", "search", "on" ],
+     *       tags             : [ "some", "words", "to", "search", "on" ]
      *     }
-     * 
+     *
      * @return {Map}
      *   The return value is an array of maps, each providing information
      *   about one application.
@@ -2126,123 +2131,189 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      */
     intersectKeywordAndQuery : function(queryArgs, error)
     {      
-
-      var               keywordString;
-      var               appQueryResults;
-      var               appQueryResultArr = [];
-      var               bQueryUsed = true;
-      var               keywordSearchResultArr = [];
-      var               bKeywordUsed = true;
-      var               intersectionArr = [];
+      var             i;
+      var             words = {};
+      var             wordList;
+      var             wordsPerList = [];
+      var             appQueryResults;
+      var             appQueryResultArr = [];
+      var             thisSearchResultArr;
+      var             keywordSearchResultArr = [];
+      var             bKeywordUsed = true;
+      var             queryFields;
+      var             intersectionArr = [];
       
-      // Going to perform keyword search first
-      keywordString = queryArgs["keywordString"];
       
-      // If there was no keyword string provided
-      if (keywordString === null || typeof keywordString === "undefined" ||
-          keywordString === "")
+      // Was nothing given to search on?
+      if (! queryArgs.text &&
+          ! queryArgs.title &&
+          ! queryArgs.description  &&
+          ! queryArgs.tags &&
+          ! queryArgs.criteria)
       {
-        // Then just use the results of appQuery
-        bKeywordUsed = false;
+        // This is an error
+        error.setCode(1);
+        error.setMessage(this.tr("No keyword or search criteria given"));
+        return error;
       }
-      else
+
+
+      // Create a map where each of the requested words is a key, and its
+      // value is a bitmap specifying which field the word is to be found.
+      [ 
+        { field : "title",       bits : 0x01 },
+        { field : "description", bits : 0x02 },
+        { field : "tags",        bits : 0x04 },
+        { field : "text",        bits : 0x07 }  // all bits set
+      ].forEach(
+        function(fieldInfo)
+        {
+          var             data = queryArgs[fieldInfo.field];
+
+          // Was this list provided?
+          if (data)
+          {
+            // Yup. For each word in this list...
+            data.forEach(
+              function(word)
+              {
+                // If the word hasn't been seen yet, ...
+                if (! words[word])
+                {
+                  // ... then add it to the words map, initially with no bits
+                  words[word] = 0x00;
+                }
+                
+                // OR- in the appropriate bits for this list
+                words[word] |= fieldInfo.bits;
+              },
+              this);
+          }
+        },
+        this);
+
+      // There are 8 possible combinations. Initialize the lists of words
+      for (i = 1; i < 8; i++)
       {
+        wordsPerList[i] = [];
+      }
+
+      // Build 8 lists from the bitmask data.
+      qx.lang.Object.getKeys(words).forEach(
+        function(word)
+        {
+          // Put this word on the list associated with its bitmask value
+          wordsPerList[words[word]].push(word);
+        },
+        this);
+
+      // We'll discover if we do any keyword searches
+      bKeywordUsed = false;
+
+      // We'll do up to 8 searches: one for each combination that has words
+      for (i = 1; i < 8; i++)
+      {
+        // Are there words in this list?
+        if (wordsPerList[i].length == 0)
+        {
+          // Nope. Nothing to do for this list.
+          continue;
+        }
+        
+        // We're doing a keyword search
+        bKeywordUsed = true;
+
+        // Build the query fields list
+        queryFields = [];
+        if (i & 0x01)
+        {
+          queryFields.push("title");
+        }
+        if (i & 0x02)
+        {
+          queryFields.push("description");
+        }
+        if (i & 0x04)
+        {
+          queryFields.push("tags");
+        }
+
         // Perform keyword search
-        keywordSearchResultArr = this.keywordSearch(keywordString,
-                                                queryArgs["queryFields"],
-                                                queryArgs["requestedFields"],
-                                                error);
+        thisSearchResultArr = 
+          this.keywordSearch(wordsPerList[i], queryFields, error);
+
         // If there was a problem
-        if (keywordSearchResultArr === error)
+        if (thisSearchResultArr === error)
         {
           // Propegate the failure
           return error;
         }
+        
+        // Append these results to any previous ones
+        qx.lang.Array.append(keywordSearchResultArr, thisSearchResultArr);
       }
-      
-      // Limit results to only active apps
-      queryArgs["criteria"] = 
-        {
-          type : "op",
-          method : "and",
-          children : 
-          [
-            {
-              type: "element",
-              field: "status",
-              value: aiagallery.dbif.Constants.Status.Active
-            },
-            queryArgs["criteria"]
-          ]
-        };
 
-      // Was there any criteria given to perform appQuery on?
-      if (queryArgs["criteria"]["method"] === "and" &&
-          queryArgs["criteria"]["children"].length === 0)
+      // Were there any query args specified?
+      if (queryArgs.criteria)
       {
-        // No, just use the keyword results
-        bQueryUsed = false;
-      }
-      else
-      {
-        // Yes, use it to perform appQuery
-        appQueryResults = this.appQuery(queryArgs["criteria"],
-                                        queryArgs["requestedFields"],
-                                        error);
+        // Yes. Issue the query. Limit results to only active apps.
+        queryArgs.criteria = 
+          {
+            type     : "op",
+            method   : "and",
+            children : 
+            [
+              {
+                type  : "element",
+                field : "status",
+                value : aiagallery.dbif.Constants.Status.Active
+              },
+              queryArgs.criteria
+            ]
+          };
+
+        // Issue the query
+        appQueryResults = this.appQuery(queryArgs.criteria, null, error);
       
         // If there was a problem
         if (appQueryResults === error)
         {
-          // Propegate the failure
+          // Propagate the failure
           return error; 
         }
 
         // Unwrap the appQuery results
         appQueryResultArr = appQueryResults["apps"];
-      }
-      
-      // Was nothing given to search on?
-      if (!bKeywordUsed && !bQueryUsed)
-      {
-        // This is an error
-        error.setCode(1);
-        error.setMessage("No keyword or search criteria given");
-        return error;
-      }
-      
-      // Was just appQuery used?
-      if (!bKeywordUsed)
-      {
-        // Then just return its results
-        return appQueryResultArr;
-      }
-      
-      // Was just keyword search used?
-      if (!bQueryUsed)
-      {
-        // Then just return its results
-        return keywordSearchResultArr;
-      }
-      
-      // If we got here, then both keyword search and app query ran so...
-      
-      // Perform intersection operation            
-      keywordSearchResultArr.forEach(
-        function(keywordAppObj)
+        
+        // If we did a keyword query...
+        if (bKeywordUsed)
         {
+          // ... then remove any of the queryargs results not in keyword results
           appQueryResultArr.forEach(
-            function(appQueryAppObj)
+            function(app)
             {
-              if (keywordAppObj["uid"] === appQueryAppObj["uid"])
+              // Does this app's uid exist in the keyword uid list?
+              if (qx.lang.Array.contains(keywordSearchResultArr, app.uid))
               {
-                intersectionArr.push(appQueryAppObj);
-              }              
-            });
-        });
-                                     
-      // Return the intersection between the two result sets
-      return intersectionArr;    
-      
+                // Yup. Add it to the list to be returned
+                intersectionArr.push(app);
+              }
+            },
+            this);
+          
+          // We now have our final list. Return it.
+          return intersectionArr;
+        }
+        else
+        {
+          // No keywords, so we can return the app query results
+          return appQueryResultArr;
+        }
+      }
+
+      // There was no app query, so we just need to retrieve the apps
+      // corresponding to the UIDs we got from the keyword search.
+      return this.getAppListByList(keywordSearchResultArr);
     },
 
     /**
