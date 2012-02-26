@@ -31,12 +31,22 @@ qx.Class.define("aiagallery.test.CommentsTest",
     {
       var             test;
       var             myCommentData;
-      var             appId = 105;
-      var             appObj = new aiagallery.dbif.ObjAppData(appId);
-      var             appNumComments = appObj.getData().numComments;
-      var             appNumRootComments = appObj.getData().numRootComments;
+      var             appId;
+      var             appObj;
+      var             appNumComments;
+      var             appNumRootComments;
       var             secondCommentData;
-      var             query = liberated.dbif.Entity.query;
+      var             query;
+      
+      // Ensure the database is properly initialized
+      liberated.sim.Dbif.setDb(
+        qx.lang.Object.clone(aiagallery.dbif.MSimData.Db, true));
+
+      appId = 105;
+      appObj = new aiagallery.dbif.ObjAppData(appId);
+      appNumComments = appObj.getData().numComments;
+      appNumRootComments = appObj.getData().numRootComments;
+      query = liberated.dbif.Entity.query;
 
       this.dbifSim.setWhoAmI(
         {
@@ -139,14 +149,14 @@ qx.Class.define("aiagallery.test.CommentsTest",
       
       // Call the getComments() RPC and save the length of the result.
       var commentsArrLength =
-        this.dbifSim.getComments(appId, null, null, this.error).length ;
+        this.dbifSim.getComments(appId, null, this.error).length ;
       
       // We added 3, so there should be at least 3
       this.assert(commentsArrLength >= 3, "getComments() good input");
       
       // With an invalid appId, we should get no results
       this.assert(
-        this.dbifSim.getComments(-1, null, null, this.error).length == 0,
+        this.dbifSim.getComments(-1, null, this.error).length == 0,
         "getComments() bad input");
 
       // Retrieve the third comment
@@ -163,7 +173,7 @@ qx.Class.define("aiagallery.test.CommentsTest",
       this.assertTrue(test, "last comment deleted, supposedly");
       
       // Ensure that there is now one fewer comment
-      test = this.dbifSim.getComments(appId, null, null, this.error);
+      test = this.dbifSim.getComments(appId, null, this.error);
       this.assert(test.length == commentsArrLength - 1,
                   "last comment deleted successfully");
       
@@ -192,18 +202,37 @@ qx.Class.define("aiagallery.test.CommentsTest",
       var             validAppId = 151;
       var             invalidAppId = 23;
     
+      // Ensure the database is properly initialized
+      liberated.sim.Dbif.setDb(
+        qx.lang.Object.clone(aiagallery.dbif.MSimData.Db, true));
+
       // Need an error object to call RPCs with
       var error = new liberated.rpc.error.Error("2.0");
 
       // Add a comment
-      this.dbifSim.addComment(validAppId, "Hello world", null, error);
+      test = this.dbifSim.addComment(validAppId, "Hello world", null, error);
       
-      test = this.dbifSim.getComments(validAppId, null, null, error);
+      // Ensure that an error was not returned
+      this.assert(test !== error,
+                  "Error: " + error.getCode() + ": " + error.getMessage());
+
+
+      test = this.dbifSim.getComments(validAppId, null, error);
+
+      // Ensure that an error was not returned
+      this.assert(test !== error,
+                  "Error: " + error.getCode() + ": " + error.getMessage());
+
       this.assertEquals(1, 
                         test.length,
                         "Ensure single result for valid appId");
 
-      test = this.dbifSim.getComments(invalidAppId, null, null, error);
+      test = this.dbifSim.getComments(invalidAppId, null, error);
+
+      // Ensure that an error was not returned
+      this.assert(test !== error,
+                  "Error: " + error.getCode() + ": " + error.getMessage());
+
       this.assertEquals(0,
                         test.length,
                         "Ensure no results for invalid appId");
