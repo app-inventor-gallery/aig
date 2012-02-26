@@ -1120,7 +1120,7 @@ alert("json: " + json);
       layout.setColumnFlex(2, 1);
 
       // Get a bold font reference
-      font = qx.theme.manager.Font.getInstance().resolve("bold");
+      font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
 
       // Add the labels
       text = this.tr("Search for words found in apps' title, description, " +
@@ -1165,7 +1165,7 @@ alert("json: " + json);
       layout.setColumnAlign(5, "right", "middle");
       
       // Generally left align everything else
-      layout.setRowAlign(0, "left", "middle");
+      layout.setRowAlign(0, "center", "middle");
       layout.setRowAlign(1, "left", "middle");
       layout.setRowAlign(2, "left", "middle");
       layout.setRowAlign(3, "left", "middle");
@@ -1208,7 +1208,8 @@ alert("json: " + json);
         };
       
       // Get a bold font reference
-      font = qx.theme.manager.Font.getInstance().resolve("bold");
+      font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+      font.setSize(18);
 
       // Add a left spacer to center the other fields
       container.add(new qx.ui.core.Spacer(10, 10), { row : 0, column : 0 });
@@ -1217,10 +1218,11 @@ alert("json: " + json);
       container.add(new qx.ui.core.Spacer(10, 10), { row : 0, column : 10 });
 
       // Add the header
-      o = new qx.ui.basic.Label(this.tr("Find apps in which all of:"));
+      o = new qx.ui.basic.Label(this.tr("Find apps in which..."));
       o.set(
         {
-          font : font
+          font      : font,
+          textAlign : "center"
         });
       container.add(o, this.__advConfig.header);
       
