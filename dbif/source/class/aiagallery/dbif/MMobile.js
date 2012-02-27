@@ -192,8 +192,7 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       };
     
       // Use MSearch Mixin
-      results = this.keywordSearch(keywordString.split(" "),
-                                   null, requestedFields, error);
+      results = this.keywordSearch(keywordString.split(" "), null, true, error);
       
       // If they have not specified a count nor an offset...
       if (count === null && offset === null)

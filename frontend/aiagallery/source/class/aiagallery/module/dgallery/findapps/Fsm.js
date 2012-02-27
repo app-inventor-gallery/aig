@@ -68,6 +68,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
           // click on app title or image
           "viewApp" : "Transition_Idle_to_Idle_via_viewApp",
 
+          // a new search was initiated
+          "queryChanged" : "Transition_Idle_to_AwaitRpcResult_via_queryChanged",
+
           // When we get an appear event, retrieve the category tags list. We
           // only want to do it the first time, though, so we use a predicate
           // to determine if it's necessary.
@@ -160,34 +163,82 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
         "ontransition" : function(fsm, event)
         {
           var             i;
-          var             criteria;
-          var             keywordString;
           var             request;
-          var             criteriaArray;
+          var             eventData;
+          var             requestData = {};
           
-          // We're building a series of AND criteria
-          criteria =
+          // Retrieve the event data which provides the query criteria
+          eventData = event.getData().data;
+
+          // First, let's set the keyword search fields. Some of these may not
+          // exist in the event data, but that's ok.
+          requestData.text = eventData.text;
+          requestData.title = eventData.title;
+          requestData.description = eventData.description;
+          requestData.tags = eventData.tags;
+
+          // Now let's start building the AND-ed app field criteria
+          requestData.criteria = 
             {
               type     : "op",
               method   : "and",
               children : []
             };
-          
-          // Retrieve the requested search words
-          keywordString = fsm.getObject("txtTextSearch").getValue();
-          
+
+          // Add author
+          if (eventData.authorId)
+          {
+            requestData.criteria.children.push(
+              {
+                type  : "element",
+                field : "owner", 
+                value : eventData.authorId
+              });
+          }
+
+          // Add likes count
+          if (eventData.likes)
+          {
+            requestData.criteria.children.push(
+              {
+                type     : "element",
+                field    : "numLikes",
+                value    : eventData.likes[1],
+                filterOp : eventData.likes[0]
+              });
+          }
+
+          // Add downloads count
+          if (eventData.downloads)
+          {
+            requestData.criteria.children.push(
+              {
+                type     : "element",
+                field    : "numDownloads",
+                value    : eventData.downloads[1],
+                filterOp : eventData.downloads[0]
+              });
+          }
+
+          // Add views count
+          if (eventData.views)
+          {
+            requestData.criteria.children.push(
+              {
+                type     : "element",
+                field    : "numViews",
+                value    : eventData.views[1],
+                filterOp : eventData.views[0]
+              });
+          }
+
           // Issue the remote procedure call to execute the query
           request =
             this.callRpc(fsm,
                          "aiagallery.features",
                          "intersectKeywordAndQuery",
                          [
-                           {
-                             criteria : criteria,
-                             keywordString : keywordString,
-                             requestedFields : null,
-                             queryFields : null // not yet implemented
-                           }
+                           requestData
                          ]);
 
           // When we get the result, we'll need to know what type of request

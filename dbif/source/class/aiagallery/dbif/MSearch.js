@@ -183,8 +183,13 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
             });
         });
       
-      // Get the list of UIDs of apps we found
-      uidArr = qx.lang.Object.getKeys(queryResultsMap);
+      // Get the list of UIDs of apps we found. Keys are strings, but UIDs are
+      // numbers, so map to numbers at the same time.
+      uidArr = qx.lang.Object.getKeys(queryResultsMap).map(
+        function(uid)
+        {
+          return Number(uid);
+        });
       
       // Sort the UIDs based on the number of keyword matches
       uidArr.sort(

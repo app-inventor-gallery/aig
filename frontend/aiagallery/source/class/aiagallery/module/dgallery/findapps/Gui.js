@@ -109,14 +109,14 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         break;
       
       case "intersectKeywordAndQuery":
-        // Retrieve the app list and list of categories
+        // Retrieve the app list
         apps = response.data.result;
         
         // Build a model for the search results list
         model = qx.data.marshal.Json.createModel(apps);
 
         // Add the data to the list
-        this.__criteria.getSearchResultsList.setModel(model);
+        this.__criteria.getSearchResultsList().setModel(model);
         break;
         
         
@@ -131,7 +131,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         model = qx.data.marshal.Json.createModel(apps);
 
         // Add the data to the list
-        this.__criteria.getSearchResultsList.setModel(model);
+        this.__criteria.getSearchResultsList().setModel(model);
         break;
 
       default:

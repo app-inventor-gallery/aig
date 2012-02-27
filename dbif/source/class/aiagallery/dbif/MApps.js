@@ -2140,8 +2140,17 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             queryFields;
       var             intersectionArr = [];
       
+      // If there is a criteria entry but it's an AND that has no children, ...
+      if (queryArgs.criteria && 
+          queryArgs.criteria.type == "op" &&
+          queryArgs.criteria.method == "and" &&
+          queryArgs.criteria.children.length == 0)
+      {
+        // ... then remove it
+        delete queryArgs.criteria;
+      }
       
-      // Was nothing given to search on?
+      // Ensure that something was given to search on
       if (! queryArgs.text &&
           ! queryArgs.title &&
           ! queryArgs.description  &&
@@ -2150,7 +2159,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       {
         // This is an error
         error.setCode(1);
-        error.setMessage(this.tr("No keyword or search criteria given"));
+        error.setMessage("No keyword or search criteria given");
         return error;
       }
 
@@ -2237,7 +2246,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
         // Perform keyword search
         thisSearchResultArr = 
-          this.keywordSearch(wordsPerList[i], queryFields, error);
+          this.keywordSearch(wordsPerList[i], queryFields, false, error);
 
         // If there was a problem
         if (thisSearchResultArr === error)

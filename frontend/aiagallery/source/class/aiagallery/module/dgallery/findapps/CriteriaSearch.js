@@ -79,6 +79,44 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       },
       this);
     
+    // When the radioview selection changes, copy fields or clear entry
+    this.__radioView.addListener(
+      "changeSelection",
+      function(e)
+      {
+        var             page;
+
+        // Find out which page we're switching to
+        page = e.getTarget().getSelection()[0];
+        
+        // If we're switching to the Specific Fields page
+        if (page == this["__containerAdvanced"])
+        {
+          var             words;
+
+          // Are there words entered in the All Text Fields box? Get its value.
+          words = this.getChildControl("txtTextSearch").getValue();
+          
+          // Trim any surrounding whitespace
+          words = qx.lang.String.trim(words);
+          
+          // Check for content. Anything there?
+          if (words.length > 0)
+          {
+            // Yup. Copy them to all three fields in 'advanced'
+            this.getChildControl("txtTitle").setValue(words);
+            this.getChildControl("txtDescription").setValue(words);
+            this.getChildControl("txtTags").setValue(words);
+          }
+        }
+        else
+        {
+          // We're switching to the All Text Fields page. Clear the input field.
+          this.getChildControl("txtTextSearch").setValue("");
+        }
+      },
+      this);
+
     // Create a grid layout for the button bar, with centered buttons
     layout = new qx.ui.layout.Grid(10, 10);
     layout.setColumnFlex(0, 1);
@@ -625,7 +663,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       {
         // Fire the event. Pass both the map and the JSON since we know we'll
         // have two listeners, one requring each format.
-alert("json: " + json);
         this.fireDataEvent("queryChanged", 
                            {
                              data : data,
@@ -696,6 +733,9 @@ alert("json: " + json);
         // Call its clear function with the appropriate control
         fields[field](this.getChildControl(field));
       }
+      
+      // Also clear the search results
+      this.__searchResults.setModel(null);
     },
 
     _createChildControlImpl : function(id, hash)
