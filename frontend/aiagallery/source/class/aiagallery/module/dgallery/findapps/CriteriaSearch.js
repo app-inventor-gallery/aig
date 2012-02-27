@@ -108,43 +108,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             this.getChildControl("txtDescription").setValue(words);
             this.getChildControl("txtTags").setValue(words);
           }
-
-          // Disable fields on the other page
-          this.getChildControl("txtTextSearch").setEnabled(false);
-          
-          // Enable fields on this page
-          this.getChildControl("txtTitle").setEnabled(true);
-          this.getChildControl("txtDescription").setEnabled(true);
-          this.getChildControl("txtTags").setEnabled(true);
-          this.getChildControl("txtAuthorId").setEnabled(true);
-          this.getChildControl("lstLikesOp").setEnabled(true);
-          this.getChildControl("spnLikes").setEnabled(true);
-          this.getChildControl("lstDownloadsOp").setEnabled(true);
-          this.getChildControl("spnDownloads").setEnabled(true);
-          this.getChildControl("lstViewsOp").setEnabled(true);
-          this.getChildControl("spnViews").setEnabled(true);
-          this.getChildControl("lstCategories").setEnabled(true);
         }
         else
         {
           // We're switching to the All Text Fields page. Clear the input field.
           this.getChildControl("txtTextSearch").setValue("");
-
-          // Disable fields on the other page
-          this.getChildControl("txtTextSearch").setEnabled(true);
-          
-          // Enable fields on this page
-          this.getChildControl("txtTitle").setEnabled(false);
-          this.getChildControl("txtDescription").setEnabled(false);
-          this.getChildControl("txtTags").setEnabled(false);
-          this.getChildControl("txtAuthorId").setEnabled(false);
-          this.getChildControl("lstLikesOp").setEnabled(false);
-          this.getChildControl("spnLikes").setEnabled(false);
-          this.getChildControl("lstDownloadsOp").setEnabled(false);
-          this.getChildControl("spnDownloads").setEnabled(false);
-          this.getChildControl("lstViewsOp").setEnabled(false);
-          this.getChildControl("spnViews").setEnabled(false);
-          this.getChildControl("lstCategories").setEnabled(false);
         }
       },
       this);
@@ -847,8 +815,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           {
             width       : 200,
             placeholder : "Words in apps' title",
-            tabIndex    : 2,
-            enabled    : false
+            tabIndex    : 2
           });
 
         f = function(e)
@@ -890,8 +857,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           {
             width       : 200,
             placeholder : "Words in apps' description",
-            tabIndex    : 3,
-            enabled     : false
+            tabIndex    : 3
           });
 
         f = function(e)
@@ -925,8 +891,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           {
             width : 200,
             placeholder : "Words in apps' tags",
-            tabIndex    : 4,
-            enabled     : false
+            tabIndex    : 4
           });
 
         f = function(e)
@@ -960,8 +925,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           {
             width       : 100,
             placeholder : "Author's unique ID",
-            tabIndex    : 5,
-            enabled     : false
+            tabIndex    : 5
           });
 
         f = function(e)
@@ -1024,8 +988,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control.set(
           {
             width    : 46,
-            tabIndex : 6,
-            enabled  : false
+            tabIndex : 6
           });
         
         control.addListener(
@@ -1051,8 +1014,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           {
             width    : 100,
             maximum  : 1000000,
-            tabIndex : 7,
-            enabled  : false
+            tabIndex : 7
           });
         this.__containerAdvanced._add(control, this.__advConfig.spnLikes);
         break;
@@ -1085,8 +1047,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control.set(
           {
             width    : 46,
-            tabIndex : 8,
-            enabled  : false
+            tabIndex : 8
           });
         
         control.addListener(
@@ -1112,8 +1073,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           {
             width    : 100,
             maximum  : 1000000,
-            tabIndex : 9,
-            enabled  : false
+            tabIndex : 9
           });
         this.__containerAdvanced._add(control, this.__advConfig.spnDownloads);
         break;
@@ -1146,8 +1106,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control.set(
           {
             width    : 46,
-            tabIndex : 10,
-            enabled  : false
+            tabIndex : 10
           });
         
         control.addListener(
@@ -1173,8 +1132,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           {
             width    : 100,
             maximum  : 1000000,
-            tabIndex : 11,
-            enabled  : false
+            tabIndex : 11
           });
         this.__containerAdvanced._add(control, this.__advConfig.spnViews);
         break;
@@ -1195,8 +1153,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           {
             height        : 80,
             selectionMode : "multi",
-            tabIndex      : 12,
-            enabled       : false
+            tabIndex      : 12
           });
 
         control.addListener(
@@ -1359,7 +1316,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       container.add(o, this.__advConfig.lblDescription);
 
       // Add the tags label
-      o = new qx.ui.basic.Label(this.tr("Tags provided"));
+      o = new qx.ui.basic.Label(this.tr("Tags include"));
       this.assertMap(this.__advConfig.lblTags);
       container.add(o, this.__advConfig.lblTags);
 
