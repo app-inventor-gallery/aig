@@ -209,12 +209,13 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             function(item) 
             {
               // Listen for clicks on the title or image, to view the app
-              item.addListener("viewApp",
-                               function(e)
-                               {
-                                 this.fireDataEvent(e.getData());
-                               },
-                               this);
+              item.addListener(
+                "viewApp",
+                function(e)
+                {
+                  this.fireDataEvent("viewApp", e.getData());
+                },
+                this);
             },
             this)
         }
