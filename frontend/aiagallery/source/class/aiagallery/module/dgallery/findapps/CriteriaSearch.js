@@ -1049,7 +1049,12 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             width    : 46,
             tabIndex : 8
           });
-        
+
+        //
+        // TEMPORARILY DISABLE until index work is complete
+        //
+        control.setEnabled(false);
+
         control.addListener(
           "changeSelection",
           function(e)
@@ -1075,6 +1080,12 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             maximum  : 1000000,
             tabIndex : 9
           });
+
+        //
+        // TEMPORARILY DISABLE until index work is complete
+        //
+        control.setEnabled(false);
+
         this.__containerAdvanced._add(control, this.__advConfig.spnDownloads);
         break;
         
@@ -1109,6 +1120,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             tabIndex : 10
           });
         
+        //
+        // TEMPORARILY DISABLE until index work is complete
+        //
+        control.setEnabled(false);
+        
         control.addListener(
           "changeSelection",
           function(e)
@@ -1134,6 +1150,12 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             maximum  : 1000000,
             tabIndex : 11
           });
+
+        //
+        // TEMPORARILY DISABLE until index work is complete
+        //
+        control.setEnabled(false);
+
         this.__containerAdvanced._add(control, this.__advConfig.spnViews);
         break;
 
@@ -1327,10 +1349,22 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       
       // Add the downloads label
       o = new qx.ui.basic.Label(this.tr("Downloads"));
+
+      //
+      // TEMPORARILY DISABLE until index work is complete
+      //
+      o.setEnabled(false);
+
       container.add(o, this.__advConfig.lblDownloads);
       
       // Add the views label
       o = new qx.ui.basic.Label(this.tr("Views"));
+
+      //
+      // TEMPORARILY DISABLE until index work is complete
+      //
+      o.setEnabled(false);
+
       container.add(o, this.__advConfig.lblViews);
       
       // Add the author id label
