@@ -163,12 +163,6 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
         return error;
       }
 
-<<<<<<< HEAD
-      // Necessary: Make sure all keyword search queries are in lowercase,
-			//            becase ObjSearch stores all entries in lowercase
-      keywordString = keywordString.toLowerCase();
-=======
-      // If we weren't given a specific list of fields, assume all text fields
       if (! queryFields)
       {
         queryFields = [ "title", "description", "tags" ];
@@ -181,41 +175,11 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
         {
           return keyword.toLowerCase();
         });
->>>>>>> 8299608110f92fc1e8c51f5752ddb62f1c8984de
            
       // Remove all stop words from the keyword array
       keywords = qx.lang.Array.exclude(keywords,
                                        aiagallery.dbif.MSearch.stopWordArr);
       
-<<<<<<< HEAD
-      // FIXME: Doing individual word queries (AAAH!!)
-      keywordArr.forEach(function(keyword)
-        {
-      
-          criteria = 
-            {
-              type  : "element",
-              field : "word",
-              value : keyword
-            };
-          
-          queryResult = liberated.dbif.Entity.
-													query("aiagallery.dbif.ObjSearch",
-                                criteria,
-                                null);
-          
-          // Collect all the single word queries in a map
-          queryResult.forEach(
-						function(obj)
-            {
-							if (typeof queryResultsMap[obj.appId] === "undefined")
-              {
-                  // We must make sure there is an array for this appId
-                  queryResultsMap[obj.appId] = [];
-              }
-                                
-							// Push this keyword into the array
-=======
       // For each provided keyword...
       keywords.forEach(
         function(keyword)
@@ -246,7 +210,6 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
               }
               
               // Push this keyword onto the array
->>>>>>> 8299608110f92fc1e8c51f5752ddb62f1c8984de
               queryResultsMap[obj.appId].push(keyword);
             });
         });
