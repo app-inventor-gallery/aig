@@ -2102,13 +2102,18 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      * the given criteria, and return the intersection of the results.
      *
      * @param queryArgs {Map}
+
      *   This map may contain search criteria and requested fields, as
-     *   required by {@link aiagallery.dbif.MApps.appQuery}. Additionally, it
-     *   may contain up to four arrays of words to search for. The first of
-     *   the arrays is a list of words to search for in all text fields
-     *   (title, description, and tags). The other three allow providing
-     *   different lists of words to search for in any or all of those
-     *   fields.
+     *   required by {@link aiagallery.dbif.MApps.appQuery}. All contraints of
+     *   the search criteria must be met for matches to be returned.
+     * 
+     *   Additionally, there may be up to four arrays of words to search
+     *   for. The first of the arrays is a list of words to search for in all
+     *   text fields (title, description, and tags, where 'tags' includes
+     *   categories). The other three lists allow providing different lists of
+     *   words to search for in any or all of those fields. In each case, apps
+     *   which have any of the specified words in that field (or group of
+     *   fields) is returned, sorted by number of matches.
      *
      *   For example:
      *  
