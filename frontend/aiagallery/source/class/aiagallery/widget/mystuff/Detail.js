@@ -131,7 +131,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.List();
     o.set(
       {
-        tabIndex    : 3,
+        tabIndex      : 3,
+        width         : 150,
         height        : 100,
         selectionMode : "multi",
         required      : true
@@ -148,6 +149,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o.set(
       {
         tabIndex    : 5,
+        width       : 150,
         placeholder : "Enter a new tag"
       });
     form.getValidationManager().add(
@@ -219,6 +221,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o.set(
       {
         tabIndex      : 7,
+        width         : 150,
         height        : 100,
         selectionMode : "single",
         required      : false
