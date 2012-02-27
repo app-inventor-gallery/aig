@@ -200,7 +200,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
       // Specify the resize behavior. Obtain the behavior object to manipulate
       var resizeBehavior = tcm.getBehavior();
 
-      // We'll use our cell editor factory for getting editor of for any column
+      // We'll use our cell editor factory for getting editor for any column
       var editor = new aiagallery.module.mgmt.applications.CellEditorFactory();
 
       // Set cell editor factory and behavior for each column
@@ -350,15 +350,19 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
 
         // Set the entire data model given the result array
         // 2nd parameter, "rememberMaps", set to true (default: false), so that
-        // columns not in the model are accessible (such as uid, e.g. when deleting an app)
-        // (3rd param "clearSorting", changed from T default to F so sorting preserved)
+        // columns not in the model are still accessible
+        // (such as uid, e.g. when deleting an app).
+        // The 3rd param "clearSorting", is changed from T default to F so
+        // that sorting is preserved)
         table.getTableModel().setDataAsMapArray(response.data.result.apps, true, false);
+
+        // Save the category list in a known place, for later access
+        // FIXME (maybe): Same place in the myapps module does this same thing.
+        // (Not so important, really.)
+        this.getApplicationRoot().setUserData("categories",
+                                              response.data.result.categories);
+
         break;
-// Todo:  If no longer stringizing app rpc results, need to fix up status and tag displays
-//   both here, and when get rpc result from editing.
-// Maybe better idea:  Use special cell renderers
-//   qx.ui.table.cellrenderer.Replace looks tailor-made for that
-//   (use replaceMap for status and replaceFunction for arrays like tags)
 
       case "EditApp":
         // Nothing more to do but close the cell editor

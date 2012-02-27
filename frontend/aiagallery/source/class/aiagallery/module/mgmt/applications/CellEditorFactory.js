@@ -29,23 +29,16 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       var             rowData;
       var             windowTitle;
       var             fsm;
+      var             categoryList;
 
       // Get row data of the app being edited from the cellInfo object
-      if (cellInfo && cellInfo.row !== undefined)
-      {
-        dataModel = cellInfo.table.getTableModel();
-        rowData = dataModel.getRowDataAsMap(cellInfo.row);
-        windowTitle = this.tr("Edit App: ") + rowData.title;
-      }
-      else
-      // Error--no cellInfo! (shouldn't happen)
-      {
-// INSERT ERROR CODE HERE!
-      }
+      dataModel = cellInfo.table.getTableModel();
+      rowData = dataModel.getRowDataAsMap(cellInfo.row);
+      windowTitle = this.tr("Edit App: ") + rowData.title;
 
       // Cell editor layout
 // TWEAK ME!
-      var layout = new qx.ui.layout.Grid(3, 2);
+      var layout = new qx.ui.layout.Grid(4, 2);
       layout.setColumnAlign(0, "right", "top");
       layout.setColumnWidth(0, 80);
       layout.setColumnWidth(1, 400);
@@ -63,14 +56,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
           showMinimize: false,
           padding : 10
         });
-      // Center on resize
-// NO EFFECT, AS FAR AS I CAN TELL
-      cellEditor.addListener(
-        "resize",
-        function(e)
-        {
-          this.center();
-        });
 
       // Save cell info, which will be needed when the cell editor closes.
       cellEditor.setUserData("cellInfo", cellInfo);
@@ -79,7 +64,8 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       i = 0;
       [
         this.tr("Title"),
-        this.tr("Description")
+        this.tr("Description"),
+        this.tr("Categories")
       ].forEach(function(label)
         {
           o = new qx.ui.basic.Label(label);
@@ -100,10 +86,115 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       var descriptionField = new qx.ui.form.TextField("");
       descriptionField.setValue(rowData.description);
       cellEditor.add(descriptionField, { row : 1, column : 1 });
+     
+      // Create the editor field for "category" (required) tags which have
+      // been stored in the table's user data.
+      
+      // Get the list of currently-selected tags
+      var currentTags = rowData.tags;
+      
+      // Get the list of possible tags, at least one of which must be selected.
+      categoryList =
+        qx.core.Init.getApplication().getRoot().getUserData("categories");
+
+      // Create a multi-selection list and add the categories to it.
+      var categories = new qx.ui.form.List();
+      categories.setHeight(100);
+      categories.setSelectionMode("multi"); // allow multiple selections
+      categoryList.forEach(function(tagName) 
+        {
+          var item = new qx.ui.form.ListItem(tagName);
+          categories.add(item);
+          
+          // Is this a current tag of the app being edited?
+          if (qx.lang.Array.contains(currentTags, tagName))
+          {
+            // Yup. Select it.
+            categories.addToSelection(item);
+          }
+        });
+      
+      cellEditor.add(categories, { row : 2, column : 1, colSpan : 1 });
+
+      //
+      // Add a list for editing additional tags
+      //
+     
+      // Create a grid layout for it
+      layout = new qx.ui.layout.Grid(4, 4);
+      layout.setColumnWidth(0, 60);
+      layout.setColumnWidth(1, 55);
+      layout.setColumnWidth(2, 50);
+      layout.setColumnWidth(3, 65);
+      var grid = new qx.ui.container.Composite(layout);
+      cellEditor.add(grid, { row : 2, column : 2, colSpan : 1 });
+
+      // We'll want a list of tags
+      var additionalTags = new qx.ui.form.List();
+      additionalTags.setHeight(75);
+      grid.add(additionalTags, { row : 0, column : 0, colSpan : 4});
+
+      
+      // Add those tags that are not also categories
+      currentTags.forEach(function(tag)
+        {
+          if (tag != "" && ! qx.lang.Array.contains(categoryList, tag))
+          {
+            additionalTags.add(new qx.ui.form.ListItem(tag));
+          }
+        });
+
+      // Create the button to delete the selected tag
+      var tagDelete = new qx.ui.form.Button(this.tr("Delete"));
+      grid.add(tagDelete, { row : 1, column : 3 });
+      
+      // Create an input field and button to add a new tag
+      var newTag = new qx.ui.form.TextField();
+      newTag.setFilter(/[- a-zA-Z0-9]/); // only allow these characters in tags
+      
+      // Text placeholder for tags field
+      newTag.setPlaceholder("add tags");
+
+      grid.add(newTag, { row : 1, column : 1, colSpan : 2});
+      var tagAdd = new qx.ui.form.Button(this.tr("Add tag"));
+      tagAdd.setEnabled(false);
+      grid.add(tagAdd, { row : 1, column : 0 });
+
+      // When the selection changes, determine whether to enable the delete.
+      additionalTags.addListener("changeSelection",
+        function(e)
+        {
+          tagDelete.setEnabled(additionalTags.getSelection().length !== 0);
+        });
+
+      // Enable the Add button whenever there's data in the text field
+      newTag.addListener("input",
+        function(e)
+        {
+          tagAdd.setEnabled(e.getData().length !== 0);
+        });
+
+      // When the Add button is pressed, add the item to the list
+      tagAdd.addListener("execute",
+        function(e)
+        {
+          additionalTags.add(new qx.ui.form.ListItem(newTag.getValue()));
+          newTag.setValue(""); // clear the entered text
+        });
+
+      // When the delete button is pressed, delete selection from the list
+      tagDelete.addListener("execute",
+        function(e)
+        {
+          additionalTags.remove(additionalTags.getSelection()[0]);
+        });
+
 
       // Save the input fields for access by getCellEditorValue() and the FSM
       cellEditor.setUserData("titleField", titleField);
       cellEditor.setUserData("descriptionField", descriptionField);
+      cellEditor.setUserData("categories", categories);
+      cellEditor.setUserData("additionalTags", additionalTags);
 
       // Save the uid
       cellEditor.setUserData("uid", rowData.uid);
@@ -128,9 +219,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
 // Maybe OK button should be on left--not important ATM.
       var okButton =
         new qx.ui.form.Button("Ok", "icon/22/actions/dialog-ok.png");
-// Dont' understand next line
-// ( http://demo.qooxdoo.org/current/apiviewer/#qx.ui.core.Widget~addState doesn't say much )
-      okButton.addState("default");
       fsm.addObject("ok", okButton);
       okButton.addListener("execute", fsm.eventListener, fsm);
       buttonPane.add(okButton);
