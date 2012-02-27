@@ -243,7 +243,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
             requestData.criteria.children.push(
               {
                 type     : "element",
-                field    : "numViews",
+                field    : "numViewed",
                 value    : eventData.views[1],
                 filterOp : eventData.views[0]
               });
