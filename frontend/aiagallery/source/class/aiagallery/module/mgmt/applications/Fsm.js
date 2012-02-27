@@ -370,17 +370,45 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var             selection;
           var             internal = { permissions : [], status : null };
           var             request;
+          var             categories;
+          var             additionalTags;
+          var             tags;
 
           // Retrieve the cell editor and cell info
           cellEditor = this.getUserData("cellEditor");
           cellInfo = this.getUserData("cellInfo");
 
           // Retrieve the values from the cell editor
-          uid            = cellEditor.getUserData("uid");
+          uid = cellEditor.getUserData("uid");
           appTitle = cellEditor.getUserData("titleField").getValue();
           description = cellEditor.getUserData("descriptionField").getValue();
 
-// also required:  owner, tags, source, image1
+          categories     = cellEditor.getUserData("categories");
+          additionalTags = cellEditor.getUserData("additionalTags");
+
+          // Create the tags list out of a combination of the categories and
+          // additionalTags lists.
+          tags = [];
+
+          // Add the selected categories
+          selection = categories.getSelection();
+          selection.forEach(
+            function(item)
+            {
+              // Add this selection to the tags list
+              tags.push(item.getLabel());
+            });
+
+          // Add the selected additional tags
+          selection = additionalTags.getSelectables();
+          selection.forEach(
+            function(item)
+            {
+              // Add this selection to the tags list
+              tags.push(item.getLabel());
+            });
+
+// also required:  image1, numCurFlags, ...
 // Get them from the table, for the moment
 
           var row = cellInfo.row;
@@ -388,20 +416,17 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var dataModel = table.getTableModel();
           var rowData = dataModel.getRowDataAsMap(row);
 
-          var owner = rowData.owner;
-          var tags = rowData.tags;
-          var source = rowData.source;
-          var image1 = rowData.image1;
+//          var source = rowData.source;
+//          var image1 = rowData.image1;
 
           // Save the request data
           var requestData =
             {
               title       : appTitle,
               description : description,
-              owner       : owner,
-              tags        : tags,
-              source      : source,
-              image1      : image1
+              tags        : tags
+//              source      : source,
+//              image1      : image1
             };
  
           // Issue an Edit Application call.
