@@ -1307,42 +1307,34 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       
       // Add the title label
       o = new qx.ui.basic.Label(this.tr("Title contains"));
-      this.assertMap(this.__advConfig.lblTitle);
       container.add(o, this.__advConfig.lblTitle);
 
       // Add the description label
       o = new qx.ui.basic.Label(this.tr("Description contains"));
-      this.assertMap(this.__advConfig.lblDescription);
       container.add(o, this.__advConfig.lblDescription);
 
       // Add the tags label
       o = new qx.ui.basic.Label(this.tr("Tags include"));
-      this.assertMap(this.__advConfig.lblTags);
       container.add(o, this.__advConfig.lblTags);
 
       // Add the categories label
       o = new qx.ui.basic.Label(this.tr("Selected categories"));
-      this.assertMap(this.__advConfig.lblCategories);
       container.add(o, this.__advConfig.lblCategories);
       
       // Add the likes label
       o = new qx.ui.basic.Label(this.tr("Likes"));
-      this.assertMap(this.__advConfig.lblLikes);
       container.add(o, this.__advConfig.lblLikes);
       
       // Add the downloads label
       o = new qx.ui.basic.Label(this.tr("Downloads"));
-      this.assertMap(this.__advConfig.lblDownloads);
       container.add(o, this.__advConfig.lblDownloads);
       
       // Add the views label
       o = new qx.ui.basic.Label(this.tr("Views"));
-      this.assertMap(this.__advConfig.lblViews);
       container.add(o, this.__advConfig.lblViews);
       
       // Add the author id label
       o = new qx.ui.basic.Label(this.tr("Author ID"));
-      this.assertMap(this.__advConfig.lblAuthorId);
       container.add(o, this.__advConfig.lblAuthorId);
     }
   }
