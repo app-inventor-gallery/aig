@@ -127,7 +127,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var selection = selectionModel.getSelectedRanges()[0].minIndex;
           var data = table.getTableModel().getDataAsMapArray()[selection];
 
-//console.log("mgmt/apps--Transition_Idle_to_AwaitRpcResult_via_deleteApp -- data[]: " + qx.lang.Json.stringify(data));
           // Issue a Delete App call
           var request =
             this.callRpc(fsm,
@@ -231,14 +230,12 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
         "ontransition" : function(fsm, event)
         {
           // Issue the remote procedure call to get the application list.
+// Specify a default sortCriteria?
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
                          "getAppListAll",
                          [32, null, null, null]);    // image size
-// Two issues:
-// - No longer stringizing, so will need to tweak display of affected fields.
-// - Less importantly--specify a default sortCriteria?
 
           // When we get the result, we'll need to know what type of request
           // we made.
@@ -409,13 +406,13 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
             });
 
 // also required:  image1, numCurFlags, ...
-// Get them from the table, for the moment
 
+/* // Don't (and didn't) need this
           var row = cellInfo.row;
           var table = cellInfo.table;
           var dataModel = table.getTableModel();
           var rowData = dataModel.getRowDataAsMap(row);
-
+*/
 //          var source = rowData.source;
 //          var image1 = rowData.image1;
 

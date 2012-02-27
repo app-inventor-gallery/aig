@@ -72,8 +72,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
 
       // Column info.  Width parameters 1*, 2* indicate flex; see docs for
       // qx.ui.table.columnmodel.resizebehavior.Default.setWidth()
-      // Re-titled image columns "Image <n>" to "I<n>", and widened 24 to 30 px,
-      // to make title visible.
       var columns =
         [
           {
@@ -116,43 +114,31 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
           {
             heading : this.tr("Flags"),
             id      : "numCurFlags",
-            colSet  : { width : 40 }
+            colSet  : { width : 50 }
           },
           {
             heading : this.tr("Views"),
             id      : "numViewed",
-            colSet  : { width : 40 }
+            colSet  : { width : 50 }
           },
           {
             heading : this.tr("DLs"),
             id      : "numDownloads",
-            colSet  : { width : 40 }
+            colSet  : { width : 50 }
           },
           {
             heading : this.tr("Likes"),
             id      : "numLikes",
-            colSet  : { width : 40 }
+            colSet  : { width : 50 }
           },
           {
             heading : this.tr("Coms"),
             id      : "numComments",
-            colSet  : { width : 40 }
+            colSet  : { width : 50 }
           },
           {
-            heading : this.tr("I1"),
+            heading : this.tr("Im"),
             id      : "image1",
-            colSet  : { width : 30 },
-            type    : "image"
-          },
-          {
-            heading : this.tr("I2"),
-            id      : "image2",
-            colSet  : { width : 30 },
-            type    : "image"
-          },
-          {
-            heading : this.tr("I3"),
-            id      : "image3",
             colSet  : { width : 30 },
             type    : "image"
           }
@@ -214,6 +200,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
           resizeBehavior.set(col, elem.colSet);
 
           // If this is an image column...
+          // (this made a little more sense when there were multiple image cols)
           if (elem.type && elem.type == "image")
           {
             // Instantiate an image cell renderer
