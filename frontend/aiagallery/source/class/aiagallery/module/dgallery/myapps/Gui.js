@@ -88,6 +88,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
                 numDownloads : 0,
                 numViewed    : 0,
                 numComments  : 0,
+                tags         : [],
                 status       : aiagallery.dbif.Constants.Status.Editing
               });
           }
