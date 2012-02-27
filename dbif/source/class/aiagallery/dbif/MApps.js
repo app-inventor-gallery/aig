@@ -2267,23 +2267,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // Were there any query args specified?
       if (queryArgs.criteria)
       {
-        // Yes. Issue the query. Limit results to only active apps.
-        queryArgs.criteria = 
-          {
-            type     : "op",
-            method   : "and",
-            children : 
-            [
-              {
-                type  : "element",
-                field : "status",
-                value : aiagallery.dbif.Constants.Status.Active
-              },
-              queryArgs.criteria
-            ]
-          };
-
-        // Issue the query
+        // Yes. Issue the query.
         appQueryResults = this.appQuery(queryArgs.criteria, null, error);
       
         // If there was a problem
