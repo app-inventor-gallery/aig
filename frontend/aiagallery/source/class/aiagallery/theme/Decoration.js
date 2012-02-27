@@ -210,6 +210,24 @@ qx.Theme.define("aiagallery.theme.Decoration",
       }
     },
     
+    "criteria-box" :
+    {
+      decorator : [
+        qx.ui.decoration.MBorderRadius,
+        qx.ui.decoration.MLinearBackgroundGradient,
+        qx.ui.decoration.MSingleBorder
+      ],
+
+      style : {
+        width    : 2,
+        widthTop : 5,
+        color    : "android-green",
+        radius   : 6,
+        gradientStart : ["white", 90],
+        gradientEnd : ["white", 100]
+      }
+    },
+    
     "search-result-separator" :
     {
       decorator: qx.ui.decoration.Single,

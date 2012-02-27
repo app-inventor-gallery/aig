@@ -1,35 +1,18 @@
-<!-- Indices written at Wed, 22 Feb 2012 15:45:35 UTC -->
+<!-- Indices written at Mon, 27 Feb 2012 20:39:43 UTC -->
 
 <datastore-indexes>
 
-    <!-- Used 1 time in query history -->
+    <!-- Used 5 times in query history -->
     <datastore-index kind="apps" ancestor="true" source="auto">
         <property name="status" direction="asc"/>
-        <property name="numLikes" direction="desc"/>
-    </datastore-index>
-
-    <!-- Used 1 time in query history -->
-    <datastore-index kind="apps" ancestor="true" source="auto">
-        <property name="status" direction="asc"/>
-        <property name="uploadTime" direction="desc"/>
+        <property name="numLikes" direction="asc"/>
     </datastore-index>
 
     <!-- Used 2 times in query history -->
     <datastore-index kind="apps" ancestor="true" source="auto">
-        <property name="owner" direction="asc"/>
-        <property name="uid" direction="asc"/>
-    </datastore-index>
-
-    <!-- Used 1 time in query history -->
-    <datastore-index kind="comments" ancestor="true" source="auto">
-        <property name="app" direction="asc"/>
-        <property name="timestamp" direction="desc"/>
-    </datastore-index>
-
-    <!-- Used 1 time in query history -->
-    <datastore-index kind="tags" ancestor="true" source="auto">
-        <property name="type" direction="asc"/>
-        <property name="value" direction="asc"/>
+        <property name="status" direction="asc"/>
+        <property name="tags_lc" direction="asc"/>
+        <property name="numLikes" direction="asc"/>
     </datastore-index>
 
 </datastore-indexes>

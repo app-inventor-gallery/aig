@@ -67,6 +67,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
             "main.canvas" : "Transition_Idle_to_AwaitRpcResult_via_appear"
           },
 
+          "viewApp" : "Transition_Idle_to_Idle_via_viewApp",
+
           "likeIt"  : "Transition_Idle_to_AwaitRpcResult_via_likeIt",
 
           "flagIt"  : "Transition_Idle_to_AwaitRpcResult_via_flagIt",
@@ -152,6 +154,35 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
       });
 
       state.addTransition(trans);
+
+      /*
+       * Transition: Idle to Idle
+       *
+       * Cause: An item is selected from the "By this author" list
+       *
+       * Action:
+       *  Create (if necessary) and switch to an application-specific tab
+       */
+
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_Idle_via_viewApp",
+      {
+        "nextState" : "State_Idle",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var             item = event.getData();
+          
+          // Add a module for the specified app
+          aiagallery.module.dgallery.appinfo.AppInfo.addAppView(item.uid, 
+                                                                item.title);
+        }
+      });
+
+      state.addTransition(trans);
+
 
       /*
        * Transition: Idle to Idle

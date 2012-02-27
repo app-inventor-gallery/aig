@@ -183,11 +183,11 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       this.assertObject(mobileRequest, "mobile request getinfo returns object");
       
       this.assertKeyInMap("owner",
-                          mobileRequest,
+                          mobileRequest.app,
                           "apps retrieved from mobile getinfo");
 
       this.assertKeyInMap("displayName",
-                          mobileRequest,
+                          mobileRequest.app,
                           "apps retrieved from mobile getinfo");
 
       // Now a bad request

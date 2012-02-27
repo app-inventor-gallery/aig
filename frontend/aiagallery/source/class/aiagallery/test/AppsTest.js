@@ -148,16 +148,22 @@ qx.Class.define("aiagallery.test.AppsTest",
                                        },
                                       error);
       
+      // Ensure that an error was not returned
+      this.assert(appInfo !== error,
+                  "Error: " + error.getCode() + ": " + error.getMessage());
+
       this.assertInstance(appInfo, Object, "get app info");
-      this.assert(appInfo.uid === 105, "correct app returned");
+      this.assertEquals(105, appInfo.app.uid, "incorrect app returned");
       
-      this.assertKeyInMap("comments", appInfo, "comments were returned");
-      this.assertArray(appInfo["comments"], "comments returned correctly");
+      this.assertKeyInMap("author", 
+                          appInfo.app,
+                          "requested fields unsuccessful");
       
-      this.assertKeyInMap("author", appInfo, "requested fields successful");
       this.assert(typeof(appInfo["owner"]) === "undefined", 
                   "requested fields very successful");
-      
+
+      this.assertKeyInMap("comments", appInfo, "comments were returned");
+      this.assertArray(appInfo.comments, "comments not returned correctly");
     },
     
     "test 05: MApps.getAppListByList()" : function()

@@ -101,7 +101,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
       var i = 1;
 
       // Test with one word present in title of 1 app
-      queryResults = dbifSim.keywordSearch("LOLZ", null, null, error);
+      queryResults = dbifSim.keywordSearch(["mother"], null, false, error);
 
       // Ensure that an error was not returned
       this.assert(queryResults !== error,
@@ -111,7 +111,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
                         "Expected 1 result; got " + queryResults.length);
 
       // Test with one word present in 2 apps
-      queryResults = dbifSim.keywordSearch("beautiful", null, null, error);
+      queryResults = dbifSim.keywordSearch(["beautiful"], null, false, error);
 
       // Ensure that an error was not returned
       this.assert(queryResults !== error, "#" + i++ + " " +
@@ -121,7 +121,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
                         "Expected 2 results; got " + queryResults.length);
 
       // Test with 2 words present in 1 app, each present in 4 total
-      queryResults = dbifSim.keywordSearch("this not", null, null, error);
+      queryResults = dbifSim.keywordSearch(["this", "not"], null, false, error);
 
       // Ensure that an error was not returned
       this.assert(queryResults !== error, "#" + i++ + " " +
@@ -132,7 +132,8 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
                         queryResults.length);
 
       // Test with 2 words present in 1 app, each present in 3 total
-      queryResults = dbifSim.keywordSearch("beautiful sexy", null, null, error);
+      queryResults = 
+        dbifSim.keywordSearch(["beautiful", "sexy"], null, true, error);
 
       // Ensure that an error was not returned
       this.assert(queryResults !== error, "#" + i++ + " " +
@@ -150,10 +151,8 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
                   "Results ordered correctly for 2 keyword search");
       
       //Test with 1 word not present in any app
-      queryResults = dbifSim.keywordSearch("meowmeowmeowcatshisss",
-                                           null,
-                                           null,
-                                           error);
+      queryResults = 
+        dbifSim.keywordSearch(["meowmeowmeowcatshisss"], null, false, error);
 
       // ensure that an error was not returned
       this.assert(queryResults !== error, "#" + i++ + " " +
