@@ -108,11 +108,43 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             this.getChildControl("txtDescription").setValue(words);
             this.getChildControl("txtTags").setValue(words);
           }
+
+          // Disable fields on the other page
+          this.getChildControl("txtTextSearch").setEnabled(false);
+          
+          // Enable fields on this page
+          this.getChildControl("txtTitle").setEnabled(true);
+          this.getChildControl("txtDescription").setEnabled(true);
+          this.getChildControl("txtTags").setEnabled(true);
+          this.getChildControl("txtAuthorId").setEnabled(true);
+          this.getChildControl("lstLikesOp").setEnabled(true);
+          this.getChildControl("spnLikes").setEnabled(true);
+          this.getChildControl("lstDownloadsOp").setEnabled(true);
+          this.getChildControl("spnDownloads").setEnabled(true);
+          this.getChildControl("lstViewsOp").setEnabled(true);
+          this.getChildControl("spnViews").setEnabled(true);
+          this.getChildControl("lstCategories").setEnabled(true);
         }
         else
         {
           // We're switching to the All Text Fields page. Clear the input field.
           this.getChildControl("txtTextSearch").setValue("");
+
+          // Disable fields on the other page
+          this.getChildControl("txtTextSearch").setEnabled(true);
+          
+          // Enable fields on this page
+          this.getChildControl("txtTitle").setEnabled(false);
+          this.getChildControl("txtDescription").setEnabled(false);
+          this.getChildControl("txtTags").setEnabled(false);
+          this.getChildControl("txtAuthorId").setEnabled(false);
+          this.getChildControl("lstLikesOp").setEnabled(false);
+          this.getChildControl("spnLikes").setEnabled(false);
+          this.getChildControl("lstDownloadsOp").setEnabled(false);
+          this.getChildControl("spnDownloads").setEnabled(false);
+          this.getChildControl("lstViewsOp").setEnabled(false);
+          this.getChildControl("spnViews").setEnabled(false);
+          this.getChildControl("lstCategories").setEnabled(false);
         }
       },
       this);
@@ -132,12 +164,20 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     
     // Add the Search button
     this.__butSearch = new qx.ui.form.Button(this.tr("Search"));
+    this.__butSearch.set(
+      {
+        tabIndex : 100
+      });
     
     // Fire a data event with the current query when search button is pressed
     this.__butSearch.addListener("execute", this._fireQueryChangedEvent, this);
     
     // Add the Clear button
     this.__butClear = new qx.ui.form.Button(this.tr("Clear"));
+    this.__butClear.set(
+      {
+        tabIndex : 101
+      });
     
     // Arrange for the clear button to clear all fields
     this.__butClear.addListener("execute", this._clearFields, this);
@@ -780,6 +820,14 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           },
           this);
         
+        // Give this field the focus when it appears
+        control.addListener(
+          "appear",
+          function(e)
+          {
+            this.focus();
+          });
+        
         this.__containerTextSearch._add(control, { row : 1, column : 1 });
         break;
 
@@ -799,7 +847,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           {
             width       : 200,
             placeholder : "Words in apps' title",
-            tabIndex    : 2
+            tabIndex    : 2,
+            enabled    : false
           });
 
         f = function(e)
@@ -813,6 +862,14 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         
         control.addListener("input", f, this);
         control.addListener("changeValue", f, this);
+        
+        // Set the focus to this field when it appears
+        control.addListener(
+          "appear",
+          function(e)
+          {
+            this.focus();
+          });
 
         this.__containerAdvanced._add(control, this.__advConfig.txtTitle);
         break;
@@ -833,7 +890,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           {
             width       : 200,
             placeholder : "Words in apps' description",
-            tabIndex    : 3
+            tabIndex    : 3,
+            enabled     : false
           });
 
         f = function(e)
@@ -867,7 +925,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           {
             width : 200,
             placeholder : "Words in apps' tags",
-            tabIndex    : 4
+            tabIndex    : 4,
+            enabled     : false
           });
 
         f = function(e)
@@ -901,7 +960,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           {
             width       : 100,
             placeholder : "Author's unique ID",
-            tabIndex    : 5
+            tabIndex    : 5,
+            enabled     : false
           });
 
         f = function(e)
@@ -964,7 +1024,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control.set(
           {
             width    : 46,
-            tabIndex : 6
+            tabIndex : 6,
+            enabled  : false
           });
         
         control.addListener(
@@ -990,7 +1051,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           {
             width    : 100,
             maximum  : 1000000,
-            tabIndex : 7
+            tabIndex : 7,
+            enabled  : false
           });
         this.__containerAdvanced._add(control, this.__advConfig.spnLikes);
         break;
@@ -1023,7 +1085,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control.set(
           {
             width    : 46,
-            tabIndex : 8
+            tabIndex : 8,
+            enabled  : false
           });
         
         control.addListener(
@@ -1049,7 +1112,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           {
             width    : 100,
             maximum  : 1000000,
-            tabIndex : 9
+            tabIndex : 9,
+            enabled  : false
           });
         this.__containerAdvanced._add(control, this.__advConfig.spnDownloads);
         break;
@@ -1082,7 +1146,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control.set(
           {
             width    : 46,
-            tabIndex : 10
+            tabIndex : 10,
+            enabled  : false
           });
         
         control.addListener(
@@ -1108,7 +1173,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           {
             width    : 100,
             maximum  : 1000000,
-            tabIndex : 11
+            tabIndex : 11,
+            enabled  : false
           });
         this.__containerAdvanced._add(control, this.__advConfig.spnViews);
         break;
@@ -1129,7 +1195,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           {
             height        : 80,
             selectionMode : "multi",
-            tabIndex      : 12
+            tabIndex      : 12,
+            enabled       : false
           });
 
         control.addListener(
