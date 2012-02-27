@@ -31,6 +31,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       var             o;
       var             canvas = module.canvas;
       var             fsm = module.fsm;
+      var             criteriaTop = 10;
 
       // Make it easy to provide some space around the edges
       canvas.setLayout(new qx.ui.layout.Canvas());
@@ -38,6 +39,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       if (false)
       {
         var hbox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
+        criteriaTop = 60;
         canvas.add(hbox, { top : 10, left : 10 });
         var json = new qx.ui.form.TextField();
         json.setWidth(200);
@@ -64,8 +66,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       this.__criteria.addListener("viewApp", fsm.eventListener, fsm);
     
       canvas.add(this.__criteria, 
-                 { top : 60, left : 10, bottom : 10, right : 10 });
-
+                 { top : criteriaTop, left : 10, bottom : 10, right : 10 });
     },
 
     /**
