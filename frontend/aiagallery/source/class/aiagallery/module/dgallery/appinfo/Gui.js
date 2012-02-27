@@ -199,7 +199,15 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
                 {
                   controller.bindProperty(name, name, null, item, id);
                 });
-            }
+            },
+
+            configureItem : qx.lang.Function.bind(
+              function(item) 
+              {
+                // Listen for clicks on the title or image, to view the app
+                item.addListener("viewApp", fsm.eventListener, fsm);
+              },
+              this)
           }
         });
 
