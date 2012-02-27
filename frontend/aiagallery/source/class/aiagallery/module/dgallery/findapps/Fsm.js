@@ -185,6 +185,23 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
               children : []
             };
 
+          // Add categories
+          if (eventData.categories)
+          {
+            // Add each one separately
+            eventData.categories.forEach(
+              function(category)
+              {
+                requestData.criteria.children.push(
+                  {
+                    type  : "element",
+                    field : "tags", 
+                    value : category
+                  });
+              },
+              this);
+          }
+
           // Add author
           if (eventData.authorId)
           {

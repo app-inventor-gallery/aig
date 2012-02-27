@@ -98,7 +98,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           words = this.getChildControl("txtTextSearch").getValue();
           
           // Trim any surrounding whitespace
-          words = qx.lang.String.trim(words);
+          words = qx.lang.String.trim(words || "");
           
           // Check for content. Anything there?
           if (words.length > 0)
@@ -400,8 +400,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
               if (qx.lang.Array.contains(this.__lcCategories, 
                                          tag.toLowerCase()))
               {
-                // Yup. Save it in the category list
-                categories.push(tag);
+                // Yup. Ignore it.
               }
               else
               {
@@ -413,14 +412,17 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           
           // Tags are simply added as space-separated text
           this.getChildControl("txtTags").setValue(tags.join(" "));
+          break;
           
+        case "categories" :
           // Categories need to be selected. In the list, they're not
           // lower-case, so we'll need to convert to lower case as we search
+          selection = [];
           this.getChildControl("lstCategories").getChildren().forEach(
             function(listItem)
             {
               // Is this one of the categories that was specified?
-              if (qx.lang.Array.contains(categories, 
+              if (qx.lang.Array.contains(data[field].categories, 
                                          listItem.getLabel().toLowerCase()))
               {
                 // ... then save this list item as part of the selection
@@ -432,7 +434,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           // Now we can set the category list's selection
           this.getChildControl("lstCategories").setSelection(selection);
           break;
-          
+
         case "authorId":
           this.getChildControl("txtAuthorId").setValue(data[field]);
           break;
@@ -645,6 +647,19 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
                   fieldData.lstViewsOp, 
                   fieldData.spnViews 
                 ];
+              break;
+              
+            case "lstCategories" :
+              // Append any selected categories, convert them to lower case
+              if (fieldData.lstCategories !== null)
+              {
+                data.categories = [];
+                fieldData.lstCategories.forEach(
+                  function(category)
+                  {
+                    data.categories.push(category.toLowerCase());
+                  });
+              }
               break;
             }
           }
