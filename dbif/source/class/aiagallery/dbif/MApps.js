@@ -176,7 +176,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                 // If the word is a stop word, discard it
                 if (qx.lang.Array.contains(
                       aiagallery.dbif.MSearch.stopWordArr,
-                      word))
+                      wordLC))
                 {
                   return;
                 }
@@ -198,6 +198,14 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                 // Make sure to only add lower case words to the search
                 // database
                 var wordLC = word.toLowerCase();
+
+                // If the word is a stop word, discard it
+                if (qx.lang.Array.contains(
+                      aiagallery.dbif.MSearch.stopWordArr,
+                      wordLC))
+                {
+                  return;
+                }
 
                 // Add each one to the db                
                 searchObj = new aiagallery.dbif.ObjSearch([wordLC,
