@@ -35,7 +35,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       // Make it easy to provide some space around the edges
       canvas.setLayout(new qx.ui.layout.Canvas());
 
-      if (true)
+      if (false)
       {
         var hbox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
         canvas.add(hbox, { top : 10, left : 10 });
