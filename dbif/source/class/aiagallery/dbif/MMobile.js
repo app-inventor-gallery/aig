@@ -166,7 +166,7 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       }
       
       // keyword is required.
-      if (typeof keywordString !== "string")
+      if (typeof keywordString !== "string" || keywordString.length === 0)
       {
         error.setCode(3);
         error.setMessage("No search terms given");
@@ -192,7 +192,8 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       };
     
       // Use MSearch Mixin
-      results = this.keywordSearch(keywordString, null, requestedFields, error);
+      results = this.keywordSearch(keywordString.split(" "),
+                                   null, requestedFields, error);
       
       // If they have not specified a count nor an offset...
       if (count === null && offset === null)

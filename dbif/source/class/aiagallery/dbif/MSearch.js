@@ -87,19 +87,19 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
      * NOTE: There is no ordering of the returned Apps. This is simply a 
      * keyword query.
      *
-     * @param keywordString {String}
-     * A space delimited string of words to query on. A returned App will
-     * contain all of the words in the string, in any order.
+     * @param keywords {Array}
+     *   An array of words to query on.
      *
      * @param queryFields {Array?}
-     * An array of strings of App data fields which are to be checked for the
-     * keyword(s). The array may contain none or any or all of the following: 
+     *   An array of strings of App data fields which are to be checked for
+     *   the keyword(s). The array may contain none or any or all of the
+     *   following:
      *
-     *   "title"
-     *   "description"
-     *   "tags"
+     *     "title"
+     *     "description"
+     *     "tags"
      *
-     * If the queryFields parameter is not provided, assume 'all fields'.
+     *   If the queryFields parameter is not provided, assume 'all fields'.
      *
      * @param bMapToApps {Boolean}
      *   If true, the returned array is of ObjAppData data; If false, the
@@ -114,9 +114,8 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
      *   Results are sorted in decreasing order of the number of fields in
      *   which the results were found.
      */
-    keywordSearch : function(keywordString, queryFields, bMapToApps, error)
+    keywordSearch : function(keywords, queryFields, bMapToApps, error)
     {
-      var keywordArr;
       var criteria;
       var criteriaChild;
       var searchResults;
@@ -125,8 +124,7 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
       var queryResult;
       
       // Make sure there is at least 1 keyword given
-      if (keywordString === null || typeof keywordString === "undefined" ||
-          keywordString === "")
+      if (! qx.lang.Type.isArray(keywords) || keywords.length == 0)
       {
         error.setCode(3);
         error.setMessage("At least 1 keyword required for keyword search");
@@ -141,17 +139,18 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
 
       // Make sure all keyword searches are doing lowercase. ObjSearch stores
       // all entries in lowercase
-      keywordString = keywordString.toLowerCase();
+      keywords = keywords.map(
+        function(keyword)
+        {
+          return keyword.toLowerCase();
+        });
            
-      // The keyword string is space delimited, let's tokenize
-      keywordArr = keywordString.split(" ");
-      
       // Remove all stop words from the keyword array
-      keywordArr = qx.lang.Array.exclude(keywordArr,
-                                         aiagallery.dbif.MSearch.stopWordArr);
+      keywords = qx.lang.Array.exclude(keywords,
+                                       aiagallery.dbif.MSearch.stopWordArr);
       
       // For each provided keyword...
-      keywordArr.forEach(
+      keywords.forEach(
         function(keyword)
         {
           queryResult = liberated.dbif.Entity.query("aiagallery.dbif.ObjSearch",
@@ -196,13 +195,13 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
           
           // Find the number of keyword matches for uid1
           matches1 =
-            keywordArr.length - 
-            (keywordArr.length - queryResultsMap[uid1].length);
+            keywords.length - 
+            (keywords.length - queryResultsMap[uid1].length);
           
           // Find the number of keyword matches for uid2
           matches2 =
-            keywordArr.length - 
-            (keywordArr.length - queryResultsMap[uid2].length);
+            keywords.length - 
+            (keywords.length - queryResultsMap[uid2].length);
           
           // The one with the most matches wins.
           // Does the second one have more matches?
