@@ -24,7 +24,6 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
      */
     buildGui : function(module)
     {
-this.debug("entering buidGui");
       var             o;
       var             text;
       var             font;

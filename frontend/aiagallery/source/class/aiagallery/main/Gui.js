@@ -654,7 +654,6 @@ qx.Class.define("aiagallery.main.Gui",
         page =
           new qx.ui.tabview.Page(menuItem, iconList[menuItem]);
         page.setLayout(new qx.ui.layout.VBox(4));
-        mainTabs.add(page);
         
         // If this is an ephemeral page...
         if (menuItem.charAt(0) == "-")
@@ -746,22 +745,15 @@ qx.Class.define("aiagallery.main.Gui",
           subTabs.setContentPadding(0);
           page.add(subTabs, { flex : 1 });
 
-          // See if there are any functions to be called, e.g. to add
-          // buttons to the radio view's button bar
-          var thisFunctionList = functionList[menuItem];
-          if (thisFunctionList)
-          {
-            for (i = 0; i < thisFunctionList.length; i++)
-            {
-              thisFunctionList[i](menuItem, page, subTabs);
-            }
-          }
-
           // For each module associated with the just-added button...
           for (moduleName in moduleList[menuItem])
           {
             // Create a page for this module
             subPage = new aiagallery.widget.radioview.Page(moduleName);
+            
+            // Save this page's id, used for the bookmark fragment
+            subPage.setUserData("pageId", 
+                                moduleList[menuItem][moduleName].pageId);
             var layout=new qx.ui.layout.VBox(4);
             subPage.setLayout(layout);
             subTabs.add(subPage, { flex : 1 });
@@ -784,6 +776,9 @@ qx.Class.define("aiagallery.main.Gui",
         }
         else
         {
+          // Save this page's id, used for the bookmark fragment
+          page.setUserData("pageId", 
+                           moduleList[menuItem][moduleName].pageId);
           // Save the canvas
           moduleList[menuItem][moduleName].canvas = canvas = page;
 
@@ -792,17 +787,22 @@ qx.Class.define("aiagallery.main.Gui",
           fsm.addObject("main.canvas", canvas);
           canvas.addListener("appear", fsm.eventListener, fsm);
           canvas.addListener("disappear", fsm.eventListener, fsm);
+        }
+        
+        // Now that we've added the page IDs, we can add this page, which will
+        // generate a changeSelection event which requires that the page IDs
+        // be in place.
+        mainTabs.add(page);
 
-          // See if there are any functions to be called
-          var thisFunctionList = functionList[menuItem];
-          if (thisFunctionList)
+        // See if there are any functions to be called, e.g. to add
+        // buttons to the radio view's button bar
+        var thisFunctionList = functionList[menuItem];
+        if (thisFunctionList)
+        {
+          for (i = 0; i < thisFunctionList.length; i++)
           {
-            for (var i = 0; i < thisFunctionList.length; i++)
-            {
-              thisFunctionList[i](menuItem, page, null);
-            }
+            thisFunctionList[i](menuItem, page, subTabs);
           }
-
         }
       }
     },
@@ -1080,7 +1080,7 @@ qx.Class.define("aiagallery.main.Gui",
       if (location.hash && location.hash.length > 1)
       {
         // Retrieve the fragment, excluding the leading '#'
-        fragment = location.hash.subString(1);
+        fragment = location.hash.substring(1);
         
         // Request this page
         this.__selectModuleByFragment(fragment);
@@ -1222,7 +1222,11 @@ qx.Class.define("aiagallery.main.Gui",
         return;
       }
 
-      // It's not an AppInfo request. Iterate through their labels to find
+      // Retrieve the previously-created top-level tab view
+      mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
+      tabArray = mainTabs.getChildren();
+      
+      // It's not an AppInfo request. Iterate through the tabs' labels to find
       // the tab.
       for (i = 0; i < tabArray.length; i++)
       {
