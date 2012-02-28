@@ -143,13 +143,21 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       o = new qx.ui.basic.Label("Some text and/or images go here");
       hbox.add(o);
       
-            // Featured Apps section
+      // Add a spacer to right-justify the featured apps
+      hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
+      
+      // Featured Apps section
       var featuredAppsLayout = new qx.ui.layout.VBox();
       featuredAppsLayout.set(
         {
           alignX : "center"
         });
       var featuredApps = new qx.ui.container.Composite(featuredAppsLayout);
+      featuredApps.set(
+        {
+          decorator : "home-page-ribbon",
+          padding   : 20
+        });
 
       // Featured Apps heading
       var featuredAppsHeader = new qx.ui.basic.Label();
@@ -163,7 +171,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       
       // Create the container in which the apps will be placed
       this.featuredAppsContainer =
-        new qx.ui.container.Composite(new qx.ui.layout.HBox(20));
+        new qx.ui.container.Composite(new qx.ui.layout.HBox());
       this.featuredAppsContainer.set(
           {
             height : 420
@@ -183,6 +191,11 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           alignX : "center"
         });
       var newestApps = new qx.ui.container.Composite(newestAppsLayout);
+      newestApps.set(
+        {
+          decorator : "home-page-ribbon",
+          padding   : 20
+        });
 
       // Newest Apps heading
       var newestAppsHeader = new qx.ui.basic.Label();
@@ -200,7 +213,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       
       // Scroll container can hold only a single child. Create that child.
       this.newestAppsContainer =
-        new qx.ui.container.Composite(new qx.ui.layout.HBox(20));
+        new qx.ui.container.Composite(new qx.ui.layout.HBox(0));
       this.newestAppsContainer.set(
           {
             height : 210
@@ -217,6 +230,11 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           alignX : "center"
         });
       var likedApps = new qx.ui.container.Composite(likedAppsLayout);
+      likedApps.set(
+        {
+          decorator : "home-page-ribbon",
+          padding   : 20
+        });
 
       // Liked Apps heading
       var likedAppsHeader = new qx.ui.basic.Label();
@@ -234,7 +252,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       
       // Scroll container can hold only a single child. Create that child.
       this.likedAppsContainer =
-        new qx.ui.container.Composite(new qx.ui.layout.HBox(20));
+        new qx.ui.container.Composite(new qx.ui.layout.HBox());
       this.likedAppsContainer.set(
           {
             height : 210
@@ -287,6 +305,14 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         // Fill the featured apps ribbon with data
         for (i = 0; i < featuredAppsList.length; i++)
         {
+          // If this isn't the first one, ...
+          if (i > 0)
+          {
+            // ... then add a spacer between the previous one and this one
+            this.featuredAppsContainer.add(new qx.ui.core.Spacer(10));
+          }
+
+          // Add the thumbnail for this app
           var appFeatured = featuredAppsList[i];
           var appThumbFeatured = 
             new aiagallery.widget.SearchResult("featured", appFeatured);
@@ -315,6 +341,14 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         // Fill the newest apps ribbon with data
         for (i = 0; i < newestAppsList.length; i++)
         {
+          // If this isn't the first one, ...
+          if (i > 0)
+          {
+            // ... then add a spacer between the previous one and this one
+            this.newestAppsContainer.add(new qx.ui.core.Spacer(10));
+          }
+
+          // Add the thumbnail for this app
           var appNewest = newestAppsList[i];
           var appThumbNewest = 
             new aiagallery.widget.SearchResult("homeRibbon", appNewest);
@@ -339,6 +373,14 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         // Fill the most liked apps ribbon with data
         for (i = 0; i < likedAppsList.length; i++)
         {
+          // If this isn't the first one, ...
+          if (i > 0)
+          {
+            // ... then add a spacer between the previous one and this one
+            this.likedAppsContainer.add(new qx.ui.core.Spacer(10));
+          }
+
+          // Add the thumbnail for this app
           var appLiked = likedAppsList[i];
           var appThumbLiked = 
             new aiagallery.widget.SearchResult("homeRibbon", appLiked);
