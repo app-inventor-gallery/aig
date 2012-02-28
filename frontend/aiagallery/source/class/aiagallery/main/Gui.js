@@ -638,7 +638,10 @@ qx.Class.define("aiagallery.main.Gui",
           {
             this.__historyInit();
           },
-          this);
+          0,
+          this,
+          null,
+          0);
       }
       
       // Get the page hierarchy
@@ -1026,7 +1029,6 @@ qx.Class.define("aiagallery.main.Gui",
      */
     __historyInit : function()
     {
-return;
       var             messageBus;
       var             fragment;
 
@@ -1093,7 +1095,6 @@ return;
      */
     authorSearch : function(authorId)
     {
-return;
       var             findApps;
       var             query;
 
@@ -1120,7 +1121,6 @@ return;
      */
     __onTabSelectionChanged : function(e)
     {
-return;
       var fragment; 
       var mainTabs; 
       var selectedPage;
@@ -1190,7 +1190,6 @@ return;
      */
     selectModule : function(components)
     {
-return;
       var             fragment;
       var             i;
       var             j;
@@ -1307,7 +1306,6 @@ return;
      */
     __selectModuleByFragment : function(fragment)
     {
-return;
       var             parts;
       var             components;
 
