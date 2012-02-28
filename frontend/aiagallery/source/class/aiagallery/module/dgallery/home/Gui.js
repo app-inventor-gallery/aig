@@ -30,6 +30,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var             hbox;
       var             fsm = module.fsm;
       var             outerCanvas = module.canvas;
+      var             scroller;
       
       outerCanvas.setLayout(new qx.ui.layout.VBox());
       var scrollContainer = new qx.ui.container.Scroll();
@@ -135,46 +136,45 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
       font.setSize(26);
 
-      // Featured Apps section
+      // Create an hbox for introductory text and the Featured Apps
+      hbox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+      
+      // Put in some random text
+      o = new qx.ui.basic.Label("Some text and/or images go here");
+      hbox.add(o);
+      
+            // Featured Apps section
       var featuredAppsLayout = new qx.ui.layout.VBox();
       featuredAppsLayout.set(
         {
           alignX : "center"
         });
-      this.featuredAppsContainer = 
-        new qx.ui.container.Composite(featuredAppsLayout);
+      var featuredApps = new qx.ui.container.Composite(featuredAppsLayout);
 
       // Featured Apps heading
       var featuredAppsHeader = new qx.ui.basic.Label();
       featuredAppsHeader.set(
         {
-          value     : "Featured Apps",
-          font      : font,
+          value : "Featured Apps",
+          font  : font,
           decorator : "home-page-header"
         });
-      this.featuredAppsContainer.add(featuredAppsHeader);
+      featuredApps.add(featuredAppsHeader);
       
-      // Create an hbox to center the Featured Apps slidebar
-      hbox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+      // Create the container in which the apps will be placed
+      this.featuredAppsContainer =
+        new qx.ui.container.Composite(new qx.ui.layout.HBox(20));
+      this.featuredAppsContainer.set(
+          {
+            height : 420
+          });
+      featuredApps.add(this.featuredAppsContainer);
       
-      // Add a left-side spacer
-      hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
+      // add Featured Apps section to the top hbox
+      hbox.add(featuredApps);
 
-      // slide bar of Featured Apps
-      var featuredAppsSlideBar = new qx.ui.container.SlideBar();
-      fsm.addObject("Featured Apps", featuredAppsSlideBar);
-      this.featuredAppsContainer.add(featuredAppsSlideBar);
-      hbox.add(this.featuredAppsContainer);
-
-      // Add a right-side spacer
-      hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
-
-      // add Featured Apps section to the page
+      // Add the top hbox to the page
       canvas.add(hbox);
-
-      // Reduce font size a little bit for the other two ribbons
-      font = font.clone();
-      font.setSize(22);
 
       // Newest Apps section
       var newestAppsLayout = new qx.ui.layout.VBox();
@@ -195,10 +195,17 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       newestApps.add(newestAppsHeader);
       
       // slide bar of Newest Apps
-      var newestAppsSlideBar = new qx.ui.container.SlideBar();
+      scroller = new qx.ui.container.Scroll();
+      newestApps.add(scroller);
       
-      fsm.addObject("Newest Apps", newestAppsSlideBar);
-      newestApps.add(newestAppsSlideBar);
+      // Scroll container can hold only a single child. Create that child.
+      this.newestAppsContainer =
+        new qx.ui.container.Composite(new qx.ui.layout.HBox(20));
+      this.newestAppsContainer.set(
+          {
+            height : 210
+          });
+      scroller.add(this.newestAppsContainer);
       
       // add Newest Apps section to the page
       canvas.add(newestApps);
@@ -222,12 +229,19 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       likedApps.add(likedAppsHeader);
       
       // slide bar of liked Apps
-      var likedAppsSlideBar = new qx.ui.container.SlideBar();
+      scroller = new qx.ui.container.Scroll();
+      likedApps.add(scroller);
       
-      fsm.addObject("Most Liked Apps", likedAppsSlideBar);
-      likedApps.add(likedAppsSlideBar);
+      // Scroll container can hold only a single child. Create that child.
+      this.likedAppsContainer =
+        new qx.ui.container.Composite(new qx.ui.layout.HBox(20));
+      this.likedAppsContainer.set(
+          {
+            height : 210
+          });
+      scroller.add(this.likedAppsContainer);
       
-      // add Most Liked Apps section to the page
+      // add Liked Apps section to the page
       canvas.add(likedApps);
     },
 
@@ -260,54 +274,24 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       switch(requestType)
       {
       case "getHomeRibbonData":
-        // Get the gallery objects
-        var featuredApps = fsm.getObject("Featured Apps");
-        var newestApps = fsm.getObject("Newest Apps");
-        var likedApps = fsm.getObject("Most Liked Apps");  
-        
         // Retrieve the app lists
         var featuredAppsList = response.data.result.Featured;
         var newestAppsList = response.data.result.Newest;
         var likedAppsList = response.data.result.MostLiked;
 
-        var parent = featuredApps.getLayoutParent();
-        parent.remove(featuredApps);
-        featuredApps = new qx.ui.container.SlideBar();
-        featuredApps.set(
-          {
-            height : 410
-          });
-        fsm.addObject("Featured Apps", featuredApps);
-        parent.add(featuredApps);
+        // Remove everything from the lists. They're about to be refilled.
+        this.featuredAppsContainer.removeAll();
+        this.newestAppsContainer.removeAll();
+        this.likedAppsContainer.removeAll();
 
-        parent = newestApps.getLayoutParent();
-        parent.remove(newestApps);
-        newestApps = new qx.ui.container.SlideBar();
-        newestApps.set(
-          {
-            height : 210
-          });
-        fsm.addObject("Newest Apps", newestApps);
-        parent.add(newestApps);
-
-        parent = likedApps.getLayoutParent();
-        parent.remove(likedApps);
-        likedApps = new qx.ui.container.SlideBar();
-        likedApps.set(
-          {
-            height : 210
-          });
-        fsm.addObject("Most Liked Apps", likedApps);
-        parent.add(likedApps);
-        
         // Fill the featured apps ribbon with data
         for (i = 0; i < featuredAppsList.length; i++)
         {
           var appFeatured = featuredAppsList[i];
           var appThumbFeatured = 
             new aiagallery.widget.SearchResult("featured", appFeatured);
-          featuredApps.add(appThumbFeatured);
-          
+          this.featuredAppsContainer.add(appThumbFeatured);
+
           // Associate the app data with the UI widget so it can be passed
           // in the click event callback
           appThumbFeatured.setUserData("App Data", appFeatured);
@@ -334,7 +318,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           var appNewest = newestAppsList[i];
           var appThumbNewest = 
             new aiagallery.widget.SearchResult("homeRibbon", appNewest);
-          newestApps.add(appThumbNewest);
+          this.newestAppsContainer.add(appThumbNewest);
 
           // Associate the app data with the UI widget so it can be passed
           // in the click event callback
@@ -356,10 +340,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         for (i = 0; i < likedAppsList.length; i++)
         {
           var appLiked = likedAppsList[i];
-
           var appThumbLiked = 
             new aiagallery.widget.SearchResult("homeRibbon", appLiked);
-          likedApps.add(appThumbLiked);
+          this.likedAppsContainer.add(appThumbLiked);
 
           // Associate the app data with the UI widget so it can be passed
           // in the click event callback
