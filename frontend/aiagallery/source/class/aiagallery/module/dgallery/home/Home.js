@@ -28,6 +28,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Home",
      */
     initialAppear : function(module)
     {
+this.debug("Home: initialAppear");
       // Replace existing (temporary) finite state machine with the real one.
       aiagallery.module.dgallery.home.Fsm.getInstance().buildFsm(module);
 

@@ -11,6 +11,7 @@
  */
 qx.Class.define("aiagallery.module.dgallery.appinfo.AppInfo",
 {
+  type : "singleton",
   extend : aiagallery.main.AbstractModule,
 
   statics :
@@ -38,6 +39,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.AppInfo",
               "-" + label,
               null,
               "-" + label,
+              aiagallery.main.Constant.PageName.AppInfo,
               aiagallery.module.dgallery.appinfo.AppInfo,
               [
                 function(menuItem, page, subTabs)
@@ -45,8 +47,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.AppInfo",
                   // Select the new application page
                   mainTabs.setSelection([ page ]);
                }
-              ],
-              true);              // Instantiate a new module for each app
+              ]);
 
       // Transmit the UID of this module */
       app.setUserData("app_uid", uid);

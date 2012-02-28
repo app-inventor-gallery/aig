@@ -208,6 +208,9 @@ qx.Class.define("aiagallery.main.Gui",
         // We're going to control the tab view via the link bar
         mainTabs.getChildControl("bar").exclude();
         
+        // Be notified of tab changes, in order to update the history
+        mainTabs.addListener("changeSelection", this.__onTabSelectionChanged);
+
         pagePane.add(mainTabs, { flex : 1 });
 
         // Make the tab view globally accessible
@@ -285,6 +288,7 @@ qx.Class.define("aiagallery.main.Gui",
                     "Management",
                     "aiagallery/test.png",
                     "Database",
+                    aiagallery.main.Constant.PageName.Management,
                     aiagallery.module.mgmt.db.Db);
 
                   // Start up the new module
@@ -323,6 +327,7 @@ qx.Class.define("aiagallery.main.Gui",
                     "Management",
                     "aiagallery/module/configure.png",
                     "Users",
+                    aiagallery.main.Constant.PageName.Management,
                     aiagallery.module.mgmt.users.Users);
 
                   // Start up the new module
@@ -359,6 +364,7 @@ qx.Class.define("aiagallery.main.Gui",
                     "Management",
                     "aiagallery/test.png",
                     "Applications",
+                    aiagallery.main.Constant.PageName.Management,
                     aiagallery.module.mgmt.applications.Applications);
 
                   // Start up the new module
@@ -397,6 +403,7 @@ qx.Class.define("aiagallery.main.Gui",
                   "Management",
                   "aiagallery/test.png",
                   "Permissions",
+                  aiagallery.main.Constant.PageName.Management,
                   aiagallery.module.mgmt.permissions.Permissions);
 
                 // Start up the new module
@@ -433,6 +440,7 @@ qx.Class.define("aiagallery.main.Gui",
                   "Management",
                   "aiagallery/test.png",
                   "Featured Apps",
+                  aiagallery.main.Constant.PageName.Management,
                   aiagallery.module.mgmt.featured.Featured);
 
                 // Start up the new module
@@ -622,6 +630,15 @@ qx.Class.define("aiagallery.main.Gui",
         
         // Add the hbox to the application
         application.add(hbox);
+        
+        // Arrange to initialize bookmark support some time after this
+        // function completeds
+        qx.util.TimerManager.getInstance().start(
+          function()
+          {
+            this.__historyInit();
+          },
+          this);
       }
       
       // Get the page hierarchy
@@ -731,7 +748,7 @@ qx.Class.define("aiagallery.main.Gui",
           var thisFunctionList = functionList[menuItem];
           if (thisFunctionList)
           {
-            for (var i = 0; i < thisFunctionList.length; i++)
+            for (i = 0; i < thisFunctionList.length; i++)
             {
               thisFunctionList[i](menuItem, page, subTabs);
             }
@@ -1001,6 +1018,316 @@ qx.Class.define("aiagallery.main.Gui",
       // Show the window
       this._win.center();
       this._win.show();
+    },
+
+    /**
+     * Initialize Back button and bookmark support. Also look at the fragment
+     * of the current URL to see if we need to go to a particular module.
+     */
+    __historyInit : function()
+    {
+return;
+      var             messageBus;
+      var             fragment;
+
+      // All history is maintained in this History class
+      this.__history = qx.bom.History.getInstance();
+          
+      // Add listener for back button
+      this.__history.addListener(
+        "request",
+        function(e)
+        {
+          // event data is the fragment that will select a page
+          var state = e.getData();
+          this.__selectModuleByFragment(state);
+        }, 
+        this);
+
+      // Subscribe to receive server push messages of type "app.postupload"
+      messageBus = qx.event.message.Bus.getInstance();
+      messageBus.subscribe(
+        "findapps.query", 
+        function(e)
+        {
+          var             mainTabs;
+          var             fragment;
+          var             jsonQuery = e.getData().json;
+          var             selectedPage;
+
+          // Retrieve the mainTabs object so we can get its selection (which
+          // at this point will always be FindApps)
+          mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
+          
+          // Retrieve the currently-selected page
+          selectedPage = mainTabs.getSelection()[0];
+
+          // Build the new fragment which identifies this particular query
+          fragment =
+            "page=" + aiagallery.main.Constant.PageName.FindApps +
+            "&query=" + jsonQuery;
+          
+          // Change URL to add language independent constant to it
+          // fragment will be the string constant of the page the user is on.
+          // Second arguement is the title for the page. 
+          qx.bom.History.getInstance().addToHistory(fragment, 
+                                                    selectedPage.getLabel());
+        },
+        this);
+      
+      if (location.hash && location.hash.length > 1)
+      {
+        // Retrieve the fragment, excluding the leading '#'
+        fragment = location.hash.subString(1);
+        
+        // Request this page
+        this.__selectModuleByFragment(fragment);
+      }
+    },
+
+    /**
+     * Search for all apps by a particular author.
+     * 
+     * @param authorId {String}
+     *   The internal ID of the author of the apps to be found
+     */
+    authorSearch : function(authorId)
+    {
+return;
+      var             findApps;
+      var             query;
+
+      // This is an internal search, so set the flag so the switch to FindApps
+      // doesn't add a history entry
+      this.__bInternalSearch = true;
+      
+      // Build the query
+      query =
+        {
+          authorId : authorId
+        };
+
+      findApps = aiagallery.module.dgallery.findapps.Gui.getInstance();
+      findApps.setQuery(qx.lang.Json.stringify(query));
+
+      // Reset the internal search flag
+      this.__bInternalSearch = false;
+    },
+
+    /**
+     * Handler for module (tab) changes, where we update the history.
+     * @param e {qx.event.type.Data} Data event containing the history changes.
+     */
+    __onTabSelectionChanged : function(e)
+    {
+return;
+      var fragment; 
+      var mainTabs; 
+      var selectedPage;
+
+      // If this is an internal switch, e.g. FindApps accessed via a call to
+      // this.authorSearch(), then don't save history.
+      if (this.__bInternalSearch)
+      {
+        return;
+      }
+
+      //Get the main tab view
+      mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
+          
+      // Get the currently selected page
+      selectedPage = mainTabs.getSelection()[0];
+
+      // Get its query string
+      fragment = "page=" + selectedPage.getUserData("pageId");
+          
+      // No page selected so this is the startup proccess ignore and return
+      if (fragment == null) 
+      {
+        throw new Error("fragment is null");
+      }
+
+      // If its an App Page we need to record the appid to switch to it
+      if (fragment == aiagallery.main.Constant.PageName.AppInfo)
+      {       
+        // Add appId to end of url
+        fragment +=
+          "&uid=" + 
+          selectedPage.getUserData("app_uid") +
+          "&label=" +
+          selectedPage.getLabel().subString(1); // skip leading '-' (ephemeral)
+      }
+      else if (fragment == aiagallery.main.Constant.PageName.FindApps)
+      {
+        // If its the Find Apps page we _will_ need to record the search
+        // info. That will occur when the search is initiated. We therefore
+        // don't need to do anything here. 
+        // 
+        // We already returned in the case of an author search (an internal
+        // search), so if we got here it's because of a user click for direct
+        // entry to the FindApps module.)
+      }
+          
+      // Change URL to add language independent constant to it
+      // fragment will be the string constant of the page the user is on.
+      // Second arguement is the title for the page. 
+      qx.bom.History.getInstance().addToHistory(fragment, 
+                                                selectedPage.getLabel());
+    },
+ 
+    /**
+     * Select a module by parameters
+     *
+     * @param components {Map}
+     *   A map containing at a minimum, a 'page' member, identifying the page
+     *   (module) to be selected. If the 'page' value identifies the AppInfo
+     *   page, then there must be 'uid' and 'label' members. If the 'page'
+     *   value identifes the FindApps page, then there must be a 'query'
+     *   parameter, in the format provided by the "queryChanged" event of
+     *   {@link aiagallery.module.dgallery.findapps.CriteriaSearch}.
+     *
+     *   'page' must be one of: {@link aiagallery.mainConstant.PageName}.
+     */
+    selectModule : function(components)
+    {
+return;
+      var             fragment;
+      var             i;
+      var             j;
+      var             mainTabs;
+      var             tabArray;
+      var             selectedPage;
+      var             selectedLabel;
+      var             pageArray;
+      var             pageSelectorBar;
+      var             hierarchy;
+      var             pageId;
+      
+      // Is this a request for the App page?
+      if (components.page == aiagallery.main.Constant.PageName.AppInfo)
+      {
+        // Yup. Ensure there's a uid and a label provided
+        if (! components.uid)
+        {
+          throw new Error("Got request for AppInfo without UID");
+        }
+        if (! components.label)
+        {
+          throw new Error("Got request for AppInfo without label");
+        }
+        
+        aiagallery.module.dgallery.appinfo.AppInfo.addAppView(
+          components.uid, components.label);
+
+        // Page selected. Nothing more to do.
+        return;
+      }
+
+      // It's not an AppInfo request. Iterate through their labels to find
+      // the tab.
+      for (i = 0; i < tabArray.length; i++)
+      {
+        // Get the pageId
+        pageId = tabArray[i].getUserData("pageId");
+
+        // Is this the one we're looking for?
+        if (pageId == components.page)
+        {
+          break;
+        }
+      }
+
+      // Did we find it?
+      if (i == tabArray.length)
+      {
+        // Nope. Go to the home page
+        i = 0;                  // 0 is the home page
+        pageId = aiagallery.main.Constant.PageName.Home;
+      }
+
+      // We found the selected page.
+      selectedPage = tabArray[i];
+
+      // Yup. Select this tab (module)
+      mainTabs.setSelection([ selectedPage ]);  
+
+      // Get the page hierarchy
+      hierarchy = 
+        aiagallery.main.Gui.getInstance().getUserData("hierarchy");
+
+      // Reinitialize the hierarchy to show only this page
+      hierarchy.setHierarchy([tabArray[i].getLabel()]);
+
+      // Get the page selector bar
+      pageSelectorBar =
+        aiagallery.main.Gui.getInstance().getUserData("pageSelectorBar");
+
+      // Get children
+      pageArray = pageSelectorBar.getChildren();
+
+      // Get the label of the selected tab, to find it in the page
+      // selector bar.
+      selectedLabel = selectedPage.getLabel();
+
+      for (j = 0; j < pageArray.length; j++)
+      {
+        if (pageArray[j].getLabel() == selectedLabel)
+        {
+          // Select the page
+          pageSelectorBar.setSelection([ pageArray[j] ]);
+        }
+      }
+      
+      // Arrange to pass parameters to the page, if necessary
+      switch(pageId)
+      {
+      case aiagallery.main.Constant.PageName.AppInfo:
+        // This was special-cased above
+        break;
+
+      case aiagallery.main.Constant.PageName.FindApps:
+        // Get the Gui instance and set its query property
+        aiagallery.module.dgallery.findapps.Gui.getInstance().setQuery(
+          components.query);
+        break;
+      }
+    },
+
+    /**
+     * Select a module by a fragment string
+     *
+     * @param fragment {String}
+     *   A URL fragment containing, at a minimum, "page=<pageId>". If the
+     *   pageId is the AppInfo page, then there will additionally be
+     *   parameters uid and label,
+     *   e.g. page=AppInfo&uid=23&label=my first app
+     *
+     *   If the pageId is the FindApps page, then there will additionally be a
+     *   parameter query, e.g. page=FindApps&query={"title"="my first app"}
+     */
+    __selectModuleByFragment : function(fragment)
+    {
+return;
+      var             parts;
+      var             components;
+
+      // Is this an app page or find apps search?
+      parts = fragment.split("&"); 
+          
+      // Parse it completely
+      components = {};
+      parts.forEach(
+        function(part)
+        {
+          var             keyValue;
+
+          keyValue = part.split("=");
+          components[ keyValue[0] ] = keyValue[1];
+        },
+        this);
+      
+      // Now select the module
+      this.selectModule(components);
     }
   }
 });
