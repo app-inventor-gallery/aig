@@ -30,6 +30,12 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       var             windowTitle;
       var             fsm;
       var             categoryList;
+      var             image;
+      var             removeImageButton;
+
+
+      // Retrieve the finite state machine
+      fsm = cellInfo.table.getUserData("fsm");
 
       // Get row data of the app being edited from the cellInfo object
       dataModel = cellInfo.table.getTableModel();
@@ -38,10 +44,11 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
 
       // Cell editor layout
 // TWEAK ME!
-      var layout = new qx.ui.layout.Grid(4, 2);
+      var layout = new qx.ui.layout.Grid();
       layout.setColumnAlign(0, "right", "top");
       layout.setColumnWidth(0, 80);
       layout.setColumnWidth(1, 400);
+      layout.setColumnWidth(2, 300);
       layout.setSpacing(10);
 
       // Cell editor window
@@ -49,12 +56,18 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       cellEditor.setLayout(layout);
       cellEditor.set(
         {
-          width: 600,
+          width: 800,
           modal: true,
           showClose: false,
           showMaximize: false,
-          showMinimize: false,
-          padding : 10
+          showMinimize: false
+        });
+      // Initial centering of cell editor window
+      cellEditor.addListener(
+        "resize",
+        function(e)
+        {
+          this.center();
         });
 
       // Save cell info, which will be needed when the cell editor closes.
@@ -83,10 +96,56 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       cellEditor.add(titleField, { row : 0, column : 1 });
 
       // Create the editor field for the app description
-      var descriptionField = new qx.ui.form.TextField("");
+      var descriptionField = new qx.ui.form.TextArea("");
+      descriptionField.setMinHeight(200);
+      descriptionField.setMaxHeight(200);
       descriptionField.setValue(rowData.description);
       cellEditor.add(descriptionField, { row : 1, column : 1 });
      
+      // Is there an image?
+// TESTME:  no image1
+      if (rowData.image1)
+      {
+
+        // Yes--display it with a "Remove Image" button below it.
+        layout = new qx.ui.layout.VBox();
+        layout.setSpacing(10);
+        var vBox = new qx.ui.container.Composite(layout);
+        cellEditor.add(vBox, { row : 0, column : 2, rowSpan : 2 });
+
+        // Image
+        image = new qx.ui.basic.Image();
+        image.set(
+          {
+            source    : rowData.image1,
+            focusable : false,            //???
+            scale     : true,
+            minHeight : 200,
+            minWidth  : 200,
+            maxWidth  : 200,
+            maxHeight : 200
+          });
+        vBox.add(image, { flex : 1 });
+
+        // "Remove image" button
+        removeImageButton = new qx.ui.form.Button(this.tr("Remove Image"));
+        removeImageButton.set(
+          {
+            maxHeight : 24,
+            maxWidth  : 120,
+// This doesn't make it center horizontally, why not?
+// Oh wait, this is probably telling it to center vertically in its vertical area.
+// So do I need to enclose it in an hbox?
+            center    : true
+          });
+        vBox.add(removeImageButton);
+
+
+// This won't be passed to FSM if no image; beware possible bug?
+        fsm.addObject("removeImageButton", removeImageButton);
+      }
+
+
       // Create the editor field for "category" (required) tags which have
       // been stored in the table's user data.
       
@@ -212,9 +271,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
           paddingTop: 11
         });
       cellEditor.add(buttonPane, {row:3, column: 0, colSpan: 2});
-
-      // Retrieve the finite state machine
-      fsm = cellInfo.table.getUserData("fsm");
 
 // Maybe OK button should be on left--not important ATM.
       var okButton =
