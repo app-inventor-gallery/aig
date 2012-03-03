@@ -103,10 +103,9 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       cellEditor.add(descriptionField, { row : 1, column : 1 });
      
       // Is there an image?
-// TESTME:  no image1
+// TESTME:  no image
       if (rowData.image1)
       {
-
         // Yes--display it with a "Remove Image" button below it.
         layout = new qx.ui.layout.VBox();
         layout.setSpacing(10);
@@ -118,31 +117,31 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
         image.set(
           {
             source    : rowData.image1,
-            focusable : false,            //???
             scale     : true,
-            minHeight : 200,
-            minWidth  : 200,
-            maxWidth  : 200,
-            maxHeight : 200
+            minHeight : 250, //200,
+            minWidth  : 250, //200,
+            maxWidth  : 250, //200,
+            maxHeight : 250  //200
           });
         vBox.add(image, { flex : 1 });
 
-        // "Remove image" button
+/*        // Remove for now--no function
+        // "Remove Image" button
         removeImageButton = new qx.ui.form.Button(this.tr("Remove Image"));
         removeImageButton.set(
           {
             maxHeight : 24,
             maxWidth  : 120,
-// This doesn't make it center horizontally, why not?
-// Oh wait, this is probably telling it to center vertically in its vertical area.
-// So do I need to enclose it in an hbox?
+            // Why doesn't "center" make it center horizontally?
+            // Oh wait, this is probably telling it to center vertically in its vertical area.
+            // So do I need to enclose it in an hbox?
             center    : true
           });
         vBox.add(removeImageButton);
 
-
 // This won't be passed to FSM if no image; beware possible bug?
         fsm.addObject("removeImageButton", removeImageButton);
+*/
       }
 
 
