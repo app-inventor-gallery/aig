@@ -223,7 +223,7 @@ qx.Theme.define("aiagallery.theme.Decoration",
         widthTop : 5,
         color    : "android-green",
         radius   : 6,
-        gradientStart : ["white", 90],
+        gradientStart : ["white", 0],
         gradientEnd : ["white", 100]
       }
     },
@@ -237,15 +237,34 @@ qx.Theme.define("aiagallery.theme.Decoration",
       ],
 
       style : {
-        width    : 16,
-        widthTop : 28,
-        color    : "android-green",
-        radius   : 6,
-        gradientStart : ["white", 90],
-        gradientEnd : ["white", 100]
+        width         : 2,
+        widthRight    : 6,
+        widthBottom   : 4,
+        color         : "android-green",
+        colorRight    : "android-green-dark",
+        colorBottom   : "android-green-dark",
+        radius        : 6,
+        gradientStart : ["white", 0],
+        gradientEnd   : ["android-green", 100]
       }
     },
     
+    "search-result-home" :
+    {
+      decorator : [
+        qx.ui.decoration.MBackgroundColor,
+        qx.ui.decoration.MBorderRadius,
+        qx.ui.decoration.MSingleBorder
+      ],
+
+      style : {
+        width           : 1,
+        color           : "android-green-dark",
+        backgroundColor : "white",
+        radius          : 6
+      }
+    },
+
     "search-result-separator" :
     {
       decorator: qx.ui.decoration.Single,
@@ -263,8 +282,8 @@ qx.Theme.define("aiagallery.theme.Decoration",
 
       style :
       {
-        widthTop    : 10,
-        widthBottom : 10,
+        widthTop    : 0,
+        widthBottom : 0,
         colorTop    : "android-green",
         colorBottom : "android-green"
       }

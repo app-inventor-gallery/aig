@@ -140,7 +140,44 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       hbox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
       
       // Put in some random text
-      o = new qx.ui.basic.Label("Some text and/or images go here");
+      text = 
+        [
+          "<div style='text-align:center'>",
+          "<h2>Welcome to<br>",
+//          "<span style='font-style:italic;'>",
+          "App Inventor Community Gallery!",
+//          "</span>",
+          "</div>",
+          "</h2>",
+
+	  "You can:",
+	  "<ul>",
+	  "<p><li>Browse and download App Inventor projects",
+
+	  "<p><li>Contribute your App Inventor project to share it with others",
+
+	  "<p><li>Discuss projects you like and encourage new ideas!",
+
+	  "</ul>",
+
+	  "<p>Get started by clicking on <b>Find Apps</b>, and go ahead ",
+	  "and add your own projects by clicking on <b>My Apps</b>.",
+
+	  "<p>Also, you can browse projects from your ",
+	  "Android phone by using our companion ",
+	  '<a href="http://www.appinventor.org/mobile-gallery" target="new">',
+          "Mobile Community Gallery</a> ",
+	  "app!"
+        ].join("");
+      o = new qx.ui.basic.Label(text);
+      o.set(
+        {
+          rich     : true,
+          paddingTop  : 40,
+          paddingLeft : 20,
+          width    : 360,
+          maxWidth : 360
+        });
       hbox.add(o);
       
       // Add a spacer to right-justify the featured apps
