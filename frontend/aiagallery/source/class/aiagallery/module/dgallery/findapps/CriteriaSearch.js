@@ -169,7 +169,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     this.__searchResults = new qx.ui.list.List();
     this.__searchResults.set(
       {
-        itemHeight : 130,
+        itemHeight : 136,
         labelPath  : "title",
         iconPath   : "image1",
         delegate   :
