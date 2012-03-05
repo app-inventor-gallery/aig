@@ -751,7 +751,7 @@ members :
 		}
 
 		subTabs.setContentPadding(0);
-		page.add(subTabs, { flex : 1 });
+		page.add(subTabs, { flex : 1 });                
 
 		// For each module associated with the just-added button...
 		for (moduleName in moduleList[menuItem])
@@ -762,6 +762,10 @@ members :
 			// Save this page's id, used for the bookmark fragment
 			subPage.setUserData("pageId", 
 								moduleList[menuItem][moduleName].pageId);
+
+                        // Add the fragment id to the subPage container
+                        page.setUserData("pageId", moduleList[menuItem][moduleName].pageId); 
+
 			var layout=new qx.ui.layout.VBox(4);
 			subPage.setLayout(layout);
 			subTabs.add(subPage, { flex : 1 });
@@ -1149,14 +1153,7 @@ members :
 	// Get its page id string, star building fragment
 	fragment = "page=" + selectedPage.getUserData("pageId");
 	
-/* NOT NEEDED I THINK         
-	// No page selected so this is the startup proccess ignore and return
-	if (fragment == null) 
-	{
-		throw new Error("fragment is null");
-	}
-*/ 
-	// If its an App Page we need to record the appid to switch to it
+        // If its an App Page we need to record the appid to switch to it
 	if (selectedPage.getUserData("pageId")
 	== aiagallery.main.Constant.PageName.AppInfo)
 	{       
@@ -1182,8 +1179,8 @@ members :
 	// Change URL to add language independent constant to it
 	// fragment will be the string constant of the page the user is on.
 	// Second arguement is the title for the page. 
-	qx.bom.History.getInstance().addToHistory(fragment, 
-												selectedPage.getLabel());
+	qx.bom.History.getInstance().addToHistory(fragment,
+                                                  selectedPage.getLabel());
 	},
 
 	/**
