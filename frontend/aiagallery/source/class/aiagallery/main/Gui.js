@@ -21,6 +21,7 @@ extend  : qx.ui.core.Widget,
 
 members :
 {
+<<<<<<< HEAD
     /** The currently used canvas (depends on what module is selected) */
     currentCanvas : null,
 
