@@ -172,11 +172,12 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       o = new qx.ui.basic.Label(text);
       o.set(
         {
-          rich     : true,
-          paddingTop  : 40,
-          paddingLeft : 20,
-          width    : 360,
-          maxWidth : 360
+          rich         : true,
+          paddingTop   : 40,
+          paddingLeft  : 20,
+          paddingRight : 20,
+          width        : 360,
+          maxWidth     : 360
         });
       hbox.add(o);
       
