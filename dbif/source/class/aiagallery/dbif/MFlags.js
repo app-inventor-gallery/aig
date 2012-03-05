@@ -104,7 +104,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
             ]
           };
 
-        // Query for the likes of this app by the current visitor
+        // Query for the flags of this app by the current visitor
         // (an array, which should have length zero or one).
         flagsList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
                                                 criteria,
@@ -288,6 +288,79 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
       error.setCode(4);
       error.setMessage("Reached an un-reachable section in the flagIt rpc.");
       return error;
+    },
+
+
+    /**
+     * Remove all flags for a given app (app flags, not comment flags)
+     * 
+     * @param uid {Integer}
+     *   The uid of the app that is being de-flagged
+     * 
+     * @return {Boolean}
+     *   Returns true if flags removed succesfully, false if app does not exist
+     *   ( ** WHAT IF THERE'S ANOTHER ERROR, E.G. DB TRANSACTION FAILS? ** )
+     */
+    clearAppFlags : function(uid, error)
+    // Based on MApps#deleteApp
+    {
+      var             appObj;
+      var             appData;
+      var             title;
+
+      // Retrieve an instance of this application entity
+      appObj = new aiagallery.dbif.ObjAppData(uid);
+      
+      // Does this application exist?
+      if (appObj.getBrandNew())
+      {
+        // It doesn't. Let 'em know.
+        return false;
+      }
+
+      // Get the object data
+      appData = appObj.getData();
+
+      // Save the title, to put into error message if there's a problem.
+      title = appData.title;
+
+      liberated.dbif.Entity.asTransaction(
+        function()
+        {
+          // Remove all Flags objects referencing this application
+          liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags", 
+                                      {
+                                        type  : "element",
+                                        field : "app",
+                                        value : appData.uid
+                                      }).forEach(
+            function(result)
+            {
+              var             obj;
+              
+              // Get this Flags object
+              obj = new aiagallery.dbif.ObjFlags(result.uid);
+              
+              // Assuming it exists (it had better!)...
+              if (! obj.getBrandNew())
+              {
+                // ... then remove this object
+                obj.removeSelf();
+              }
+            });
+
+          // Reset flag count
+          appData.numCurFlags = 0;
+          // Update DB
+          appObj.put();
+
+        });
+
+      // Let the user know flags removed
+      this.logMessage(appData.owner, "All flags removed", appData.title);
+
+      // We were successful
+      return true;
     }
   }
 });
