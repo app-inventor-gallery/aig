@@ -27,6 +27,17 @@ qx.Class.define("aiagallery.main.Constant",
     [ 
       "application/vnd.android.package-archive",
       "application/octet-stream"
-    ]
+    ],
+    
+    // Page names, used as unique and static identifiers of modules/tabs
+    PageName :
+      {
+        Home       : "Home",
+        FindApps   : "Find Apps",
+        MyApps     : "My Apps",
+        Testing    : "Testing",
+        Management : "Management",
+        AppInfo    : "App"
+      }
   }
 });
