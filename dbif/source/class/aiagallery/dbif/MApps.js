@@ -1762,7 +1762,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             {
               var             obj;
               
-              // Get this Comments object
+              // Get this Downloads object
               obj = new aiagallery.dbif.ObjDownloads(result.uid);
               
               // Assuming it exists (it had better!)...
