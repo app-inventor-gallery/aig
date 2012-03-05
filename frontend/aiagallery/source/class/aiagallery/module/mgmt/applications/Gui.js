@@ -214,14 +214,13 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
           }
 
           // If this is the status column, replace values with names
-          // (Will have to deal with reverse mapping too?)
           if (elem.id == "status")
           {
             var o = new qx.ui.table.cellrenderer.Replace();
             o.setReplaceFunction(
               function(value)
               {
-                // Can it be null?  Better be safe here.
+                // Null?  (Is that possible?)
                 if (value === null)
                 {
                   return "";
@@ -232,9 +231,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
             tcm.setDataCellRenderer(col, o);
           }
 
-
           // If this is the tags column, replace arrays with strings separated by ', '
-          // (Will have to deal with reverse mapping too?)
           if (elem.id == "tags")
           {
             var o = new qx.ui.table.cellrenderer.Replace();

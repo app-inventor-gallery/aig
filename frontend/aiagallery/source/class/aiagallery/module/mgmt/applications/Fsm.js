@@ -365,26 +365,28 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var             appTitle;
           var             description;
           var             selection;
-          var             internal = { permissions : [], status : null };
           var             request;
           var             categories;
           var             additionalTags;
           var             tags;
+          var             statusName;
+          var             status;
 
           // Retrieve the cell editor and cell info
           cellEditor = this.getUserData("cellEditor");
           cellInfo = this.getUserData("cellInfo");
 
           // Retrieve the values from the cell editor
+
+          // One-liners
           uid = cellEditor.getUserData("uid");
           appTitle = cellEditor.getUserData("titleField").getValue();
           description = cellEditor.getUserData("descriptionField").getValue();
 
-          categories     = cellEditor.getUserData("categories");
-          additionalTags = cellEditor.getUserData("additionalTags");
-
           // Create the tags list out of a combination of the categories and
           // additionalTags lists.
+          categories     = cellEditor.getUserData("categories");
+          additionalTags = cellEditor.getUserData("additionalTags");
           tags = [];
 
           // Add the selected categories
@@ -405,25 +407,17 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
               tags.push(item.getLabel());
             });
 
-// also required:  image1, numCurFlags, ...
-
-/* // Don't (and didn't) need this
-          var row = cellInfo.row;
-          var table = cellInfo.table;
-          var dataModel = table.getTableModel();
-          var rowData = dataModel.getRowDataAsMap(row);
-*/
-//          var source = rowData.source;
-//          var image1 = rowData.image1;
+          // Status
+          statusName = cellEditor.getUserData("statusBox").getSelection()[0].getLabel();
+          status = aiagallery.dbif.Constants.Status[statusName];
 
           // Save the request data
           var requestData =
             {
               title       : appTitle,
               description : description,
-              tags        : tags
-//              source      : source,
-//              image1      : image1
+              tags        : tags,
+              status      : status
             };
  
           // Issue an Edit Application call.
@@ -442,9 +436,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           // we made.
 
           request.setUserData("requestType", "mgmtEditApp");
-
-//          // Save the permissions and status
-//          request.setUserData("internal", internal);
         }
       });
 
@@ -527,7 +518,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var             requestData;
           var             response;
           var             result;
-//          var             internal;
           var             table;
           var             dataModel;
           var             permissions;
@@ -542,8 +532,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           requestData = rpcRequest.getUserData("requestData");
           response = rpcRequest.getUserData("rpc_response");
           result = response.data.result;
-
-//          internal = rpcRequest.getUserData("internal");
 
           // We'll also need the Table object, from the FSM
           table = fsm.getObject("table");

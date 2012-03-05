@@ -78,7 +78,8 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       [
         this.tr("Title"),
         this.tr("Description"),
-        this.tr("Categories")
+        this.tr("Categories"),
+        this.tr("Status")
       ].forEach(function(label)
         {
           o = new qx.ui.basic.Label(label);
@@ -248,16 +249,27 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
         });
 
 
-      // Save the input fields for access by getCellEditorValue() and the FSM
-      cellEditor.setUserData("titleField", titleField);
-      cellEditor.setUserData("descriptionField", descriptionField);
-      cellEditor.setUserData("categories", categories);
-      cellEditor.setUserData("additionalTags", additionalTags);
+      // Status
+      var statusBox = new qx.ui.form.SelectBox();
+      var StatusToName = aiagallery.dbif.Constants.StatusToName;
 
-      // Save the uid
-      cellEditor.setUserData("uid", rowData.uid);
+      StatusToName.forEach(function(status)
+        {
+          var item = new qx.ui.form.ListItem(status);
+          statusBox.add(item);
+          if (status == StatusToName[rowData.status])
+            {
+              statusBox.setSelection( [ item  ] );
+            }
+        });
 
-      // buttons
+      cellEditor.add(statusBox, { row : 3, column : 1 });
+
+
+      // Flags -- ToDo
+
+
+      // "Ok" and "Cancel" buttons
       var buttonLayout = new qx.ui.layout.HBox();
       buttonLayout.set(
         {
@@ -269,7 +281,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
         {
           paddingTop: 11
         });
-      cellEditor.add(buttonPane, {row:3, column: 0, colSpan: 2});
+      cellEditor.add(buttonPane, {row:4, column: 0, colSpan: 2});
 
 // Maybe OK button should be on left--not important ATM.
       var okButton =
@@ -283,6 +295,16 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       fsm.addObject("cancel", cancelButton);
       cancelButton.addListener("execute", fsm.eventListener, fsm);
       buttonPane.add(cancelButton);
+
+      // Save the input fields for access by getCellEditorValue() and the FSM
+      cellEditor.setUserData("titleField", titleField);
+      cellEditor.setUserData("descriptionField", descriptionField);
+      cellEditor.setUserData("categories", categories);
+      cellEditor.setUserData("additionalTags", additionalTags);
+      cellEditor.setUserData("statusBox", statusBox);
+      
+      // Save the uid
+      cellEditor.setUserData("uid", rowData.uid);
 
       // We'll need the table object in getCellEditorValue()
       cellEditor.setUserData("table", cellInfo.table);
