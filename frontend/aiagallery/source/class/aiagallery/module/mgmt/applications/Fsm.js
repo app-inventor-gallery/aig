@@ -230,7 +230,8 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
         "ontransition" : function(fsm, event)
         {
           // Issue the remote procedure call to get the application list.
-// Specify a default sortCriteria?
+          // (Maybe could have specified descending sort by flags here,
+          // rather than in Gui.js getAppListAll--let the back end do the work.)
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
@@ -263,6 +264,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
 
         "ontransition" : function(fsm, event)
         {
+// Not sure what's going on here.  Works without this line.
 //          aiagallery.module.mgmt.applications.Fsm._stopTimer(fsm);
         }
       });
@@ -464,7 +466,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
 
           // Retrieve the cell editor and cell info
           cellEditor = this.getUserData("cellEditor");
-//          cellInfo = this.getUserData("cellInfo");
 
           // Retrieve the table object
           var table = fsm.getObject("table");
@@ -474,16 +475,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
 
           // close the cell editor
           cellEditor.close();
-
-/* // This won't happen since not adding apps...
-          // If we created this cell editor (cellInfo has only 'table')...
-          if (typeof(cellInfo.row) == "undefined")
-          {
-            // ... then clean it up. (If editing, Table will clean it up.)
-            cellEditor.destroy();
-            cellEditor = null;
-          }
-*/
 
           // We can remove the cell editor and cell info from our own user
           // data now.
@@ -539,47 +530,9 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           // Get the table's data model
           dataModel = table.getTableModel();
 
-/* Don't need any of this stuff!
-          var fields =
-            [
-              "uid",
-              "title",
-              "description",
-              "image1",
-              "source",
-              "sourceFileName",
-              "tags"
-            ];
-
-          // Create the row data for the table
-          fields.forEach(
-            function(field)
-            {
-              
-            });
-
-          // Create the row data for the table
-          rowData.uid          = result.uid;
-          rowData.title        = result.title;
-          rowData.description  = result.description;
-          rowData.image1       = result.image1;
-          rowData.image2       = result.image2;
-          rowData.image3       = result.image3;
-          rowData.prevAuthors  = result.prevAuthors;
-          rowData.tags         = result.tags.join(", ");
-          rowData.sourceFileName = result.sourceFileName;
-          rowData.apkFileName = result.apkFileName;
-          rowData.uploadTime   = result.uploadTime;
-          rowData.numLikes     = result.numLikes;
-          rowData.numDownloads = result.numDownloads;
-          rowData.numViewed    = result.numViewed;
-          rowData.status       = statusCodes[result.status];
-*/
 
           // Put the data where it belongs. Preserve hidden data and sort order.
-//          dataModel.setRowsAsMapArray( [ rowData ], cellInfo.row, true, false);
           dataModel.setRowsAsMapArray( [ result ] , cellInfo.row, true, false);
-// Might need to munge tags and status here!
 
           // Save the data so that the cell editor's getCellEditorValue()
           // method can retrieve it.
