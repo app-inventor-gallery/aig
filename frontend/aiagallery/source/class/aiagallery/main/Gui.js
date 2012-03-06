@@ -21,7 +21,6 @@ extend  : qx.ui.core.Widget,
 
 members :
 {
-<<<<<<< HEAD
     /** The currently used canvas (depends on what module is selected) */
     currentCanvas : null,
 
@@ -770,6 +769,11 @@ members :
             // Save this page's id, used for the bookmark fragment
             subPage.setUserData("pageId", 
                                 moduleList[menuItem][moduleName].pageId);
+                                
+                                
+            // Add the fragment id to the subPage container
+            page.setUserData("pageId", moduleList[menuItem][moduleName].pageId); 
+            
             var layout=new qx.ui.layout.VBox(4);
             subPage.setLayout(layout);
             subTabs.add(subPage, { flex : 1 });
@@ -1059,12 +1063,16 @@ members :
         // event data is the fragment that will select a page
         var state = e.getData();
         
-        //FIXME seems there is a bug where on opening a page
-        //it fires a request event, stop it this way for now
+        /* Maybe this is not happening, keep just in case
+        //FIXME seems there is a bug where some browsers will fire
+        // this "request" event even when the back/foreward button
+        // is not pressed. Stop it by checking to see if the url is
+        // changed
         if (state == location.hash.substring(1))
         {
           return; 
         }
+        */
         
         this.__selectModuleByFragment(state);
         }, 
@@ -1109,6 +1117,13 @@ members :
         // Request this page
         this.__selectModuleByFragment(fragment);
     }
+       
+    // Nothing in the URL, set it to the homepage
+    fragment = aiagallery.main.Constant.PageName.Home;
+    
+    qx.bom.History.getInstance().addToHistory
+      (fragment, aiagallery.main.Constant.PageName.Home);
+    
     },
 
     /**
@@ -1297,6 +1312,9 @@ members :
         {
         // Select the page
         pageSelectorBar.setSelection([ pageArray[j] ]);
+        
+        // All done so break
+        break; 
         }
     }
     

@@ -29,6 +29,14 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       apply    : "_applyQuery"
     }
   },
+  
+  construct : function()
+  {
+    this.base(arguments); // call the superclass constructor
+    // Add the whole search criteria (and its search results)
+    this.__criteria =
+      new aiagallery.module.dgallery.findapps.CriteriaSearch();
+  }, 
 
   members :
   {
