@@ -1338,8 +1338,18 @@ members :
       }
     
       // Get the Gui instance and set its query property
-      aiagallery.module.dgallery.findapps.Gui.getInstance().setQuery(
-        components.query);
+      // Create a time to initiate the search after things are read
+      qx.util.TimerManager.getInstance().start(
+        function()
+        {
+          aiagallery.module.dgallery.findapps.Gui.getInstance().setQuery(
+            components.query);
+        },
+        100,
+        this,
+        null,
+        0); 
+       
       break;
     }
     },

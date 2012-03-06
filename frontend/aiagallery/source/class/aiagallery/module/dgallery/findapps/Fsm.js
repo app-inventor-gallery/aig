@@ -248,7 +248,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
                 filterOp : eventData.views[0]
               });
           }
-
           // Issue the remote procedure call to execute the query
           request =
             this.callRpc(fsm,
