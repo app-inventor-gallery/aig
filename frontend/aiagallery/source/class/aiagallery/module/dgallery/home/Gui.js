@@ -28,6 +28,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var             text;
       var             font;
       var             hbox;
+      var             vbox;
       var             fsm = module.fsm;
       var             outerCanvas = module.canvas;
       var             scroller;
@@ -139,6 +140,21 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // Create an hbox for introductory text and the Featured Apps
       hbox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
       
+      // Add a left spacer to center the welcome text
+      o = new qx.ui.core.Spacer();
+      o.set(
+        {
+          minWidth     : 20
+        });
+      hbox.add(o, { flex : 1 });
+
+      // Create a vbox to vertically center the introductory text
+      vbox = new qx.ui.container.Composite(new qx.ui.layout.VBox());
+      hbox.add(vbox);
+      
+      // Add a top spacer
+      vbox.add(new qx.ui.core.Spacer(), { flex : 1 });
+
       // Put in some random text
       text = 
         [
@@ -160,8 +176,8 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 
 	  "</ul>",
 
-	  "<p>Get started by clicking on <b>Find Apps</b>, and go ahead ",
-	  "and add your own projects by clicking on <b>My Apps</b>.",
+	  "<p>Get started by clicking on <b>Find Apps</b>, or ",
+          "add your own projects by clicking on <b>My Apps</b>.",
 
 	  "<p>Also, you can browse projects from your ",
 	  "Android phone by using our companion ",
@@ -173,17 +189,23 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       o.set(
         {
           rich         : true,
-          paddingTop   : 40,
-          paddingLeft  : 20,
-          paddingRight : 20,
-          width        : 360,
-          maxWidth     : 360
+          width        : 400
         });
-      hbox.add(o);
+      vbox.add(o);
+
+      // Add a bottom spacer
+      vbox.add(new qx.ui.core.Spacer(), { flex : 1 });
+
       
-      // Add a spacer to right-justify the featured apps
-      hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
-      
+      // Add a right spacer to center the welcome text and right-justify the
+      // featured apps.
+      o = new qx.ui.core.Spacer();
+      o.set(
+        {
+          minWidth     : 20
+        });
+      hbox.add(o, { flex : 1 });
+
       // Featured Apps section
       var featuredAppsLayout = new qx.ui.layout.VBox();
       featuredAppsLayout.set(
@@ -193,6 +215,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var featuredApps = new qx.ui.container.Composite(featuredAppsLayout);
       featuredApps.set(
         {
+          width     : 700,
           decorator : "home-page-ribbon",
           padding   : 20
         });
