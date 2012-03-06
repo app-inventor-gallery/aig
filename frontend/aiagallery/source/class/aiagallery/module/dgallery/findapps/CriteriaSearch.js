@@ -707,7 +707,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       var             fields;
       var             field;
       
-      // Functions to clear each of the types of controls
+      // Functions to retrieve values from each type of control
       clear =
         {
           "textField" : function(o)
