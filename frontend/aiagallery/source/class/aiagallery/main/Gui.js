@@ -1116,13 +1116,13 @@ members :
         
         // Request this page
         this.__selectModuleByFragment(fragment);
+    } else { 
+      // Nothing in the URL, set it to the homepage
+      fragment = aiagallery.main.Constant.PageName.Home;
+      
+      qx.bom.History.getInstance().addToHistory
+       (fragment, aiagallery.main.Constant.PageName.Home);
     }
-       
-    // Nothing in the URL, set it to the homepage
-    fragment = aiagallery.main.Constant.PageName.Home;
-    
-    qx.bom.History.getInstance().addToHistory
-      (fragment, aiagallery.main.Constant.PageName.Home);
     
     },
 
@@ -1270,7 +1270,7 @@ members :
         // Is this the one we're looking for?
         if (pageId == components.page)
         {
-        break;
+          break;
         }
     }
 
@@ -1327,14 +1327,20 @@ members :
     switch(pageId)
     {
     case aiagallery.main.Constant.PageName.AppInfo:
-        // This was special-cased above
-        break;
+      // This was special-cased above
+      break;
 
     case aiagallery.main.Constant.PageName.FindApps:
-        // Get the Gui instance and set its query property
-        aiagallery.module.dgallery.findapps.Gui.getInstance().setQuery(
-          components.query);
-        break;
+      // If the query is empty do not set Query, to do so is an error
+      if (components.query == null) 
+      {
+        break; 
+      }
+    
+      // Get the Gui instance and set its query property
+      aiagallery.module.dgallery.findapps.Gui.getInstance().setQuery(
+        components.query);
+      break;
     }
     },
 
