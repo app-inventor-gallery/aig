@@ -253,11 +253,11 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       var statusBox = new qx.ui.form.SelectBox();
       var StatusToName = aiagallery.dbif.Constants.StatusToName;
 
-      StatusToName.forEach(function(status)
+      StatusToName.forEach(function(statusName)
         {
-          var item = new qx.ui.form.ListItem(status);
+          var item = new qx.ui.form.ListItem(statusName);
           statusBox.add(item);
-          if (status == StatusToName[rowData.status])
+          if (statusName == StatusToName[rowData.status])
             {
               statusBox.setSelection( [ item  ] );
             }
@@ -266,7 +266,36 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       cellEditor.add(statusBox, { row : 3, column : 1 });
 
 
-      // Flags -- ToDo
+      // Flags
+
+      // Display number of flags, and a button to remove them
+      layout = new qx.ui.layout.Grid();
+      layout.setColumnWidth(0, 120);  // "Flags: <n>" label
+      layout.setColumnWidth(1, 120);  // "Remove all flags" button
+      var flagGrid = new qx.ui.container.Composite(layout);
+
+      layout = new qx.ui.layout.HBox();
+      layout.set(
+        {
+          alignX : "center",
+          alignY : "middle",
+          spacing : 4         // Makes reasonable space after "Flags: "
+        });
+
+      var flagNum = new qx.ui.container.Composite(layout);
+
+      flagNum.add(new qx.ui.basic.Label("Flags: "));
+
+      var flagsLabel = new qx.ui.basic.Label("42");
+      flagNum.add(flagsLabel);
+
+      flagGrid.add(flagNum, { row : 0, column : 0});
+
+      var removeFlagsButton = new qx.ui.form.Button("Remove all flags");
+      flagGrid.add(removeFlagsButton, { row : 0, column : 1});
+
+// ToDo:  Fsm communication and event listener for flag gui elements
+      cellEditor.add(flagGrid, {row: 3, column : 2});
 
 
       // "Ok" and "Cancel" buttons
@@ -281,7 +310,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
         {
           paddingTop: 11
         });
-      cellEditor.add(buttonPane, {row:4, column: 0, colSpan: 2});
+      cellEditor.add(buttonPane, {row: 4, column: 0, colSpan: 2});
 
 // Maybe OK button should be on left--not important ATM.
       var okButton =
