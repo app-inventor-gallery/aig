@@ -286,14 +286,18 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
 
       flagNum.add(new qx.ui.basic.Label("Flags: "));
 
-      var flagsLabel = new qx.ui.basic.Label("42");
+      var numFlags = rowData.numCurFlags;  // Might be null (simData)
+      var flagString = qx.lang.Type.isNumber(numFlags) ? numFlags.toString() : '0';
+      var flagsLabel = new qx.ui.basic.Label(flagString);
       flagNum.add(flagsLabel);
 
       flagGrid.add(flagNum, { row : 0, column : 0});
 
       var removeFlagsButton = new qx.ui.form.Button("Remove all flags");
+      fsm.addObject("removeFlags", removeFlagsButton);
+      removeFlagsButton.addListener("execute", fsm.eventListener, fsm);
       flagGrid.add(removeFlagsButton, { row : 0, column : 1});
-
+          
 // ToDo:  Fsm communication and event listener for flag gui elements
       cellEditor.add(flagGrid, {row: 3, column : 2});
 

@@ -22,6 +22,13 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
       var state;
       var trans;
 
+// Debug
+      var FSM = qx.util.fsm.FiniteStateMachine;
+      fsm.setDebugFlags(FSM.DebugFlags.EVENTS |
+                        FSM.DebugFlags.TRANSITIONS |
+                        FSM.DebugFlags.FUNCTION_DETAIL |
+                        FSM.DebugFlags.OBJECT_NOT_FOUND);
+
       // ------------------------------------------------------------ //
       // State: Idle
       // ------------------------------------------------------------ //
@@ -332,7 +339,9 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
             // When the Ok button is pressed in the cell editor
             "ok" : "Transition_EditApp_to_AwaitRpcResult_via_ok",
 
-            "cancel" : "Transition_EditApp_to_Idle_via_cancel"
+            "cancel" : "Transition_EditApp_to_Idle_via_cancel",
+
+            "removeFlags" : "Transition_EditApp_to_AwaitRpcResult_via_removeFlags"
           },
 
           // When we received a "completed" event on RPC
@@ -464,7 +473,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var             cellEditor;
           var             cellInfo;
 
-          // Retrieve the cell editor and cell info
+          // Retrieve the cell editor
           cellEditor = this.getUserData("cellEditor");
 
           // Retrieve the table object
@@ -484,6 +493,62 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
       });
 
       state.addTransition(trans);
+
+
+//------------------------------------------------------------------------------------------------------------
+
+
+      /*
+       * Transition: EditApp to AwaitRpcResult
+       *
+       * Cause: "execute" on "Remove Flags" button in cell editor
+       *
+       * Action:
+       *  Issue an rpc to remove flags for the app
+       */
+
+      trans = new qx.util.fsm.Transition(
+        "Transition_EditApp_to_AwaitRpcResult_via_removeFlags",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var             cellEditor;
+          var             uid;
+          var             request;
+
+          // Retrieve the UID from the cell editor
+          cellEditor = this.getUserData("cellEditor");
+          uid = cellEditor.getUserData("uid");
+ 
+          // Issue a Clear Flags call.
+          request = this.callRpc(fsm,
+                     "aiagallery.features",
+                     "clearAppFlags",
+                     [ uid ]);
+
+/*
+          // Save the user id in the request data too
+          requestData.uid = uid;
+
+          // Save the request data
+          request.setUserData("requestData", requestData);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+
+          request.setUserData("requestType", "clearAppFlags");
+*/
+        }
+      });
+
+      state.addTransition(trans);
+
+//------------------------------------------------------------------------------------------------------------
+
 
       /*
        * Transition: EditApp to Idle
