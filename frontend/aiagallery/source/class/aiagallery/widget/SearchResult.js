@@ -594,13 +594,24 @@ qx.Class.define("aiagallery.widget.SearchResult",
           "click",
           function(e)
           {
+            var             query;
+
             // Prevent the default 'click' behavior
             e.preventDefault();
             e.stop();
 
+            query  =
+              {
+                authorId    : this.getOwner(), 
+                displayName : this.getDisplayName()
+              };
+            
             // Initiate a search
-            alert("Future: initiate search for owner " +
-                  this.getDisplayName() + " (" + this.getOwner() + ")");
+            aiagallery.main.Gui.getInstance().selectModule(
+              {
+                page  : aiagallery.main.Constant.PageName.FindApps,
+                query : qx.lang.Json.stringify(query)
+              });
           },
           this);
 

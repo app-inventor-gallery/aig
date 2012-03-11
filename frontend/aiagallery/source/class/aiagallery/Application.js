@@ -90,17 +90,8 @@ qx.Class.define("aiagallery.Application",
         // ... there can be multiple available items in top-level menu item
         for (moduleName in moduleList[menuItem])
         {
-          // ... call the module's buildInitialFsm() function
-          if (moduleList[menuItem][moduleName].bNewInstance)
-          {
-            // We must instantiate a new instance of this module
-            module = new moduleList[menuItem][moduleName]["clazz"]();
-          }
-          else
-          {
-            // The module is a singleton, so get its one and only instance
-            module = moduleList[menuItem][moduleName]["clazz"].getInstance();
-          }
+          // The module is a singleton. Get its one and only instance
+          module = moduleList[menuItem][moduleName]["clazz"].getInstance();
           module.buildInitialFsm(moduleList[menuItem][moduleName]);
         }
       }
@@ -117,17 +108,8 @@ qx.Class.define("aiagallery.Application",
       {
         for (moduleName in moduleList[menuItem])
         {
-          // ... call the module's buildInitialGui() function
-          if (moduleList[menuItem][moduleName].bNewInstance)
-          {
-            // Type is "new" so create a new instance of this module
-            module = new moduleList[menuItem][moduleName]["clazz"]();
-          }
-          else
-          {
-            // Type is "singleton""
-            module = moduleList[menuItem][moduleName]["clazz"].getInstance();
-          }
+          // Build the initial GUI
+          module = moduleList[menuItem][moduleName]["clazz"].getInstance();
           module.buildInitialGui(moduleList[menuItem][moduleName]);
         }
       }
@@ -199,18 +181,21 @@ new aiagallery.main.Module(
   "Home",
   "aiagallery/module/go-home.png",
   "Home",
+  aiagallery.main.Constant.PageName.Home,
   aiagallery.module.dgallery.home.Home);
 
 new aiagallery.main.Module(
   "Find Apps",
   "aiagallery/module/system-search.png",
   "Find Apps",
+  aiagallery.main.Constant.PageName.FindApps,
   aiagallery.module.dgallery.findapps.FindApps);
 
 new aiagallery.main.Module(
   "My Apps",
   "aiagallery/module/emblem-favorite.png",
   "My Apps",
+  aiagallery.main.Constant.PageName.MyApps,
   aiagallery.module.dgallery.myapps.MyApps);
 
 
@@ -221,11 +206,13 @@ if (qx.core.Environment.get("qx.debug"))
     "Testing",
     null,
     "Temporary",
+    aiagallery.main.Constant.PageName.Testing,
     aiagallery.module.testing.temp.Temp);
 
   new aiagallery.main.Module(
     "Testing",
     "aiagallery/test.png",
     "Mobile",
+    aiagallery.main.Constant.PageName.Testing,
     aiagallery.module.testing.mobile.Mobile);
 }
