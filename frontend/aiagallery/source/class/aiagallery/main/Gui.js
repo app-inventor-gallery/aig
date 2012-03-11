@@ -1345,10 +1345,10 @@ members :
           aiagallery.module.dgallery.findapps.Gui.getInstance().setQuery(
             components.query);
         },
-        100,
+        0,
         this,
         null,
-        0); 
+        1000); 
        
       break;
     }
