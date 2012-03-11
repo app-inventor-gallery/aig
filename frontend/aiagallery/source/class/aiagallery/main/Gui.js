@@ -1389,5 +1389,5 @@ members :
     // Now select the module
     this.selectModule(components);
     }
-}
+  }
 });
