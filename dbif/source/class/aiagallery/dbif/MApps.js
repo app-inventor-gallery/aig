@@ -503,6 +503,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             queue;
       var             options;
       var             bNew;
+      var             bRemoveAppFromSearchFlag = false;
       var             whoami;
       var             missing = [];
       var             addedBlobs = [];
@@ -567,9 +568,11 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             error.setMessage("Not owner");
             return error;
           }
-
-	  // Delete all data in the search db, we only want the newest stuff
-          aiagallery.dbif.MApps._removeAppFromSearch(uid);	  
+          
+	      // Delete all data in the search db, we only want the newest stuff
+          // Set a flag here so that we know to do it later
+          // avoid race condition
+          bRemoveAppFromSearchFlag = true; 
 
         }
         else
@@ -801,6 +804,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         appData = liberated.dbif.Entity.asTransaction(
           function()
           {
+            // Check to see if we need to
+            // Delete all data in the search db, we only want the newest stuff
+            if (bRemoveAppFromSearchFlag)
+            {          
+              aiagallery.dbif.MApps._removeAppFromSearch(uid);	 
+            }
+            
             // If tags were provided...
             if (attributes.tags)
             {
