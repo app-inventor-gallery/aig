@@ -294,6 +294,16 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       case "getDatabaseEntities":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
+      //
+      // MPermissionGroup
+      //
+      case "addOrEditPermissionGroup" :
+      case "getGroupPermissions" :
+      case "deletePermissionGroup" :
+      case "getPermissionGroups" :
+        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+
+
       default:
         // Do not allow access to unrecognized method names
         return false;

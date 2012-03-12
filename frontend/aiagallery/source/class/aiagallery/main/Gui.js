@@ -377,9 +377,9 @@ qx.Class.define("aiagallery.main.Gui",
               bAllowed = false;
               [ 
                 // These permissions allow access to the page
-                // FIXME: Kept same as Application page for now
                 "addOrEditPermissionGroup",
-                "deletePermissionGroup"
+                "deletePermissionGroup",
+                "whitelistVisitors"
               ].forEach(
                 function(rpcFunc)
                 {
