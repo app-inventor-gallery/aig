@@ -220,6 +220,83 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
 	}
       }, this);
 
+    },
+    
+        
+    "Test ObjSearch" function() 
+    {
+    
+      var queryResults;
+     
+      // Get access to the RPC implementations. This includes the mixins for
+      // all RPCs.
+      var dbifSim = aiagallery.dbif.DbifSim.getInstance();
+      
+      // We need an error object
+      var error = new liberated.rpc.error.Error("2.0");
+      
+      // This is used for the malformed string tests below
+      var badSearchData = "Th.z st!@#$%wef^&*we(() #$% MY!!!!! cala#ity is suppo$ed to be malformed";
+
+      dbifSim.setWhoAmI(
+        {
+          id : "1002",
+          email : "billy@thekid.edu",
+          isAdmin: false,
+          logoutUrl: "undefined",
+          permissions: [],
+          displayName :  "Billy The Kid"
+        });
+
+      // Ensure the database is properly initialized
+      liberated.sim.Dbif.setDb(
+        qx.lang.Object.clone(aiagallery.dbif.MSimData.Db, true));
+
+      // Our Test App
+      var myApps = 
+        [
+          {
+            owner       : "1002",
+            description : "The word contains a+b but neither 'a' nor 'b' will"
+                          + "be entered. If I quote a word like \"this-one\" "
+                          + "then maybe it should get entered as such" 
+                          + "(but currently doesn't). We have no escapes. "
+                          + "What about 12/25/2012 as a date? or 12-25-2012?",
+            title       : "WTF is this?",
+            tags        : ["entered", "as", "such", "junk", "stop"],
+            source      : "SOURCE",
+            image1      : "data://xxx"
+          }
+        ];
+       
+      // Make sure app was added correctly       
+      myApps.forEach(
+        function(obj)
+        {
+          var ret = dbifSim.addOrEditApp(null, obj, error);
+          this.assertNotEquals(error, ret,
+                               "addOrEditApp failed: " + error.stringify());
+        },
+        this);
+        
+        // Test Fields      
+        // Test Title
+        
+        // Test Description
+        
+        // Test Tags
+        
+        // Test Combinations of Fields
+        // Title + Description 
+        
+        // Title + Tags
+        
+        // Description + Tags 
+        
+        // Title + Description + Tags 
+        
+        
+    
     }
   }
 });  
