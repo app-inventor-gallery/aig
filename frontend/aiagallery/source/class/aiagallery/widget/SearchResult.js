@@ -78,9 +78,11 @@ qx.Class.define("aiagallery.widget.SearchResult",
       this.set(
         {
           width           : size,
-          marginRight     : 20,
+          margin          : 0,
+          marginBottom    : 4,
+          marginTop       : 10,
           padding         : 10,
-          backgroundColor : "#eee9e9"
+          decorator       : "search-result-home"
         });
       
       // Describe the configuration for this widget
