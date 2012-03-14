@@ -1247,133 +1247,133 @@ qx.Class.define("aiagallery.main.Gui",
     */
     selectModule : function(components)
     {
-    var             i;
-    var             j;
-    var             mainTabs;
-    var             tabArray;
-    var             selectedPage;
-    var             selectedLabel;
-    var             pageArray;
-    var             pageSelectorBar;
-    var             hierarchy;
-    var             pageId;
-    
-    // Is this a request for the App page?
-    if (components.page == aiagallery.main.Constant.PageName.AppInfo)
-    {
-        // Yup. Ensure there's a uid and a label provided
-        if (! components.uid)
-        {
-          throw new Error("Got request for AppInfo without UID");
-        }
-        if (! components.label)
-        {
-          throw new Error("Got request for AppInfo without label");
-        }
-        
-        aiagallery.module.dgallery.appinfo.AppInfo.addAppView(
-          components.uid, components.label);
+      var             i;
+      var             j;
+      var             mainTabs;
+      var             tabArray;
+      var             selectedPage;
+      var             selectedLabel;
+      var             pageArray;
+      var             pageSelectorBar;
+      var             hierarchy;
+      var             pageId;
 
-        // Page selected. Nothing more to do.
-        return;
-    }
-
-    // Retrieve the previously-created top-level tab view
-    mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
-    tabArray = mainTabs.getChildren();
-    
-    // It's not an AppInfo request. Iterate through the tabs' labels to find
-    // the tab.
-    for (i = 0; i < tabArray.length; i++)
-    {
-        // Get the pageId
-        pageId = tabArray[i].getUserData("pageId");
-
-        // Is this the one we're looking for?
-        if (pageId == components.page)
-        {
-          break;
-        }
-    }
-
-    // Did we find it?
-    if (i == tabArray.length)
-    {
-        // Nope. Go to the home page
-        i = 0;                  // 0 is the home page
-        pageId = aiagallery.main.Constant.PageName.Home;
-    }
-
-    // We found the selected page.
-    selectedPage = tabArray[i];
-
-    // Yup. Select this tab (module)
-    mainTabs.setSelection([ selectedPage ]);  
-
-    // Get the page hierarchy
-    hierarchy = 
-        aiagallery.main.Gui.getInstance().getUserData("hierarchy");
-
-    // Reinitialize the hierarchy to show only this page
-    hierarchy.setHierarchy([tabArray[i].getLabel()]);
-
-    // Get the page selector bar
-    pageSelectorBar =
-        aiagallery.main.Gui.getInstance().getUserData("pageSelectorBar");
-
-    // Get children
-    pageArray = pageSelectorBar.getChildren();
-
-    // Get the label of the selected tab, to find it in the page
-    // selector bar.
-    selectedLabel = selectedPage.getLabel();
-
-    for (j = 0; j < pageArray.length; j++)
-    {
-        if (pageArray[j].getLabel() == selectedLabel)
-        {
-        // Select the page
-        pageSelectorBar.setSelection([ pageArray[j] ]);
-        
-        // All done so break
-        break; 
-        }
-    }
-    
-    // FIXME On app entry the title of the page is not set
-    // We set it here, even though in app when a user selects
-    // another module this will be done twice. 
-    qx.bom.History.getInstance().setTitle(selectedPage.getLabel());
-    
-    // Arrange to pass parameters to the page, if necessary
-    switch(pageId)
-    {
-    case aiagallery.main.Constant.PageName.AppInfo:
-      // This was special-cased above
-      break;
-
-    case aiagallery.main.Constant.PageName.FindApps:
-      // If the query is empty do not set Query, to do so is an error
-      if (components.query == null) 
+      // Is this a request for the App page?
+      if (components.page == aiagallery.main.Constant.PageName.AppInfo)
       {
-        break; 
+          // Yup. Ensure there's a uid and a label provided
+          if (! components.uid)
+          {
+            throw new Error("Got request for AppInfo without UID");
+          }
+          if (! components.label)
+          {
+            throw new Error("Got request for AppInfo without label");
+          }
+
+          aiagallery.module.dgallery.appinfo.AppInfo.addAppView(
+            components.uid, components.label);
+
+          // Page selected. Nothing more to do.
+          return;
       }
-    
-      // Get the Gui instance and set its query property
-      // Create a time to initiate the search after things are read
-      qx.util.TimerManager.getInstance().start(
-        function()
+
+      // Retrieve the previously-created top-level tab view
+      mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
+      tabArray = mainTabs.getChildren();
+
+      // It's not an AppInfo request. Iterate through the tabs' labels to find
+      // the tab.
+      for (i = 0; i < tabArray.length; i++)
+      {
+          // Get the pageId
+          pageId = tabArray[i].getUserData("pageId");
+
+          // Is this the one we're looking for?
+          if (pageId == components.page)
+          {
+            break;
+          }
+      }
+
+      // Did we find it?
+      if (i == tabArray.length)
+      {
+          // Nope. Go to the home page
+          i = 0;                  // 0 is the home page
+          pageId = aiagallery.main.Constant.PageName.Home;
+      }
+
+      // We found the selected page.
+      selectedPage = tabArray[i];
+
+      // Yup. Select this tab (module)
+      mainTabs.setSelection([ selectedPage ]);  
+
+      // Get the page hierarchy
+      hierarchy = 
+          aiagallery.main.Gui.getInstance().getUserData("hierarchy");
+
+      // Reinitialize the hierarchy to show only this page
+      hierarchy.setHierarchy([tabArray[i].getLabel()]);
+
+      // Get the page selector bar
+      pageSelectorBar =
+          aiagallery.main.Gui.getInstance().getUserData("pageSelectorBar");
+
+      // Get children
+      pageArray = pageSelectorBar.getChildren();
+
+      // Get the label of the selected tab, to find it in the page
+      // selector bar.
+      selectedLabel = selectedPage.getLabel();
+
+      for (j = 0; j < pageArray.length; j++)
+      {
+          if (pageArray[j].getLabel() == selectedLabel)
+          {
+          // Select the page
+          pageSelectorBar.setSelection([ pageArray[j] ]);
+
+          // All done so break
+          break; 
+          }
+      }
+
+      // FIXME On app entry the title of the page is not set
+      // We set it here, even though in app when a user selects
+      // another module this will be done twice. 
+      qx.bom.History.getInstance().setTitle(selectedPage.getLabel());
+
+      // Arrange to pass parameters to the page, if necessary
+      switch(pageId)
+      {
+      case aiagallery.main.Constant.PageName.AppInfo:
+        // This was special-cased above
+        break;
+
+      case aiagallery.main.Constant.PageName.FindApps:
+        // If the query is empty do not set Query, to do so is an error
+        if (components.query == null) 
         {
-          aiagallery.module.dgallery.findapps.Gui.getInstance().setQuery(
-            components.query);
-        },
-        0,
-        this,
-        null,
-        1000); 
-       
-      break;
-    }
+          break; 
+        }
+
+        // Get the Gui instance and set its query property
+        // Create a time to initiate the search after things are read
+        qx.util.TimerManager.getInstance().start(
+          function()
+          {
+            aiagallery.module.dgallery.findapps.Gui.getInstance().setQuery(
+              components.query);
+          },
+          0,
+          this,
+          null,
+          1000); 
+
+        break;
+      }
     },
 
     /**
