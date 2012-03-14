@@ -495,8 +495,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       var             fieldData = {};
       var             data = {};
       var             json;
+      var             selectedPage;
       
-      // Functions to clear each of the types of controls
+      // Functions to retrieve each of the types of controls
       getValue =
         {
           "textField" : function(o)
@@ -528,24 +529,37 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           }
         };
 
-      // Fields to be retrieved, mapped to the function to retrieve them
-      fields =
-        {
-          txtTextSearch  : getValue.textField,
-          txtTitle       : getValue.textField,
-          txtDescription : getValue.textField,
-          txtTags        : getValue.textField,
-          txtAuthorId    : getValue.textField,
+      // If we're doing a basic search, ...
+      selectedPage = this.__radioView.getSelection();
+      if (selectedPage[0] == this.__radioView.getChildren()[0])
+      {
+        // ... then retrieve only basic text search field, mapped to the
+        // function to retrieve it.
+        fields =
+          {
+            txtTextSearch  : getValue.textField
+          };
+      }
+      else
+      {
+        // Retrieve all advance fields,, mapped to the function to retrieve them
+        fields =
+          {
+            txtTitle       : getValue.textField,
+            txtDescription : getValue.textField,
+            txtTags        : getValue.textField,
+            txtAuthorId    : getValue.textField,
 
-          lstLikesOp     : getValue.list,
-          spnLikes       : getValue.spinner,
-          lstDownloadsOp : getValue.list,
-          spnDownloads   : getValue.spinner,
-          lstViewsOp     : getValue.list,
-          spnViews       : getValue.spinner,
+            lstLikesOp     : getValue.list,
+            spnLikes       : getValue.spinner,
+            lstDownloadsOp : getValue.list,
+            spnDownloads   : getValue.spinner,
+            lstViewsOp     : getValue.list,
+            spnViews       : getValue.spinner,
 
-          lstCategories  : getValue.listMulti
-        };      
+            lstCategories  : getValue.listMulti
+          };      
+      }
       
       // Now do it! For each field...
       for (field in fields)
@@ -707,7 +721,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       var             fields;
       var             field;
       
-      // Functions to retrieve values from each type of control
+      // Functions to clear values from each type of control
       clear =
         {
           "textField" : function(o)
@@ -779,15 +793,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             placeholder : "Please enter search words",
             tabIndex    : 1
           });
-        
-        // When this control gets focus, clear all of the other fields
-        control.addListener(
-          "focus",
-          function(e)
-          {
-            this._clearFields(true);
-          },
-          this);
         
         // Give this field the focus when it appears
         control.addListener(
