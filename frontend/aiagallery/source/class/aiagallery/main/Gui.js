@@ -1330,14 +1330,14 @@ qx.Class.define("aiagallery.main.Gui",
 
       for (j = 0; j < pageArray.length; j++)
       {
-          if (pageArray[j].getLabel() == selectedLabel)
-          {
-          // Select the page
-          pageSelectorBar.setSelection([ pageArray[j] ]);
+        if (pageArray[j].getLabel() == selectedLabel)
+        {
+        // Select the page
+        pageSelectorBar.setSelection([ pageArray[j] ]);
 
-          // All done so break
-          break; 
-          }
+        // All done so break
+        break; 
+        }
       }
 
       // FIXME On app entry the title of the page is not set
