@@ -15,6 +15,29 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
   type : "singleton",
   extend : qx.ui.core.Widget,
 
+  events :
+  {
+    queryChanged : "qx.event.type.Data"
+  },
+
+  properties :
+  {
+    query :
+    {
+      init     : null,
+      nullable : true,
+      apply    : "_applyQuery"
+    }
+  },
+  
+  construct : function()
+  {
+    this.base(arguments); // call the superclass constructor
+    // Add the whole search criteria (and its search results)
+    this.__criteria =
+      new aiagallery.module.dgallery.findapps.CriteriaSearch();
+  }, 
+
   members :
   {
     /** Whether FSM events should be temporarily prevented */
@@ -61,6 +84,20 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       
       // Add a listener for a new search
       this.__criteria.addListener("queryChanged", fsm.eventListener, fsm);
+      
+      // Also fire our own event so that the history can be updated
+      this.__criteria.addListener(
+        "queryChanged",
+        function(e)
+        {
+          var             messageBus;
+
+          // Dispatch a message for any subscribers to
+          // this type.
+          messageBus = qx.event.message.Bus.getInstance();
+          messageBus.dispatchByName("findapps.query", e.getData());
+        },
+        this);
 
       // Add a listener for when the user clicks on an app in search results
       this.__criteria.addListener("viewApp", fsm.eventListener, fsm);
@@ -138,6 +175,22 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       default:
         throw new Error("Unexpected request type: " + requestType);
       }
+    },
+    
+    _applyQuery : function(value, old)
+    {
+      // If the value is being set back to null because a query was just
+      // applied, there's nothing we need to do.
+      if (value === null)
+      {
+        return;
+      }
+      
+      // Issue the specified query
+      this.__criteria.setQuery(value);
+      
+      // Set the value back to null so we're ready for next time
+      this.setQuery(null);
     }
   }
 });
