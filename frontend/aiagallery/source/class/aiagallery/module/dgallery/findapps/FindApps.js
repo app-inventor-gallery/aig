@@ -14,6 +14,12 @@ qx.Class.define("aiagallery.module.dgallery.findapps.FindApps",
   type : "singleton",
   extend : aiagallery.main.AbstractModule,
 
+  events :
+  {
+    /** Fired when the Find Apps gui is fully rendered */
+    "FindAppsReady" : "qx.event.type.Event"
+  },
+
   members :
   {
     /**
@@ -28,6 +34,14 @@ qx.Class.define("aiagallery.module.dgallery.findapps.FindApps",
      */
     initialAppear : function(module)
     {
+      module.canvas.addListenerOnce(
+        "appear",
+        function(e)
+        {
+          this.fireEvent("FindAppsReady");
+        },
+        this);
+
       // Replace existing (temporary) finite state machine with the real one.
       aiagallery.module.dgallery.findapps.Fsm.getInstance().buildFsm(module);
 
