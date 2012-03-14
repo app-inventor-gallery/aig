@@ -222,6 +222,15 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       });
     this.add(this.__searchResults, { flex : 1 });
 
+    // Do not allow setQuery() to be processed until we're visible
+    this.addListener(
+      "appear",
+      function(e)
+      {
+        this.bAppeared = true;
+      },
+      this);
+
     // Instantiate child controls
     this.getChildControl("txtTextSearch");
     this.getChildControl("imgTitle");
@@ -335,6 +344,19 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       var             tags = [];
       var             categories = [];
       var             selection = [];
+
+      // If we're not visible yet...
+      if (! this.bAppeared)
+      {
+        // ... then await an appear event
+        this.addListenerOnce(
+          "appear",
+          function(e)
+          {
+            this.setQuery(json);
+          },
+          this);
+      }
 
       var selectByValue = function(list, value)
       {
