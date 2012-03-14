@@ -25,7 +25,9 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
       var error = new liberated.rpc.error.Error("2.0");
       
       // This is used for the malformed string tests below
-      var badSearchData = "Th.z st!@#$%wef^&*we(() #$% MY!!!!! cala#ity is suppo$ed to be malformed";
+      var badSearchData = 
+        "Th.z st!@#$%wef^&*we(() #$% MY!!!!! cala#ity is suppo$ed " +
+        "to be malformed";
 
       dbifSim.setWhoAmI(
         {
@@ -80,10 +82,12 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
             image1      : "data://xxx"
           },
 
-      {
+          {
             source      : "somerandomstring",
             owner       : "1002",
-            description : "Th.z st!@#$%wef^&*we(() #$% MY!!!!! cala#ity is suppo$ed to be malformed",
+            description : 
+              "Th.z st!@#$%wef^&*we(() #$% MY!!!!! cala#ity is suppo$ed " +
+              "to be malformed",
             title       : "DROP TABLEz LOLZ",
             tags        : ["Games", "broken"],
             image1      : "data://xxx"
@@ -163,14 +167,15 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
                         "Expected 0 results; got " + queryResults.length);
 
       // Updating an App to see that old information is disposed
-      var appUpdate = {
-        source      : "somerandomstring",
-        owner       : "1002",
-    description : "This one's sexy and beautiful",
-    title       : "Your Father Jokes",
-    tags        : ["funny", "Business"],
-    image1      : "data://xxx"
-      }
+      var appUpdate =
+        {
+          source      : "somerandomstring",
+          owner       : "1002",
+          description : "This one's sexy and beautiful",
+          title       : "Your Father Jokes",
+          tags        : ["funny", "Business"],
+          image1      : "data://xxx"
+        };
       
       // Test to make sure word from old version of App exists
       queryResults = dbifSim.keywordSearch(["mother"], null, true, error);
@@ -208,25 +213,25 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
                                      null,
                                      error));
     
-    this.assert(queryResults[0] !== error, "#" + i++ + " " +
+        this.assert(queryResults[0] !== error, "#" + i++ + " " +
             "Error: " + error.getCode() + 
             ": " + error.getMessage());
     
-    // It's bad if the search word is not valid but there are results
-    if (str.match(/[a-z0-9]{2,}/gi) == null)
-    {
-        this.assert(queryResults.length == 0, 
-            "Bad search data getting through!!: " + str + ", " +
-            queryResults[0]);
-    }
-      }, this);
+        // It's bad if the search word is not valid but there are results
+        if (str.match(/[a-z0-9]{2,}/gi) == null)
+        {
+          this.assert(queryResults.length == 0, 
+                      "Bad search data getting through!!: " + str + ", " +
+                      queryResults[0]);
+        }
+      },
+      this);
 
     },
     
         
     "test 02: ObjSearch" : function() 
     {
-    
       // Counter for error number 
       var i = 0;
     
@@ -240,7 +245,9 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
       var error = new liberated.rpc.error.Error("2.0");
       
       // This is used for the malformed string tests below
-      var badSearchData = "Th.z st!@#$%wef^&*we(() #$% MY!!!!! cala#ity is suppo$ed to be malformed";
+      var badSearchData = 
+        "Th.z st!@#$%wef^&*we(() #$% MY!!!!! " +
+        "cala#ity is suppo$ed to be malformed";
 
       dbifSim.setWhoAmI(
         {
@@ -283,121 +290,122 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
         },
         this);
         
-        // Test Fields      
-        // Test Title
-        queryResults = dbifSim.keywordSearch(["WTF"], ["title"], null, error);
+      // Test Fields      
+      // Test Title
+      queryResults = dbifSim.keywordSearch(["WTF"], ["title"], null, error);
         
-        this.assertNotEquals(queryResults.length, 0, "#" + i++ + " " +
-          "Word Detected in ObjSearch that should not be there" 
-          + error.stringify());
+      this.assertNotEquals(
+        queryResults.length, 0, "#" + i++ + " " +
+        "Word Detected in ObjSearch that should not be there" +
+        error.stringify());
         
-        queryResults = dbifSim.keywordSearch(["is"], ["title"], null, error);
+      queryResults = dbifSim.keywordSearch(["is"], ["title"], null, error);
         
-        this.assertEquals(queryResults.length, 0, "#" + i++ + " " +
-          "Word Detected in ObjSearch that should not be there" 
-          + error.stringify());
+      this.assertEquals(
+        queryResults.length, 0, "#" + i++ + " " +
+        "Word Detected in ObjSearch that should not be there" +
+        error.stringify());
           
-        queryResults = dbifSim.keywordSearch(["this?"], ["title"], null, error);
+      queryResults = dbifSim.keywordSearch(["this?"], ["title"], null, error);
         
-        this.assertEquals(queryResults.length, 0, "#" + i++ + " " +
-          "Word Detected in ObjSearch that should not be there" 
-          + error.stringify());
+      this.assertEquals(queryResults.length, 0, "#" + i++ + " " +
+        "Word Detected in ObjSearch that should not be there" +
+        error.stringify());
         
-        // Test Description
-        queryResults = dbifSim.keywordSearch(["entered"], ["description"], null, error);
+      // Test Description
+      queryResults = 
+        dbifSim.keywordSearch(["entered"], ["description"], null, error);
         
-        this.assertNotEquals(queryResults.length, 0, "#" + i++ + " " +
-          "Word Detected in ObjSearch that should not be there" 
-          + error.stringify());
+      this.assertNotEquals(queryResults.length, 0, "#" + i++ + " " +
+        "Word Detected in ObjSearch that should not be there" +
+        error.stringify());
           
-        queryResults = dbifSim.keywordSearch(["should"], ["description"], null, error);
+      queryResults = 
+        dbifSim.keywordSearch(["should"], ["description"], null, error);
         
-        this.assertEquals(queryResults.length, 0, "#" + i++ + " " +
-          "Word Detected in ObjSearch that should not be there" 
-          + error.stringify());
+      this.assertEquals(queryResults.length, 0, "#" + i++ + " " +
+        "Word Detected in ObjSearch that should not be there" +
+        error.stringify());
         
-        // Test Tags        
-        queryResults = dbifSim.keywordSearch(["junk"], ["tags"], null, error);
+      // Test Tags        
+      queryResults = dbifSim.keywordSearch(["junk"], ["tags"], null, error);
         
-        this.assertNotEquals(queryResults.length, 0, "#" + i++ + " " +
-          "Word Detected in ObjSearch that should not be there" 
-          + error.stringify());
+      this.assertNotEquals(queryResults.length, 0, "#" + i++ + " " +
+        "Word Detected in ObjSearch that should not be there" +
+        error.stringify());
           
-        queryResults = dbifSim.keywordSearch(["not"], ["tags"], null, error);
+      queryResults = dbifSim.keywordSearch(["not"], ["tags"], null, error);
         
-        this.assertEquals(queryResults.length, 0, "#" + i++ + " " +
-          "Word Detected in ObjSearch that should not be there" 
-          + error.stringify());
+      this.assertEquals(queryResults.length, 0, "#" + i++ + " " +
+        "Word Detected in ObjSearch that should not be there" +
+        error.stringify());
           
-        queryResults = dbifSim.keywordSearch(["Business"], ["tags"], null, error);
+      queryResults = dbifSim.keywordSearch(["Business"], ["tags"], null, error);
         
-        this.assertNotEquals(queryResults.length, 0, "#" + i++ + " " +
-          "Word Detected in ObjSearch that should not be there" 
-          + error.stringify());
+      this.assertNotEquals(queryResults.length, 0, "#" + i++ + " " +
+        "Word Detected in ObjSearch that should not be there" +
+        error.stringify());
                  
-        // Test Combinations of Fields
-        // Title + Description 
-        queryResults = dbifSim.keywordSearch(["WTF"], 
-          ["title", "description"], null, error);
+      // Test Combinations of Fields
+      // Title + Description 
+      queryResults = dbifSim.keywordSearch(["WTF"], 
+        ["title", "description"], null, error);
+      
+      this.assertNotEquals(queryResults.length, 0, "#" + i++ + " " +
+        "Word Detected in ObjSearch that should not be there" +
+        error.stringify());
         
-        this.assertNotEquals(queryResults.length, 0, "#" + i++ + " " +
-          "Word Detected in ObjSearch that should not be there" 
-          + error.stringify());
-          
-        queryResults = dbifSim.keywordSearch(["this"], 
-          ["title", "description"], null, error);
+      queryResults = dbifSim.keywordSearch(["this"], 
+        ["title", "description"], null, error);
+      
+      this.assertEquals(queryResults.length, 0, "#" + i++ + " " +
+        "Word Detected in ObjSearch that should not be there" +
+        error.stringify());
+      
+      // Title + Tags
+      queryResults = dbifSim.keywordSearch(["entered"], 
+        ["title", "tags"], null, error);
+      
+      this.assertNotEquals(queryResults.length, 0, "#" + i++ + " " +
+        "Word Detected in ObjSearch that should not be there" +
+        error.stringify());
         
-        this.assertEquals(queryResults.length, 0, "#" + i++ + " " +
-          "Word Detected in ObjSearch that should not be there" 
-          + error.stringify());
+      queryResults = dbifSim.keywordSearch(["this"], 
+        ["title", "tags"], null, error);
+      
+      this.assertEquals(queryResults.length, 0, "#" + i++ + " " +
+        "Word Detected in ObjSearch that should not be there" +
+        error.stringify());
+      
+      // Description + Tags 
+      queryResults = dbifSim.keywordSearch(["quote"], 
+        ["tags", "description"], null, error);
+      
+      this.assertNotEquals(queryResults.length, 0, "#" + i++ + " " +
+        "Word Detected in ObjSearch that should not be there" +
+        error.stringify());
         
-        // Title + Tags
-        queryResults = dbifSim.keywordSearch(["entered"], 
-          ["title", "tags"], null, error);
+      queryResults = dbifSim.keywordSearch(["no"], 
+        ["tags", "description"], null, error);
+      
+      this.assertEquals(queryResults.length, 0, "#" + i++ + " " +
+        "Word Detected in ObjSearch that should not be there" +
+        error.stringify());
+      
+      // Title + Description + Tags 
+      queryResults = dbifSim.keywordSearch(["WTF"], 
+        ["title", "description", "tags"], null, error);
+      
+      this.assertNotEquals(queryResults.length, 0, "#" + i++ + " " +
+        "Word Detected in ObjSearch that should not be there" +
+        error.stringify());
         
-        this.assertNotEquals(queryResults.length, 0, "#" + i++ + " " +
-          "Word Detected in ObjSearch that should not be there" 
-          + error.stringify());
-          
-        queryResults = dbifSim.keywordSearch(["this"], 
-          ["title", "tags"], null, error);
-        
-        this.assertEquals(queryResults.length, 0, "#" + i++ + " " +
-          "Word Detected in ObjSearch that should not be there" 
-          + error.stringify());
-        
-        // Description + Tags 
-        queryResults = dbifSim.keywordSearch(["quote"], 
-          ["tags", "description"], null, error);
-        
-        this.assertNotEquals(queryResults.length, 0, "#" + i++ + " " +
-          "Word Detected in ObjSearch that should not be there" 
-          + error.stringify());
-          
-        queryResults = dbifSim.keywordSearch(["no"], 
-          ["tags", "description"], null, error);
-        
-        this.assertEquals(queryResults.length, 0, "#" + i++ + " " +
-          "Word Detected in ObjSearch that should not be there" 
-          + error.stringify());
-        
-        // Title + Description + Tags 
-        queryResults = dbifSim.keywordSearch(["WTF"], 
-          ["title", "description", "tags"], null, error);
-        
-        this.assertNotEquals(queryResults.length, 0, "#" + i++ + " " +
-          "Word Detected in ObjSearch that should not be there" 
-          + error.stringify());
-          
-        queryResults = dbifSim.keywordSearch(["this"], 
-          ["title", "description", "tags"], null, error);
-        
-        this.assertEquals(queryResults.length, 0, "#" + i++ + " " +
-          "Word Detected in ObjSearch that should not be there" 
-          + error.stringify());
-        
-        
-    
+      queryResults = dbifSim.keywordSearch(["this"], 
+        ["title", "description", "tags"], null, error);
+      
+      this.assertEquals(queryResults.length, 0, "#" + i++ + " " +
+        "Word Detected in ObjSearch that should not be there" +
+        error.stringify());
     }
   }
 });  
