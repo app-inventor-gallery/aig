@@ -162,7 +162,15 @@ qx.Class.define("aiagallery.dbif.Constants",
       //
       // MDbMgmt
       //
-      "getDatabaseEntities" : "Retrieve all database entities of a given type"
+      "getDatabaseEntities" : "Retrieve all database entities of a given type",
+      
+      //
+      // MPermissionGroup
+      //
+      "addOrEditPermissionGroup" : "Add/edit permission groups",
+      "getGroupPermissions"      : "Retrieve permission groups",
+      "deletePermissionGroup"    : "Delete a permission group",
+      "getPermissionGroups"      : "Retrieve the list of permission groups"
     },
     
     // Log messages. Comments above each are required parameters

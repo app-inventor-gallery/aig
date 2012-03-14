@@ -64,14 +64,17 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
         /** Active, Pending, or Banned (by their numeric values) */
         "status" : "Integer",
 
-        /** Channel tokens for server push. One entry per this user's clients */
-        "channelTokens" : "StringArray",
+        /** Channel ids for server push. One entry per this user's clients */
+        "channels" : "StringArray",
 
         /** A list of the user's recent searches */
         "recentSearches" : "StringArray",
 
         /** A list of the user's recent application views */
-        "recentViews" : "KeyArray"
+        "recentViews" : "KeyArray",
+        
+        /** Timestamp of last connection */
+        "connectionTimestamp" : "Date"
       };
 
     // Register our property types

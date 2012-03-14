@@ -41,6 +41,14 @@ qx.Class.define("appengine.Application",
       var             input = [];
       var             jsonInput;
 
+      // First, see if this is a channel connect or disconnect
+      if (String(request.getServletPath()).indexOf("/_ah/channel") !== -1)
+      {
+        // It is. Process that.
+        appengine.Application.doChannelRequest(request, response);
+        return;
+      }
+
       // Identify ourself (find out who's logged in)
       dbif.identify();
 
@@ -535,6 +543,53 @@ qx.Class.define("appengine.Application",
           response.sendError(299, "Unexpected error: " + e);
         }
       }
+    },
+
+    /**
+     * Handle a channel connect or disconnect request
+     *
+     * @param request {Packages.javax.servlet.http.HttpServletRequest}
+     *   The object containing the request parameters.
+     *
+     * @param response {Packages.javax.servlet.http.HttpServletResponse}
+     *   The object to be used for returning the response.
+     */
+    doChannelRequest : function(request, response)
+    {
+      var             dbif=  aiagallery.dbif.DbifAppEngine.getInstance();
+      var             reader;
+      var             line;
+      var             input = [];
+      var             jsonClientId;
+      var             bConnect;
+
+      // Retrieve the channel id from the POST request. First, get the input
+      // stream (the POST data)
+      reader = request.getReader();
+
+      // Read the request data, line by line.
+      for (line = reader.readLine(); line != null; line = reader.readLine())
+      {
+        // Convert this line to a JavaScript string
+        line = String(line);
+
+        // We only want the actual client id line, which begins with '{'
+        if (line.length === 0 || line.charAt(0) != '{')
+        {
+          continue;
+        }
+        
+        input.push(line);
+      }
+
+      // Convert the input lines to a single string
+      jsonClientId = String(input.join("\n"));
+
+      // Determine if this is a connect or disconnect request
+      bConnect = request.getRequestURI().indexOf("disconnect") === -1;
+      
+      // Add or remove this channel
+      dbif._updateChannels(bConnect, jsonClientId);
     }
   },
 

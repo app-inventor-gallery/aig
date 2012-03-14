@@ -166,9 +166,14 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
             meData.displayName =
               aiagallery.dbif.MDbifCommon.__whoami.displayName;
           }
-
-          me.put();
         }
+
+        // Update the time of their last connection
+        meData.connectionTimestamp = 
+          aiagallery.dbif.MDbifCommon.currentTimestamp();
+        
+        // Write changed data
+        me.put();
 
         // We're now initialized
         aiagallery.dbif.MDbifCommon.__initialized = true;
@@ -293,6 +298,16 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       //
       case "getDatabaseEntities":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+
+      //
+      // MPermissionGroup
+      //
+      case "addOrEditPermissionGroup" :
+      case "getGroupPermissions" :
+      case "deletePermissionGroup" :
+      case "getPermissionGroups" :
+        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+
 
       default:
         // Do not allow access to unrecognized method names
