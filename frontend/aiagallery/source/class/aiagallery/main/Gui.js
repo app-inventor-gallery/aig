@@ -12,15 +12,15 @@
 */
 
 /**
-* The graphical user interface for the main menu
-*/
+ * The graphical user interface for the main menu
+ */
 qx.Class.define("aiagallery.main.Gui",
 {
-type    : "singleton",
-extend  : qx.ui.core.Widget,
+  type    : "singleton",
+  extend  : qx.ui.core.Widget,
 
-members :
-{
+  members :
+  {
     /** The currently used canvas (depends on what module is selected) */
     currentCanvas : null,
 
@@ -59,618 +59,618 @@ members :
     // Did it exist?
     if (! mainTabs)
     {
-        //
-        // Nope. This is the first time in, and we're creating the whole gui.
-        //
+      //
+      // Nope. This is the first time in, and we're creating the whole gui.
+      //
 
-        // Save a reference to the module list
-        this.moduleList = moduleList;
+      // Save a reference to the module list
+      this.moduleList = moduleList;
 
-        // Create the VBox layout for the application structure
-        o = new qx.ui.layout.VBox();
-        o.set(
-        {
-            spacing       : 10
-        });
-        application = new qx.ui.container.Composite(o);
-        this.getApplicationRoot().add(application, { edge : 0 });
+      // Create the VBox layout for the application structure
+      o = new qx.ui.layout.VBox();
+      o.set(
+      {
+          spacing       : 10
+      });
+      application = new qx.ui.container.Composite(o);
+      this.getApplicationRoot().add(application, { edge : 0 });
 
-        // Create a horizontal box layout for the title
-        header = new qx.ui.container.Composite(new qx.ui.layout.HBox(6));
-        header.set(
-        {
-        height          : 40
-        });
+      // Create a horizontal box layout for the title
+      header = new qx.ui.container.Composite(new qx.ui.layout.HBox(6));
+      header.set(
+      {
+      height          : 40
+      });
 
-        // Add the logo to the header
-        o = new qx.ui.basic.Image("aiagallery/aicg.png");
-        o.set(
-        {
-            height : 57,
-            width  : 183
-        });
-        header.add(o);
+      // Add the logo to the header
+      o = new qx.ui.basic.Image("aiagallery/aicg.png");
+      o.set(
+      {
+          height : 57,
+          width  : 183
+      });
+      header.add(o);
 
-        // Create a small spacer after the logo
-        o = new qx.ui.core.Spacer(20);
-        header.add(o);
+      // Create a small spacer after the logo
+      o = new qx.ui.core.Spacer(20);
+      header.add(o);
 
-        // Add a label to the header
-        o = new qx.ui.basic.Label(
-        "<div>" +
-        "<center>" +
-        "App Inventor" +
-        "<br />" +
-        "Community Gallery" +
-        "</center>" +
-        "</div>");
-        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
-        font.setSize(22);
-        o.set(
-        {
-            rich : true,
-            font : font
-        });
-        header.add(o);
+      // Add a label to the header
+      o = new qx.ui.basic.Label(
+      "<div>" +
+      "<center>" +
+      "App Inventor" +
+      "<br />" +
+      "Community Gallery" +
+      "</center>" +
+      "</div>");
+      font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+      font.setSize(22);
+      o.set(
+      {
+          rich : true,
+          font : font
+      });
+      header.add(o);
 
-        // Add a flexible spacer to take up the whole middle
-        o = new qx.ui.core.Widget();
-        o.setMinWidth(1);
-        header.add(o, { flex : 1 });
+      // Add a flexible spacer to take up the whole middle
+      o = new qx.ui.core.Widget();
+      o.setMinWidth(1);
+      header.add(o, { flex : 1 });
 
-        // Create a label to hold the user's login info and a logout button
-        if (false)
-        {
-        this.whoAmI = new qx.ui.basic.Label("");
-        this.whoAmI.setRich(true);
-        }
-        else
-        {
-        this.whoAmI = new aiagallery.main.WhoAmI();
-        }
-        header.add(this.whoAmI);
+      // Create a label to hold the user's login info and a logout button
+      if (false)
+      {
+      this.whoAmI = new qx.ui.basic.Label("");
+      this.whoAmI.setRich(true);
+      }
+      else
+      {
+      this.whoAmI = new aiagallery.main.WhoAmI();
+      }
+      header.add(this.whoAmI);
 
-        // Add a flexible spacer to take up the whole middle
-        o = new qx.ui.core.Widget();
-        o.setMinWidth(1);
-        header.add(o, { flex : 1 });
+      // Add a flexible spacer to take up the whole middle
+      o = new qx.ui.core.Widget();
+      o.setMinWidth(1);
+      header.add(o, { flex : 1 });
 
-        // Add a checkbox to enable/disable RPC simulation.
-        var simulate = new qx.ui.form.CheckBox(this.tr("Simulate"));
-        simulate.addListener("changeValue",
-                            function(e)
-                            {
-                            liberated.sim.remote.MRpc.SIMULATE = e.getData();
-                            },
-                            this);
+      // Add a checkbox to enable/disable RPC simulation.
+      var simulate = new qx.ui.form.CheckBox(this.tr("Simulate"));
+      simulate.addListener("changeValue",
+                          function(e)
+                          {
+                          liberated.sim.remote.MRpc.SIMULATE = e.getData();
+                          },
+                          this);
 
-        // Enable simulation by default in the source version, disabled in the
-        // build version (unless qx.debug is specifically set in the config
-        // file). Set value to true then false initially, to ensure that
-        // changeValue handler gets called.
-        simulate.setValue(true);
-        simulate.setValue(false);
-        if (qx.core.Environment.get("qx.debug"))
-        {
-        simulate.setValue(true);
-        }
+      // Enable simulation by default in the source version, disabled in the
+      // build version (unless qx.debug is specifically set in the config
+      // file). Set value to true then false initially, to ensure that
+      // changeValue handler gets called.
+      simulate.setValue(true);
+      simulate.setValue(false);
+      if (qx.core.Environment.get("qx.debug"))
+      {
+      simulate.setValue(true);
+      }
 
-        header.add(simulate);
-
-
-        // Add the header to the application
-        application.add(header);
-        
-        // Create the page pane
-        pagePane = new qx.ui.container.Composite(new qx.ui.layout.VBox(10));
-        pagePane.set(
-        {
-            appearance : "pagepane"
-        });
-        application.add(pagePane, { flex : 1 });
-
-        // Create a horizontal box for the page hierarchy and right-justified
-        // page selector
-        hbox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
-
-        // Add a spacer to remove the hierarchy from the pane edig
-        o = new qx.ui.core.Spacer(20);
-        hbox.add(o);
-
-        // Create the hierarchy label to show where in the site we are
-        hierarchy = new aiagallery.widget.PageHierarchy([ "Home" ]);
-        hbox.add(hierarchy);
-        this.setUserData("hierarchy", hierarchy);
-
-        // Right-justify the links
-        o = new qx.ui.core.Widget();
-        o.set(
-        {
-            height    : 1,
-            minHeight : 1
-        });
-        hbox.add(o, { flex : 1 });
+      header.add(simulate);
 
 
-        // Obtain or create the pageSelectorBar
-        pageSelectorBar = this.getUserData("pageSelectorBar");
-        pageSelectorBar = new qx.ui.form.RadioButtonGroup();
-        pageSelectorBar.setLayout(new qx.ui.layout.HBox(10));
-        this.setUserData("pageSelectorBar", pageSelectorBar);
-        hbox.add(pageSelectorBar);
+      // Add the header to the application
+      application.add(header);
+      
+      // Create the page pane
+      pagePane = new qx.ui.container.Composite(new qx.ui.layout.VBox(10));
+      pagePane.set(
+      {
+          appearance : "pagepane"
+      });
+      application.add(pagePane, { flex : 1 });
 
-        // Add the right-justified page selector bar to the application
-        pagePane.add(hbox);
+      // Create a horizontal box for the page hierarchy and right-justified
+      // page selector
+      hbox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
 
-        mainTabs = new qx.ui.tabview.TabView();
-        mainTabs.setAppearance("radioview");
-        
-        // We're going to control the tab view via the link bar
-        mainTabs.getChildControl("bar").exclude();
+      // Add a spacer to remove the hierarchy from the pane edig
+      o = new qx.ui.core.Spacer(20);
+      hbox.add(o);
 
-        pagePane.add(mainTabs, { flex : 1 });
+      // Create the hierarchy label to show where in the site we are
+      hierarchy = new aiagallery.widget.PageHierarchy([ "Home" ]);
+      hbox.add(hierarchy);
+      this.setUserData("hierarchy", hierarchy);
 
-        // Make the tab view globally accessible
-        qx.core.Init.getApplication().setUserData("mainTabs", mainTabs);
+      // Right-justify the links
+      o = new qx.ui.core.Widget();
+      o.set(
+      {
+          height    : 1,
+          minHeight : 1
+      });
+      hbox.add(o, { flex : 1 });
 
-        // Issue a pair of side-band RPCs:
-        //  - find out who we are, and a logout URL
-        //  - get a channel for server push
-        qx.util.TimerManager.getInstance().start(
-        function(userData, timerId)
-        {
-            var             rpc;
 
-            rpc = new qx.io.remote.Rpc();
-            rpc.setProtocol("2.0");
-            rpc.set(
-            {
-                url         : aiagallery.main.Constant.SERVICES_URL,
-                timeout     : 30000,
-                crossDomain : false,
-                serviceName : "aiagallery.features"
-            });
-            
-            // Issue the request to find out who we are
-            rpc.callAsync(
-            function(e)
-            {
-                var             bAllowed;
-                var             moduleList;
-                var             module;
-                var             bAddModules;
-                
-                // Create a global function accessible via <a href=
-                window.editProfile = function()
-                {
-                _this._editProfile();
-                };
+      // Obtain or create the pageSelectorBar
+      pageSelectorBar = this.getUserData("pageSelectorBar");
+      pageSelectorBar = new qx.ui.form.RadioButtonGroup();
+      pageSelectorBar.setLayout(new qx.ui.layout.HBox(10));
+      this.setUserData("pageSelectorBar", pageSelectorBar);
+      hbox.add(pageSelectorBar);
 
-                // Set the header to display just-retrieved values
-                _this.whoAmI.setId(e.id);
-                _this.whoAmI.setIsAdmin(e.isAdmin);
-                _this.whoAmI.setEmail(e.email);
-                _this.whoAmI.setDisplayName(e.displayName);
-                _this.whoAmI.setHasSetDisplayName(e.hasSetDisplayName);
-                _this.whoAmI.setLogoutUrl(e.logoutUrl);
-                
-                // Save the user's permissions
-                application = qx.core.Init.getApplication();
-                application.setUserData("permissions", e.permissions);
-                
-                // Prepare to add management modules if permissions allow it.
-                moduleList = {};
-                bAddModules = false;
+      // Add the right-justified page selector bar to the application
+      pagePane.add(hbox);
 
-                // Determine whether they have access to the database
-                // management page.
-                bAllowed = false;
-                [ 
-                // These permissions allow access to the page
-                "getDatabaseEntities"
-                ].forEach(
-                function(rpcFunc)
-                {
-                    if (qx.lang.Array.contains(e.permissions, rpcFunc))
-                    {
-                    bAllowed = true;
-                    }
-                });
+      mainTabs = new qx.ui.tabview.TabView();
+      mainTabs.setAppearance("radioview");
+      
+      // We're going to control the tab view via the link bar
+      mainTabs.getChildControl("bar").exclude();
 
-                // If they're allowed access to the page...
-                if (e.isAdmin || bAllowed)
-                {
-                // ... then create it
-                module = new aiagallery.main.Module(
-                    "Management",
-                    "aiagallery/test.png",
-                    "Database",
-                    aiagallery.main.Constant.PageName.Management,
-                    aiagallery.module.mgmt.db.Db);
+      pagePane.add(mainTabs, { flex : 1 });
 
-                // Start up the new module
-                if (! moduleList["Management"])
-                {
-                    moduleList["Management"] = {};
-                }
-                moduleList["Management"]["Database"] = module;
-                
-                // We've instantiated a new module which needs to be added
-                bAddModules = true;
-                }
+      // Make the tab view globally accessible
+      qx.core.Init.getApplication().setUserData("mainTabs", mainTabs);
 
-                // Determine whether they have access to the user management
-                // page.
-                bAllowed = false;
-                [ 
-                // These permissions allow access to the page
-                "addOrEditVisitor",
-                "deleteVisitor",
-                "getVisitorList"
-                ].forEach(
-                function(rpcFunc)
-                {
-                    if (qx.lang.Array.contains(e.permissions, rpcFunc))
-                    {
-                    bAllowed = true;
-                    }
-                });
+      // Issue a pair of side-band RPCs:
+      //  - find out who we are, and a logout URL
+      //  - get a channel for server push
+      qx.util.TimerManager.getInstance().start(
+      function(userData, timerId)
+      {
+          var             rpc;
 
-                // If they're allowed access to the page...
-                if (e.isAdmin || bAllowed)
-                {
-                // ... then create it
-                module = new aiagallery.main.Module(
-                    "Management",
-                    "aiagallery/module/configure.png",
-                    "Users",
-                    aiagallery.main.Constant.PageName.Management,
-                    aiagallery.module.mgmt.users.Users);
+          rpc = new qx.io.remote.Rpc();
+          rpc.setProtocol("2.0");
+          rpc.set(
+          {
+              url         : aiagallery.main.Constant.SERVICES_URL,
+              timeout     : 30000,
+              crossDomain : false,
+              serviceName : "aiagallery.features"
+          });
+          
+          // Issue the request to find out who we are
+          rpc.callAsync(
+          function(e)
+          {
+              var             bAllowed;
+              var             moduleList;
+              var             module;
+              var             bAddModules;
+              
+              // Create a global function accessible via <a href=
+              window.editProfile = function()
+              {
+              _this._editProfile();
+              };
 
-                // Start up the new module
-                if (! moduleList["Management"])
-                {
-                    moduleList["Management"] = {};
-                }
-                moduleList["Management"]["Users"] = module;
-                
-                // We've instantiated a new module which needs to be added
-                bAddModules = true;
-                }
+              // Set the header to display just-retrieved values
+              _this.whoAmI.setId(e.id);
+              _this.whoAmI.setIsAdmin(e.isAdmin);
+              _this.whoAmI.setEmail(e.email);
+              _this.whoAmI.setDisplayName(e.displayName);
+              _this.whoAmI.setHasSetDisplayName(e.hasSetDisplayName);
+              _this.whoAmI.setLogoutUrl(e.logoutUrl);
+              
+              // Save the user's permissions
+              application = qx.core.Init.getApplication();
+              application.setUserData("permissions", e.permissions);
+              
+              // Prepare to add management modules if permissions allow it.
+              moduleList = {};
+              bAddModules = false;
 
-                // Determine whether they have access to the application
-                // management page.
-                bAllowed = false;
-                [ 
-                // These permissions allow access to the page
-                "getAppListAll"
-                ].forEach(
-                function(rpcFunc)
-                {
-                    if (qx.lang.Array.contains(e.permissions, rpcFunc))
-                    {
-                    bAllowed = true;
-                    }
-                });
-
-                // If they're allowed access to the page...
-                if (e.isAdmin || bAllowed)
-                {
-                // ... then create it
-                module = new aiagallery.main.Module(
-                    "Management",
-                    "aiagallery/test.png",
-                    "Applications",
-                    aiagallery.main.Constant.PageName.Management,
-                    aiagallery.module.mgmt.applications.Applications);
-
-                // Start up the new module
-                if (! moduleList["Management"])
-                {
-                    moduleList["Management"] = {};
-                }
-                moduleList["Management"]["Applications"] = module;
-                
-                // We've instantiated a new module which needs to be added
-                bAddModules = true;
-                }      
-
-            // Determine whether they have access to the permission
-            // management page.
-            bAllowed = false;
-            [ 
-                // These permissions allow access to the page
-                "addOrEditPermissionGroup",
-                "deletePermissionGroup",
-                "whitelistVisitors"
+              // Determine whether they have access to the database
+              // management page.
+              bAllowed = false;
+              [ 
+              // These permissions allow access to the page
+              "getDatabaseEntities"
               ].forEach(
-                function(rpcFunc)
-                {
-                if (qx.lang.Array.contains(e.permissions, rpcFunc))
-                {
-                    bAllowed = true;
-                }
-                });
+              function(rpcFunc)
+              {
+                  if (qx.lang.Array.contains(e.permissions, rpcFunc))
+                  {
+                  bAllowed = true;
+                  }
+              });
 
-            // If they're allowed access to the page...
-            if (e.isAdmin || bAllowed)
-            {
-                // ... then create it
-                module = new aiagallery.main.Module(
-                "Management",
-                "aiagallery/test.png",
-                "Permissions",
-                aiagallery.main.Constant.PageName.Management,
-                aiagallery.module.mgmt.permissions.Permissions);
+              // If they're allowed access to the page...
+              if (e.isAdmin || bAllowed)
+              {
+              // ... then create it
+              module = new aiagallery.main.Module(
+                  "Management",
+                  "aiagallery/test.png",
+                  "Database",
+                  aiagallery.main.Constant.PageName.Management,
+                  aiagallery.module.mgmt.db.Db);
 
-                // Start up the new module
-                if (! moduleList["Management"])
-                {
-                moduleList["Management"] = {};
-                }
-                moduleList["Management"]["Permissions"] = module;
-                
-                // We've instantiated a new module which needs to be added
-                bAddModules = true;
-            }
+              // Start up the new module
+              if (! moduleList["Management"])
+              {
+                  moduleList["Management"] = {};
+              }
+              moduleList["Management"]["Database"] = module;
+              
+              // We've instantiated a new module which needs to be added
+              bAddModules = true;
+              }
 
-            // Determine whether they have access to the Featured Apps
-            // management page.
-            bAllowed = false;
-            [ 
-                // These permissions allow access to the page
-                "setFeaturedApps"
+              // Determine whether they have access to the user management
+              // page.
+              bAllowed = false;
+              [ 
+              // These permissions allow access to the page
+              "addOrEditVisitor",
+              "deleteVisitor",
+              "getVisitorList"
+              ].forEach(
+              function(rpcFunc)
+              {
+                  if (qx.lang.Array.contains(e.permissions, rpcFunc))
+                  {
+                  bAllowed = true;
+                  }
+              });
+
+              // If they're allowed access to the page...
+              if (e.isAdmin || bAllowed)
+              {
+              // ... then create it
+              module = new aiagallery.main.Module(
+                  "Management",
+                  "aiagallery/module/configure.png",
+                  "Users",
+                  aiagallery.main.Constant.PageName.Management,
+                  aiagallery.module.mgmt.users.Users);
+
+              // Start up the new module
+              if (! moduleList["Management"])
+              {
+                  moduleList["Management"] = {};
+              }
+              moduleList["Management"]["Users"] = module;
+              
+              // We've instantiated a new module which needs to be added
+              bAddModules = true;
+              }
+
+              // Determine whether they have access to the application
+              // management page.
+              bAllowed = false;
+              [ 
+              // These permissions allow access to the page
+              "getAppListAll"
+              ].forEach(
+              function(rpcFunc)
+              {
+                  if (qx.lang.Array.contains(e.permissions, rpcFunc))
+                  {
+                  bAllowed = true;
+                  }
+              });
+
+              // If they're allowed access to the page...
+              if (e.isAdmin || bAllowed)
+              {
+              // ... then create it
+              module = new aiagallery.main.Module(
+                  "Management",
+                  "aiagallery/test.png",
+                  "Applications",
+                  aiagallery.main.Constant.PageName.Management,
+                  aiagallery.module.mgmt.applications.Applications);
+
+              // Start up the new module
+              if (! moduleList["Management"])
+              {
+                  moduleList["Management"] = {};
+              }
+              moduleList["Management"]["Applications"] = module;
+              
+              // We've instantiated a new module which needs to be added
+              bAddModules = true;
+              }      
+
+          // Determine whether they have access to the permission
+          // management page.
+          bAllowed = false;
+          [ 
+              // These permissions allow access to the page
+              "addOrEditPermissionGroup",
+              "deletePermissionGroup",
+              "whitelistVisitors"
             ].forEach(
-                function(rpcFunc)
-                {
-                if (qx.lang.Array.contains(e.permissions, rpcFunc))
-                {
-                    bAllowed = true;
-                }
-                });
+              function(rpcFunc)
+              {
+              if (qx.lang.Array.contains(e.permissions, rpcFunc))
+              {
+                  bAllowed = true;
+              }
+              });
 
-            // If they're allowed access to the page...
-            if (e.isAdmin || bAllowed)
-            {
-                // ... then create it
-                module = new aiagallery.main.Module(
-                "Management",
-                "aiagallery/test.png",
-                "Featured Apps",
-                aiagallery.main.Constant.PageName.Management,
-                aiagallery.module.mgmt.featured.Featured);
+          // If they're allowed access to the page...
+          if (e.isAdmin || bAllowed)
+          {
+              // ... then create it
+              module = new aiagallery.main.Module(
+              "Management",
+              "aiagallery/test.png",
+              "Permissions",
+              aiagallery.main.Constant.PageName.Management,
+              aiagallery.module.mgmt.permissions.Permissions);
 
-                // Start up the new module
-                if (! moduleList["Management"])
-                {
-                moduleList["Management"] = {};
-                }
-                moduleList["Management"]["Featured Apps"] = module;
-                
-                // We've instantiated a new module which needs to be added
-                bAddModules = true;
-            }
+              // Start up the new module
+              if (! moduleList["Management"])
+              {
+              moduleList["Management"] = {};
+              }
+              moduleList["Management"]["Permissions"] = module;
+              
+              // We've instantiated a new module which needs to be added
+              bAddModules = true;
+          }
 
-            // If we instantiated at least one of the management modules...
-            if (bAddModules)
-            {
-                // ... then add them.
-                aiagallery.Application.addModules(moduleList);
-            }
-            },
-            "whoAmI",
-            []);
-            
+          // Determine whether they have access to the Featured Apps
+          // management page.
+          bAllowed = false;
+          [ 
+              // These permissions allow access to the page
+              "setFeaturedApps"
+          ].forEach(
+              function(rpcFunc)
+              {
+              if (qx.lang.Array.contains(e.permissions, rpcFunc))
+              {
+                  bAllowed = true;
+              }
+              });
 
-            // Load the Channel API. If we're on App Engine, it'll succeed
-            var loader = new qx.bom.request.Script();
-            loader.onload = 
-            function createChannel()
-            {
-                // Did we successfully load the Channel API?
-                switch(loader.status)
-                {
-                case 200:
-                // Found the Channel API. Reqest a server push channel
-                rpc.callAsync(
-                    function(e)
+          // If they're allowed access to the page...
+          if (e.isAdmin || bAllowed)
+          {
+              // ... then create it
+              module = new aiagallery.main.Module(
+              "Management",
+              "aiagallery/test.png",
+              "Featured Apps",
+              aiagallery.main.Constant.PageName.Management,
+              aiagallery.module.mgmt.featured.Featured);
+
+              // Start up the new module
+              if (! moduleList["Management"])
+              {
+              moduleList["Management"] = {};
+              }
+              moduleList["Management"]["Featured Apps"] = module;
+              
+              // We've instantiated a new module which needs to be added
+              bAddModules = true;
+          }
+
+          // If we instantiated at least one of the management modules...
+          if (bAddModules)
+          {
+              // ... then add them.
+              aiagallery.Application.addModules(moduleList);
+          }
+          },
+          "whoAmI",
+          []);
+          
+
+          // Load the Channel API. If we're on App Engine, it'll succeed
+          var loader = new qx.bom.request.Script();
+          loader.onload = 
+          function createChannel()
+          {
+              // Did we successfully load the Channel API?
+              switch(loader.status)
+              {
+              case 200:
+              // Found the Channel API. Reqest a server push channel
+              rpc.callAsync(
+                  function(e)
+                  {
+                  var             channel;
+                  var             socket;
+                  var             channelMessage;
+
+                  // Did we get a channel token?
+                  if (! e)
+                  {
+                      // Nope. Nothing to do.
+                      _this.warn("getChannelToken: " +
+                              "Received no channel token");
+                      return;
+                  }
+                    channelMessage = function(type, data)
                     {
-                    var             channel;
-                    var             socket;
-                    var             channelMessage;
-
-                    // Did we get a channel token?
-                    if (! e)
-                    {
-                        // Nope. Nothing to do.
-                        _this.warn("getChannelToken: " +
-                                "Received no channel token");
-                        return;
-                    }
-                      channelMessage = function(type, data)
+                      // If this is an "open" message...
+                      if (type == "open")
                       {
-                        // If this is an "open" message...
-                        if (type == "open")
-                        {
-                          qx.util.TimerManager.getInstance().start(
-                            function()
+                        qx.util.TimerManager.getInstance().start(
+                          function()
+                          {
+                            var             socket;
+
+                            // ... then start a timer to close the channel
+                            // in a little less than two hours, to avoid the
+                            // server from closing the channel
+                            socket = application.getUserData("channelSocket");
+                            if (socket)
                             {
-                              var             socket;
-
-                              // ... then start a timer to close the channel
-                              // in a little less than two hours, to avoid the
-                              // server from closing the channel
-                              socket = application.getUserData("channelSocket");
-                              if (socket)
-                              {
-                                socket.close();
-                              }
-                              application.setUserData("channelSocket", null);
-                              socket = null;
+                              socket.close();
+                            }
+                            application.setUserData("channelSocket", null);
+                            socket = null;
 
 
-                              // Re-establish the channel
-                              qx.util.TimerManager.getInstance().start(
-                                createChannel,
-                                0,
-                                _this,
-                                null,
-                                5000);
-                            },
-                            (2 * 1000 * 60 * 60) - (5 * 1000 * 60),
-                            _this);
-                        }
-                        if (typeof data == "undefined")
-                        {
-                        _this.debug("Channel Message (" + type + ")");
-                        }
-                        else
-                        {
-                        _this.debug(liberated.dbif.Debug.debugObjectToString(
-                                        data,
-                                        "Channel Message (" + type + ")"));
-                        }
-                    };
-
-                    // If there was a prior channel open...
-                    socket = application.getUserData("channelSocket");
-                    if (socket)
-                    {
-                        // ... then close it
-                        socket.close();
-                    }
-
-                    // Open a channel for server push
-                    channel = new goog.appengine.Channel(e);
-                    socket = channel.open();
-
-                    // Save the channel socket
-                    application.setUserData("channelSocket", socket);
-                    
-                    // When we receive a message on the channel, post a
-                    // message on the message bus.
-                    socket.onmessage = function(data)
-                    {
-                        var             messageBus;
-
-                        // Parse the JSON message
-                        data = qx.lang.Json.parse(data.data);
-                        channelMessage("message", data);
-
-                        // Dispatch a message for any subscribers to
-                        // this type.
-                        messageBus = qx.event.message.Bus.getInstance();
-                        messageBus.dispatchByName(data.type, data);
-                    };
-
-                    // Display a message when the channel is open
-                    socket.onopen = function(data)
-                    {
-                        channelMessage("open", data);
-                    };
-
-                    // Display a message upon error
-                    socket.onerror = function(data)
-                    {
-                        channelMessage("error", data);
-
-                        // There's no longer a channel socket
-                        application.setUserData("channelSocket", null);
-                        socket = null;
-                        
-                        // Re-establish the channel
-                        qx.util.TimerManager.getInstance().start(
-                          createChannel,
-                          0,
-                          _this,
-                          null,
-                          5000);
-                      };
-
-                      // Display a message when the channel is closed
-                      socket.onclose = function(data)
+                            // Re-establish the channel
+                            qx.util.TimerManager.getInstance().start(
+                              createChannel,
+                              0,
+                              _this,
+                              null,
+                              5000);
+                          },
+                          (2 * 1000 * 60 * 60) - (5 * 1000 * 60),
+                          _this);
+                      }
+                      if (typeof data == "undefined")
                       {
-                        channelMessage("close", data);
+                      _this.debug("Channel Message (" + type + ")");
+                      }
+                      else
+                      {
+                      _this.debug(liberated.dbif.Debug.debugObjectToString(
+                                      data,
+                                      "Channel Message (" + type + ")"));
+                      }
+                  };
 
-                        // There's no longer a channel socket
-                        application.setUserData("channelSocket", null);
-                        socket = null;
-                        
-                        // Re-establish the channel
-                        qx.util.TimerManager.getInstance().start(
-                          createChannel,
-                          0,
-                          _this,
-                          null,
-                          5000);
-                      };
-                    },
-                    "getChannelToken",
-                    []);
-                break;
+                  // If there was a prior channel open...
+                  socket = application.getUserData("channelSocket");
+                  if (socket)
+                  {
+                      // ... then close it
+                      socket.close();
+                  }
 
-                default:
-                    // Nope.
-                _this.warn(loader.status + ": Failed to load Channel API");
-                break;
+                  // Open a channel for server push
+                  channel = new goog.appengine.Channel(e);
+                  socket = channel.open();
 
-                }
-            };
-            loader.open("GET", "/_ah/channel/jsapi");
-            loader.send();
-        });
-        
-        // Create the footer
-        hbox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
-        
-        // Add a spacer to center the Terms of Service link
-        hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
-        
-        // Add a link to the terms of service
-        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
-        font.setDecoration("underline");
-        o = new qx.ui.basic.Label("Terms of Service");
-        o.set(
-        {
-            font   : font,
-            height : 20
-        });
-        o.addListener(
-        "click",
-        function(e)
-        {
-            window.open("http://www.google.com/intl/en/policies/terms/",
-                        "Terms of Service");
-        });
-        hbox.add(o);
-        
-        // Add a spacer to center the Terms of Service link
-        hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
-        
-        // Add the hbox to the application
-        application.add(hbox);
-        
-        // Arrange to initialize bookmark support some time after this
-        // function completeds
-        qx.util.TimerManager.getInstance().start(
-        function()
-        {
-            var          mainTabs;
-        
-            // Init history support
-            this.__historyInit();
-            
-            // Retrieve the previously-created top-level tab view
-            mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
-            
-            // Add listener to detect page changes
-            mainTabs.addListener("changeSelection", 
-                                this.__onTabSelectionChanged);
-        },
-        0,
-        this,
-        null,
-        0);
+                  // Save the channel socket
+                  application.setUserData("channelSocket", socket);
+                  
+                  // When we receive a message on the channel, post a
+                  // message on the message bus.
+                  socket.onmessage = function(data)
+                  {
+                      var             messageBus;
+
+                      // Parse the JSON message
+                      data = qx.lang.Json.parse(data.data);
+                      channelMessage("message", data);
+
+                      // Dispatch a message for any subscribers to
+                      // this type.
+                      messageBus = qx.event.message.Bus.getInstance();
+                      messageBus.dispatchByName(data.type, data);
+                  };
+
+                  // Display a message when the channel is open
+                  socket.onopen = function(data)
+                  {
+                      channelMessage("open", data);
+                  };
+
+                  // Display a message upon error
+                  socket.onerror = function(data)
+                  {
+                      channelMessage("error", data);
+
+                      // There's no longer a channel socket
+                      application.setUserData("channelSocket", null);
+                      socket = null;
+                      
+                      // Re-establish the channel
+                      qx.util.TimerManager.getInstance().start(
+                        createChannel,
+                        0,
+                        _this,
+                        null,
+                        5000);
+                    };
+
+                    // Display a message when the channel is closed
+                    socket.onclose = function(data)
+                    {
+                      channelMessage("close", data);
+
+                      // There's no longer a channel socket
+                      application.setUserData("channelSocket", null);
+                      socket = null;
+                      
+                      // Re-establish the channel
+                      qx.util.TimerManager.getInstance().start(
+                        createChannel,
+                        0,
+                        _this,
+                        null,
+                        5000);
+                    };
+                  },
+                  "getChannelToken",
+                  []);
+              break;
+
+              default:
+                  // Nope.
+              _this.warn(loader.status + ": Failed to load Channel API");
+              break;
+
+              }
+          };
+          loader.open("GET", "/_ah/channel/jsapi");
+          loader.send();
+      });
+      
+      // Create the footer
+      hbox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
+      
+      // Add a spacer to center the Terms of Service link
+      hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
+      
+      // Add a link to the terms of service
+      font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+      font.setDecoration("underline");
+      o = new qx.ui.basic.Label("Terms of Service");
+      o.set(
+      {
+          font   : font,
+          height : 20
+      });
+      o.addListener(
+      "click",
+      function(e)
+      {
+          window.open("http://www.google.com/intl/en/policies/terms/",
+                      "Terms of Service");
+      });
+      hbox.add(o);
+      
+      // Add a spacer to center the Terms of Service link
+      hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
+      
+      // Add the hbox to the application
+      application.add(hbox);
+      
+      // Arrange to initialize bookmark support some time after this
+      // function completeds
+      qx.util.TimerManager.getInstance().start(
+      function()
+      {
+          var          mainTabs;
+      
+          // Init history support
+          this.__historyInit();
+          
+          // Retrieve the previously-created top-level tab view
+          mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
+          
+          // Add listener to detect page changes
+          mainTabs.addListener("changeSelection", 
+                              this.__onTabSelectionChanged);
+      },
+      0,
+      this,
+      null,
+      0);
     }
     
     // Get the page hierarchy
