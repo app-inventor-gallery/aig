@@ -36,6 +36,10 @@
  *   The name of the module being registered.  This is the name that will
  *   appear in the specified menu.
  *
+ * @param pageId {String}
+ *   The constant identifier of this module: one of the members of
+ *   {@link aiagallery.main.Constant.PageName}
+ *
  * @param clazz {clazz}
  *   The class which contains the module implementation.  That class must
  *   extend aiagallery.main.AbstractModule and implement a singleton interface
@@ -47,10 +51,6 @@
  * @param functionList {Array}
  *   An array of functions to call when creating the module. These might do
  *   such things as adding buttons to a button bar, etc.
- *
- * @param bNewInstance {Boolean?false}
- *   If true, must instantiate a new instance of the module; otherwise, the
- *   module is a singleton, so its one instance is retrieved
  */
 qx.Class.define("aiagallery.main.Module",
 {
@@ -59,9 +59,9 @@ qx.Class.define("aiagallery.main.Module",
   construct : function(menuItem,
                        menuIcon,
                        moduleName,
+                       pageId,
                        clazz,
-                       functionList,
-                       bNewInstance)
+                       functionList)
   {
     this.base(arguments);
 
@@ -72,6 +72,9 @@ qx.Class.define("aiagallery.main.Module",
 
     // Save the module name
     this.name = moduleName;
+
+    // Save the page id
+    this.pageId = pageId;
 
     // Save this class name
     this.clazz = clazz;
@@ -91,9 +94,6 @@ qx.Class.define("aiagallery.main.Module",
 
     // Add this new module to the module list.
     aiagallery.main.Module._list[menuItem][moduleName] = this;
-    
-    // Specify whether this is to be a new instantiation or a singleton
-    this.bNewInstance = !!bNewInstance;
   },
 
   statics :

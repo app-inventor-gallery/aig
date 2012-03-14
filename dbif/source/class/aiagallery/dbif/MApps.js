@@ -140,6 +140,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      *  The result of getData() on the app object. Contains all the info in the
      *  database recorded for this App
      *
+     * FIXME: This functionality should be handled by MSearch.addSearchData()!!
+     *
      * ASSUMPTION: There is already a transaction in progress!
      */
     _populateSearch : function(dataObj)
@@ -148,7 +150,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var wordsToAdd;
       var searchObj;
       var appId = dataObj["uid"];
-
+      
+      
+      // This matches all strings of numbers or letters, case insensitive,
+      // of length greater than 2.
+      // This filter should be improved and maintained.
+      var acceptable_word = /[0-9a-z]{2,}/gi;
+      
       for (appDataField in dataObj)
       {
         // Go through each field in the App Data Object
@@ -158,7 +166,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         case "title":
         case "description":
           // Split up the words and...
-          wordsToAdd = dataObj[appDataField].split(" ");
+          wordsToAdd = dataObj[appDataField].match(acceptable_word);
           wordsToAdd.forEach(function(word)
               {
                 // Make sure to only add lower case words to the search
@@ -168,7 +176,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                 // If the word is a stop word, discard it
                 if (qx.lang.Array.contains(
                       aiagallery.dbif.MSearch.stopWordArr,
-                      word))
+                      wordLC))
                 {
                   return;
                 }
@@ -190,6 +198,14 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                 // Make sure to only add lower case words to the search
                 // database
                 var wordLC = word.toLowerCase();
+
+                // If the word is a stop word, discard it
+                if (qx.lang.Array.contains(
+                      aiagallery.dbif.MSearch.stopWordArr,
+                      wordLC))
+                {
+                  return;
+                }
 
                 // Add each one to the db                
                 searchObj = new aiagallery.dbif.ObjSearch([wordLC,
@@ -487,6 +503,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             queue;
       var             options;
       var             bNew;
+      var             bRemoveAppFromSearchFlag = false;
       var             whoami;
       var             missing = [];
       var             addedBlobs = [];
@@ -551,6 +568,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             error.setMessage("Not owner");
             return error;
           }
+          
+	      // Delete all data in the search db, we only want the newest stuff
+          // Set a flag here so that we know to do it later
+          // avoid race condition
+          bRemoveAppFromSearchFlag = true; 
+
         }
         else
         {
@@ -781,6 +804,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         appData = liberated.dbif.Entity.asTransaction(
           function()
           {
+            // Check to see if we need to
+            // Delete all data in the search db, we only want the newest stuff
+            if (bRemoveAppFromSearchFlag)
+            {          
+              aiagallery.dbif.MApps._removeAppFromSearch(uid);	 
+            }
+            
             // If tags were provided...
             if (attributes.tags)
             {
@@ -2603,7 +2633,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                           uid)[0]);
           });
       
-      // Manipulate each App individually
+      // FIXME: Manipulate each App individually (AAAAAH!!!!)
       appList.forEach(
         function(app)
         {
