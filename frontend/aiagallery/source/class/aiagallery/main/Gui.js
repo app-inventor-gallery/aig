@@ -1360,18 +1360,8 @@ qx.Class.define("aiagallery.main.Gui",
         }
 
         // Get the Gui instance and set its query property
-        // Create a time to initiate the search after things are read
-        qx.util.TimerManager.getInstance().start(
-          function()
-          {
-            aiagallery.module.dgallery.findapps.Gui.getInstance().setQuery(
-              components.query);
-          },
-          0,
-          this,
-          null,
-          1000); 
-
+        aiagallery.module.dgallery.findapps.Gui.getInstance().setQuery(
+          components.query);
         break;
       }
     },
