@@ -485,7 +485,37 @@ qx.Class.define("aiagallery.main.Gui",
 
                       channelMessage = function(type, data)
                       {
-                        var             messageBus;
+                        // If this is an "open" message...
+                        if (type == "open")
+                        {
+                          qx.util.TimerManager.getInstance().start(
+                            function()
+                            {
+                              var             socket;
+
+                              // ... then start a timer to close the channel
+                              // in a little less than two hours, to avoid the
+                              // server from closing the channel
+                              socket = application.getUserData("channelSocket");
+                              if (socket)
+                              {
+                                socket.close();
+                              }
+                              application.setUserData("channelSocket", null);
+                              socket = null;
+
+
+                              // Re-establish the channel
+                              qx.util.TimerManager.getInstance().start(
+                                createChannel,
+                                0,
+                                _this,
+                                null,
+                                5000);
+                            },
+                            (2 * 1000 * 60 * 60) - (5 * 1000 * 60),
+                            _this);
+                        }
 
                         if (typeof data == "undefined")
                         {
@@ -547,10 +577,7 @@ qx.Class.define("aiagallery.main.Gui",
                         
                         // Re-establish the channel
                         qx.util.TimerManager.getInstance().start(
-                          function()
-                          {
-                            createChannel();
-                          },
+                          createChannel,
                           0,
                           _this,
                           null,
@@ -568,10 +595,7 @@ qx.Class.define("aiagallery.main.Gui",
                         
                         // Re-establish the channel
                         qx.util.TimerManager.getInstance().start(
-                          function()
-                          {
-                            createChannel();
-                          },
+                          createChannel,
                           0,
                           _this,
                           null,

@@ -18,21 +18,6 @@ qx.Mixin.define("aiagallery.dbif.MChannel",
   members :
   {
     /**
-     * Build a channel client id given a visitor id.
-     * 
-     * @return {String}
-     *   The new client id built from the provided visitor id.
-     */
-    __makeClientId : function(visitorId)
-    {
-      // FIXME: Currently only a single client for any one user is
-      // supported, so we use just the email address. Ultimately, this
-      // should be some value (possibly including the email address) that
-      // is unique to a user's client environment, not just to the user.
-      return visitorId;
-    },
-
-    /**
      * Send a message to a specified visitor.
      * 
      * @param visitorId {String}
@@ -47,6 +32,8 @@ qx.Mixin.define("aiagallery.dbif.MChannel",
       var             json;
       var             channelService;
       var             messageBus;
+      var             visitor;
+      var             visitorData;
       var             ChannelServiceFactory;
       var             ChannelMessage;
       
@@ -66,21 +53,35 @@ qx.Mixin.define("aiagallery.dbif.MChannel",
         return;
       }
 
+      // Get this visitor object to determine his current channels
+      visitor = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                            visitorId);
+
+      // Ensure we found a visitor object and that he currently has channels
+      if (visitor.length === 0 || 
+          ! qx.lang.Type.isArray(visitor[0].getData().channels))
+      {
+        // Nope. Nothing to do.
+        return;
+      }
+
       // Get a reference to the channel service
       ChannelServiceFactory = 
         Packages.com.google.appengine.api.channel.ChannelServiceFactory;
       channelService = ChannelServiceFactory.getChannelService();
       
-      // Obtain the client id
-      clientId = this.__makeClientId(visitorId);
-
       // JSON-encode the message
       json = qx.lang.Json.stringify(message);
 
-      // Send the specified message
-      ChannelMessage =
-        Packages.com.google.appengine.api.channel.ChannelMessage;
-      channelService.sendMessage(new ChannelMessage(clientId, json));
+      // Get quick access to the ChannelMessage class
+      ChannelMessage = Packages.com.google.appengine.api.channel.ChannelMessage;
+      
+      // Send the specified message to each registered client
+      visitor.getData().channels.forEach(
+        function(channelId)
+        {
+          channelService.sendMessage(new ChannelMessage(clientId, json));
+        });
     },
 
     /**
@@ -116,6 +117,7 @@ qx.Mixin.define("aiagallery.dbif.MChannel",
       return liberated.dbif.Entity.asTransaction(
         function()
         {
+          var             data;
           var             clientId;
           var             token;
           var             visitor;
@@ -139,24 +141,140 @@ qx.Mixin.define("aiagallery.dbif.MChannel",
             Packages.com.google.appengine.api.channel.ChannelServiceFactory;
           channelService = ChannelServiceFactory.getChannelService();
 
-          // Build a client id. The same user could be logged in in more than
-          // one place, so use his id and a (hopefully) unique timestamp
-          clientId = this.__makeClientId(whoami.id);
+          // Generate a client ID. We want to support the same user being
+          // signed in from multiple sessions, so we include both his visitor
+          // ID and a timestamp. This makes the assumption that the same
+          // visitor will not sign in to different sessions in the same
+          // millisecond. Seems like a reasonable assumption.
+          clientId = qx.lang.Json.stringify(
+            {
+              id : whoami.id,
+              ts : aiagallery.dbif.MDbifCommon.currentTimestamp()
+            });
 
-          // Create a token 
-          token = String(channelService.createChannel(clientId));
-
-          // Update the channel tokens for this visitor
+          // Update the channel id list for this visitor
+          data = visitor.getData();
+          if (qx.lang.Type.isArray(data.channels))
+          {
+            data.channels.push(clientId);
+          }
+          else
+          {
+            data.channels = [ clientId ];
+          }
+          
           //
-          // FIXME: This is supposed to be an array of active channel tokens,
-          // allowing for the same user to be logged in in multiple clients.
-          visitor.channelTokens = [ token ];
+          // DEPRECATE: Remove obsolete field 
+          // (channelTokens was replaced by channels)
+          //
+          delete data.channelTokens;
+
+          // Save the modified visitor object
+          visitor.put();
+
+          // Create a token for the requester
+          token = String(channelService.createChannel(clientId));
 
           // Give 'em the token so they can connect to it
           return token;
         },
         [],
         this);
+    },
+    
+    _updateChannels : function(bConnect, jsonClientId)
+    {
+      var             clientId;
+      
+      // Parse the clientId object to determine the visitor id
+      clientId = qx.lang.Json.parse(jsonClientId);
+      
+      // Valid data?
+      if (! qx.lang.Type.isObject(clientId) ||
+          typeof(clientId.id) == "undefined" ||
+          typeof(clientId.ts) == "undefined")
+      {
+        // Nope. There's nothing we can do.
+        java.lang.System.err.println(
+          "updateChannels: unrecognized client id: " + clientId);
+        return;
+      }
+
+      liberated.dbif.Entity.asTransaction(
+        function()
+        {
+          var             i;
+          var             minTimeStamp;
+          var             visitor;
+          var             data;
+          var             tempClientId;
+          var             tempJsonClientId;
+
+          // Obtain the visitor object
+          visitor = new aiagallery.dbif.ObjVisitors(clientId.id);
+
+          // This visitor had better exist!
+          if (visitor.getBrandNew())
+          {
+            java.lang.System.err.println(
+              "updateChannels: could not find visitor id: " + clientId.id);
+            return;
+          }
+
+          // Get the visitor data
+          data = visitor.getData();
+
+          // Is there a channels array?
+          if (! qx.lang.Type.isArray(data.channels))
+          {
+            // Nope. Create one.
+            data.channels = [];
+          }
+
+          // Get the minimum valid timestamp. Anything older than this has
+          // already exceeded App Engine's 2-hour limit. (We add a fudge
+          // factor, of an hour, in case App Engine doesn't shut connections
+          // down exactly on time.)
+          minTimeStamp = 
+            aiagallery.dbif.MDbifCommon.currentTimestamp() -
+            (3 * 1000 * 60 * 60);
+
+          // Loop through the existing channels. Remove this client id (even in
+          // the case of a connect, since it could already be there), and also
+          // remove any whose timestamps are (well) more than 2 hours old.
+          for (i = data.channels.length - 1; i >= 0; i--)
+          {
+            // Get this one
+            tempJsonClientId = data.channels[i];
+
+            // Is this the one currently being connected or disconnected?
+            if (tempJsonClientId == jsonClientId)
+            {
+              // Yup. Remove it.
+              data.channels.splice(i, 1);
+            }
+
+            // Parse this entry
+            tempClientId = qx.lang.Json.parse(tempJsonClientId);
+
+            // Is it out of date?
+            if (tempClientId.ts < minTimeStamp)
+            {
+              // Yup. Remove it.
+              data.channels.splice(i, 1);
+            }
+          }
+
+          // Now, if this is a connect, ...
+          if (bConnect)
+          {
+            // ... add the client id
+            data.channels.push(jsonClientId);
+          }
+
+          // Write out the modified data
+          visitor.put();
+        });
     }
   }
 });

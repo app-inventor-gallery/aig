@@ -13,6 +13,7 @@
     <servlet>
         <servlet-name>GuiServlet</servlet-name>
         <servlet-class>startup.GuiServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>GuiServlet</servlet-name>
@@ -21,6 +22,7 @@
 
 
     <!-- Remote procedure calls are issued to this servlet via url /rpc  -->
+    <!-- Send presence messages to the RPC servlet too -->
     <servlet>
         <servlet-name>RpcServlet</servlet-name>
         <servlet-class>startup.RpcServlet</servlet-class>
@@ -29,6 +31,14 @@
     <servlet-mapping>
         <servlet-name>RpcServlet</servlet-name>
         <url-pattern>/rpc</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RpcServlet</servlet-name>
+        <url-pattern>/_ah/channel/connected/</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RpcServlet</servlet-name>
+        <url-pattern>/_ah/channel/disconnected/</url-pattern>
     </servlet-mapping>
 
 

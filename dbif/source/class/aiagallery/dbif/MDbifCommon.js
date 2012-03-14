@@ -166,9 +166,14 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
             meData.displayName =
               aiagallery.dbif.MDbifCommon.__whoami.displayName;
           }
-
-          me.put();
         }
+
+        // Update the time of their last connection
+        meData.connectionTimestamp = 
+          aiagallery.dbif.MDbifCommon.currentTimestamp();
+        
+        // Write changed data
+        me.put();
 
         // We're now initialized
         aiagallery.dbif.MDbifCommon.__initialized = true;
