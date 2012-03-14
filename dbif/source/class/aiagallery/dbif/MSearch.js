@@ -80,6 +80,38 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
   
   members :
   {
+	
+		/**
+		 * Helper function for populating the search database.
+		 *
+		 *
+		 * Populating the database consists of:
+		 *   Taking each element of keywordStringArray and
+		 *     if the string contains anything useful, parse it into 
+		 *     else trash it 
+		 * NOTE: Should stop words be considered on add instead of search?
+		 **/
+		
+		/* This work is being done in MApps._populateSearch(), WRONGLY.
+		   The code in MApps._populateSearch() should be refactored to below.
+		   As in, MApps._populateSearch() should just call this function.
+		 
+		 
+		addSearchData : function(keywordStringArray)
+		{
+			
+			// Use this regex to match a search acceptable word.
+			// Example acceptable: 'This's', 'alPhA.123', '1234'
+			//       unacceptable: '1', 'a'
+			var acceptableWord = /\A[a-z0-9'\.]\Z/gi
+		
+			// Take each element of keywordStringArray as candidate
+			   // Fill 
+		
+		
+		},
+		*/
+		
     /**
      * Returns an array of App Info objects, which contain a word or words from
      * the keyword string. 
@@ -131,7 +163,6 @@ qx.Mixin.define("aiagallery.dbif.MSearch",
         return error;
       }
 
-      // If we weren't given a specific list of fields, assume all text fields
       if (! queryFields)
       {
         queryFields = [ "title", "description", "tags" ];
