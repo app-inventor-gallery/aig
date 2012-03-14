@@ -24,7 +24,7 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
           "permissions"    : [],
           "permissionGroups": [],
           "status"         : aiagallery.dbif.Constants.Status.Active,
-          "channelTokens"  : [],
+          "channels"       : [],
           "recentSearches" : [],
           "recentViews"    : []
         });
