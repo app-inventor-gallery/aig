@@ -1138,6 +1138,7 @@ qx.Class.define("aiagallery.main.Gui",
         // Request this page
         this.__selectModuleByFragment(fragment);
       }
+/*
       else
       { 
         // Nothing in the URL, set it to the homepage
@@ -1146,6 +1147,7 @@ qx.Class.define("aiagallery.main.Gui",
         qx.bom.History.getInstance().addToHistory
          (fragment, aiagallery.main.Constant.PageName.Home);
       }
+*/
     },
 
     /**
