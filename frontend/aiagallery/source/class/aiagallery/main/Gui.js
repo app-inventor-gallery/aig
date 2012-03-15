@@ -1385,10 +1385,11 @@ qx.Class.define("aiagallery.main.Gui",
       parts.forEach(
         function(part)
         {
-          var             keyValue;
-
-          keyValue = part.split("=");
-          components[ keyValue[0] ] = keyValue[1];
+          var             index;
+          
+          index = part.indexOf("=");
+          components[ part.substring(0, index) ] 
+            = part.substring(index + 1);
         },
         this);
 
