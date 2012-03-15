@@ -33,8 +33,8 @@ qx.Class.define("aiagallery.main.Constant",
     PageName :
       {
         Home       : "Home",
-        FindApps   : "Find Apps",
-        MyApps     : "My Apps",
+        FindApps   : "FindApps",
+        MyApps     : "MyApps",
         Testing    : "Testing",
         Management : "Management",
         AppInfo    : "App"
