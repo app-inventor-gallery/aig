@@ -1261,7 +1261,7 @@ qx.Class.define("aiagallery.main.Gui",
         }
 
         aiagallery.module.dgallery.appinfo.AppInfo.addAppView(
-          components.uid, components.label);
+          Number(components.uid), components.label);
 
         // Page selected. Nothing more to do.
         return;
