@@ -651,7 +651,7 @@ qx.Class.define("aiagallery.main.Gui",
         application.add(hbox);
 
         // Arrange to initialize bookmark support some time after this
-        // function completeds
+        // function completes
         qx.util.TimerManager.getInstance().start(
           function()
           {
