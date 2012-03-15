@@ -223,7 +223,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     this.add(this.__searchResults, { flex : 1 });
 
     // Do not allow setQuery() to be processed until we're visible
-    this.addListener(
+    this.addListenerOnce(
       "appear",
       function(e)
       {
@@ -356,6 +356,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             this.setQuery(json);
           },
           this);
+        
+        return;
       }
 
       var selectByValue = function(list, value)

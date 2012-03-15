@@ -33,7 +33,9 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
   construct : function()
   {
     this.base(arguments); // call the superclass constructor
-    // Add the whole search criteria (and its search results)
+
+    // Add the whole search criteria (and its search results). We need to do
+    // this early, in case a query arrives in the initial URL.
     this.__criteria =
       new aiagallery.module.dgallery.findapps.CriteriaSearch();
   }, 
@@ -78,10 +80,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
           this);
       }
 
-      // Add the whole search criteria (and its search results)
-      this.__criteria =
-        new aiagallery.module.dgallery.findapps.CriteriaSearch();
-      
       // Add a listener for a new search
       this.__criteria.addListener("queryChanged", fsm.eventListener, fsm);
       
