@@ -179,6 +179,12 @@ qx.Class.define("aiagallery.main.Gui",
 
         // Create the hierarchy label to show where in the site we are
         hierarchy = new aiagallery.widget.PageHierarchy([ "Home" ]);
+        
+        //
+        // Hierarchy is broken for app-to-app changes. Hide it for now.
+        //
+        hierarchy.hide();
+
         hbox.add(hierarchy);
         this.setUserData("hierarchy", hierarchy);
 
