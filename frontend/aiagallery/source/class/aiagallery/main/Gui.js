@@ -1090,18 +1090,16 @@ qx.Class.define("aiagallery.main.Gui",
           // event data is the fragment that will select a page
           var state = e.getData();
 
-          /* Maybe this is not happening, keep just in case
-          //FIXME seems there is a bug where some browsers will fire
-          // this "request" event even when the back/foreward button
-          // is not pressed. Stop it by checking to see if the url is
-          // changed
-          if (state == location.hash.substring(1))
-          {
-            return; 
-          }
-          */
+          // FIXME : Whenever the hash is changed on the url it will
+          // fire a "request" event. This is only a problem on the
+          // Find apps page. These events should be ignored
+          // if the user stays on the Find Apps page, but does a
+          // different search. This issue cannot be fixed simply and
+          //is documented on the issue tracker as issue #64. 
 
           this.__selectModuleByFragment(state);
+
+          
         }, 
         this);
 
