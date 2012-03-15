@@ -68,21 +68,19 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      */
     __stringizeAppInfo : function(app)
     {
-            [
-              // FIXME: When previous Author chain is implemented, uncomment
-              //"previousAuthors",
-              "tags"
-              
-            ].forEach(function(field)
-              {
-                // ... stringize this field.
-                app[field] = app[field].join(", ");
-              });
+      [
+        // FIXME: When previous Author chain is implemented, uncomment
+        //"previousAuthors",
+        "tags"
 
-            // Convert from numeric to string status
-            app.status = [ "Banned", "Pending", "Active" ][app.status];
-            
-      
+      ].forEach(function(field)
+        {
+          // ... stringize this field.
+          app[field] = app[field].join(", ");
+        });
+
+      // Convert from numeric to string status
+      app.status = aiagallery.dbif.Constants.StatusToName[app.status];
     },
     
     /**
@@ -295,6 +293,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           });
       }
       
+      java.lang.System.out.println("postAppUpload handling uid " +
+                                   requestData.uid);
+
       // Retrieve this app
       app = new aiagallery.dbif.ObjAppData(requestData.uid);
       
@@ -395,6 +396,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       }
       catch (e)
       {
+        java.lang.System.err.println("postAppUpload [1] caught error for " +
+                                     requestData.uid + ": " + e);
+
         // Remove any blobs that we had added
         addedBlobs.forEach(
           function(blobId)
@@ -434,6 +438,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       }
       catch (e)
       {
+        java.lang.System.err.println("postAppUpload [2] caught error for " +
+                                     requestData.uid + ": " + e);
+
         // We failed to write the database. Remove any blobs we added
         addedBlobs.forEach(
           function(blobId)
@@ -476,6 +483,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                               appId  : appData.uid,
                               status : appData.status
                             });
+
+      java.lang.System.out.println("postAppUpload completed uid " +
+                                   requestData.uid);
+
     },
 
 

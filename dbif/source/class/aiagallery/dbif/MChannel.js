@@ -37,6 +37,7 @@ qx.Mixin.define("aiagallery.dbif.MChannel",
       var             ChannelServiceFactory;
       var             ChannelMessage;
       
+
       // At present, only the App Engine backend supports channels
       if (liberated.dbif.Entity.getCurrentDatabaseProvider() != "appengine")
       {
@@ -59,7 +60,7 @@ qx.Mixin.define("aiagallery.dbif.MChannel",
 
       // Ensure we found a visitor object and that he currently has channels
       if (visitor.length === 0 || 
-          ! qx.lang.Type.isArray(visitor[0].getData().channels))
+          ! qx.lang.Type.isArray(visitor[0].channels))
       {
         // Nope. Nothing to do.
         return;
@@ -77,10 +78,17 @@ qx.Mixin.define("aiagallery.dbif.MChannel",
       ChannelMessage = Packages.com.google.appengine.api.channel.ChannelMessage;
       
       // Send the specified message to each registered client
-      visitor.getData().channels.forEach(
-        function(channelId)
+      visitor[0].channels.forEach(
+        function(clientId)
         {
-          channelService.sendMessage(new ChannelMessage(clientId, json));
+          try
+          {
+            channelService.sendMessage(new ChannelMessage(clientId, json));
+          }
+          catch(e)
+          {
+            // channel is not currently valid
+          }
         });
     },
 
