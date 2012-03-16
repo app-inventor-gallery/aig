@@ -28,7 +28,63 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
   {
     // Use our authorization function
     liberated.AbstractRpcHandler.authorizationFunction =
-      aiagallery.dbif.MDbifCommon.authenticate;
+      function(fqMethod)
+      {
+        var             me;
+        var             meData;
+        var             displayName;
+        var             bAllowed;
+
+        // Call the real authorizer function. It returns true if allowed.
+        bAllowed = aiagallery.dbif.MDbifCommon.authenticate(fqMethod);
+
+        // If we're on App Engine...
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+          // ... then log who's trying to do what. First, is someone logged in?
+          if (aiagallery.dbif.MDbifCommon.__whoami)
+          {
+            // Yup. Retrieve our visitor object
+            me = new aiagallery.dbif.ObjVisitors(
+              aiagallery.dbif.MDbifCommon.__whoami.id);
+
+            // Is it brand new, or does not contain a display name yet?
+            meData = me.getData();
+            if (me.getBrandNew() || meData.displayName === null)
+            {
+              // Correct. Generate a string to represent the logged-in user
+              displayName = 
+                aiagallery.dbif.MDbifCommon.__whoami.id + 
+                " (" + aiagallery.dbif.MDbifCommon.__whoami.displayName + ")";
+            }
+            else
+            {
+              // We know this guy. Use his real display name
+              displayName =
+                aiagallery.dbif.MDbifCommon.__whoami.id + 
+                " (" + meData.displayName + ")";
+            }
+          }
+          else
+          {
+            // No one is logged in
+            displayName = "anonymous";
+          }
+          
+          // Now log a message. stdout if allowed; stderr if not
+          if (bAllowed)
+          {
+            java.lang.System.out.println(displayName + ", method: " + fqMethod);
+          }
+          else
+          {
+            java.lang.System.err.println("Permission denied to " +
+                                         displayName + ", method: " + fqMethod);
+          }
+        }
+        
+        return bAllowed;
+      };
   },
 
   properties :
@@ -308,6 +364,11 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       case "getPermissionGroups" :
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
+      //
+      // MChannel
+      //
+      case "getChannelToken" :
+        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       default:
         // Do not allow access to unrecognized method names

@@ -170,7 +170,12 @@ qx.Class.define("aiagallery.dbif.Constants",
       "addOrEditPermissionGroup" : "Add/edit permission groups",
       "getGroupPermissions"      : "Retrieve permission groups",
       "deletePermissionGroup"    : "Delete a permission group",
-      "getPermissionGroups"      : "Retrieve the list of permission groups"
+      "getPermissionGroups"      : "Retrieve the list of permission groups",
+      
+      //
+      // MChannel
+      //
+      "getChannelToken" : "Request server push"
     },
     
     // Log messages. Comments above each are required parameters

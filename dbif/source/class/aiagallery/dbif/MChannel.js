@@ -218,6 +218,10 @@ qx.Mixin.define("aiagallery.dbif.MChannel",
           var             tempClientId;
           var             tempJsonClientId;
 
+          java.lang.System.out.println(
+            (bConnect ? "Connect " : "Disconnect ") +
+            "visitor id " + clientId.id);
+
           // Obtain the visitor object
           visitor = new aiagallery.dbif.ObjVisitors(clientId.id);
 
@@ -282,6 +286,8 @@ qx.Mixin.define("aiagallery.dbif.MChannel",
 
           // Write out the modified data
           visitor.put();
+          
+          java.lang.System.out.println("Updated channels for " + clientId.id);
         });
     }
   }
