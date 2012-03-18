@@ -73,8 +73,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         tabIndex    : 1,
         maxLength   : aiagallery.dbif.Constants.FieldLength.Title,
-        width       : 300,
-        maxWidth    : 300,
+        width       : 200,
+        maxWidth    : 200,
         required    : true,
         placeholder : "Enter the application title"
       });
