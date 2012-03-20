@@ -57,22 +57,22 @@ qx.Class.define("aiagallery.dbif.ObjAppData",
         "image1" : "LongString",
 
         /** Image #1 blob id */
-        "image1blob" : "String",
+        "image1blob" : "BlobId",
 
         /** Blob ids of source ZIP file (base64-encoded), newest first */
-        "newsource" : "StringArray",
+        "newsource" : "BlobIdArray",
 
         /** Blob ids of source ZIP file (raw), newest first */
-        "source" : "StringArray",
+        "source" : "BlobIdArray",
 
         /** File Name of Source File */
         "sourceFileName" : "String",
 
         /** Blob ids of executable APK file (base64-encoded), newest first */
-        "newapk" : "StringArray",
+        "newapk" : "BlobIdArray",
 
         /** Blob ids of executable APK file (raw), newest first */
-        "apk" : "StringArray",
+        "apk" : "BlobIdArray",
 
         /** File Name of APK File */
         "apkFileName" : "String",
