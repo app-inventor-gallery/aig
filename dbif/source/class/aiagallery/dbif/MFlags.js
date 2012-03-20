@@ -21,6 +21,10 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
                            "appId", 
                            "commentId" 
                          ]);
+
+    this.registerService("aiagallery.features.clearAppFlags",
+                         this.clearAppFlags,
+                         [ "uid" ]);
   },
 
   members :
