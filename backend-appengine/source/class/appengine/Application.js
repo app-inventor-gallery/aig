@@ -607,23 +607,33 @@ qx.Class.define("appengine.Application",
       var             result;
       var             json;
       var             out;
-      var             format;
       var             formatter;
       var             now;
 
+      // Identify ourself (find out who's logged in)
+      dbif.identify();
+
+      // Only an administrator can do this
+      if (! aiagallery.dbif.MDbifCommon.__whoami ||
+          ! aiagallery.dbif.MDbifCommon.__whoami.isAdmin)
+      {
+        java.lang.System.out.println("not administrator");    
+        return;
+      }
+
+      // Get the time we started the backup, for use (ultimately) in file name
+      now = new Date();
+
       // Back up the database. Retrieve result database map, converted to JSON.
       java.lang.System.out.println("Generating backup...");
-      result = dbif.getDatabase();
-      json = qx.lang.Json.stringify(result, null, 2);
+      json = dbif.getDatabase();
       java.lang.System.out.println("Finished generating backup.");
 
-      // Prevent browser from trying to open the file. Just let it be saved.
+      // Prevent the browser from trying to open the file. Just let it be saved.
       response.setContentType("application/database-backup");
 
       // Give the backup file a unique name, with appended date
-      format = "isoUtcDateTime";
-      formatter = new qx.util.format.DateFormat(format, "en_GB");
-      now = new Date();
+      formatter = new qx.util.format.DateFormat("isoUtcDateTime", "en_GB");
       response.setHeader(
         "Content-disposition",
         "attachment; filename=\"aig-backup-" + formatter.format(now) + "\"");
@@ -651,6 +661,17 @@ qx.Class.define("appengine.Application",
       var             jsonInput;
       var             requestType = request.getParameter("type");
       var             requestData;
+
+      // Identify ourself (find out who's logged in)
+      dbif.identify();
+
+      // Only an administrator can do this
+      if (! aiagallery.dbif.MDbifCommon.__whoami ||
+          ! aiagallery.dbif.MDbifCommon.__whoami.isAdmin)
+      {
+        java.lang.System.out.println("not administrator");    
+        return;
+      }
 
       try
       {
