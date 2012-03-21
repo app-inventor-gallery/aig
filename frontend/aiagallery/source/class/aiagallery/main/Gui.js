@@ -1080,8 +1080,10 @@ qx.Class.define("aiagallery.main.Gui",
       var             fragment;
 
       // All history is maintained in this History class
+      // By calling this function a '#' is placed on the
+      // URL. 
       this.__history = qx.bom.History.getInstance();
-
+      
       // Add listener for back button
       this.__history.addListener(
         "request",
@@ -1096,7 +1098,7 @@ qx.Class.define("aiagallery.main.Gui",
           // if the user stays on the Find Apps page, but does a
           // different search. This issue cannot be fixed simply and
           //is documented on the issue tracker as issue #64. 
-
+	  
           this.__selectModuleByFragment(state);
 
           
@@ -1133,7 +1135,7 @@ qx.Class.define("aiagallery.main.Gui",
                                                       selectedPage.getLabel());
         },
         this);
-
+      
       if (location.hash && location.hash.length > 1)
       {
         // Retrieve the fragment, excluding the leading '#'
@@ -1142,6 +1144,7 @@ qx.Class.define("aiagallery.main.Gui",
         // Request this page
         this.__selectModuleByFragment(fragment);
       }
+      
     },
 
     /**
