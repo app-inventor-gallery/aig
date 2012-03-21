@@ -16,10 +16,7 @@
 #use(aiagallery.dbif.ObjVisitors)
 #use(aiagallery.dbif.ObjSearch)
 #use(aiagallery.dbif.ObjPermissionGroup)
-
-
-#use(aiagallery.dbif.ObjTest)
- */
+*/
 
 qx.Class.define("aiagallery.dbif.Entity",
 {
