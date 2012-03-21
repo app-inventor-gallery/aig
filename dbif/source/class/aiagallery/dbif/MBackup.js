@@ -28,9 +28,23 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
     getDatabase : function()
     {
       var             nextBlobKey = 1;
+      var             asTransaction;
 
-      // Do the rest within a transaction, to keep the Visitor object intact
-      return liberated.dbif.Entity.asTransaction(
+      // Transaction is preventing retrieving blob objects.
+      if (false)
+      {
+        asTransaction = liberated.dbif.Entity.asTransaction;
+      }
+      else
+      {
+        asTransaction = function(f, arr, context)
+        {
+          return qx.lang.Function.bind(f, context)();
+        };
+      }
+
+      // Run in a transaction to keep database consistent
+      return asTransaction(
         function()
         {
           var             entityClasses;
@@ -96,33 +110,36 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
                   var             blobIdList;
                   var             returnKey;
 
-                  function getBlob(nativeKey)
-                  {
-                    var             blobData;
+                  var getBlob = qx.lang.Function.bind(
+                    function(nativeKey)
+                    {
+                      var             blobData;
 
-                    // Retrieve the blob
-                    try
-                    {
-                      blobData = liberated.dbif.Entity.getBlob(nativeKey);
-                    }
-                    catch (e)
-                    {
-                      this.warn("Could not retrieve blob ID " + nativeKey);
-                      return null;
-                    }
-                    
-                    if (! blobData)
-                    {
-                      qx.log.Logger.warn(
-                        "Missing blob in field " + field + 
-                          " (" + nativeKey + ")" +
-                        ", entity=" + qx.lang.Json.stringify(entity));
-                      return null;
-                    }
+                      // Retrieve the blob
+                      try
+                      {
+                        blobData = liberated.dbif.Entity.getBlob(nativeKey);
+                      }
+                      catch (e)
+                      {
+                        this.warn("Could not retrieve blob ID " + 
+                                  nativeKey + " (" + e + ")");
+                        return null;
+                      }
 
-                    // Base64-encode the data and return it
-                    return qx.util.Base64.encode(blobData, true);
-                  }
+                      if (! blobData)
+                      {
+                        qx.log.Logger.warn(
+                          "Missing blob in field " + field + 
+                            " (" + nativeKey + ")" +
+                          ", entity=" + qx.lang.Json.stringify(entity));
+                        return null;
+                      }
+
+                      // Base64-encode the data and return it
+                      return qx.util.Base64.encode(blobData, true);
+                    },
+                    this);
 
                   // For each blob property...
                   for (field in fields)

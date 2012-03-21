@@ -590,6 +590,109 @@ qx.Class.define("appengine.Application",
       
       // Add or remove this channel
       dbif._updateChannels(bConnect, jsonClientId);
+    },
+    
+    /**
+     * Process a backup request.
+     *
+     * @param request {Packages.javax.servlet.http.HttpServletRequest}
+     *   The object containing the request parameters.
+     *
+     * @param response {Packages.javax.servlet.http.HttpServletResponse}
+     *   The object to be used for returning the response.
+     */
+    doBackup : function(request, response)
+    {
+      var             dbif =  aiagallery.dbif.DbifAppEngine.getInstance();
+      var             result;
+      var             json;
+      var             out;
+      var             format;
+      var             formatter;
+      var             now;
+
+      // Back up the database. Retrieve result database map, converted to JSON.
+      java.lang.System.out.println("Generating backup...");
+      result = dbif.getDatabase();
+      json = qx.lang.Json.stringify(result, null, 2);
+      java.lang.System.out.println("Finished generating backup.");
+
+      // Prevent browser from trying to open the file. Just let it be saved.
+      response.setContentType("application/database-backup");
+
+      // Give the backup file a unique name, with appended date
+      format = "isoUtcDateTime";
+      formatter = new qx.util.format.DateFormat(format, "en_GB");
+      now = new Date();
+      response.setHeader(
+        "Content-disposition",
+        "attachment; filename=\"aig-backup-" + formatter.format(now) + "\"");
+      
+      // Return the result
+      out = response.getWriter();
+      out.print(json);
+    },
+    
+    /**
+     * Process a restore request.
+     *
+     * @param request {Packages.javax.servlet.http.HttpServletRequest}
+     *   The object containing the request parameters.
+     *
+     * @param response {Packages.javax.servlet.http.HttpServletResponse}
+     *   The object to be used for returning the response.
+     */
+    doRestore : function(request, response)
+    {
+      var             dbif =  aiagallery.dbif.DbifAppEngine.getInstance();
+      var             reader;
+      var             line;
+      var             input = [];
+      var             jsonInput;
+      var             requestType = request.getParameter("type");
+      var             requestData;
+
+      try
+      {
+        // Retrieve the JSON input from the POST request. First, get the input
+        // stream (the POST data)
+        reader = request.getReader();
+
+        // Read the request data, line by line.
+        for (line = reader.readLine(); line != null; line = reader.readLine())
+        {
+          input.push(String(line));
+        }
+
+        // Convert the input lines to a single string
+        jsonInput = String(input.join("\n"));
+
+        // Parse the JSON
+        requestData = qx.lang.Json.parse(jsonInput);
+        
+        if (! qx.lang.Type.isObject(requestData) ||
+            typeof requestData.type != "string")
+        {
+          throw { code : 298, message : "Invalid task request" };
+        }
+
+        // Process this task
+        aiagallery.dbif.Task.process(requestData);
+      }
+      catch (e)
+      {
+        // An error was thrown. Was it thrown intentionally?
+        if (e && e["code"] && e["message"])
+        {
+          // Yup. Use the specified code and message
+          response.sendError(e.code, e.message);
+        }
+        else
+        {
+          // It was not an intentionally-generated error.
+          response.sendError(299, "Unexpected error: " + e);
+        }
+      }
     }
   },
 
@@ -617,5 +720,7 @@ qx.Class.define("appengine.Application",
     window.doPost = appengine.Application.doPost;
     window.doGet = appengine.Application.doGet;
     window.doTask = appengine.Application.doTask;
+    window.doBackup = appengine.Application.doBackup;
+    window.doRestore = appengine.Application.doRestore;
   }
 });

@@ -42,7 +42,7 @@
     </servlet-mapping>
 
 
-    <!-- Task requests calls are issued to this servlet via url /task  -->
+    <!-- Task request calls are issued to this servlet via url /task  -->
     <servlet>
         <servlet-name>TaskServlet</servlet-name>
         <servlet-class>startup.TaskServlet</servlet-class>
@@ -60,6 +60,38 @@
     <security-constraint>
         <web-resource-collection>
             <url-pattern>/task/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <!-- Backend start request calls are issued to this servlet -->
+    <servlet>
+        <servlet-name>BackendStartServlet</servlet-name>
+        <servlet-class>startup.BackendStartServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BackendStartServlet</servlet-name>
+        <url-pattern>/_ah/start</url-pattern>
+    </servlet-mapping>
+
+    <!-- Backup request calls are issued to this servlet via url /backup  -->
+    <servlet>
+        <servlet-name>BackupServlet</servlet-name>
+        <servlet-class>startup.BackupServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BackupServlet</servlet-name>
+        <url-pattern>/backup</url-pattern>
+    </servlet-mapping>
+
+    <!--
+        Restrict backup requests to being issued by the administrator
+    -->
+    <security-constraint>
+        <web-resource-collection>
+            <url-pattern>/backup</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>admin</role-name>

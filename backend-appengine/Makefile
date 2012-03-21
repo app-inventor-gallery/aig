@@ -5,6 +5,8 @@ CLASSES =					\
   $(DESTDIR)/startup/Main.class			\
   $(DESTDIR)/startup/RpcServlet.class		\
   $(DESTDIR)/startup/TaskServlet.class		\
+  $(DESTDIR)/startup/BackendStartServlet.class	\
+  $(DESTDIR)/startup/BackupServlet.class	\
   $(DESTDIR)/startup/GuiServlet.class
 
 
