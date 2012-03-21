@@ -92,7 +92,7 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
               database[entityType].forEach(
                 function(entity)
                 {
-                  var             property;
+                  var             field;
                   var             blobIdList;
                   var             returnKey;
 
