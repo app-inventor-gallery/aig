@@ -1253,6 +1253,7 @@ qx.Class.define("aiagallery.main.Gui",
       var             pageSelectorBar;
       var             hierarchy;
       var             pageId;
+      var             tempRadioButton; 
 
       // Is this a request for the App page?
       if (components.page == aiagallery.main.Constant.PageName.AppInfo)
@@ -1274,8 +1275,16 @@ qx.Class.define("aiagallery.main.Gui",
         pageSelectorBar =
           aiagallery.main.Gui.getInstance().getUserData("pageSelectorBar");
           
+        // Create new temporary app radio button page
+        tempRadioButton = new qx.ui.form.RadioButton("App");      
+        tempRadioButton.set(
+            {
+              appearance : "pageselector",
+              cursor     : "pointer"
+            });
+          
         //Add to children a new temporary App Page
-        pageSelectorBar.add(new qx.ui.form.RadioButton("App"));
+        pageSelectorBar.add(tempRadioButton);
         
         // Get the children
         pageArray = pageSelectorBar.getChildren();
