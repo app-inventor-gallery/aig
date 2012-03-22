@@ -1253,6 +1253,7 @@ qx.Class.define("aiagallery.main.Gui",
       var             pageSelectorBar;
       var             hierarchy;
       var             pageId;
+      var             tempRadioButton; 
 
       // Is this a request for the App page?
       if (components.page == aiagallery.main.Constant.PageName.AppInfo)
@@ -1269,6 +1270,27 @@ qx.Class.define("aiagallery.main.Gui",
 
         aiagallery.module.dgallery.appinfo.AppInfo.addAppView(
           Number(components.uid), components.label);
+        
+        // Get the page selector bar
+        pageSelectorBar =
+          aiagallery.main.Gui.getInstance().getUserData("pageSelectorBar");
+          
+        // Create new temporary app radio button page
+        tempRadioButton = new qx.ui.form.RadioButton(this.tr("App"));      
+        tempRadioButton.set(
+            {
+              appearance : "pageselector",
+              cursor     : "pointer"
+            });
+          
+        //Add to children a new temporary App Page
+        pageSelectorBar.add(tempRadioButton);
+        
+        // Get the children
+        pageArray = pageSelectorBar.getChildren();
+                 
+        //Select it  
+        pageSelectorBar.setSelection([pageArray[pageArray.length - 1]]);
 
         // Page selected. Nothing more to do.
         return;
@@ -1318,6 +1340,20 @@ qx.Class.define("aiagallery.main.Gui",
 
       // Get children
       pageArray = pageSelectorBar.getChildren();
+      
+      //If there was a previously created app tab it must be removed
+      for (j = 0; j < pageArray.length; j++)
+      {
+        if (pageArray[j].getLabel() == this.tr("App").toString())
+        {
+          
+          // Remove child from Page Selector
+          pageSelectorBar.remove(pageArray[j]); 
+          
+          // All done so break
+          break; 
+        }
+      }
 
       // Get the label of the selected tab, to find it in the page
       // selector bar.
