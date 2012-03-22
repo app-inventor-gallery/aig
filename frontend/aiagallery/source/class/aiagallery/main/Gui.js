@@ -1276,7 +1276,7 @@ qx.Class.define("aiagallery.main.Gui",
           aiagallery.main.Gui.getInstance().getUserData("pageSelectorBar");
           
         // Create new temporary app radio button page
-        tempRadioButton = new qx.ui.form.RadioButton("App");      
+        tempRadioButton = new qx.ui.form.RadioButton(this.tr("App"));      
         tempRadioButton.set(
             {
               appearance : "pageselector",
@@ -1344,7 +1344,7 @@ qx.Class.define("aiagallery.main.Gui",
       //If there was a previously created app tab it must be removed
       for (j = 0; j < pageArray.length; j++)
       {
-        if (pageArray[j].getLabel() == "App")
+        if (pageArray[j].getLabel() == this.tr("App").toString())
         {
           
           // Put children back into pageSelectorBar
