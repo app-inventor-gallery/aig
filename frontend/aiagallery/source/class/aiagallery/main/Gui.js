@@ -1347,7 +1347,7 @@ qx.Class.define("aiagallery.main.Gui",
         if (pageArray[j].getLabel() == this.tr("App").toString())
         {
           
-          // Put children back into pageSelectorBar
+          // Remove child from Page Selector
           pageSelectorBar.remove(pageArray[j]); 
           
           // All done so break
