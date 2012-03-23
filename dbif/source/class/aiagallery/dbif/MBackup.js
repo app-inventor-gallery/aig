@@ -18,9 +18,7 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
   members :
   {
     /**
-     * Retrieve the database. All data other than blobs is returned as a
-     * JavaScript map. Retrieving blobs must be done independently by the
-     * client issuing the request.
+     * Retrieve the database.
      *
      * @return {String}
      *   The entire database, in the form of a JSON-stringified JavaScript map.
@@ -30,22 +28,54 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
       var             nextBlobKey = 1;
       var             entityClasses;
       var             getBlob;
-      var             database = 
+      var             database;
+      var             datastoreService;
+      var             blobstoreService;
+      var             blobInfoFactory;
+      var             blobInfo;
+      var             BlobKey;
+      var             BlobstoreServiceFactory;
+      var             BlobInfoFactory;
+      var             Datastore;
+      
+      //
+      // Prepare to be able to retrieve blob info (content type, filename)
+      //
+
+      BlobKey =
+        Packages.com.google.appengine.api.blobstore.BlobKey;
+      BlobstoreServiceFactory = 
+        Packages.com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+      BlobInfoFactory =
+        Packages.com.google.appengine.api.blobstore.BlobInfoFactory;
+
+      // Gain access to the datastore service
+      Datastore = Packages.com.google.appengine.api.datastore;
+      datastoreService =
+        Datastore.DatastoreServiceFactory.getDatastoreService();
+
+      // Get a blobstore service and a blob info factory
+      blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+      blobInfoFactory = new BlobInfoFactory(datastoreService);
+
+      // Initialize an empty database map
+      database =
         {
           "**BLOB**" :
           {
           }
         };
 
-
       // Retrieve the list of entity types
       entityClasses =
         qx.lang.Object.getKeys(liberated.dbif.Entity.entityTypeMap);
-
+      
       // Run in a transaction to keep database consistent
       liberated.dbif.Entity.asTransaction(
         function()
         {
+          var             dbKey;
+
           // For each entity type...
           entityClasses.forEach(
             function(entityClass)
@@ -146,8 +176,11 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
           database[entityType].forEach(
             function(entity)
             {
+              var             blobKey;
               var             blobIdList;
               var             returnKey;
+              var             filename;
+              var             contentType;
 
               // For each blob property...
               for (field in fields)
@@ -158,9 +191,33 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
                   // Get the key to add to our return database for this blob
                   returnKey = nextBlobKey++;
 
-                  // Add the base64-encoded blob to our **BLOB** entry
+                  // Convert the blob id into a key
+                  blobKey = new BlobKey(entity[field]);
+
+                  // Get the blob info to retrieve content type and filename
+                  blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
+
+                  // Add the base64-encoded blob to our **BLOB** entry, along
+                  // with its actual content type and saved file name.
+                  filename = blobInfo.getFilename();
+
+                  // Fix a bug where filename was added as "undefined""
+                  if (filename == "undefined")
+                  {
+                    filename = null;
+                  }
+
+                  contentType = blobInfo.getContentType();
                   database["**BLOB**"]["" + returnKey] =
-                    getBlob(entity[field], entity);
+                    {
+                      data        : getBlob(entity[field], entity),
+                      contentType : (contentType
+                                     ? String(contentType)
+                                     : null),
+                      filename    : (filename
+                                     ? String(filename)
+                                     : null)
+                    };
 
                   // Replace the native database key with the return one
                   entity[field] = returnKey;
@@ -191,9 +248,33 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
                       // this blob
                       returnKey = nextBlobKey++;
 
-                      // Add the base64-encoded blob to our **BLOB** entry
+                      // Convert the blob id into a key
+                      blobKey = new BlobKey(nativeBlobId);
+
+                      // Get the blob info to retrieve content type and filename
+                      blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
+
+                      // Add the base64-encoded blob to our **BLOB** entry,
+                      // along with its actual content type and saved file name.
+                      filename = blobInfo.getFilename();
+                      
+                      // Fix a bug where filename was added as "undefined""
+                      if (filename == "undefined")
+                      {
+                        filename = null;
+                      }
+                      
+                      contentType = blobInfo.getContentType();
                       database["**BLOB**"]["" + returnKey] =
-                        getBlob(nativeBlobId, entity);
+                        {
+                          data        : getBlob(nativeBlobId, entity),
+                          contentType : (contentType
+                                         ? String(contentType)
+                                         : null),
+                          filename    : (filename
+                                         ? String(filename) :
+                                         null)
+                        };
 
                       // Add this new key to the entity's array
                       entity[field].push(returnKey);
@@ -208,6 +289,137 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
         this);
 
       return qx.lang.Json.stringify(database, null, 2);
+    },
+
+    /**
+     * Restore a database.
+     *
+     * @param database {String}
+     *   The entire database, in the form of a JSON-stringified JavaScript map.
+     */
+    putDatabase : function(jsonDatabase)
+    {
+      var             id;
+      var             blobDb;
+      var             blobKey;
+      var             blobInfo;
+      var             database;
+      var             entityClasses;
+      
+      // Parse the JSON to get the database as a map
+      database = qx.lang.Json.parse(jsonDatabase);
+      
+      //
+      // First, create all of the blobs. Once the blob data is in the real
+      // database, replace the base64-encoded data in our database map with
+      // the blob ID of that data i the real database.
+      //
+      
+      // For each blob...
+      blobDb = database["**BLOB**"];
+      for (id in blobDb)
+      {
+        // ... write this blob to the database and save its key in its former
+        // place in the database map.
+        blobInfo = blobDb[id];
+        blobDb[id] = liberated.dbif.Entity.putBlob(blobInfo.data,
+                                                   blobInfo.contentType,
+                                                   blobInfo.filename);
+      }
+      
+      // Now, for each entity class...
+      // Retrieve the list of entity types
+      entityClasses =
+        qx.lang.Object.getKeys(liberated.dbif.Entity.entityTypeMap);
+
+      // Run in a transaction to keep database consistent
+      liberated.dbif.Entity.asTransaction(
+        function()
+        {
+          var             jsEntityObjs;
+
+          // For each entity type...
+          entityClasses.forEach(
+            function(entityClass)
+            {
+              var             obj;
+              var             entityType;
+              var             entity;
+              var             blobField;
+              var             blobFields;
+              var             data;
+              var             arr;
+
+              // Get the property type information for this entity type
+              blobFields =
+                liberated.dbif.Entity.getPropertyTypes(entityType).fields;
+
+              // Remove elements that are not BlobId or BlobIdArray
+              qx.lang.Object.getKeys(blobFields).forEach(
+                function(field)
+                {
+                  // Is this one we care about?
+                  if (blobFields[field] != "BlobId" &&
+                      blobFields[field] != "BlobIdArray")
+                  {
+                    // Nope. Remove it.
+                    delete blobFields[field];
+                  }
+                },
+                this);
+
+              // Convert from entity class name to entity type
+              entityType = liberated.dbif.Entity.entityTypeMap[entityClass];
+
+              // Point to this database object
+              jsEntityObjs = database[entityType];
+              
+              // For each entity of this type...
+              for (obj in jsEntityObjs)
+              {
+                // Instantiate a new object of this class
+                entity = new qx.Class.getByName(entityClass)();
+                
+                // Retrieve the entity data to be saved (after alteration)
+                data = jsEntityObjs[obj];
+                
+                // For each blob field...
+                for (blobField in blobFields)
+                {
+                  // Is this field a BlobId or a BlobIdArray?
+                  switch(blobFields[blobField])
+                  {
+                  case "BlobId":
+                    // Replace the temporary blob id in the JS entity with its
+                    // real blob id.
+                    data[blobField] = blobDb[data[blobField]];
+                    break;
+                    
+                  case "BlobIdArray":
+                    // Replace each of the temporary blob ids in the JS entity
+                    // with their real blob ids.
+                    arr = [];
+                    data[blobField].forEach(
+                      function(blobId)
+                      {
+                        arr.push(blobDb[blobId]);
+                      },
+                      this);
+                    data[blobField] = arr;
+                    break;
+                  }
+                }
+
+                // Set the entity's data
+                entity.setData(data);
+                
+                // Write out this new entity
+                entity.put();
+              }
+            });
+        },
+        [],
+        this);
     }
   }
 });
