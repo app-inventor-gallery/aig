@@ -1,4 +1,5 @@
 /**
+ * Copyright (c) 2012 Paul Geromini
  * Copyright (c) 2012 Derrell Lipman
  * 
  * License:
@@ -10,28 +11,25 @@
   * CSS file to control certain aspects of style in AIG. 
   */
 
-<head>
 <style type="text/css">
-
-a:active 
-{
-  color: #75940c;
-}
-a:visited 
-{
-  color: #75940c;
-}
-a:hover
-{
-  color: 75940c;
-}
-a:focus
-{
-  color: #75940c;
-}
-a:link
-{
-  color: #75940c;
-}
+  a:active 
+  {
+    color: #75940c;
+  }
+  a:visited 
+  {
+    color: #75940c;
+  }
+  a:hover
+  {
+    color: 75940c;
+  }
+  a:focus
+  {
+    color: #75940c;
+  }
+  a:link
+  {
+    color: #75940c;
+  }
 </style> 
-</head>
