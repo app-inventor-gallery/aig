@@ -43,7 +43,11 @@ qx.Class.define("aiagallery.dbif.ObjComments",
     var databaseProperties =
       {
         /** UID of the AppData object which was commented upon */
-        "app" : "Key",
+        "app" : 
+        {
+          type      : "Key",
+          reference : "apps"
+        },
 
         /*
          * Hierarchy identifier to track comment threads. 
@@ -61,7 +65,11 @@ qx.Class.define("aiagallery.dbif.ObjComments",
         "numChildren" : "Integer",
 
         /** Id of the Visitor who made this comment */
-        "visitor" : "String",
+        "visitor" :
+        {
+          type      : "String",
+          reference : "visitors"
+        },
 
         /** Time the comment was made */
         "timestamp" : "Date",

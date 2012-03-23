@@ -31,10 +31,18 @@ qx.Class.define("aiagallery.dbif.ObjLikes",
     var databaseProperties =
       {
         /** UID of the AppData object which was liked */
-        "app" : "Key",
+        "app" :
+        {
+          type      : "Key", 
+          reference : "apps"
+        },
 
         /** Id of the Visitor who liked the application */
-        "visitor" : "String",
+        "visitor" :
+        {
+          type      : "String",
+          reference : "visitors"
+        },
 
         /** Time the like occurred */
         "timestamp" : "Date"

@@ -45,7 +45,11 @@ qx.Class.define("aiagallery.dbif.ObjSearch",
         "word" : "String",
 
         /** The App in which this word appears */
-        "appId"  : "Key",
+        "appId"  : 
+        {
+          type      : "Key",
+          reference : "apps"
+        },
                 
         /** The App data field within which this word appeared */
         "appField" : "String"

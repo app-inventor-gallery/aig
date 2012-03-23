@@ -37,13 +37,21 @@ qx.Class.define("aiagallery.dbif.ObjFlags",
         "type" : "String",
 
         /** UID of the AppData object which was flagged */
-        "app" : "Key",
+        "app" : 
+        {
+          type      : "Key",
+          reference : "apps"
+        },
 
         /** Tree ID of the Comment object which was flagged */
         "comment" : "String",
 
         /** Id of the Visitor who flagged the application or comment */
-        "visitor" : "String",
+        "visitor" :
+        {
+          type      : "String",
+          reference : "visitors"
+        },
 
         /** Time the like occurred */
         "timestamp" : "Date",

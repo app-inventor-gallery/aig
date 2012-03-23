@@ -25,8 +25,11 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
      */
     getDatabase : function()
     {
+      var             nextEntityKey = 1;
       var             nextBlobKey = 1;
+      var             keymap = {};
       var             entityClasses;
+      var             entityType;
       var             getBlob;
       var             database;
       var             datastoreService;
@@ -42,21 +45,24 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
       // Prepare to be able to retrieve blob info (content type, filename)
       //
 
-      BlobKey =
-        Packages.com.google.appengine.api.blobstore.BlobKey;
-      BlobstoreServiceFactory = 
-        Packages.com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-      BlobInfoFactory =
-        Packages.com.google.appengine.api.blobstore.BlobInfoFactory;
+      if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+      {
+        BlobKey =
+          Packages.com.google.appengine.api.blobstore.BlobKey;
+        BlobstoreServiceFactory = 
+          Packages.com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+        BlobInfoFactory =
+          Packages.com.google.appengine.api.blobstore.BlobInfoFactory;
 
-      // Gain access to the datastore service
-      Datastore = Packages.com.google.appengine.api.datastore;
-      datastoreService =
-        Datastore.DatastoreServiceFactory.getDatastoreService();
+        // Gain access to the datastore service
+        Datastore = Packages.com.google.appengine.api.datastore;
+        datastoreService =
+          Datastore.DatastoreServiceFactory.getDatastoreService();
 
-      // Get a blobstore service and a blob info factory
-      blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-      blobInfoFactory = new BlobInfoFactory(datastoreService);
+        // Get a blobstore service and a blob info factory
+        blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+        blobInfoFactory = new BlobInfoFactory(datastoreService);
+      }
 
       // Initialize an empty database map
       database =
@@ -81,16 +87,41 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
             function(entityClass)
             {
               var             entityType;
+              var             propertyTypes;
               var             fields;
+              var             references;
+              var             entityTypeKeymap;
 
               // Convert from entity class name to entity type
               entityType = liberated.dbif.Entity.entityTypeMap[entityClass];
+
+              // Get the property type information and references for this
+              // entity type.
+              propertyTypes = 
+                liberated.dbif.Entity.getPropertyTypes(entityType);
+              fields = propertyTypes.fields;
+              references = propertyTypes.references;
 
               // Retrieve all of the entities of the specified type and save
               // them in our return "database" object.
               try
               {
                 database[entityType] = liberated.dbif.Entity.query(entityClass);
+                
+                // Does this entity type have auto-generated keys?
+                if (propertyTypes.keyField == "uid")
+                {
+                  // Yup. Map each key to a database-independent value
+                  entityTypeKeymap = {};
+                  database[entityType].forEach(
+                    function(entity)
+                    {
+                      entityTypeKeymap[entity.uid] = nextEntityKey;
+                      entity.uid = nextEntityKey++;
+                    },
+                    this);
+                  keymap[entityType] = entityTypeKeymap;                  
+                }
               }
               catch (e)
               {
@@ -101,6 +132,98 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
         },
         [],
         this);
+
+      // Traverse the database map. Everyplace there is a field that
+      // references another entity, insert the database-independent value we
+      // mapped to above.
+      for (entityType in database)
+      {
+        // Skip the blobs entry for now
+        if (entityType == "**BLOB**")
+        {
+          continue;
+        }
+
+        qx.lang.Function.bind(
+          function(entityType)
+          {
+            var             propertyTypes;
+            var             fields;
+            var             references;
+            var             referenceFields;
+
+            // Get the property type information and references for this
+            // entity type.
+            propertyTypes = 
+              liberated.dbif.Entity.getPropertyTypes(entityType);
+            fields = propertyTypes.fields;
+            references = propertyTypes.references;
+
+            // Retrieve the list of reference fields for this entity type
+            referenceFields = qx.lang.Object.getKeys(references);
+
+            // For each reference field...
+            referenceFields.forEach(
+              function(referenceField)
+              {
+                // For each entity of the current entity type...
+                database[entityType].forEach(
+                  function(entity)
+                  {
+                    var             newKey;
+                    var             newKeys;
+                    var             referencedObj;
+                    
+                    // Is this field an array?
+                    if (qx.lang.Type.isArray(entity[referenceField]))
+                    {
+                      // Yes. Create a mapping of each key in the array. 
+                      newKeys = [];
+                      entity[referenceField].forEach(
+                        function(key)
+                        {
+                          // Find the mapping of this entity's key
+                          referencedObj = references[referenceField];
+                          newKey = keymap[referencedObj][key];
+                          if (typeof newKey == "undefined")
+                          {
+                            this.warn("Found missing reference: " +
+                                      "entityType=" + entityType + ", " +
+                                      "field=" + referenceField + ", " +
+                                      "key=" + key);
+                            return;
+                          }
+                          newKeys.push(newKey);
+                        },
+                        this);
+
+                        // Replace the key array with the mapped values
+                        entity[referenceField] = newKeys;
+                    }
+                    else
+                    {
+                      // Find the mapping of this entity's key
+                      referencedObj = references[referenceField];
+                      newKey = keymap[referencedObj][entity[referenceField]];
+                      if (typeof newKey == "undefined")
+                      {
+                        this.warn("Found missing reference: " +
+                                  "entityType=" + entityType + ", " +
+                                  "field=" + referenceField + ", " +
+                                  "key=" + entity[referenceField]);
+                        return;
+                      }
+
+                      // Replace the key with the mapped value
+                      entity[referenceField] = newKey;
+                    }
+                  },
+                  this);
+              },
+              this);
+          },
+          this)(entityType);
+      }
 
       //
       // Blob retrieval must be done outside of the transaction, because App
@@ -192,22 +315,32 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
                   returnKey = nextBlobKey++;
 
                   // Convert the blob id into a key
-                  blobKey = new BlobKey(entity[field]);
-
-                  // Get the blob info to retrieve content type and filename
-                  blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
-
-                  // Add the base64-encoded blob to our **BLOB** entry, along
-                  // with its actual content type and saved file name.
-                  filename = blobInfo.getFilename();
-
-                  // Fix a bug where filename was added as "undefined""
-                  if (filename == "undefined")
+                  if (liberated.dbif.Entity.getCurrentDatabaseProvider() ==
+                      "appengine")
                   {
+                    blobKey = new BlobKey(entity[field]);
+
+                    // Get the blob info to retrieve content type and filename
+                    blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
+
+                    // Add the base64-encoded blob to our **BLOB** entry, along
+                    // with its actual content type and saved file name.
+                    filename = blobInfo.getFilename();
+
+                    // Fix a bug where filename was added as "undefined""
+                    if (filename == "undefined")
+                    {
+                      filename = null;
+                    }
+
+                    contentType = blobInfo.getContentType();
+                  }
+                  else
+                  {
+                    contentType = null;
                     filename = null;
                   }
 
-                  contentType = blobInfo.getContentType();
                   database["**BLOB**"]["" + returnKey] =
                     {
                       data        : getBlob(entity[field], entity),
@@ -248,23 +381,35 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
                       // this blob
                       returnKey = nextBlobKey++;
 
-                      // Convert the blob id into a key
-                      blobKey = new BlobKey(nativeBlobId);
-
-                      // Get the blob info to retrieve content type and filename
-                      blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
-
-                      // Add the base64-encoded blob to our **BLOB** entry,
-                      // along with its actual content type and saved file name.
-                      filename = blobInfo.getFilename();
-                      
-                      // Fix a bug where filename was added as "undefined""
-                      if (filename == "undefined")
+                      if (liberated.dbif.Entity.getCurrentDatabaseProvider() ==
+                          "appengine")
                       {
+                        // Convert the blob id into a key
+                        blobKey = new BlobKey(nativeBlobId);
+
+                        // Get the blob info to retrieve content type and
+                        // filename
+                        blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
+
+                        // Add the base64-encoded blob to our **BLOB** entry,
+                        // along with its actual content type and saved file
+                        // name.
+                        filename = blobInfo.getFilename();
+
+                        // Fix a bug where filename was added as "undefined""
+                        if (filename == "undefined")
+                        {
+                          filename = null;
+                        }
+
+                        contentType = blobInfo.getContentType();
+                      }
+                      else
+                      {
+                        contentType = null;
                         filename = null;
                       }
-                      
-                      contentType = blobInfo.getContentType();
+
                       database["**BLOB**"]["" + returnKey] =
                         {
                           data        : getBlob(nativeBlobId, entity),

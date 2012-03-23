@@ -31,10 +31,18 @@ qx.Class.define("aiagallery.dbif.ObjDownloads",
     var databaseProperties =
       {
         /** UID of the AppData object which was downloaded */
-        "app" : "Key",
+        "app" : 
+        {
+          type      : "Key",
+          reference : "apps"
+        },
 
         /** Id of the Visitor who downloaded the application */
-        "visitor" : "String",
+        "visitor" : 
+        {
+          type      : "String",
+          reference : "visitors"
+        },
 
         /** Time the download was initiated */
         "timestamp" : "Date"

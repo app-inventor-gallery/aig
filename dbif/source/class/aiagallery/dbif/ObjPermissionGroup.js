@@ -36,15 +36,17 @@ qx.Class.define("aiagallery.dbif.ObjPermissionGroup",
 
     var databaseProperties =
       {
-        /** A list of names of RPC calls to which members of this group have
-         *  access */   
+        /** The name of this group, i.e. Administrator, guest, moderator etc */
+        "name"  : "String",
+
+        /** 
+         * A list of names of RPC calls to which members of this group have
+         * access
+         */   
         "permissions" : "StringArray",
         
         /** A simple description of the group, i.e. "The all powerful Admin" */
-        "description" : "String",
-
-        /** The name of this group, i.e. Administrator, guest, moderator etc */
-        "name"  : "String"
+        "description" : "String"
       };
 
     // Register our property types
