@@ -1,12 +1,25 @@
 <head>
 <style type="text/css">
-a:link 
-{
-  color: #a5c43c ! important;
-}
+
 a:active 
 {
-  color: #a5c43c ! important;
+  color: #a5c43c;
+}
+a:visited 
+{
+  color: #a5c43c;
+}
+a:hover
+{
+  color: red;
+}
+a:focus
+{
+  color: red;
+}
+a:link
+{
+  color: #a5c43c;
 }
 </style> 
 </head>
