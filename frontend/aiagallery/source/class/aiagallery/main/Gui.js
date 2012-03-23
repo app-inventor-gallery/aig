@@ -1291,10 +1291,14 @@ qx.Class.define("aiagallery.main.Gui",
         // so do nothing
         for (j = 0; j < pageArray.length; j++)
         {
-          if (pageArray[j].getLabel() == this.tr("App").toString())
+          if (pageArray[j].getUserData("app"))
           {
           
-            return; 
+            // Remove child from Page Selector
+            pageSelectorBar.remove(pageArray[j]); 
+          
+            // All done so break
+            break; 
           }
         }
           
