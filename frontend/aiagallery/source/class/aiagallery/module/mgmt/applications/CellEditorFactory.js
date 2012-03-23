@@ -306,7 +306,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       removeFlagsButton.addListener("execute", fsm.eventListener, fsm);
       flagGrid.add(removeFlagsButton, { row : 0, column : 1});
           
-// ToDo:  Fsm communication and event listener for flag gui elements
       cellEditor.add(flagGrid, {row: 3, column : 2});
 
 

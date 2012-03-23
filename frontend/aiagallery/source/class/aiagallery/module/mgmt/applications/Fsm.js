@@ -457,9 +457,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
                      "mgmtEditApp",
                      [ uid, requestData ]);
 
-          // Save the user id in the request data too
-          requestData.uid = uid;
-
           // Save the request data
           request.setUserData("requestData", requestData);
 
@@ -515,9 +512,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
       state.addTransition(trans);
 
 
-//------------------------------------------------------------------------------------------------------------
-
-
       /*
        * Transition: EditApp to AwaitRpcResult
        *
@@ -553,19 +547,10 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           // When we get the result, we'll need to know what type of request
           // we made.
           request.setUserData("requestType", "clearAppFlags");
-/*
-          // Save the user id in the request data too
-          requestData.uid = uid;
-
-          // Save the request data
-          request.setUserData("requestData", requestData);
-*/
         }
       });
 
       state.addTransition(trans);
-
-//------------------------------------------------------------------------------------------------------------
 
 
       /*
@@ -589,7 +574,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var             cellEditor;
           var             cellInfo;
           var             rpcRequest;
-          var             requestData;
           var             response;
           var             result;
           var             table;
@@ -603,7 +587,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           // Get the cell editor and the request data from the RPC request
           cellEditor = this.getUserData("cellEditor");
           cellInfo = this.getUserData("cellInfo");
-          requestData = rpcRequest.getUserData("requestData");
           response = rpcRequest.getUserData("rpc_response");
           result = response.data.result;
 
