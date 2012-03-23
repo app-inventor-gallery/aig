@@ -1284,6 +1284,24 @@ qx.Class.define("aiagallery.main.Gui",
         pageSelectorBar =
           aiagallery.main.Gui.getInstance().getUserData("pageSelectorBar");
           
+        // Get the children
+        pageArray = pageSelectorBar.getChildren();
+          
+        // Its possible we an app radio button page already exists if
+        // so do nothing
+        for (j = 0; j < pageArray.length; j++)
+        {
+          if (pageArray[j].getUserData("app"))
+          {
+          
+            // Remove child from Page Selector
+            pageSelectorBar.remove(pageArray[j]); 
+          
+            // All done so break
+            break; 
+          }
+        }
+          
         // Create new temporary app radio button page
         tempRadioButton = new qx.ui.form.RadioButton(components.label);
         tempRadioButton.set(
@@ -1295,9 +1313,6 @@ qx.Class.define("aiagallery.main.Gui",
           
         //Add to children a new temporary App Page
         pageSelectorBar.add(tempRadioButton);
-        
-        // Get the children
-        pageArray = pageSelectorBar.getChildren();
                  
         //Select it  
         pageSelectorBar.setSelection([pageArray[pageArray.length - 1]]);
