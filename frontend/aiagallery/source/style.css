@@ -15,23 +15,23 @@
 
 a:active 
 {
-  color: #a5c43c;
+  color: #75940c;
 }
 a:visited 
 {
-  color: #a5c43c;
+  color: #75940c;
 }
 a:hover
 {
-  color: red;
+  color: 75940c;
 }
 a:focus
 {
-  color: red;
+  color: #75940c;
 }
 a:link
 {
-  color: #a5c43c;
+  color: #75940c;
 }
 </style> 
 </head>
