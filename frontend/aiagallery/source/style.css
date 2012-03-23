@@ -1,0 +1,37 @@
+/**
+ * Copyright (c) 2012 Derrell Lipman
+ * 
+ * License:
+ *   LGPL: http://www.gnu.org/licenses/lgpl.html 
+ *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
+ */
+ 
+ /**
+  * CSS file to control certain aspects of style in AIG. 
+  */
+
+<head>
+<style type="text/css">
+
+a:active 
+{
+  color: #a5c43c;
+}
+a:visited 
+{
+  color: #a5c43c;
+}
+a:hover
+{
+  color: red;
+}
+a:focus
+{
+  color: red;
+}
+a:link
+{
+  color: #a5c43c;
+}
+</style> 
+</head>
