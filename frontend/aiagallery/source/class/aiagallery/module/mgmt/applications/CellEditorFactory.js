@@ -141,7 +141,9 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
         vBox.add(removeImageButton);
 
 // This won't be passed to FSM if no image; beware possible bug?
-        fsm.addObject("removeImageButton", removeImageButton);
+        fsm.addObject("removeImageButton",
+                       removeImageButton,
+                       "main.fsmUtils.disable_during_rpc");
 */
       }
 
@@ -289,12 +291,18 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       var numFlags = rowData.numCurFlags;  // Might be null (simData)
       var flagString = qx.lang.Type.isNumber(numFlags) ? numFlags.toString() : '0';
       var flagsLabel = new qx.ui.basic.Label(flagString);
+
+      // FSM will need to be able to reset flag count
+      cellEditor.setUserData("flagsLabel", flagsLabel);
+
       flagNum.add(flagsLabel);
 
       flagGrid.add(flagNum, { row : 0, column : 0});
 
       var removeFlagsButton = new qx.ui.form.Button("Remove all flags");
-      fsm.addObject("removeFlags", removeFlagsButton);
+      fsm.addObject("removeFlags",
+                    removeFlagsButton,
+                    "main.fsmUtils.disable_during_rpc");
       removeFlagsButton.addListener("execute", fsm.eventListener, fsm);
       flagGrid.add(removeFlagsButton, { row : 0, column : 1});
           
@@ -319,13 +327,13 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
 // Maybe OK button should be on left--not important ATM.
       var okButton =
         new qx.ui.form.Button("Ok", "icon/22/actions/dialog-ok.png");
-      fsm.addObject("ok", okButton);
+      fsm.addObject("ok", okButton, "main.fsmUtils.disable_during_rpc");
       okButton.addListener("execute", fsm.eventListener, fsm);
       buttonPane.add(okButton);
 
       var cancelButton =
         new qx.ui.form.Button("Cancel", "icon/22/actions/dialog-cancel.png");
-      fsm.addObject("cancel", cancelButton);
+      fsm.addObject("cancel", cancelButton, "main.fsmUtils.disable_during_rpc");
       cancelButton.addListener("execute", fsm.eventListener, fsm);
       buttonPane.add(cancelButton);
 

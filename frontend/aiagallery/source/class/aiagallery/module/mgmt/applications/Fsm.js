@@ -22,8 +22,8 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
       var state;
       var trans;
 
-// Debug
       var FSM = qx.util.fsm.FiniteStateMachine;
+// Debug
       fsm.setDebugFlags(FSM.DebugFlags.EVENTS |
                         FSM.DebugFlags.TRANSITIONS |
                         FSM.DebugFlags.FUNCTION_DETAIL |
@@ -322,12 +322,32 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
             }
             else
             {
-              // It succeeded. Resubmit the event to move us back to Idle
-              fsm.eventListener(event);
+              // Success! Was it a clearAppFlags RPC?
+              if (rpcRequest.getUserData("requestType") == "clearAppFlags")
+              {
+                // Yes. Reset cell editor flag count...
+                var cellEditor = this.getUserData("cellEditor");
+                var flagsLabel = cellEditor.getUserData("flagsLabel");
+                flagsLabel.setValue("0");
 
-              // Push the RPC request back on the stack so it's available for
-              // the next transition.
-              this.pushRpcRequest(rpcRequest);
+                // ... and dispose of the request
+// Why is this conditional necessary?
+                if (rpcRequest.request)
+                {
+                  rpcRequest.request.dispose();
+                  rpcRequest.request = null;
+                }
+                // Remain in the EditApp state
+              }
+              else
+              {
+                // Not a clearAppFlags RPC. Resubmit the event to move us back to Idle.
+                fsm.eventListener(event);
+
+                // Push the RPC request back on the stack so it's available for
+                // the next transition.
+                this.pushRpcRequest(rpcRequest);
+              }
             }
           }
         },
@@ -504,7 +524,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
        * Cause: "execute" on "Remove Flags" button in cell editor
        *
        * Action:
-       *  Issue an rpc to remove flags for the app
+       *  Issue an RPC to remove flags for the app
        */
 
       trans = new qx.util.fsm.Transition(
@@ -530,17 +550,15 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
                      "clearAppFlags",
                      [ uid ]);
 
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "clearAppFlags");
 /*
           // Save the user id in the request data too
           requestData.uid = uid;
 
           // Save the request data
           request.setUserData("requestData", requestData);
-
-          // When we get the result, we'll need to know what type of request
-          // we made.
-
-          request.setUserData("requestType", "clearAppFlags");
 */
         }
       });
