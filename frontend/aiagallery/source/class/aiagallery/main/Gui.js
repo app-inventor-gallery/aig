@@ -127,6 +127,10 @@ qx.Class.define("aiagallery.main.Gui",
         else
         {
           this.whoAmI = new aiagallery.main.WhoAmI();
+          this.whoAmI.set(
+            {
+              marginTop : 12
+            });
         }
         header.add(this.whoAmI);
 
