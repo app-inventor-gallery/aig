@@ -160,6 +160,9 @@ qx.Class.define("aiagallery.main.Gui",
           simulate.setValue(true);
         }
 
+        // For now, do not display the simulate button
+        simulate.setVisibility("excluded");
+
         header.add(simulate);
 
         // Add the header to the application
