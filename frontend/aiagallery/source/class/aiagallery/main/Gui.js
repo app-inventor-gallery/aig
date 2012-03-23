@@ -183,19 +183,28 @@ qx.Class.define("aiagallery.main.Gui",
         //
         // Hierarchy is broken for app-to-app changes. Hide it for now.
         //
-        hierarchy.hide();
+        hierarchy.setVisibility("excluded");
 
         hbox.add(hierarchy);
         this.setUserData("hierarchy", hierarchy);
 
-        // Right-justify the links
-        o = new qx.ui.core.Widget();
-        o.set(
-          {
-            height    : 1,
-            minHeight : 1
-          });
-        hbox.add(o, { flex : 1 });
+        /*
+         * The hierarchy is excluded. Do not, for now, right-justify links,
+         * allowing space for an app title to be displayed as a link on the
+         * right without moving the other links...
+         * 
+         */
+        if (false)
+        {
+          // Right-justify the links
+          o = new qx.ui.core.Widget();
+          o.set(
+            {
+              height    : 1,
+              minHeight : 1
+            });
+          hbox.add(o, { flex : 1 });
+        }
 
         // Obtain or create the pageSelectorBar
         pageSelectorBar = this.getUserData("pageSelectorBar");
@@ -1276,12 +1285,13 @@ qx.Class.define("aiagallery.main.Gui",
           aiagallery.main.Gui.getInstance().getUserData("pageSelectorBar");
           
         // Create new temporary app radio button page
-        tempRadioButton = new qx.ui.form.RadioButton(this.tr("App"));      
+        tempRadioButton = new qx.ui.form.RadioButton(components.label);
         tempRadioButton.set(
             {
               appearance : "pageselector",
               cursor     : "pointer"
             });
+        tempRadioButton.setUserData("app", true);
           
         //Add to children a new temporary App Page
         pageSelectorBar.add(tempRadioButton);
@@ -1344,7 +1354,7 @@ qx.Class.define("aiagallery.main.Gui",
       //If there was a previously created app tab it must be removed
       for (j = 0; j < pageArray.length; j++)
       {
-        if (pageArray[j].getLabel() == this.tr("App").toString())
+        if (pageArray[j].getUserData("app"))
         {
           
           // Remove child from Page Selector
