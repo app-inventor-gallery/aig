@@ -1,4 +1,4 @@
-qx.Class.define("aiagallery.widget.CommentPanel",
+qx.Class.define("aiagallery.module.dgallery.appinfo.CommentPanel",
 {
   extend : collapsablepanel.Panel,
     
@@ -54,7 +54,7 @@ qx.Class.define("aiagallery.widget.CommentPanel",
 	  switch(id)
 	  {
 	  case "bar":
-	      control = new aiagallery.widget.CollapsedSummary(this.__fms, this);
+	      control = new aiagallery.module.dgallery.appinfo.CollapsedSummary(this.__fms, this);
 	      control.addListener("click", this.toggleValue, this);
               this._add(control, {flex : 1});
               break;

@@ -1,4 +1,4 @@
-qx.Class.define("aiagallery.widget.CollapsedSummary", 
+qx.Class.define("aiagallery.module.dgallery.appinfo.CollapsedSummary", 
 {
     extend : qx.ui.container.Composite,
 
@@ -9,7 +9,7 @@ qx.Class.define("aiagallery.widget.CollapsedSummary",
 	
 	this.base(arguments);
 	
-	height = aiagallery.widget.CollapsedSummary.Height;
+	height = aiagallery.module.dgallery.appinfo.CollapsedSummary.Height;
 	this.set(
 	    {
 		height : height,

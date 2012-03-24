@@ -434,8 +434,19 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         // Add a scroll container containing the comment list.
         // Make it stretch to the bottom of vBoxLeft.
         scrollContainer = new qx.ui.container.Scroll();
-        scrollContainer.add(this.__allCommentsBox);
-        vboxLeft.add(scrollContainer, {flex : 1});
+//        scrollContainer.add(this.__allCommentsBox);
+  
+	// Add in chris's comment object to rhe scroll container
+
+	  var commentPanelChris1 = new aiagallery.module.dgallery.appinfo.CommentPanel(fsm)
+	  var commentPanelChris2 = new aiagallery.module.dgallery.appinfo.CommentPanel(fsm)
+	  var commentPanelChris3 = new aiagallery.module.dgallery.appinfo.CommentPanel(fsm)
+
+	  scrollContainer.add(commentPanelChris1);
+	  scrollContainer.add(commentPanelChris2);
+	  scrollContainer.add(commentPanelChris3);
+
+      vboxLeft.add(scrollContainer, {flex : 1});
 
 
         // Right Vbox

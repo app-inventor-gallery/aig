@@ -1,4 +1,4 @@
-qx.Class.define("aiagallery.widget.CollapsedSummary", 
+qx.Class.define("aiagallery.module.dgallery.appinfo.ExpandedSummaryLTE", 
 {
     extend : qx.ui.container.Composite,
 
