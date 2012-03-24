@@ -4,7 +4,7 @@ qx.Class.define("aiagallery.widget.CollapsedSummary",
 
     construct : function()
     {
-	var height;
+	var height = 200;
 	var layout;
 	
 	this.base(arguments);
@@ -65,14 +65,14 @@ qx.Class.define("aiagallery.widget.CollapsedSummary",
     
     statics :
     {
-	Height : 20,
+	Height : 100,
 
 	Width : 
 	{
-	    UserIcon : 20,
-	    UserName : 20,
-	    UserInfoSection : 10,
-	    TextPreview : -5
+	    UserIcon : 75,
+	    UserName : 75,
+	    UserInfoSection : 75,
+	    TextPreview : 75
 	}
     },
 
