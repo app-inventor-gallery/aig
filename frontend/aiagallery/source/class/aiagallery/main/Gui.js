@@ -87,8 +87,20 @@ qx.Class.define("aiagallery.main.Gui",
         o.set(
           {
             height : 57,
-            width  : 183
+            width  : 183,
+            cursor : "pointer"
           });
+        o.addListener(
+          "click",
+          function(e)
+          {
+            // Initiate a search
+            this.selectModule(
+              {
+                page  : aiagallery.main.Constant.PageName.Home
+              });
+          },
+          this);
         header.add(o);
 
         // Create a small spacer after the logo
