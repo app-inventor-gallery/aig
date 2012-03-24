@@ -125,7 +125,7 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
               }
               catch (e)
               {
-                this.warn(e);
+                this.error(e);
                 return;
               }
             });
@@ -134,8 +134,8 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
         this);
 
       // Traverse the database map. Everyplace there is a field that
-      // references another entity, insert the database-independent value we
-      // mapped to above.
+      // references another entity's uid, insert the database-independent
+      // value we mapped to above.
       for (entityType in database)
       {
         // Skip the blobs entry for now
@@ -184,13 +184,19 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
                         {
                           // Find the mapping of this entity's key
                           referencedObj = references[referenceField];
+                          if (typeof keymap[referencedObj] == "undefined")
+                          {
+                            // Referenced object's key is not a uid.
+                            return;
+                          }
                           newKey = keymap[referencedObj][key];
                           if (typeof newKey == "undefined")
                           {
-                            this.warn("Found missing reference: " +
-                                      "entityType=" + entityType + ", " +
-                                      "field=" + referenceField + ", " +
-                                      "key=" + key);
+                            this.error("Found missing reference: " +
+                                       "entityType=" + entityType + ", " +
+                                       "refObj=" + referencedObj + ", " +
+                                       "refField=" + referenceField + ", " +
+                                       "key=" + key);
                             return;
                           }
                           newKeys.push(newKey);
@@ -204,13 +210,19 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
                     {
                       // Find the mapping of this entity's key
                       referencedObj = references[referenceField];
+                      if (typeof keymap[referencedObj] == "undefined")
+                      {
+                        // Referenced object's key is not a uid.
+                        return;
+                      }
                       newKey = keymap[referencedObj][entity[referenceField]];
                       if (typeof newKey == "undefined")
                       {
-                        this.warn("Found missing reference: " +
-                                  "entityType=" + entityType + ", " +
-                                  "field=" + referenceField + ", " +
-                                  "key=" + entity[referenceField]);
+                        this.error("Found missing reference: " +
+                                   "entityType=" + entityType + ", " +
+                                   "refObj=" + referencedObj + ", " +
+                                   "refField=" + referenceField + ", " +
+                                   "key=" + entity[referenceField]);
                         return;
                       }
 
@@ -273,8 +285,8 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
               }
               catch (e)
               {
-                this.warn("Could not retrieve blob ID " + 
-                          nativeKey + " (" + e + ")");
+                this.error("Could not retrieve blob ID " + 
+                           nativeKey + " (" + e + ")");
                 return null;
               }
 
@@ -364,8 +376,8 @@ qx.Mixin.define("aiagallery.dbif.MBackup",
                   // Ensure there's an array here
                   if (! blobIdList)
                   {
-                    this.warn("No array found for field " + field +
-                              " in " + qx.lang.Json.stringify(entity));
+                    this.error("No array found for field " + field +
+                               " in " + qx.lang.Json.stringify(entity));
                     blobIdList = [];
                   }
 
