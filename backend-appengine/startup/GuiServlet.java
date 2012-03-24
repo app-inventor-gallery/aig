@@ -57,6 +57,9 @@ public class GuiServlet extends HttpServlet
                 "    <script type=\"text/javascript\" " +
                 "            src=\"script/aiagallery.js\">" +
                 "    </script>" +
+                "    <link rel=\"stylesheet\" " +
+                "          type=\"text/css\" " +
+                "          href=\"style.css\"/>" +
                 "  </head>" +
                 "  <body>" +
                 "  </body>" +

@@ -171,6 +171,7 @@
           "rm -rf ../../war/resource",
           "rm -rf ../../war/script",
           "cp ./source/favicon.ico ./build/",
+          "cp ./source/style.css ./build/",
           "mkdir -p ../../backend-jettysqlite/build",
           "rsync -av ./build/ ../../backend-jettysqlite/build/",
           "mkdir -p ../../backend-appengine/build",
