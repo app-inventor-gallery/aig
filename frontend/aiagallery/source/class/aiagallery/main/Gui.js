@@ -1457,6 +1457,9 @@ qx.Class.define("aiagallery.main.Gui",
     {
       var             parts;
       var             components;
+      
+      // Ensure fragment is properly decoded
+      fragment = decodeURIComponent(fragment); 
 
       // Is this an app page or find apps search?
       parts = fragment.split("&"); 
