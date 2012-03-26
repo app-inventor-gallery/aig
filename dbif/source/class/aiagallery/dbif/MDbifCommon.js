@@ -19,6 +19,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
     aiagallery.dbif.MChannel,
     aiagallery.dbif.MSearch,
     aiagallery.dbif.MLiking,
+    aiagallery.dbif.MDownloads,
     aiagallery.dbif.MFlags,
     aiagallery.dbif.MDbMgmt,
     aiagallery.dbif.MPermissionGroup

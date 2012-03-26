@@ -327,6 +327,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
           "download",
           function(e) 
           {
+            var appId = fsm.getObject("searchResult").getUid();
+
             if (source && source[0])
             {
               if (qx.core.Environment.get("qx.debug"))
@@ -335,7 +337,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
               }
               else
               {
-                location.href = 'rpc?getblob=' + source[0];
+                location.href = 'rpc?getblob=' + source[0] + ":" + appId;
               }
             }
             else
