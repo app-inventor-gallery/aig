@@ -18,24 +18,20 @@ qx.Mixin.define("aiagallery.dbif.MDownloads",
      *   being downloaded.
      *
      * @return {Integer}
-     *   Returns 0 upon success; non-zero upon error.
+     *   Returns the new number of downloads upon successfully updating the
+     *   number of downloads; -1 upon error.
      */
     _downloadsPlusOne : function(appId)
     {
-      var            appObj;
-      var            appDataObj;
-      var            myEmail;
-      var            myId;
-      var            likesList;
-      var            criteria;
-      var            likesObj;
-      var            likesDataObj;
-
-      // Return number of likes (which may or may not have changed)
+      // Return the new number of downloads upon successfully updating number
+      // of downloads; -1 otherwise.
       return liberated.dbif.Entity.asTransaction(
         function()
         {
-          appObj = new aiagallery.dbif.ObjAppData(Number(appId));
+          var             appObj;
+          var             appDataObj;
+
+          appObj = new aiagallery.dbif.ObjAppData(appId);
 
           // If there's no such app, return error
           if (appObj.getBrandNew())
@@ -52,7 +48,7 @@ qx.Mixin.define("aiagallery.dbif.MDownloads",
           // Write it back to the database
           appObj.put();
 
-          return 0;
+          return appDataObj.numDownloads;
         },
         [],
         this);

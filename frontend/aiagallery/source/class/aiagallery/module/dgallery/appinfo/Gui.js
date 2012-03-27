@@ -327,7 +327,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
           "download",
           function(e) 
           {
-            var appId = fsm.getObject("searchResult").getUid();
+            var             appId = fsm.getObject("searchResult").getUid();
+            var             url;
 
             if (source && source[0])
             {
@@ -337,7 +338,25 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
               }
               else
               {
-                location.href = 'rpc?getblob=' + source[0] + ":" + appId;
+                this.searchResult.setNumDownloads(
+                  this.searchResult.getNumDownloads() + 1);
+                url =
+                  location.protocol + "//" +
+                  location.host + 
+                  location.pathname +
+                  "rpc?getblob=" + source[0] + ":" + appId;
+                this.debug("Sending to url: " + url);
+                
+                if (this.iframe)
+                {
+                  document.body.removeChild(this.iframe);
+                  this.iframe = null;
+                }
+                
+                this.iframe = document.createElement("iframe");
+                this.iframe.src = url;
+                this.iframe.style.display = "none";
+                document.body.appendChild(this.iframe);
               }
             }
             else
@@ -345,7 +364,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
               alert("No source data found!");
             }
           },
-          null);
+          this);
         break;
 
       case "addComment":

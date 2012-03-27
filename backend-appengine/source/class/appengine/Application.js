@@ -91,6 +91,7 @@ qx.Class.define("appengine.Application",
     doGet : function(request, response)
     {
       var             dbif =  aiagallery.dbif.DbifAppEngine.getInstance();
+      var             i;
       var             uid;
       var             index;
       var             entry;
@@ -127,6 +128,50 @@ qx.Class.define("appengine.Application",
       switch(querySplit[0])
       {
       case "getblob":              // Retrieve blob data
+         //
+         // The call here looked like this to begin with:
+         // 
+         // getblob=blobId:appId
+         // 
+         // Above, we split this by the equal sign to determine which call was
+         // made, and now we split the second part of that by colons, to get
+         // our parameters.
+         //
+        index = querySplit[1].lastIndexOf(":");
+        blobKey = querySplit[1].substring(0, index);
+        uid = Number(querySplit[1].substring(index + 1));
+        
+        // Retry a few times, in case of transient error
+        for (i = 5; i >= 0; i--)
+        {
+          try
+          {
+            // Update the download count
+            if (dbif._downloadsPlusOne(uid) === -1)
+            {
+              response.sendError(404, "App not available.");
+              return;
+            }
+            else
+            {
+              break;
+            }
+          }
+          catch(e)
+          {
+            if (i == 0)
+            {
+              response.sendError(503,
+                                 "App temporarily unavailable (" + e + ")");
+              return;
+            }
+            else
+            {
+              qx.log.Logger.debug("Increment download exception: " + e);
+            }
+          }
+        }
+
         BlobKey =
           Packages.com.google.appengine.api.blobstore.BlobKey;
         BlobstoreServiceFactory = 
@@ -143,39 +188,39 @@ qx.Class.define("appengine.Application",
         blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
         blobInfoFactory = new BlobInfoFactory(datastoreService);
 
-         //
-         // The call here looked like this to begin with:
-         // 
-         // getblob=blobId:appId
-         // 
-         // Above, we split this by the equal sign to determine which call was
-         // made, and now we split the second part of that by colons, to get
-         // our parameters.
-         //
-        index = querySplit[1].lastIndexOf(":");
-        blobKey = querySplit[1].substring(0, index);
-        uid = Number(querySplit[1].substring(index + 1));
-        
-        // Update the download count
-        if (dbif._downloadsPlusOne(uid) !== 0)
-        {
-          response.sendError(404, "App not available.");
-          break;
-        }
-
         // Convert the (string) blobId to a blob key
         blobKey = new BlobKey(blobKey);
         
-        // Get the blob info which includes the filename
-        blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
-        
-        response.setContentLength(blobInfo.getSize()); 
-        response.setHeader("content-type", blobInfo.getContentType()); 
-        response.setHeader("content-disposition", "attachment; filename=" + 
-                           blobInfo.getFilename()); 
+        for (i = 5; i >= 0; i--)
+        {
+          try
+          {
+            // Get the blob info which includes the filename
+            blobInfo = blobInfoFactory.loadBlobInfo(blobKey);
 
-        // Serve the blob
-        blobstoreService.serve(blobKey, response);
+            response.setContentLength(blobInfo.getSize()); 
+            response.setHeader("content-type", blobInfo.getContentType()); 
+            response.setHeader("content-disposition", "attachment; filename=" + 
+                               blobInfo.getFilename()); 
+
+            // Serve the blob
+            blobstoreService.serve(blobKey, response);
+            break;
+          }
+          catch(e)
+          {
+            if (i == 0)
+            {
+              response.sendError(503,
+                                 "App temporarily unavailable (" + e + ")");
+              return;
+            }
+            else
+            {
+              qx.log.Logger.debug("Serve blob exception: " + e);
+            }
+          }
+        }
         break;
 
 /*
