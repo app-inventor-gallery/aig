@@ -102,6 +102,15 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
     
       canvas.add(this.__criteria, 
                  { top : criteriaTop, left : 10, bottom : 10, right : 10 });
+      
+      // Label to be shown if there are no search results      
+      this.__noResultsLabel = new qx.ui.basic.Label(this.tr("No Results Found")); 
+                       
+      // Start out hidden
+      this.__noResultsLabel.hide(); 
+      
+      canvas.add(this.__noResultsLabel,
+                 { top : 220, left : 10, bottom : 10, right : 10 });
     },
 
     /**
@@ -147,6 +156,19 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       case "intersectKeywordAndQuery":
         // Retrieve the app list
         apps = response.data.result;
+        
+        // Check to see if the search returned any results
+        if (apps.length == 0)
+        {
+          // If no results display a message, hide search list
+          this.__criteria.getSearchResultsList().hide(); 
+          this.__noResultsLabel.show(); 
+        } else {
+          // There are some results hide label, display search list
+          this.__noResultsLabel.hide(); 
+          this.__criteria.getSearchResultsList().show();
+        
+        }
         
         // Build a model for the search results list
         model = qx.data.marshal.Json.createModel(apps);
