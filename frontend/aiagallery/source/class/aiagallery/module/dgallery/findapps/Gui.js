@@ -99,18 +99,23 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
 
       // Add a listener for when the user clicks on an app in search results
       this.__criteria.addListener("viewApp", fsm.eventListener, fsm);
-    
-      canvas.add(this.__criteria, 
-                 { top : criteriaTop, left : 10, bottom : 10, right : 10 });
+      
+      canvas.add(this.__criteria,
+                { top : criteriaTop, left : 10, bottom : 10, right : 10 });
       
       // Label to be shown if there are no search results      
       this.__noResultsLabel = new qx.ui.basic.Label(this.tr("No Results Found")); 
-                       
+      
+      this.__noResultsLabel.setTextAlign("center"); 
+      
       // Start out hidden
       this.__noResultsLabel.hide(); 
       
-      canvas.add(this.__noResultsLabel,
-                 { top : 220, left : 10, bottom : 10, right : 10 });
+      // Add to search list VBox
+      this.__criteria.getSearchResultsList().getLayoutParent()
+	.add(this.__noResultsLabel);
+      
+
     },
 
     /**
