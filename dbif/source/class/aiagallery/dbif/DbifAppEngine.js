@@ -115,7 +115,14 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       else
       {
         // He doesn't exist. Just use the unique number.
-        displayName = googleNickname || googleUserId;
+        // Make sure googleNickname exists and is distinct
+        // if not use googleUserId
+        if (googleNickname != null || __nameQuery(googleUserId))
+	{
+	  displayName = googleUserId; 
+	} else {
+	  displayName = googleNickname; 
+	}
         permissions = [];
       }
 
@@ -148,5 +155,35 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
         dbif        : "appengine",
         initRootKey : liberated.appengine.Dbif.initRootKey
       });
+  },
+  
+  /*
+   * Conduct a query to see if a name is unique or not.
+   * 
+   * @param userName {String}
+   *  The user name being searched for 
+   * 
+   * @return {Boolean}
+   *  True if the name is unique, false otherwise
+   */ 
+
+  __nameQuery : function(userName)
+  {
+    var              criteria;
+    var              resultList;
+    
+    criteria = 
+      {
+        type  : "element",
+        field : "displayName",
+        value : userName        
+      };
+    
+    resultList = 
+      liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitor", criteria);
+    
+    // If the list has more than one item username is not unique
+    return (result.size > 0)? true : false; 
+    
   }
 });
