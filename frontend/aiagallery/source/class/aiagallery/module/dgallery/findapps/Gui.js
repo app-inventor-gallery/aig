@@ -99,9 +99,26 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
 
       // Add a listener for when the user clicks on an app in search results
       this.__criteria.addListener("viewApp", fsm.eventListener, fsm);
-    
-      canvas.add(this.__criteria, 
-                 { top : criteriaTop, left : 10, bottom : 10, right : 10 });
+      
+      canvas.add(this.__criteria,
+                { top : criteriaTop, left : 10, bottom : 10, right : 10 });
+      
+      // Label to be shown if there are no search results      
+      this.__noResultsLabel = new qx.ui.basic.Label(this.tr("No Results Found")); 
+      
+      // Start out hidden
+      this.__noResultsLabel.hide(); 
+ 
+      //Create HBox to ensure label is in middle
+      var noResultsHbox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
+      
+      noResultsHbox.add(new qx.ui.core.Spacer(520)); 
+      noResultsHbox.add(this.__noResultsLabel); 
+      
+      // Add to search list VBox
+      this.__criteria.getSearchResultsList().getLayoutParent()
+        .add(noResultsHbox);
+                  
     },
 
     /**
@@ -147,6 +164,19 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       case "intersectKeywordAndQuery":
         // Retrieve the app list
         apps = response.data.result;
+        
+        // Check to see if the search returned any results
+        if (apps.length == 0)
+        {
+          // If no results display a message, hide search list
+          this.__criteria.getSearchResultsList().hide(); 
+          this.__noResultsLabel.show(); 
+        } else {
+          // There are some results hide label, display search list
+          this.__noResultsLabel.hide(); 
+          this.__criteria.getSearchResultsList().show();
+        
+        }
         
         // Build a model for the search results list
         model = qx.data.marshal.Json.createModel(apps);
