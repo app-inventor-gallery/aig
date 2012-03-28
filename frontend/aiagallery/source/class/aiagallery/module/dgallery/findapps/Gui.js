@@ -113,7 +113,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       
       // Add to search list VBox
       this.__criteria.getSearchResultsList().getLayoutParent()
-	.add(this.__noResultsLabel);
+        .add(this.__noResultsLabel);
       
 
     },
