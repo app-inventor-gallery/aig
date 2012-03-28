@@ -106,16 +106,19 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       // Label to be shown if there are no search results      
       this.__noResultsLabel = new qx.ui.basic.Label(this.tr("No Results Found")); 
       
-      this.__noResultsLabel.setTextAlign("center"); 
-      
       // Start out hidden
       this.__noResultsLabel.hide(); 
+ 
+      //Create HBox to ensure label is in middle
+      var noResultsHbox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
+      
+      noResultsHbox.add(new qx.ui.core.Spacer(520)); 
+      noResultsHbox.add(this.__noResultsLabel); 
       
       // Add to search list VBox
       this.__criteria.getSearchResultsList().getLayoutParent()
-        .add(this.__noResultsLabel);
-      
-
+        .add(noResultsHbox);
+                  
     },
 
     /**
