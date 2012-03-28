@@ -118,11 +118,11 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
         // Make sure googleNickname exists and is distinct
         // if not use googleUserId
         if (googleNickname != null || __nameQuery(googleUserId))
-	{
-	  displayName = googleUserId; 
-	} else {
-	  displayName = googleNickname; 
-	}
+        {
+          displayName = googleUserId; 
+        } else {
+          displayName = googleNickname; 
+        }
         permissions = [];
       }
 
