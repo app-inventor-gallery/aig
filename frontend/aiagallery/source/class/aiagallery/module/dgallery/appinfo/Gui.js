@@ -438,9 +438,12 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
   
 	// Add in chris's comment object to rhe scroll container
 
-	  var commentPanelChris1 = new aiagallery.module.dgallery.appinfo.CommentPanel(fsm)
-	  var commentPanelChris2 = new aiagallery.module.dgallery.appinfo.CommentPanel(fsm)
-	  var commentPanelChris3 = new aiagallery.module.dgallery.appinfo.CommentPanel(fsm)
+          var commentPanelChris1 =
+            new aiagallery.module.dgallery.appinfo.CommentPanel(fsm);
+          var commentPanelChris2 =
+            new aiagallery.module.dgallery.appinfo.CommentPanel(fsm);
+          var commentPanelChris3 =
+            new aiagallery.module.dgallery.appinfo.CommentPanel(fsm);
 
 	  scrollContainer.add(commentPanelChris1);
 	  scrollContainer.add(commentPanelChris2);
