@@ -966,6 +966,8 @@ qx.Class.define("aiagallery.main.Gui",
     _editProfile : function()
     {
       var             win;
+      var             errorWin; 
+      var             errorLabel; 
       var             grid;
       var             container;
       var             displayName;
@@ -1050,8 +1052,10 @@ qx.Class.define("aiagallery.main.Gui",
             // Check for an error
             if (ex != null)
             {
-              // Error occured
-              alert("Some error happened");
+              // Error occured, display window
+              dialog.Dialog.warning(ex.message); 
+              
+              return; 
             
             }
             // Set the display name in the application header

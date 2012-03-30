@@ -323,7 +323,6 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       var             propertyTypes;
       var             fields;
       var             bValid = true;
-      var             nameError; 
       var             validFields = 
         [
           "displayName"
@@ -362,11 +361,11 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
               // Ensure new username is valid
               try 
               {
-                this.__checkName(profileParams);
+                this.__checkName(profileParams, error);
               }
-              catch(nameError)
+              catch(error)
               {
-                return nameError;
+                throw error;
               }
             }
 
@@ -400,7 +399,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
 
             // Assign the new value.
             meData[fieldName] = profileParams[fieldName];
-          });
+          }, this);
       }
       catch(error)
       {
@@ -467,28 +466,30 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     * @param name {String} 
     *  The username in question
     *
+    * @param name {Map} 
+    *  The a map contaning the displayName in question 
+    *
     * @return {Error} 
     *  Return an error if the name is invalid.
     */
     
-    __checkName : function(name)
+    __checkName : function(name, error)
     {
     
       var              resultList;
-      var              error; 
-    
+
       // Check to ensure name is unique
       resultList = 
         liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
-                                    name);
+                                    name.displayName);
                                     
       // Check if name is unique                              
-      if (resultList.size != 0)
+      if (resultList.length != 0)
       {
         // Name is not valid return error
         error.setCode(2);
-        error.setMessage("The username you specified: " + name +
-                         "is not unique."); 
+        error.setMessage("The username you specified: \"" + name.displayName +
+                         "\" is not unique. Please enter a new one."); 
         throw error;
       }  
       

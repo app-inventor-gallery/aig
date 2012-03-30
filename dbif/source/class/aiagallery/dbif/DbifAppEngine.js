@@ -189,7 +189,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
         liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
                                     newName);
       
-    } while(resultList.size != 0) 
+    } while(resultList.length != 0) 
     
     return newName; 
        
