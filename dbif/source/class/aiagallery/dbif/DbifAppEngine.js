@@ -108,14 +108,14 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       if (visitor.length > 0)
       {
         // Yup, he exists.
-        displayName = visitor[0].displayName || __randNameGen();
+        displayName = visitor[0].displayName || this.__randNameGen();
         permissions = 
           aiagallery.dbif.MVisitors.getVisitorPermissions(visitor[0]);
       }
       else
       {
         // He doesn't exist. Create an unique random name
-        displayName = __randNameGen();
+        displayName = this.__randNameGen();
         permissions = [];
       }
 
