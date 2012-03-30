@@ -102,8 +102,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         this);
 
       // Add a listener for when the user clicks on an app in search results
-      this.__criteria.addListener("viewApp", fsm.eventListener, fsm);
-      
+      this.__criteria.addListener("viewApp", fsm.eventListener, fsm);    
       canvas.add(this.__criteria,
                 { top : criteriaTop, left : 10, bottom : 10, right : 10 });
       
