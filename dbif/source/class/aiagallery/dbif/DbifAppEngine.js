@@ -108,21 +108,14 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       if (visitor.length > 0)
       {
         // Yup, he exists.
-        displayName = visitor[0].displayName || googleNickname || googleUserId;
+        displayName = visitor[0].displayName || __randNameGen();
         permissions = 
           aiagallery.dbif.MVisitors.getVisitorPermissions(visitor[0]);
       }
       else
       {
-        // He doesn't exist. Just use the unique number.
-        // Make sure googleNickname exists and is distinct
-        // if not use googleUserId
-        if (googleNickname != null || __nameQuery(googleUserId))
-        {
-          displayName = googleUserId; 
-        } else {
-          displayName = googleNickname; 
-        }
+        // He doesn't exist. Create an unique random name
+        displayName = __randNameGen();
         permissions = [];
       }
 
@@ -158,32 +151,47 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
   },
   
   /*
-   * Conduct a query to see if a name is unique or not.
+   * Create a randomly generated name.
+   * First character must be a lowercase letter, 
+   * next five characters must be either a letter or number.
    * 
-   * @param userName {String}
-   *  The user name being searched for 
+   * After generating a randome name, check to ensure name is unique.
    * 
-   * @return {Boolean}
-   *  True if the name is unique, false otherwise
+   * @return {String}
+   *  Randomly generated unique name 
    */ 
 
-  __nameQuery : function(userName)
-  {
-    var              criteria;
+  __randNameQuery : function()
+  {   
     var              resultList;
+    var              newName; 
+    var              i; 
     
-    criteria = 
+    // Keep generating names until an unique one is found
+    do 
+    {
+      newName = "";
+      var letters = "abcdefghijklmnopqrstuvwxyz";
+      var lettersNums = "abcdefghijklmnopqrstuvwxyz0123456789";
+      
+      // First char must be a letter
+      newName += letters.charAt(Math.floor(Math.random() * letters.length));
+      
+      //Next five characters can be letters or numbers
+      for(i = 0; i < 5; i++ ) 
       {
-        type  : "element",
-        field : "displayName",
-        value : userName        
-      };
+        newName +=
+          lettersNums.charAt(Math.floor(Math.random() * lettersNums.length));
+      }      
+      
+      // Check to ensure name is unique
+      resultList = 
+        liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                    newName);
+      
+    } while(resultList.size != 0) 
     
-    resultList = 
-      liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitor", criteria);
-    
-    // If the list has more than one item username is not unique
-    return (result.size > 0)? true : false; 
-    
+    return newName; 
+       
   }
 });
