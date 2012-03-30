@@ -57,6 +57,10 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       var             canvas = module.canvas;
       var             fsm = module.fsm;
       var             criteriaTop = 10;
+      var             noResultsVbox;
+      var             noResultsHbox;
+      var             searchResults;
+      var             font;
 
       // Make it easy to provide some space around the edges
       canvas.setLayout(new qx.ui.layout.Canvas());
@@ -98,19 +102,37 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         this);
 
       // Add a listener for when the user clicks on an app in search results
-      this.__criteria.addListener("viewApp", fsm.eventListener, fsm);
-    
-      canvas.add(this.__criteria, 
-                 { top : criteriaTop, left : 10, bottom : 10, right : 10 });
+      this.__criteria.addListener("viewApp", fsm.eventListener, fsm);    
+      canvas.add(this.__criteria,
+                { top : criteriaTop, left : 10, bottom : 10, right : 10 });
       
       // Label to be shown if there are no search results      
-      this.__noResultsLabel = new qx.ui.basic.Label(this.tr("No Results Found")); 
-                       
+      this.__noResultsLabel =
+        new qx.ui.basic.Label(this.tr("No results found")); 
+      font = qx.theme.manager.Font.getInstance().resolve("bold").clone();;
+      font.setSize(18);
+      this.__noResultsLabel.setFont(font);
+      
       // Start out hidden
       this.__noResultsLabel.hide(); 
+ 
+      // Create VBox so label is at top
+      noResultsVbox = new qx.ui.container.Composite(new qx.ui.layout.VBox());
+
+      // Create HBox to ensure label is in middle
+      noResultsHbox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
       
-      canvas.add(this.__noResultsLabel,
-                 { top : 220, left : 10, bottom : 10, right : 10 });
+      noResultsHbox.add(new qx.ui.core.Spacer(1, 1), { flex : 1 }); 
+      noResultsHbox.add(this.__noResultsLabel); 
+      noResultsHbox.add(new qx.ui.core.Spacer(1, 1), { flex : 1 }); 
+      
+      noResultsVbox.add(new qx.ui.core.Spacer(1, 1), { flex : 1 });
+      noResultsVbox.add(noResultsHbox);
+      noResultsVbox.add(new qx.ui.core.Spacer(1, 1), { flex : 1 });
+
+      // Add to search list VBox
+      searchResults = this.__criteria.getSearchResultsList();
+      searchResults.getLayoutParent().add(noResultsVbox, { flex : 1 });
     },
 
     /**
@@ -161,7 +183,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
         if (apps.length == 0)
         {
           // If no results display a message, hide search list
-          this.__criteria.getSearchResultsList().hide(); 
+          this.__criteria.getSearchResultsList().exclude(); 
           this.__noResultsLabel.show(); 
         } else {
           // There are some results hide label, display search list
