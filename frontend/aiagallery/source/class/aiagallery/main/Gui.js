@@ -1045,8 +1045,15 @@ qx.Class.define("aiagallery.main.Gui",
 
           // Issue the request. When we get the result...
           rpc.callAsync(
-          function(e)
+          function(result, ex, id)
           {
+            // Check for an error
+            if (ex != null)
+            {
+              // Error occured
+              alert("Some error happened");
+            
+            }
             // Set the display name in the application header
             _this.whoAmI.setDisplayName(win._displayName.getValue());
             _this.whoAmI.setHasSetDisplayName(true);

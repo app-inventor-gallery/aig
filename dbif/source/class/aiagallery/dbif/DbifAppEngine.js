@@ -161,7 +161,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
    *  Randomly generated unique name 
    */ 
 
-  __randNameQuery : function()
+  __randNameGen : function()
   {   
     var              resultList;
     var              newName; 

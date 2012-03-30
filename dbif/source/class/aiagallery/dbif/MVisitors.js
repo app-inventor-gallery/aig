@@ -323,6 +323,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       var             propertyTypes;
       var             fields;
       var             bValid = true;
+      var             nameError; 
       var             validFields = 
         [
           "displayName"
@@ -353,6 +354,20 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
             {
               // Nope. Nothing to do with this one.
               return;
+            }
+            
+            // Is the user modifying their username
+            if (fieldName == "displayName")
+            {
+              // Ensure new username is valid
+              try 
+              {
+                this.__checkName(profileParams);
+              }
+              catch(nameError)
+              {
+                return nameError;
+              }
             }
 
             // Ensure that the value being set is correct for the field
@@ -443,6 +458,43 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       // We've built the whole list. Return it.
       return map;
+    },
+    
+    /*
+    * Check to ensure a name is valid. A name must be:
+    * 1. Unique
+    *
+    * @param name {String} 
+    *  The username in question
+    *
+    * @return {Error} 
+    *  Return an error if the name is invalid.
+    */
+    
+    __checkName : function(name)
+    {
+    
+      var              resultList;
+      var              error; 
+    
+      // Check to ensure name is unique
+      resultList = 
+        liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                    name);
+                                    
+      // Check if name is unique                              
+      if (resultList.size != 0)
+      {
+        // Name is not valid return error
+        error.setCode(2);
+        error.setMessage("The username you specified: " + name +
+                         "is not unique."); 
+        throw error;
+      }  
+      
+      // Name is valid 
+      return; 
+    
     }
   }
 });
