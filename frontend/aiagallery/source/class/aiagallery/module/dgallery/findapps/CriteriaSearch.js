@@ -20,6 +20,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     var             grid;
     var             label;
     var             font;
+    var             command;
 
     this.base(arguments);
     
@@ -139,6 +140,10 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     
     // Fire a data event with the current query when search button is pressed
     this.__butSearch.addListener("execute", this._fireQueryChangedEvent, this);
+    
+    // Allow 'Enter' to fire a seach
+    command = new qx.ui.core.Command("Enter");
+    this.__butSearch.setCommand(command);
     
     // Add the Clear button
     this.__butClear = new qx.ui.form.Button(this.tr("Clear"));
