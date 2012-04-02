@@ -130,6 +130,50 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
           permissions       : permissions,
           hasSetDisplayName : displayName != googleUserId
         });
+    },
+         
+    /*
+     * Create a randomly generated name.
+     * First character must be a lowercase letter, 
+     * next five characters must be either a letter or number.
+     * 
+     * After generating a random name, check to ensure name is unique.
+     * 
+     * @return {String}
+     *  Randomly generated unique name 
+     */ 
+
+    __randNameGen : function()
+    {   
+      var              resultList;
+      var              newName; 
+      var              i; 
+
+      // Keep generating names until an unique one is found
+      do 
+      {
+	newName = "";
+	var letters = "abcdefghijklmnopqrstuvwxyz";
+	var lettersNums = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+	// First char must be a letter
+	newName += letters.charAt(Math.floor(Math.random() * letters.length));
+
+	//Next five characters can be letters or numbers
+	for(i = 0; i < 5; i++ ) 
+	{
+	  newName +=
+	    lettersNums.charAt(Math.floor(Math.random() * lettersNums.length));
+	}      
+
+	// Check to ensure name is unique
+	resultList = 
+	  liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+				      newName);
+
+      } while(resultList.length != 0) 
+
+      return newName;  
     }
   },
 
@@ -148,50 +192,5 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
         dbif        : "appengine",
         initRootKey : liberated.appengine.Dbif.initRootKey
       });
-  },
-  
-  /*
-   * Create a randomly generated name.
-   * First character must be a lowercase letter, 
-   * next five characters must be either a letter or number.
-   * 
-   * After generating a randome name, check to ensure name is unique.
-   * 
-   * @return {String}
-   *  Randomly generated unique name 
-   */ 
-
-  __randNameGen : function()
-  {   
-    var              resultList;
-    var              newName; 
-    var              i; 
-    
-    // Keep generating names until an unique one is found
-    do 
-    {
-      newName = "";
-      var letters = "abcdefghijklmnopqrstuvwxyz";
-      var lettersNums = "abcdefghijklmnopqrstuvwxyz0123456789";
-      
-      // First char must be a letter
-      newName += letters.charAt(Math.floor(Math.random() * letters.length));
-      
-      //Next five characters can be letters or numbers
-      for(i = 0; i < 5; i++ ) 
-      {
-        newName +=
-          lettersNums.charAt(Math.floor(Math.random() * lettersNums.length));
-      }      
-      
-      // Check to ensure name is unique
-      resultList = 
-        liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
-                                    newName);
-      
-    } while(resultList.length != 0) 
-    
-    return newName; 
-       
   }
 });
