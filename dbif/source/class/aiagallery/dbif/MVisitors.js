@@ -477,11 +477,19 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     {
     
       var              resultList;
+      var              criteria;
+      
+      criteria = 
+        {
+          type  : op,
+          field : displayName,
+          value : name.displayName
+        }; 
 
       // Check to ensure name is unique
       resultList = 
         liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
-                                    name.displayName);
+                                    criteria);
                                     
       // Check if name is unique                              
       if (resultList.length != 0)

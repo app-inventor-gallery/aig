@@ -147,6 +147,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
     {   
       var              resultList;
       var              newName; 
+      var              criteria;
       var              i; 
 
       // Keep generating names until an unique one is found
@@ -159,17 +160,24 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
 	// First char must be a letter
 	newName += letters.charAt(Math.floor(Math.random() * letters.length));
 
-	//Next five characters can be letters or numbers
-	for(i = 0; i < 5; i++ ) 
-	{
-	  newName +=
-	    lettersNums.charAt(Math.floor(Math.random() * lettersNums.length));
-	}      
-
-	// Check to ensure name is unique
-	resultList = 
-	  liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
-				      newName);
+        //Next five characters can be letters or numbers
+        for(i = 0; i < 5; i++ ) 
+        {
+          newName +=
+            lettersNums.charAt(Math.floor(Math.random() * lettersNums.length));
+        }      
+        
+        criteria = 
+          {
+            type : op,
+            field : displayName,
+            value : newName
+          }; 
+        
+        // Check to ensure name is unique
+        resultList = 
+          liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                      criteria);
 
       } while(resultList.length != 0) 
 
