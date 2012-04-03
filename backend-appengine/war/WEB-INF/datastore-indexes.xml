@@ -35,11 +35,16 @@
         <property name="uid" direction="asc"/>
     </datastore-index>
 
-    <datastore-index kind="apps" ancestor="true" source="auto">
+    <datastore-index kind="apps" ancestor="true" source="manual">
         <property name="numDownloads" direction="asc"/>
         <property name="numLikes" direction="asc"/>
         <property name="status" direction="asc"/>
         <property name="numViewed" direction="asc"/>
+    </datastore-index>
+
+    <datastore-index kind="apps" ancestor="true" source="manual">
+        <property name="status" direction="asc"/>
+        <property name="uid" direction="asc"/>
     </datastore-index>
 
     <datastore-index kind="tags" ancestor="true" source="manual">
