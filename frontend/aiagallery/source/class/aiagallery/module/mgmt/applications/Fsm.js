@@ -499,6 +499,12 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           // Tell the table we're no longer editing
           table.cancelEditing();
 
+          // Remove Fsm objects added by cell editor
+          fsm.removeObject("ok");
+          fsm.removeObject("cancel");
+          //fsm.removeObject("removeImage");
+          fsm.removeObject("removeFlags");
+
           // close the cell editor
           cellEditor.close();
 
@@ -603,6 +609,12 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           // Save the data so that the cell editor's getCellEditorValue()
           // method can retrieve it.
           cellEditor.setUserData("newData", result);
+
+          // Remove Fsm objects added by cell editor
+          fsm.removeObject("ok");
+          fsm.removeObject("cancel");
+          //fsm.removeObject("removeImage");
+          fsm.removeObject("removeFlags");
 
           // close the cell editor
           cellEditor.close();

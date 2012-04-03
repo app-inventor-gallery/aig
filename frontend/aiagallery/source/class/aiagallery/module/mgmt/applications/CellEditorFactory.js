@@ -141,7 +141,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
         vBox.add(removeImageButton);
 
 // This won't be passed to FSM if no image; beware possible bug?
-        fsm.addObject("removeImageButton",
+        fsm.addObject("removeImage",
                        removeImageButton,
                        "main.fsmUtils.disable_during_rpc");
 */
