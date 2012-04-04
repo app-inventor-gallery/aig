@@ -138,7 +138,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var request =
             this.callRpc(fsm,
                           "aiagallery.features",
-                          "deleteApp",
+                          "mgmtDeleteApp",
                           [
                             data.uid
                           ]);

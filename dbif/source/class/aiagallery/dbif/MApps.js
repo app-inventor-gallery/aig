@@ -19,6 +19,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                          this.deleteApp,
                          [ "uid" ]);
 
+    this.registerService("aiagallery.features.mgmtDeleteApp",
+                         this.mgmtDeleteApp,
+                         [ "uid" ]);
+
     this.registerService("aiagallery.features.getAppList",
                          this.getAppList,
                          [ "imageSize", "sortCriteria", "offset", "limit" ]);
@@ -1612,9 +1616,18 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
       return appData;
     },
-    
 
-    deleteApp : function(uid, error)
+
+    /**
+     * Delete an app
+     *
+     * @param uid {Number}
+     *   The uid of the app to be deleted.
+     *
+     * @param bAdmin {Boolean}
+     *   If true, do not check that the logged-in user owns this app.
+     */
+    _deleteApp : function(uid, bAdmin, error)
     {
       var             appObj;
       var             appData;
@@ -1636,16 +1649,20 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // Get the object data
       appData = appObj.getData();
       
-      // Determine who the logged-in user is
-      whoami = this.getWhoAmI();
-
-      // Ensure that the logged-in user owns this application
-      if (! whoami || appData.owner != whoami.id)
+      // Check identity, if not an admin call
+      if (! bAdmin)
       {
-        // He doesn't. Someone's doing something nasty!
-        error.setCode(1);
-        error.setMessage("Not owner");
-        return error;
+        // Determine who the logged-in user is
+        whoami = this.getWhoAmI();
+
+        // Ensure that the logged-in user owns this application
+        if (! whoami || appData.owner != whoami.id)
+        {
+          // He doesn't. Someone's doing something nasty!
+          error.setCode(1);
+          error.setMessage("Not owner");
+          return error;
+        }
       }
 
       // Save the title
@@ -1811,7 +1828,30 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // We were successful
       return true;
     },
-    
+
+    /**
+     * Delete an app. Check that it's owned by the logged-in user.
+     *
+     * @param uid {Number}
+     *   The uid of the app to be deleted.
+     */
+    deleteApp : function(uid, error)
+    {
+      return this._deleteApp(uid, false, error);
+    },
+
+    /**
+     * Delete an app. Used by admins in mgmt/apps; don't check ownership.
+     *
+     * @param uid {Number}
+     *   The uid of the app to be deleted.
+     */
+    mgmtDeleteApp : function(uid, error)
+    {
+      return this._deleteApp(uid, true, error);
+    },
+
+
     /**
      * Get a portion of the application list.
      *
@@ -2024,7 +2064,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     },
 
     /**
-     * Get a the entire application list.
+     * Get the entire application list.
      *
      * @param imageSize {Number}
      *   The size to scale images. This represents the scaled length of the
