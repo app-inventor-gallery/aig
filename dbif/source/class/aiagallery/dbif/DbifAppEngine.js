@@ -169,8 +169,8 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
         
         criteria = 
           {
-            type : op,
-            field : displayName,
+            type : "element",
+            field : "displayName",
             value : newName
           }; 
         

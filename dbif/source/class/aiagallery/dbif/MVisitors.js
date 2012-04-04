@@ -481,8 +481,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       criteria = 
         {
-          type  : op,
-          field : displayName,
+          type  : "element",
+          field : "displayName",
           value : name.displayName
         }; 
 
