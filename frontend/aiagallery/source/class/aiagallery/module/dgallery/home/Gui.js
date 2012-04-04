@@ -179,11 +179,21 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 	  "<p>Get started by clicking on <b>Find Apps</b>, or ",
           "add your own projects by clicking on <b>My Apps</b>.",
 
+/*
 	  "<p>Also, you can browse projects from your ",
 	  "Android phone by using our companion ",
 	  '<a href="http://www.appinventor.org/mobile-gallery" target="new">',
           "Mobile Community Gallery</a> ",
 	  "app!"
+*/
+          
+          "<hr />",
+
+          "<p style='font-size:larger;'><b>",
+          "Please note: The App Inventor Community Gallery is presently in a ",
+          "closed beta.  All projects, comments, etc. will be erased ",
+          "prior to launch.",
+          "</b></p>"
         ].join("");
       o = new qx.ui.basic.Label(text);
       o.set(

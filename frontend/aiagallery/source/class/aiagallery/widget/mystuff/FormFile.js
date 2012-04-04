@@ -223,9 +223,10 @@ qx.Class.define("aiagallery.widget.mystuff.FormFile",
       // We're finished with this reader
       this.uploadReader = null;
 
-      // Test for valid image type
-      if(qx.lang.Array.contains(aiagallery.main.Constant.VALID_SOURCE_TYPES,
-                                mimeType)) 
+      // Test for valid zip type. The zip file header is 0x04034b50 (little
+      // endian). In base64, three bytes are encoded as four, so we look for
+      // the encoding of 0x50, 0x4b, 0x03 as "UEsD".
+      if(content.substring(semiPos+1, semiPos+12) == "base64,UEsD")
       {
         filename = this.uploadButton.getFileName().replace(/.*[\/\\]/g, "");
         this.setValue(filename);
@@ -237,7 +238,6 @@ qx.Class.define("aiagallery.widget.mystuff.FormFile",
         message = 
           "The file you selected is not a valid '.zip' source file " +
           "(found " + debugStr + ")";
-        
         alert(message);
       }
     },
