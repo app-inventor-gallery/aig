@@ -360,16 +360,17 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
             // this outside of this function
             if (fieldName == "displayName") 
             {
+              
+              // Make sure name is clear of whitespace
+              profileParams.displayName 
+                = profileParams.displayName.trim();  
+              
               returnVal = liberated.dbif.Entity.asTransaction(
                 function()
                 {
                   // Ensure new username is valid
                   try 
                   {
-                    // Make sure name is clear of whitespace
-                    profileParams.displayName 
-                      = profileParams.displayName.trim();     
-
                     // Check name is valid
                     this.__checkName(profileParams.displayName, error);
               
@@ -514,8 +515,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                                     criteria);
                               
       // Check if name is unique                              
-      //if (resultList.length != 0)
-      if(true)
+      if (resultList.length != 0)
       {
         // Name is not valid return error
         error.setCode(2);
