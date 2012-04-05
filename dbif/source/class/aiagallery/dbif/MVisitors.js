@@ -324,7 +324,6 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       var             propertyTypes;
       var             fields;
       var             bValid = true;
-      var             bNameChange = false; 
       var             validFields = 
         [
           "displayName"
@@ -356,12 +355,40 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
               // Nope. Nothing to do with this one.
               return;
             }
-            
+
             // If the username is being modified indicate we need to do
             // this outside of this function
             if (fieldName == "displayName") 
             {
-              bNameChange = true; 
+              returnVal = liberated.dbif.Entity.asTransaction(
+                function()
+                {
+                  // Ensure new username is valid
+                  try 
+                  {
+                    // Make sure name is clear of whitespace
+                    //profileParams.displayName 
+                      //= profileParams.displayName.trim();     
+
+                    // Check name is valid
+                    this.__checkName(profileParams.displayName, error);
+              
+                    // Store back into me
+                    meData[fieldName] = profileParams.displayName; 
+            
+                    return;
+                  }
+		  catch(error) 
+		  {
+                    // Name was invalid return error indicating why
+                    return error;
+                  }
+                }, [], this); 
+          
+               //if(returnVal != undefined)
+               //{
+                 return returnVal; 
+               //}               
             }
             
             // Ensure that the value being set is correct for the field
@@ -399,36 +426,6 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       catch(error)
       {
         return error;
-      }
-      
-      // Is the user modifying their username
-      if (bNameChange)
-      {  
-        returnVal = liberated.dbif.Entity.asTransaction(
-          function()
-          {
-            // Ensure new username is valid
-            try 
-            {
-              // Check name is valid
-              this.__checkName(profileParams, error);
-            
-              // If it is valid save on databse (along with other changes)
-              me.put();
-            
-              return;
-            }
-            catch(error)
-            {
-              // Name was invalid return error indicating why
-              return error;
-            }
-          }, [], this); 
-          
-          if(returnVal != undefined)
-          {
-            return returnVal; 
-          }
       }
       
       // Save the altered profile data
@@ -508,7 +505,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
         {
           type  : "element",
           field : "displayName",
-          value : name.displayName
+          value : name
         }; 
         
       // Check to ensure name is unique
@@ -521,7 +518,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       {
         // Name is not valid return error
         error.setCode(2);
-        error.setMessage("The username you specified: \"" + name.displayName +
+        error.setMessage("The username you specified: \"" + name +
                        "\" is not unique. Please enter a new one."); 
         throw error;
       }  
