@@ -144,7 +144,7 @@ qx.Class.define("aiagallery.dbif.DbifSim",
             id                : userId[result.username],
             email             : result.username,
             displayName       : displayName,
-            isAdmin           : true,
+            isAdmin           : result.isAdmin,
             logoutUrl         :
               [
                 "javascript:",
