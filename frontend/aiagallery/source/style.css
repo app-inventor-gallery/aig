@@ -11,25 +11,8 @@
   * CSS file to control certain aspects of style in AIG. 
   */
 
-<style type="text/css">
-  a:active 
-  {
-    color: #75940c;
-  }
-  a:visited 
-  {
-    color: #75940c;
-  }
-  a:hover
-  {
-    color: 75940c;
-  }
-  a:focus
-  {
-    color: #75940c;
-  }
-  a:link
-  {
-    color: #75940c;
-  }
-</style> 
+a:active  { color: #75940C; }
+a:visited { color: #75940C; }
+a:hover   { color: 75940C; }
+a:focus   { color: #75940C; }
+a:link    { color: #75940C; }
