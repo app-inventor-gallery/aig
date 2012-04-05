@@ -320,9 +320,11 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       var             me;
       var             meData;
       var             whoami;
+      var             returnVal; 
       var             propertyTypes;
       var             fields;
       var             bValid = true;
+      var             bNameChange = false; 
       var             validFields = 
         [
           "displayName"
@@ -355,20 +357,13 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
               return;
             }
             
-            // Is the user modifying their username
-            if (fieldName == "displayName")
+            // If the username is being modified indicate we need to do
+            // this outside of this function
+            if (fieldName == "displayName") 
             {
-              // Ensure new username is valid
-              try 
-              {
-                this.__checkName(profileParams, error);
-              }
-              catch(error)
-              {
-                throw error;
-              }
+              bNameChange = true; 
             }
-
+            
             // Ensure that the value being set is correct for the field
             switch(typeof profileParams[fieldName])
             {
@@ -404,6 +399,36 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       catch(error)
       {
         return error;
+      }
+      
+      // Is the user modifying their username
+      if (bNameChange)
+      {  
+        returnVal = liberated.dbif.Entity.asTransaction(
+          function()
+          {
+            // Ensure new username is valid
+            try 
+            {
+              // Check name is valid
+              this.__checkName(profileParams, error);
+            
+              // If it is valid save on databse (along with other changes)
+              me.put();
+            
+              return;
+            }
+            catch(error)
+            {
+              // Name was invalid return error indicating why
+              return error;
+            }
+          }, [], this); 
+          
+          if(returnVal != undefined)
+          {
+            return returnVal; 
+          }
       }
       
       // Save the altered profile data
@@ -485,25 +510,25 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
           field : "displayName",
           value : name.displayName
         }; 
-
+        
       // Check to ensure name is unique
       resultList = 
         liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
                                     criteria);
-                                    
+                              
       // Check if name is unique                              
       if (resultList.length != 0)
       {
         // Name is not valid return error
         error.setCode(2);
         error.setMessage("The username you specified: \"" + name.displayName +
-                         "\" is not unique. Please enter a new one."); 
+                       "\" is not unique. Please enter a new one."); 
         throw error;
       }  
       
       // Name is valid 
       return; 
-    
+      
     }
   }
 });
