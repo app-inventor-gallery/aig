@@ -367,8 +367,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                   try 
                   {
                     // Make sure name is clear of whitespace
-                    //profileParams.displayName 
-                      //= profileParams.displayName.trim();     
+                    profileParams.displayName 
+                      = profileParams.displayName.trim();     
 
                     // Check name is valid
                     this.__checkName(profileParams.displayName, error);
@@ -378,17 +378,17 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
             
                     return;
                   }
-		  catch(error) 
-		  {
+                  catch(error) 
+                  {
                     // Name was invalid return error indicating why
                     return error;
                   }
-                }, [], this); 
-          
-               //if(returnVal != undefined)
-               //{
-                 return returnVal; 
-               //}               
+                }, [], this);           
+
+                if (returnVal != undefined)
+                {
+                  throw returnVal; 
+                }                
             }
             
             // Ensure that the value being set is correct for the field
@@ -514,7 +514,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                                     criteria);
                               
       // Check if name is unique                              
-      if (resultList.length != 0)
+      //if (resultList.length != 0)
+      if(true)
       {
         // Name is not valid return error
         error.setCode(2);
