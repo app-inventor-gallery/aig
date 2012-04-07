@@ -1309,7 +1309,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             missing.push(field);
           }
         }
-        
+
+/* // let admin set status        
         // Were there any missing, required fields?
         if (missing.length > 0)
         {
@@ -1319,6 +1320,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         {
           appData.status = aiagallery.dbif.Constants.Status.Processing;
         }
+*/
 /*
         // If a new source file was uploaded...
         if (attributes.source)
@@ -1586,12 +1588,14 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           liberated.dbif.Entity.removeBlob(blobId);
         });
 
+/*
       // If we'd created a post-processing task, run it now
       if (fTask)
       {
         fTask(appData.uid);
       }
-      
+*/
+    
       // App management needs email and display name; add them.
 // Should emails be provided (and displayed)?  Security issue?
 
