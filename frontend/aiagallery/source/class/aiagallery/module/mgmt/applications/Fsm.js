@@ -439,8 +439,12 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
             });
 
           // Status
+          // (Former bug: Status is not inverse to StatusToName (e.g.
+          // Pending/"Under Review", and NotSaved/"Not Saved!"), so don't 
+          // use it to determine status!)
           statusName = cellEditor.getUserData("statusBox").getSelection()[0].getLabel();
-          status = aiagallery.dbif.Constants.Status[statusName];
+          var StatusToName = aiagallery.dbif.Constants.StatusToName;
+          status = StatusToName.indexOf(statusName);
 
           // Save the request data
           var requestData =
