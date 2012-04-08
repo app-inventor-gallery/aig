@@ -623,7 +623,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           function(field)
           {
             // Was this field provided in the parameter attributes?
-            if (attributes[field])
+            if (typeof attributes[field] != "undefined")
             {
               // Handle source field specially
               switch(field)
@@ -1172,8 +1172,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           function(field)
           {
             // Was this field provided in the parameter attributes?
-            //if (attributes[field])
-            if ( ! ( attributes[field]===null || attributes[field]===undefined ) )
+            if (typeof attributes[field] != "undefined")
             {
               // Handle certain fields specially
               switch(field)
