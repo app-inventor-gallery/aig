@@ -105,31 +105,87 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       // Try to get this user's display name. Does the visitor exist?
       visitor = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
                                             googleUserId);
-      if (visitor.length > 0)
-      {
-        // Yup, he exists.
-        displayName = visitor[0].displayName || googleNickname || googleUserId;
-        permissions = 
-          aiagallery.dbif.MVisitors.getVisitorPermissions(visitor[0]);
-      }
-      else
-      {
-        // He doesn't exist. Just use the unique number.
-        displayName = googleNickname || googleUserId;
-        permissions = [];
-      }
+      // Encapsulate in transaction to avoid race condition  
+      liberated.dbif.Entity.asTransaction(
+        function(){                                    
+          if (visitor.length > 0)
+          {
+            // Yup, he exists.
+            displayName = visitor[0].displayName || this.__randNameGen();
+            permissions = 
+              aiagallery.dbif.MVisitors.getVisitorPermissions(visitor[0]);
+          }
+          else
+          {
+            // He doesn't exist. Create an unique random name
+            displayName = this.__randNameGen();
+            permissions = [];
+          }  
+          
+          // Save the logged-in user. The whoAmI property is in MDbifCommon.
+          this.setWhoAmI(
+            {
+              id                : googleUserId,
+              email             : email,
+              displayName       : displayName,
+              isAdmin           : userService.isUserAdmin(),
+              logoutUrl         : userService.createLogoutURL("/"),
+              permissions       : permissions,
+              hasSetDisplayName : displayName != googleUserId
+            });
+        }, [], this); // End of transaction
+    },
+         
+    /*
+     * Create a randomly generated name.
+     * First character must be a lowercase letter, 
+     * next five characters must be either a letter or number.
+     * 
+     * After generating a random name, check to ensure name is unique.
+     * 
+     * @return {String}
+     *  Randomly generated unique name 
+     */ 
 
-      // Save the logged-in user. The whoAmI property is in MDbifCommon.
-      this.setWhoAmI(
+    __randNameGen : function()
+    {   
+      var              resultList;
+      var              newName; 
+      var              criteria;
+      var              i; 
+
+      // Keep generating names until an unique one is found
+      do 
+      {
+        newName = "";
+        var letters = "abcdefghijklmnopqrstuvwxyz";
+        var lettersNums = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+        // First char must be a letter
+        newName += letters.charAt(Math.floor(Math.random() * letters.length));
+
+        //Next five characters can be letters or numbers
+        for(i = 0; i < 5; i++ ) 
         {
-          id                : googleUserId,
-          email             : email,
-          displayName       : displayName,
-          isAdmin           : userService.isUserAdmin(),
-          logoutUrl         : userService.createLogoutURL("/"),
-          permissions       : permissions,
-          hasSetDisplayName : displayName != googleUserId
-        });
+          newName +=
+            lettersNums.charAt(Math.floor(Math.random() * lettersNums.length));
+        }      
+        
+        criteria = 
+          {
+            type : "element",
+            field : "displayName",
+            value : newName
+          }; 
+        
+        // Check to ensure name is unique
+        resultList = 
+          liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                      criteria);
+
+      } while(resultList.length != 0) 
+
+      return newName;  
     }
   },
 

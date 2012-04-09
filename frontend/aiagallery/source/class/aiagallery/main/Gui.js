@@ -966,6 +966,8 @@ qx.Class.define("aiagallery.main.Gui",
     _editProfile : function()
     {
       var             win;
+      var             errorWin; 
+      var             errorLabel; 
       var             grid;
       var             container;
       var             displayName;
@@ -1045,8 +1047,17 @@ qx.Class.define("aiagallery.main.Gui",
 
           // Issue the request. When we get the result...
           rpc.callAsync(
-          function(e)
+          function(result, ex, id)
           {
+            // Check for an error
+            if (ex != null)
+            {
+              // Error occured, display window
+              dialog.Dialog.warning(_this.tr(ex.message)); 
+              
+              return; 
+            
+            }
             // Set the display name in the application header
             _this.whoAmI.setDisplayName(win._displayName.getValue());
             _this.whoAmI.setHasSetDisplayName(true);

@@ -320,6 +320,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       var             me;
       var             meData;
       var             whoami;
+      var             returnVal; 
       var             propertyTypes;
       var             fields;
       var             bValid = true;
@@ -340,61 +341,108 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       // Get the field names for this entity type
       propertyTypes = liberated.dbif.Entity.propertyTypes;
       fields = propertyTypes["visitors"].fields;
-
-      // For each of the valid field names...
-      try
-      {
-        validFields.forEach(
-          function(fieldName)
+      
+      // For now the actual editing has been encased in a
+      // transaction in order to ensure a username change does not
+      // inadvertenly take an already in-use name 
+      returnVal = liberated.dbif.Entity.asTransaction(
+        function() 
+        {                                               
+                                                      
+          // For each of the valid field names...
+          try
           {
+            validFields.forEach(
+              function(fieldName)
+              {
 
-            // Is this field being modified?
-            if (typeof profileParams[fieldName] == "undefined")
-            {
-              // Nope. Nothing to do with this one.
-              return;
-            }
+                // Is this field being modified?
+                if (typeof profileParams[fieldName] == "undefined")
+                {
+                  // Nope. Nothing to do with this one.
+                  return;
+                }
 
-            // Ensure that the value being set is correct for the field
-            switch(typeof profileParams[fieldName])
-            {
-            case "string":
-              bValid = (fields[fieldName] == "String");
-              break;
+                // If the username is being modified indicate we need to do
+                // this outside of this function
+                if (fieldName == "displayName") 
+                {
+                
+                  // Make sure name is clear of whitespace
+                  profileParams.displayName 
+                    = profileParams.displayName.trim();  
 
-            case "number":
-              bValid = (fields[fieldName] == "Integer" || 
-                        fields[fieldName] == "Float");
-              break;
+                  // Ensure new username is valid
+                  try 
+                  {
+                    // Check name is valid
+                    this.__checkName(profileParams.displayName, error);
+            
+                    // Store back into me
+                    meData[fieldName] = profileParams.displayName; 
+            
+                    return;
+                  }
+                  catch(error) 
+                  {
+                    // Name was invalid throw error indicating why
+                    // this error will end up in returnVal
+                    throw error;
+                  }         
+               
+                }
+            
+                // Ensure that the value being set is correct for the field
+                switch(typeof profileParams[fieldName])
+                {
+                  case "string":
+                    bValid = (fields[fieldName] == "String");
+                    break;
 
-            default:
-              bValid = false;
-              break;
-            }
+                  case "number":
+                    bValid = (fields[fieldName] == "Integer" || 
+                              fields[fieldName] == "Float");
+                    break;
 
-            // Is the new profile parameter of the correct type?
-            if (! bValid)
-            {
-              // Nope.
-              error.setCode(1);
-              error.setMessage("Unexpected parameter type. " +
-                               "Expected " + fields[fieldName] +
+                  default:
+                    bValid = false;
+                    break;
+                }
+
+                // Is the new profile parameter of the correct type?
+                if (! bValid)
+                {
+                  // Nope. Error ends up in returnVal
+                  error.setCode(1);
+                  error.setMessage("Unexpected parameter type. " +
+                                   "Expected " + fields[fieldName] +
                                ", got " + typeof profileParams[fieldName]);
-              throw error;
-            }
+                  throw error;
+                }
 
-            // Assign the new value.
-            meData[fieldName] = profileParams[fieldName];
-          });
-      }
-      catch(error)
+                // Assign the new value.
+                meData[fieldName] = profileParams[fieldName];
+              }, this);
+          }   
+          catch(error)
+          {
+            // Error ends up in returnVal
+            return error;
+          }
+      
+          // Save the altered profile data
+          me.put();
+          
+        }, [], this); // End of transaction
+      
+      // If the transaction threw an error it will be in returnVal
+      if (returnVal != undefined)
       {
-        return error;
-      }
+        // Return the error
+        return returnVal; 
+      } 
       
-      // Save the altered profile data
-      me.put();
-      
+      // No errors 
       // We need to return something. true is as good as anything else.
       return true;
     },
@@ -443,6 +491,53 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       // We've built the whole list. Return it.
       return map;
+    },
+    
+    /*
+    * Check to ensure a name is valid. A name must be:
+    * 1. Unique
+    *
+    * @param name {String} 
+    *  The username in question
+    *
+    * @param name {Map} 
+    *  The a map contaning the displayName in question 
+    *
+    * @return {Error} 
+    *  Return an error if the name is invalid.
+    */
+    
+    __checkName : function(name, error)
+    {
+    
+      var              resultList;
+      var              criteria;
+      
+      criteria = 
+        {
+          type  : "element",
+          field : "displayName",
+          value : name
+        }; 
+        
+      // Check to ensure name is unique
+      resultList = 
+        liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                    criteria);
+                              
+      // Check if name is unique                              
+      if (resultList.length != 0)
+      {
+        // Name is not valid return error
+        error.setCode(2);
+        error.setMessage("The username you specified: \"" + name +
+                       "\" is not unique. Please enter a new one."); 
+        throw error;
+      }  
+      
+      // Name is valid 
+      return; 
+      
     }
   }
 });
