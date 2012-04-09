@@ -341,39 +341,40 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       // Get the field names for this entity type
       propertyTypes = liberated.dbif.Entity.propertyTypes;
       fields = propertyTypes["visitors"].fields;
-
-      // For each of the valid field names...
-      try
-      {
-        validFields.forEach(
-          function(fieldName)
+      
+      returnVal = liberated.dbif.Entity.asTransaction(
+        function() 
+        {                                               
+                                                      
+          // For each of the valid field names...
+          try
           {
+            validFields.forEach(
+              function(fieldName)
+              {
 
-            // Is this field being modified?
-            if (typeof profileParams[fieldName] == "undefined")
-            {
-              // Nope. Nothing to do with this one.
-              return;
-            }
-
-            // If the username is being modified indicate we need to do
-            // this outside of this function
-            if (fieldName == "displayName") 
-            {
-              
-              // Make sure name is clear of whitespace
-              profileParams.displayName 
-                = profileParams.displayName.trim();  
-              
-              returnVal = liberated.dbif.Entity.asTransaction(
-                function()
+                // Is this field being modified?
+                if (typeof profileParams[fieldName] == "undefined")
                 {
+                  // Nope. Nothing to do with this one.
+                  return;
+                }
+
+                // If the username is being modified indicate we need to do
+                // this outside of this function
+                if (fieldName == "displayName") 
+                {
+                
+                  // Make sure name is clear of whitespace
+                  profileParams.displayName 
+                    = profileParams.displayName.trim();  
+
                   // Ensure new username is valid
                   try 
                   {
                     // Check name is valid
                     this.__checkName(profileParams.displayName, error);
-              
+            
                     // Store back into me
                     meData[fieldName] = profileParams.displayName; 
             
@@ -382,56 +383,57 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                   catch(error) 
                   {
                     // Name was invalid return error indicating why
-                    return error;
-                  }
-                }, [], this);           
-
-                if (returnVal != undefined)
-                {
-                  throw returnVal; 
-                }                
-            }
+                    throw error;
+                  }         
+               
+                }
             
-            // Ensure that the value being set is correct for the field
-            switch(typeof profileParams[fieldName])
-            {
-            case "string":
-              bValid = (fields[fieldName] == "String");
-              break;
+                // Ensure that the value being set is correct for the field
+                switch(typeof profileParams[fieldName])
+                {
+                  case "string":
+                    bValid = (fields[fieldName] == "String");
+                    break;
 
-            case "number":
-              bValid = (fields[fieldName] == "Integer" || 
-                        fields[fieldName] == "Float");
-              break;
+                  case "number":
+                    bValid = (fields[fieldName] == "Integer" || 
+                              fields[fieldName] == "Float");
+                    break;
 
-            default:
-              bValid = false;
-              break;
-            }
+                  default:
+                    bValid = false;
+                    break;
+                }
 
-            // Is the new profile parameter of the correct type?
-            if (! bValid)
-            {
-              // Nope.
-              error.setCode(1);
-              error.setMessage("Unexpected parameter type. " +
-                               "Expected " + fields[fieldName] +
+                // Is the new profile parameter of the correct type?
+                if (! bValid)
+                {
+                  // Nope.
+                  error.setCode(1);
+                  error.setMessage("Unexpected parameter type. " +
+                                   "Expected " + fields[fieldName] +
                                ", got " + typeof profileParams[fieldName]);
-              throw error;
-            }
+                  throw error;
+                }
 
-            // Assign the new value.
-            meData[fieldName] = profileParams[fieldName];
-          }, this);
-      }
-      catch(error)
+                // Assign the new value.
+                meData[fieldName] = profileParams[fieldName];
+              }, this);
+          }   
+          catch(error)
+          {
+            throw error;
+          }
+      
+          // Save the altered profile data
+          me.put();
+        }, [], this);
+      
+      if (returnVal != undefined)
       {
-        return error;
-      }
-      
-      // Save the altered profile data
-      me.put();
-      
+        return returnVal; 
+      } 
+          
       // We need to return something. true is as good as anything else.
       return true;
     },
