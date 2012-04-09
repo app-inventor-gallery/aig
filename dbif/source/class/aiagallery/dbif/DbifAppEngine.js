@@ -121,19 +121,19 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
             displayName = this.__randNameGen();
             permissions = [];
           }  
-        }, [], this); 
-        
-        // Save the logged-in user. The whoAmI property is in MDbifCommon.
-        this.setWhoAmI(
-          {
-            id                : googleUserId,
-            email             : email,
-            displayName       : displayName,
-            isAdmin           : userService.isUserAdmin(),
-            logoutUrl         : userService.createLogoutURL("/"),
-            permissions       : permissions,
-            hasSetDisplayName : displayName != googleUserId
-          });
+          
+          // Save the logged-in user. The whoAmI property is in MDbifCommon.
+          this.setWhoAmI(
+            {
+              id                : googleUserId,
+              email             : email,
+              displayName       : displayName,
+              isAdmin           : userService.isUserAdmin(),
+              logoutUrl         : userService.createLogoutURL("/"),
+              permissions       : permissions,
+              hasSetDisplayName : displayName != googleUserId
+            });
+        }, [], this); // End of transaction
     },
          
     /*

@@ -427,7 +427,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
           catch(error)
           {
             // Error ends up in returnVal
-            throw error;
+            return error;
           }
       
           // Save the altered profile data
