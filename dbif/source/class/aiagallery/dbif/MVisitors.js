@@ -342,6 +342,9 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       propertyTypes = liberated.dbif.Entity.propertyTypes;
       fields = propertyTypes["visitors"].fields;
       
+      // For now the actual editing has been encased in a
+      // transaction in order to ensure a username change does not
+      // inadvertenly take an already in-use name 
       returnVal = liberated.dbif.Entity.asTransaction(
         function() 
         {                                               
@@ -382,7 +385,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                   }
                   catch(error) 
                   {
-                    // Name was invalid return error indicating why
+                    // Name was invalid throw error indicating why
+                    // this error will end up in returnVal
                     throw error;
                   }         
                
@@ -408,7 +412,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                 // Is the new profile parameter of the correct type?
                 if (! bValid)
                 {
-                  // Nope.
+                  // Nope. Error ends up in returnVal
                   error.setCode(1);
                   error.setMessage("Unexpected parameter type. " +
                                    "Expected " + fields[fieldName] +
@@ -422,18 +426,23 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
           }   
           catch(error)
           {
+            // Error ends up in returnVal
             throw error;
           }
       
           // Save the altered profile data
           me.put();
-        }, [], this);
+          
+        }, [], this); // End of transaction
       
+      // If the transaction threw an error it will be in returnVal
       if (returnVal != undefined)
       {
+        // Return the error
         return returnVal; 
       } 
-          
+      
+      // No errors 
       // We need to return something. true is as good as anything else.
       return true;
     },
