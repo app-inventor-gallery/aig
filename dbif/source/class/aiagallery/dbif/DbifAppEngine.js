@@ -71,9 +71,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       var             user;
       var             email;
       var             displayName;
-      var             visitor;
       var             googleUserId;
-      var             googleNickname;
       var             permissions;
 
       // Find out who is logged in
@@ -99,62 +97,73 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       }
 
       email = String(user.getEmail());
-      googleNickname = String(user.getNickname());
       googleUserId = String(user.getUserId());
 
-      // Try to get this user's display name. Does the visitor exist?
-      visitor = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
-                                            googleUserId);
       // Encapsulate in transaction to avoid race condition  
       liberated.dbif.Entity.asTransaction(
-        function(){                                    
-          if (visitor.length > 0)
+        function()
+        {
+          var             data;
+          var             visitor;
+
+          // Try to get this user's display name. Does the visitor exist?
+          visitor = new aiagallery.dbif.ObjVisitors(googleUserId);
+          if (! visitor.getBrandNew())
           {
             // Yup, he exists.
-            displayName = visitor[0].displayName || this.__randNameGen();
+            data = visitor.getData();
+            displayName = (data.displayName ||
+                           this.__randNameGen(visitor, email));
             permissions = 
-              aiagallery.dbif.MVisitors.getVisitorPermissions(visitor[0]);
+              aiagallery.dbif.MVisitors.getVisitorPermissions(data);
           }
           else
           {
-            // He doesn't exist. Create an unique random name
-            displayName = this.__randNameGen();
+            // He doesn't exist. Create a unique random name
+            displayName = this.__randNameGen(visitor, email);
             permissions = [];
           }  
-          
-          // Save the logged-in user. The whoAmI property is in MDbifCommon.
-          this.setWhoAmI(
-            {
-              id                : googleUserId,
-              email             : email,
-              displayName       : displayName,
-              isAdmin           : userService.isUserAdmin(),
-              logoutUrl         : userService.createLogoutURL("/"),
-              permissions       : permissions,
-              hasSetDisplayName : displayName != googleUserId
-            });
         }, [], this); // End of transaction
+
+        // Save the logged-in user. The whoAmI property is in MDbifCommon.
+        this.setWhoAmI(
+          {
+            id                : googleUserId,
+            email             : email,
+            displayName       : displayName,
+            isAdmin           : userService.isUserAdmin(),
+            logoutUrl         : userService.createLogoutURL("/"),
+            permissions       : permissions,
+            hasSetDisplayName : displayName != googleUserId
+            });
     },
          
-    /*
+    /**
      * Create a randomly generated name.
      * First character must be a lowercase letter, 
      * next five characters must be either a letter or number.
-     * 
-     * After generating a random name, check to ensure name is unique.
-     * 
+     *
+     * After generating a random name, check to ensure name is unique, and
+     * once we find a unique one, add a new Visitor object.
+     *
+     * @param visitor {aiagallery.dbif.ObjVisitor}
+     *   The visitor object whose display name is to be set
+     *
+     * @param email {String}
+     *   This visitor's email address
+     *
      * @return {String}
      *  Randomly generated unique name 
      */ 
+    __randNameGen : function(visitor, email)
+    {
+      var             data;
+      var             resultList;
+      var             newName; 
+      var             criteria;
+      var             i; 
 
-    __randNameGen : function()
-    {   
-      var              resultList;
-      var              newName; 
-      var              criteria;
-      var              i; 
-
-      // Keep generating names until an unique one is found
+      // Keep generating names until a unique one is found
       do 
       {
         newName = "";
@@ -164,7 +173,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
         // First char must be a letter
         newName += letters.charAt(Math.floor(Math.random() * letters.length));
 
-        //Next five characters can be letters or numbers
+        // Next five characters can be letters or numbers
         for(i = 0; i < 5; i++ ) 
         {
           newName +=
@@ -178,12 +187,26 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
             value : newName
           }; 
         
-        // Check to ensure name is unique
         resultList = 
           liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
                                       criteria);
-
       } while(resultList.length != 0) 
+
+      // We know the name is unique. Get the visitor's data object
+      data = visitor.getData();
+
+      // Whether this is a brand new user or not, we want to save his display
+      // name.
+      data.displayName = newName;
+      
+      // If it's a brand new visitor, we also want to save his email address.
+      if (visitor.getBrandNew())
+      {
+        data.email = email;
+      }
+      
+      // Write it out!
+      visitor.put();
 
       return newName;  
     }

@@ -320,7 +320,6 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       var             me;
       var             meData;
       var             whoami;
-      var             returnVal; 
       var             propertyTypes;
       var             fields;
       var             bValid = true;
@@ -345,51 +344,39 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       // For now the actual editing has been encased in a
       // transaction in order to ensure a username change does not
       // inadvertenly take an already in-use name 
-      returnVal = liberated.dbif.Entity.asTransaction(
+      //
+      // NOTE: If many more fields are added to validFields, or if any of them
+      // require extensive processing, this single transaction may be too time
+      // consuming.
+      return liberated.dbif.Entity.asTransaction(
         function() 
         {                                               
-                                                      
           // For each of the valid field names...
           try
           {
             validFields.forEach(
               function(fieldName)
               {
-
                 // Is this field being modified?
                 if (typeof profileParams[fieldName] == "undefined")
                 {
-                  // Nope. Nothing to do with this one.
-                  return;
+                  // Nope. Nothing to do with this one. Return success
+                  return true;
                 }
 
-                // If the username is being modified indicate we need to do
-                // this outside of this function
+                // Handle displayName specially
                 if (fieldName == "displayName") 
                 {
-                
                   // Make sure name is clear of whitespace
-                  profileParams.displayName 
-                    = profileParams.displayName.trim();  
+                  profileParams.displayName = profileParams.displayName.trim();
 
-                  // Ensure new username is valid
-                  try 
-                  {
-                    // Check name is valid
-                    this.__checkName(profileParams.displayName, error);
-            
-                    // Store back into me
-                    meData[fieldName] = profileParams.displayName; 
-            
-                    return;
-                  }
-                  catch(error) 
-                  {
-                    // Name was invalid throw error indicating why
-                    // this error will end up in returnVal
-                    throw error;
-                  }         
-               
+                  // Ensure new display name is valid. This will throw an
+                  // error upon finding an existing display name.
+                  this.__checkName(whoami.id, profileParams.displayName, error);
+
+                  // Store back into me
+                  meData[fieldName] = profileParams.displayName; 
+                  return true;
                 }
             
                 // Ensure that the value being set is correct for the field
@@ -423,28 +410,19 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                 // Assign the new value.
                 meData[fieldName] = profileParams[fieldName];
               }, this);
-          }   
+          }
           catch(error)
           {
-            // Error ends up in returnVal
+            // Return, rather than throw, the error, to be returned to the user.
             return error;
           }
       
           // Save the altered profile data
           me.put();
-          
+
+          // success
+          return true;
         }, [], this); // End of transaction
-      
-      // If the transaction threw an error it will be in returnVal
-      if (returnVal != undefined)
-      {
-        // Return the error
-        return returnVal; 
-      } 
-      
-      // No errors 
-      // We need to return something. true is as good as anything else.
-      return true;
     },
 
     /**
@@ -493,23 +471,25 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       return map;
     },
     
-    /*
-    * Check to ensure a name is valid. A name must be:
-    * 1. Unique
-    *
-    * @param name {String} 
-    *  The username in question
-    *
-    * @param name {Map} 
-    *  The a map contaning the displayName in question 
-    *
-    * @return {Error} 
-    *  Return an error if the name is invalid.
-    */
-    
-    __checkName : function(name, error)
+    /**
+     * Check to ensure a name is valid. A name must be:
+     * 1. Unique
+     * 2. TBD
+     *
+     * @param myId {String}
+     *   The ObjVisitor key field (id)
+     *
+     * @param name {String} 
+     *   The username in question
+     *
+     * @param name {Map} 
+     *   The a map contaning the displayName in question 
+     *
+     * @return {Error} 
+     *   Return an error if the name is invalid.
+     */
+    __checkName : function(myId, name, error)
     {
-    
       var              resultList;
       var              criteria;
       
@@ -526,18 +506,17 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                                     criteria);
                               
       // Check if name is unique                              
-      if (resultList.length != 0)
+      if (resultList.length != 0 && resultList[0].id != myId)
       {
         // Name is not valid return error
         error.setCode(2);
-        error.setMessage("The username you specified: \"" + name +
+        error.setMessage("The displayname you specified: \"" + name +
                        "\" is not unique. Please enter a new one."); 
         throw error;
       }  
       
       // Name is valid 
       return; 
-      
     }
   }
 });

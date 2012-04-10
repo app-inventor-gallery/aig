@@ -1053,7 +1053,7 @@ qx.Class.define("aiagallery.main.Gui",
             if (ex != null)
             {
               // Error occured, display window
-              dialog.Dialog.warning(_this.tr(ex.message)); 
+              dialog.Dialog.warning(ex.message); 
               
               return; 
             
