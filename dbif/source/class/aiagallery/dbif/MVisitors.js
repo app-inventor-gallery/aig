@@ -474,7 +474,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     /**
      * Check to ensure a name is valid. A name must be:
      * 1. Unique
-     * 2. TBD
+     * 2. Name is between 5 and 30 characters
+     * 3. TBA
      *
      * @param myId {String}
      *   The ObjVisitor key field (id)
@@ -492,6 +493,16 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     {
       var              resultList;
       var              criteria;
+      
+      // Ensure name is within length range
+      if(name.length <= 5 || name.length > 30)
+      {
+        // Name is not valid return error
+        error.setCode(2);
+        error.setMessage("The displayname you specified: \"" + name +
+                       "\" must be between 5 and 30 characters."); 
+        throw error;        
+      }
       
       criteria = 
         {

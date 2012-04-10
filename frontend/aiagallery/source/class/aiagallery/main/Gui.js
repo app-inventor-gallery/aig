@@ -1059,7 +1059,7 @@ qx.Class.define("aiagallery.main.Gui",
             
             }
             // Set the display name in the application header
-            _this.whoAmI.setDisplayName(win._displayName.getValue());
+            _this.whoAmI.setDisplayName(win._displayName.getValue().trim());
             _this.whoAmI.setHasSetDisplayName(true);
 
             // Close the window
