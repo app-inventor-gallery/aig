@@ -102,6 +102,7 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
     // Register our property types
     aiagallery.dbif.Entity.registerPropertyTypes("visitors",
                                                  databaseProperties,
-                                                 "id");
+                                                 "id",
+                                                 canonicalize);
   }
 });
