@@ -53,7 +53,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
             meData = me.getData();
             if (me.getBrandNew() || meData.displayName === null)
             {
-              throw new error("Programming error, this should not be reachable."
+              throw new Error("Programming error, this should not be reachable."
                               + " Identify() in DbifAppEngine should be called "
                               + "first"); 
             }
