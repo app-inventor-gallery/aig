@@ -474,7 +474,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     /**
      * Check to ensure a name is valid. A name must be:
      * 1. Unique
-     * 2. Name is between 5 and 30 characters
+     * 2. Name is between 2 and 30 characters
      * 3. TBA
      *
      * @param myId {String}
@@ -495,12 +495,11 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       var              criteria;
       
       // Ensure name is within length range
-      if(name.length <= 5 || name.length > 30)
+      if(name.length <= 2 || name.length > 30)
       {
         // Name is not valid return error
         error.setCode(2);
-        error.setMessage("The displayname you specified: \"" + name +
-                       "\" must be between 5 and 30 characters."); 
+        error.setMessage("Display name must be between 2 and 30 characters.");
         throw error;        
       }
       
@@ -522,7 +521,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
         // Name is not valid return error
         error.setCode(2);
         error.setMessage("The displayname you specified: \"" + name +
-                       "\" is not unique. Please enter a new one."); 
+                       "\" is already in use. Please select a different one."); 
         throw error;
       }  
       
