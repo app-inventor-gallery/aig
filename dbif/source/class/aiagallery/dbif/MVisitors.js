@@ -495,7 +495,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       var              criteria;
       
       // Ensure name is within length range
-      if(name.length <= 5 || name.length > 30)
+      if(name.length < 5 || name.length > 30)
       {
         // Name is not valid return error
         error.setCode(2);
