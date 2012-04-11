@@ -53,10 +53,9 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
             meData = me.getData();
             if (me.getBrandNew() || meData.displayName === null)
             {
-              // Correct. Generate a string to represent the logged-in user
-              displayName = 
-                aiagallery.dbif.MDbifCommon.__whoami.id + 
-                " (" + aiagallery.dbif.MDbifCommon.__whoami.displayName + ")";
+              throw new error("Programming error, this should not be reachable."
+                              + " Identify() in DbifAppEngine should be called "
+                              + "first"); 
             }
             else
             {
