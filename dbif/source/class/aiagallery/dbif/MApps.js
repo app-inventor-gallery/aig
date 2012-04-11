@@ -580,7 +580,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             return error;
           }
           
-	      // Delete all data in the search db, we only want the newest stuff
+	  // Delete all data in the search db, we only want the newest stuff
           // Set a flag here so that we know to do it later
           // avoid race condition
           bRemoveAppFromSearchFlag = true; 
@@ -1780,7 +1780,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           }
         });
 
-      // Let the user know something failed
+      // Let the user know the app was removed
       this.logMessage(appData.owner, "App removed", appData.title);
 
       // We were successful
@@ -1964,7 +1964,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     },
     
     /**
-     * Get a the application list of the logged-in user.
+     * Get the application list of the logged-in user.
      *
      * @param imageSize {Number}
      *   The size to scale images. This represents the scaled length of the
@@ -2372,6 +2372,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             email;
       var             url;
       var             bAddedOwner = false;
+      var             searchResponseFeatured;
+      var             searchResponseLiked;
+      var             searchResponseNewest;
+      var             requestedData; 
 
       // Create and execute query for "Featured" apps.
       // Limit results to only active apps
@@ -2406,7 +2410,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         bAddedOwner = true;
       }
 
-      var searchResponseFeatured = 
+      searchResponseFeatured = 
         liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData", criteria);
 
       // Manipulate each App individually, before returning
@@ -2471,7 +2475,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         };
 
       //Create map to specify specific return data from the upload time query
-      var requestedData = 
+      requestedData = 
         [
           {
             type  : "limit",
@@ -2484,7 +2488,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           }
         ]; 
 
-      var searchResponseLiked = 
+      searchResponseLiked = 
         liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
                                     criteria,
                                     requestedData);
@@ -2549,7 +2553,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             order : "desc" }
         ]; 
 
-      var searchResponseNewest = 
+      searchResponseNewest = 
         liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
                                     criteria,
                                     requestedData);
@@ -2954,7 +2958,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             app.image1 += "=s100";
           });
       }
-
+      
+      // Not allowed to return the id of the app owner, remove it
+      delete ret.owner; 
+      
       // Give 'em what they came for
       return ret;
     },
