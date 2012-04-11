@@ -76,7 +76,29 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
         /** Timestamp of last connection */
         "connectionTimestamp" : "Date"
       };
+      
+    var canonicalize = 
+      {
+        "displayName" :
+        {
+          // Property in which to store the canonical value. Since we are
+          // converting the value to lower case, we'll give the property a
+          // name that reflects that.
+          prop : "displayName_lc",
+          
+          // The canonical value will be a string
+          type : "String",
 
+          // Function to convert a value to lower case
+          func : function(value)
+          {
+            return (typeof value == "undefined" || value === null
+                    ? null
+                    : value.toLowerCase());
+          }
+        }
+      };
+      
     // Register our property types
     aiagallery.dbif.Entity.registerPropertyTypes("visitors",
                                                  databaseProperties,
