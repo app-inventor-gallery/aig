@@ -2992,7 +2992,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       }
       
       // Not allowed to return the id of the app owner, remove it
-      delete ret.owner; 
+      delete ret.app.owner; 
       
       // Give 'em what they came for
       return ret;
