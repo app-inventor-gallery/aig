@@ -2308,25 +2308,36 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // Were there any query args specified?
       if (queryArgs.criteria)
       {
-        if(queryArgs.criteria.children[0].field == "displayName")
-        {
-          var criteria = 
+        // Determine if this is a search for an app with an author's name. 
+        for(var i = 0; i < queryArgs.criteria.children.length; i++) {
+          if(queryArgs.criteria.children[i].field == "displayName")
           {
-            type  : "element",
-            field : "displayName",
-            value : queryArgs.criteria.children[0].value
-          }; 
+            var criteria = 
+            {
+              type  : "element",
+              field : "displayName",
+              value : queryArgs.criteria.children[0].value
+            }; 
         
-          // get this user's id
-          var resultList = 
-            liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+            // get this user's id
+            var resultList = 
+              liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
                                     criteria);
                        
-          // Should be just one result                       
-          queryArgs.criteria.children[0].value = resultList[0].id;
-        
-          queryArgs.criteria.children[0].field = "owner";
-              
+            // Should be just one result                       
+            if(resultList != 0)
+            {
+              queryArgs.criteria.children[0].value = resultList[0].id;
+            }
+            else 
+            {
+              // No results on that author search 
+            
+            }
+          
+            // Change the field of the criteria
+            queryArgs.criteria.children[0].field = "owner";  
+          }
         }
       
         // Yes. Issue the query.

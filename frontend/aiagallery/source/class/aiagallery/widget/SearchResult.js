@@ -595,6 +595,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           function(e)
           {
             var             query;
+            var             displayName;
 
             // Prevent the default 'click' behavior
             e.preventDefault();
