@@ -1187,31 +1187,6 @@ qx.Class.define("aiagallery.main.Gui",
     },
 
     /**
-    * Search for all apps by a particular author.
-    * 
-    * @param authorDisplayName {String}
-    *   The internal ID of the author of the apps to be found
-    */
-    authorSearch : function(authorDisplayName)
-    {
-      var             findApps;
-      var             query;
-
-      // This is an internal search, so set the flag so the switch to FindApps
-      // doesn't add a history entry
-      this.__bInternalSearch = true;
-
-      // Build the query
-      query = { authorDisplayName : authorDisplayName };
-
-      findApps = aiagallery.module.dgallery.findapps.Gui.getInstance();
-      findApps.setQuery(qx.lang.Json.stringify(query));
-
-      // Reset the internal search flag
-      this.__bInternalSearch = false;
-    },
-
-    /**
     * Handler for module (tab) changes, where we update the history.
     * @param e {qx.event.type.Data} Data event containing the history changes.
     */
