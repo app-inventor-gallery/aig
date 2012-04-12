@@ -308,6 +308,7 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
     {
       var requiredParams = 5;
       var ownerId;
+      var criteria;
       
       for (var i = requiredParams + 1 - fields.length; i > 0; i--)
       {
@@ -329,8 +330,17 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       }
 
       // Get the user's id number
-      var visitors = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
-                                                 displayName);
+      criteria = 
+        {
+          type  : "element",
+          field : "displayName",
+          value : displayName
+        }; 
+        
+      // Check to ensure name is unique
+      var visitors = 
+        liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                    criteria);
 
       // We must have found this visitor
       if (visitors.length != 1)
