@@ -2308,6 +2308,27 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // Were there any query args specified?
       if (queryArgs.criteria)
       {
+        if(queryArgs.criteria.children[0].field == "displayName")
+        {
+          var criteria = 
+          {
+            type  : "element",
+            field : "displayName",
+            value : queryArgs.criteria.children[0].value
+          }; 
+        
+          // get this user's id
+          var resultList = 
+            liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                    criteria);
+                       
+          // Should be just one result                       
+          queryArgs.criteria.children[0].value = resultList[0].id;
+        
+          queryArgs.criteria.children[0].field = "owner";
+              
+        }
+      
         // Yes. Issue the query.
         appQueryResults = this.appQuery(queryArgs.criteria, null, error);
       

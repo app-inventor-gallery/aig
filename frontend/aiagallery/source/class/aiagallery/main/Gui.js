@@ -1189,10 +1189,10 @@ qx.Class.define("aiagallery.main.Gui",
     /**
     * Search for all apps by a particular author.
     * 
-    * @param authorId {String}
+    * @param authorDisplayName {String}
     *   The internal ID of the author of the apps to be found
     */
-    authorSearch : function(authorId)
+    authorSearch : function(authorDisplayName)
     {
       var             findApps;
       var             query;
@@ -1202,7 +1202,7 @@ qx.Class.define("aiagallery.main.Gui",
       this.__bInternalSearch = true;
 
       // Build the query
-      query = { authorId : authorId };
+      query = { authorDisplayName : authorDisplayName };
 
       findApps = aiagallery.module.dgallery.findapps.Gui.getInstance();
       findApps.setQuery(qx.lang.Json.stringify(query));
