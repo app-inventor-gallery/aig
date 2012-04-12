@@ -2781,7 +2781,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             likesList;
       var             displayName;
       var             url;
-      var             bAddedOwner = false;
       var             ret = {};
 
       whoami = this.getWhoAmI();
@@ -2823,12 +2822,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         error.setMessage("Application is not available. " +
                          "It may have been removed recently.");
         return error;
-      }
- 
-      if (requestedFields.displayName && ! requestedFields.owner)
-      {
-        requestedFields.owner = "owner";
-        bAddedOwner = true;
       }
 
       if (requestedFields.displayName)
@@ -2935,12 +2928,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // If there were requested fields specified...
       if (requestedFields)
       {
-        // If we added the owner, ...
-        if (bAddedOwner)
-        {
-          // ... then remove it now
-          delete requestedFields.owner;
-        }
 
         // If the "comments" field was requested
         if (requestedFields["comments"])
