@@ -483,6 +483,43 @@ qx.Class.define("aiagallery.main.Gui",
               // We've instantiated a new module which needs to be added
               bAddModules = true;
             }
+	    
+            // Determine whether they have access to the message of
+            // the day management page.
+            bAllowed = false;
+            [ 
+              // These permissions allow access to the page
+              "setFeaturedApps"
+            ].forEach(
+              function(rpcFunc)
+              {
+                if (qx.lang.Array.contains(e.permissions, rpcFunc))
+                {
+                  bAllowed = true;
+                }
+              });
+
+            // If they're allowed access to the page...
+            if (e.isAdmin || bAllowed)
+            {
+              // ... then create it
+              module = new aiagallery.main.Module(
+                "Management",
+                "aiagallery/test.png",
+                "MOTD",
+                aiagallery.main.Constant.PageName.Management,
+                aiagallery.module.mgmt.motd.Motd);
+
+              // Start up the new module
+              if (! moduleList["Management"])
+              {
+                moduleList["Management"] = {};
+              }
+              moduleList["Management"]["MOTD"] = module;
+
+              // We've instantiated a new module which needs to be added
+              bAddModules = true;
+            }
 
             // If we instantiated at least one of the management modules...
             if (bAddModules)
