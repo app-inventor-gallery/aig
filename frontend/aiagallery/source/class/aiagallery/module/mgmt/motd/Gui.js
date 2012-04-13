@@ -78,7 +78,12 @@ qx.Class.define("aiagallery.module.mgmt.motd.Gui",
         width     : 100
       });
       hBoxBtns.add(clearTextBtn);
-      clearTextBtn.addListener("execute", fsm.eventListener, fsm);
+      
+      // Clear text box on press
+      clearTextBtn.addListener("execute", function(e)
+      {
+        motdTextArea.setValue("");  
+      }, this);
       
       // Create a label for describing the textfields 
       label = new qx.ui.basic.Label("Enter Message of the day here:");
