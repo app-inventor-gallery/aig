@@ -595,15 +595,21 @@ qx.Class.define("aiagallery.widget.SearchResult",
           function(e)
           {
             var             query;
+            var             displayName;
 
             // Prevent the default 'click' behavior
             e.preventDefault();
             e.stop();
 
+            // Remove "by" from displayName
+            displayName = this.getDisplayName().replace("by", "");
+
+            // Trim off white space
+            displayName = displayName.trim();             
+            
             query  =
               {
-                authorId    : this.getOwner(), 
-                displayName : this.getDisplayName()
+                authorName : displayName
               };
             
             // Initiate a search

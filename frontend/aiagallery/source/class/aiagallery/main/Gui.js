@@ -483,6 +483,43 @@ qx.Class.define("aiagallery.main.Gui",
               // We've instantiated a new module which needs to be added
               bAddModules = true;
             }
+	    
+            // Determine whether they have access to the message of
+            // the day management page.
+            bAllowed = false;
+            [ 
+              // These permissions allow access to the page
+              "setFeaturedApps"
+            ].forEach(
+              function(rpcFunc)
+              {
+                if (qx.lang.Array.contains(e.permissions, rpcFunc))
+                {
+                  bAllowed = true;
+                }
+              });
+
+            // If they're allowed access to the page...
+            if (e.isAdmin || bAllowed)
+            {
+              // ... then create it
+              module = new aiagallery.main.Module(
+                "Management",
+                "aiagallery/test.png",
+                "MOTD",
+                aiagallery.main.Constant.PageName.Management,
+                aiagallery.module.mgmt.motd.Motd);
+
+              // Start up the new module
+              if (! moduleList["Management"])
+              {
+                moduleList["Management"] = {};
+              }
+              moduleList["Management"]["MOTD"] = module;
+
+              // We've instantiated a new module which needs to be added
+              bAddModules = true;
+            }
 
             // If we instantiated at least one of the management modules...
             if (bAddModules)
@@ -1184,31 +1221,6 @@ qx.Class.define("aiagallery.main.Gui",
         this.__selectModuleByFragment(fragment);
       }
       
-    },
-
-    /**
-    * Search for all apps by a particular author.
-    * 
-    * @param authorId {String}
-    *   The internal ID of the author of the apps to be found
-    */
-    authorSearch : function(authorId)
-    {
-      var             findApps;
-      var             query;
-
-      // This is an internal search, so set the flag so the switch to FindApps
-      // doesn't add a history entry
-      this.__bInternalSearch = true;
-
-      // Build the query
-      query = { authorId : authorId };
-
-      findApps = aiagallery.module.dgallery.findapps.Gui.getInstance();
-      findApps.setQuery(qx.lang.Json.stringify(query));
-
-      // Reset the internal search flag
-      this.__bInternalSearch = false;
     },
 
     /**

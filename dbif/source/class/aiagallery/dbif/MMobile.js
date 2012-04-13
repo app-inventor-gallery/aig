@@ -307,38 +307,50 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
     __getByOwner : function(fields, error)
     {
       var requiredParams = 5;
+      var ownerId;
+      var criteria;
+      
       for (var i = requiredParams + 1 - fields.length; i > 0; i--)
       {
         qx.lang.Array.insertBefore(fields, null, error);
       }
 
-      var ownerId = fields.shift();
+      var displayName = fields.shift();
       var offset = fields.shift();
       var count = fields.shift();
       var order = fields.shift();
       var field = fields.shift();
       
-      // ownerId is required
-      if (ownerId.length == 0)
+      // displayName is required
+      if (displayName.length == 0)
       {
         error.setCode(3);
-        error.setMessage("No developer's id given");
+        error.setMessage("No developer's display name given");
         return error;
       }
 
-      // Get the display name for this app's owner
-      var visitors = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
-                                                 ownerId);
+      // Get the user's id number
+      criteria = 
+        {
+          type  : "element",
+          field : "displayName",
+          value : displayName
+        }; 
+        
+      // Check to ensure name is unique
+      var visitors = 
+        liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                    criteria);
 
       // We must have found this visitor
       if (visitors.length != 1)
       {
         error.setCode(4);
-        error.setMessage("Developer (owner) not found: " + ownerId);
+        error.setMessage("Developer (owner) not found: " + displayName);
         return error;
       }
       
-      var displayName = visitors[0].displayName;
+      ownerId = visitors[0].id;
 
       var offsetTypeCheck = offset === null || !isNaN(parseInt(offset,10));
       var countTypeCheck = count === null || !isNaN(parseInt(count,10));

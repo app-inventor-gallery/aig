@@ -203,13 +203,13 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
           }
 
           // Add author
-          if (eventData.authorId)
+          if (eventData.authorName)
           {
             requestData.criteria.children.push(
               {
                 type  : "element",
-                field : "owner", 
-                value : eventData.authorId
+                field : "displayName", 
+                value : eventData.authorName
               });
           }
 
