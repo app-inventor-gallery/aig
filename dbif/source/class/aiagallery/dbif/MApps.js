@@ -2316,7 +2316,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             {
               type  : "element",
               field : "displayName",
-              value : queryArgs.criteria.children[0].value
+              value : queryArgs.criteria.children[i].value
             }; 
         
             // get this user's id
@@ -2325,9 +2325,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                     criteria);
                        
             // Should be just one result                       
-            if(resultList != 0)
+            if(resultList.length != 0)
             {
-              queryArgs.criteria.children[0].value = resultList[0].id;
+              queryArgs.criteria.children[i].value = resultList[0].id;
             }
             else 
             {
@@ -2336,7 +2336,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             }
           
             // Change the field of the criteria
-            queryArgs.criteria.children[0].field = "owner";  
+            queryArgs.criteria.children[i].field = "owner";  
           }
         }
       
