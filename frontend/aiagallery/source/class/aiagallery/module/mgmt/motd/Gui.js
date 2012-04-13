@@ -28,7 +28,77 @@ qx.Class.define("aiagallery.module.mgmt.motd.Gui",
       var             o;
       var             fsm = module.fsm;
       var             canvas = module.canvas;
+      
+      // Buttons
+      var             submitBtn;
+      var             clearTextBtn;
+      
+      // Layout
+      var             hBoxBtns;
+      var             hBox;
+      var             layout;
+      
+      // GUI Elements
+      var             label;
+      var             motdTextArea; 
+      
+      // Create a layout for this page
+      canvas.setLayout(new qx.ui.layout.VBox());
+ 
+      // Create vertical layout for the motd box 
+      layout = new qx.ui.layout.VBox();
+      layout.setSpacing(10);      
+      vBox = new qx.ui.container.Composite(layout);      
+      
+      // Create a horizontal box for the buttons
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(10);      
+      hBoxBtns = new qx.ui.container.Composite(layout);
+      
+      // Create a submit motd button, this.tr
+      submitBtn = 
+        new qx.ui.form.Button(("Submit"));
+      submitBtn.set(
+      {
+        maxHeight : 24,
+        width     : 150
+      });
+      hBoxBtns.add(submitBtn);
+      submitBtn.addListener("execute", fsm.eventListener, fsm);
+      
+      // We'll be receiving events on the object so save its friendly name
+      fsm.addObject("submitBtn", 
+         submitBtn, "main.fsmUtils.disable_during_rpc");
 
+      // Create a clear 
+      clearTextBtn = new qx.ui.form.Button(("Clear"));
+      clearTextBtn.set(
+      {
+        maxHeight : 24,
+        width     : 100
+      });
+      hBoxBtns.add(clearTextBtn);
+      clearTextBtn.addListener("execute", fsm.eventListener, fsm);
+      
+      // Create a label for describing the textfields 
+      label = new qx.ui.basic.Label("Enter Message of the day here:");
+      vBox.add(label);
+      
+      // Create textarea for entering in a motd
+      motdTextArea = new qx.ui.form.TextArea;
+      motdTextArea.set(
+      {
+        maxWidth     : 500,
+        height       : 250
+      });
+      vBox.add(motdTextArea);
+      
+      // Add buttons to layout
+      vBox.add(hBoxBtns);
+      
+      // Add to the page
+      canvas.add(vBox);
+      
       
     },
 
