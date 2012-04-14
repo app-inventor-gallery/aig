@@ -50,6 +50,7 @@ qx.Class.define("aiagallery.dbif.ObjSystem",
 
     // Register our property types
     aiagallery.dbif.Entity.registerPropertyTypes("system",
-                                                 databaseProperties);
+                                                 databaseProperties,
+                                                 "key");
   }
 });
