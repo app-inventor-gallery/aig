@@ -32,6 +32,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var             fsm = module.fsm;
       var             outerCanvas = module.canvas;
       var             scroller;
+      var             motdLabel; 
       
       outerCanvas.setLayout(new qx.ui.layout.VBox());
       var scrollContainer = new qx.ui.container.Scroll();
@@ -207,8 +208,8 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       vbox.add(new qx.ui.core.Spacer(), { flex : 1 });
    
       // Put a label indicating the messsage of the day
-      o = new qx.ui.basic.Label(this.tr("Message of the Day:"));
-      vbox.add(o);
+      motdLabel = new qx.ui.basic.Label(this.tr("Message of the Day:"));
+      vbox.add(motdLabel);
       
       // Add a MOTD text 
       this.motdText = new qx.ui.basic.Label()  
@@ -218,6 +219,21 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           width        : 400
         });
       vbox.add(this.motdText, {flex : 1 });
+      
+      // Add listener to hide motd label if the actual motd is empty
+      this.motdText.addListener("changeValue", function(e) 
+      {
+        if(this.motdText.getValue().trim() == ""){
+          motdLabel.hide(); 
+        } 
+        else
+        {
+          motdLabel.show();
+        }          
+      }, this); 
+      
+      //Start out hidden
+      motdLabel.hide(); 
       
       // Add a bottom spacer
       vbox.add(new qx.ui.core.Spacer(), { flex : 1 });

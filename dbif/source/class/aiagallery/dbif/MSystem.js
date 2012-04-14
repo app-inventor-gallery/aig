@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Paul Geromini 
+ * Copyright (c) 2012 Derrell Lipman and Paul Geromini 
  *
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html
@@ -78,7 +78,7 @@ qx.Mixin.define("aiagallery.dbif.MSystem",
        systemObjData = systemObj.getData();
 
        // Return the string motd
-       return systemObjData.motd; 
+       return systemObjData.motd || ""; 
      
      }
   }

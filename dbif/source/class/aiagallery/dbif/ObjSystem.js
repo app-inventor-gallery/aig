@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Derrell Lipman
+ * Copyright (c) 2012 Derrell Lipman and Paul Geromini
  * 
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html 
@@ -27,6 +27,7 @@ qx.Class.define("aiagallery.dbif.ObjSystem",
   
   statics : 
   { 
+    /** Ensure that only one ObjSystem object is ever created */ 
     SINGLETON : 0
   }, 
   
@@ -36,7 +37,7 @@ qx.Class.define("aiagallery.dbif.ObjSystem",
 
     var databaseProperties =
       {
-        /** The objects key */
+        /** The object's key */
         "key" : "Number",
         
         /** Actual content of the message of the day */

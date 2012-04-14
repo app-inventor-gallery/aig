@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Derrell Lipman
+ * Copyright (c) 2012 Derrell Lipman and Paul Geromini
  * 
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html 
@@ -110,22 +110,6 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
 
         "context" : this,
 
-        "predicate" : function(fsm, event)
-        {
-          // Have we already been here before?
-          if (fsm.getUserData("noUpdate"))
-          {
-            // Yup. Don't accept this transition and no need to check further.
-            return null;
-          }
-          
-          // Prevent this transition from being taken next time.
-          fsm.setUserData("noUpdate", true);
-          
-          // Accept this transition
-          return true;
-        },
-
         "ontransition" : function(fsm, event)
         {
          // Get the current motd if there is one
@@ -137,7 +121,7 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
                           
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "appear");                          
+          request.setUserData("requestType", "getMotd");                          
         }
       });
 
@@ -177,47 +161,13 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "save");
+          request.setUserData("requestType", "setMotd");
 
         }
       });
 
       state.addTransition(trans);
-
-
-      /*
-       * Transition: Idle to Idle
-       *
-       * Cause: "disappear" on canvas
-       *
-       * Action:
-       *  Stop our timer
-       */
-
-      trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_Idle_via_disappear",
-      {
-        "nextState" : "State_Idle",
-
-        "context" : this,
-
-        "ontransition" : function(fsm, event)
-        {
-        }
-      });
-
-      state.addTransition(trans);
-
-      
-      // ------------------------------------------------------------ //
-      // State: <some other state>
-      // ------------------------------------------------------------ //
-
-      // put state and transitions here
-
-
-
-
+    
       // ------------------------------------------------------------ //
       // State: AwaitRpcResult
       // ------------------------------------------------------------ //
@@ -225,13 +175,6 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
       // Add the AwaitRpcResult state and all of its transitions
       this.addAwaitRpcResultState(module);
 
-
-      // ------------------------------------------------------------ //
-      // Epilog
-      // ------------------------------------------------------------ //
-
-      // Listen for our generic remote procedure call event
-      fsm.addListener("callRpc", fsm.eventListener, fsm);
     }
   }
 });

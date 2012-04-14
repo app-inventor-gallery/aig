@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Derrell Lipman
+ * Copyright (c) 2012 Derrell Lipman and Paul Geromini 
  * 
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html 
@@ -146,13 +146,13 @@ qx.Class.define("aiagallery.module.mgmt.motd.Gui",
       switch(requestType)
       {
       // On appear if there is a current motd place it in the textArea
-      case "appear" :
+      case "getMotd" :
       
         this.motdTextArea.setValue(response.data.result);
       
         break;
       
-      case "save" : 
+      case "setMotd" : 
       
         // Do nothing 
         break;
