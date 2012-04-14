@@ -202,10 +202,25 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           width        : 400
         });
       vbox.add(o);
-
+      
+      // Add a top spacer
+      vbox.add(new qx.ui.core.Spacer(), { flex : 1 });
+   
+      // Put a label indicating the messsage of the day
+      o = new qx.ui.basic.Label(this.tr("Message of the Day:"));
+      vbox.add(o);
+      
+      // Add a MOTD text 
+      this.motdText = new qx.ui.basic.Label()  
+      this.motdText.set(
+        {
+          rich         : true,
+          width        : 400
+        });
+      vbox.add(this.motdText, {flex : 1 });
+      
       // Add a bottom spacer
       vbox.add(new qx.ui.core.Spacer(), { flex : 1 });
-
       
       // Add a right spacer to center the welcome text and right-justify the
       // featured apps.
@@ -367,6 +382,12 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         var featuredAppsList = response.data.result.Featured;
         var newestAppsList = response.data.result.Newest;
         var likedAppsList = response.data.result.MostLiked;
+        
+        // Grab the MOTD as well
+        var motd = response.data.result.Motd; 
+        
+        // Set the motd on the front page
+        this.motdText.setValue(motd); 
 
         // Remove everything from the lists. They're about to be refilled.
         this.featuredAppsContainer.removeAll();
