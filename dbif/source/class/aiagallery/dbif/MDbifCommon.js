@@ -22,6 +22,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
     aiagallery.dbif.MDownloads,
     aiagallery.dbif.MFlags,
     aiagallery.dbif.MDbMgmt,
+    aiagallery.dbif.MSystem,
     aiagallery.dbif.MPermissionGroup
   ],
 

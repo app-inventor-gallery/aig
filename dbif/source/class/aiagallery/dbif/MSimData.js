@@ -2209,6 +2209,9 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
       },
       "logentry" :
       {
+      },
+      "system" :
+      {
       }
     }
   }
