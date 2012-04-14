@@ -152,6 +152,10 @@ qx.Class.define("aiagallery.module.mgmt.motd.Gui",
       
         break;
       
+      case "save" : 
+      
+        // Do nothing 
+        break;
       
       default:
         throw new Error("Unexpected request type: " + requestType);

@@ -54,7 +54,7 @@ qx.Mixin.define("aiagallery.dbif.MSystem",
            systemObj.put(); 
 
            // Return new motdData string
-           return systemObjData.motdContent; 
+           return systemObjData.motd; 
          }); 
      },
      
@@ -74,11 +74,11 @@ qx.Mixin.define("aiagallery.dbif.MSystem",
        systemObj = 
          new aiagallery.dbif.ObjSystem(aiagallery.dbif.ObjSystem.SINGLETON);
 
-       // Get the permission data 
+       // Get the system object
        systemObjData = systemObj.getData();
 
        // Return the string motd
-       return systemObj.motd; 
+       return systemObjData.motd; 
      
      }
   }

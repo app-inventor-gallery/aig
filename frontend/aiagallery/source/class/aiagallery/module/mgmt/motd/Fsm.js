@@ -72,13 +72,12 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
             
           },
           
-          // When we get an appear event, retrieve the category tags list. We
-          // only want to do it the first time, though, so we use a predicate
-          // to determine if it's necessary.
+          // When we get an appear event, retrieve the current motd if 
+          // there is one
           "appear"    :
           {
-            //"main.canvas" : 
-              //qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
+            "main.canvas" : 
+              qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
           },
 
           // When we get a disappear event
