@@ -28,7 +28,7 @@ qx.Mixin.define("aiagallery.dbif.MSystem",
      * @param motdContent {String}
      *   The actual string content of the new motd
      *
-     * @return {String || Error}
+     * @return {String}
      *   This returns the actual motd string, or an error if
      *   something went wrong
      */
@@ -61,7 +61,7 @@ qx.Mixin.define("aiagallery.dbif.MSystem",
     /** 
      * Get the existing motd
      *
-     * @return {String || Error}
+     * @return {String}
      *   This returns the actual motd content, or an error if
      *   something went wrong
      */
