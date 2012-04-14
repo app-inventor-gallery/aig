@@ -2308,6 +2308,38 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // Were there any query args specified?
       if (queryArgs.criteria)
       {
+        // Determine if this is a search for an app with an author's name. 
+        for(var i = 0; i < queryArgs.criteria.children.length; i++) {
+          if(queryArgs.criteria.children[i].field == "displayName")
+          {
+            var criteria = 
+            {
+              type  : "element",
+              field : "displayName",
+              value : queryArgs.criteria.children[0].value
+            }; 
+        
+            // get this user's id
+            var resultList = 
+              liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                    criteria);
+                       
+            // Should be just one result                       
+            if(resultList != 0)
+            {
+              queryArgs.criteria.children[0].value = resultList[0].id;
+            }
+            else 
+            {
+              // No results on that author search 
+            
+            }
+          
+            // Change the field of the criteria
+            queryArgs.criteria.children[0].field = "owner";  
+          }
+        }
+      
         // Yes. Issue the query.
         appQueryResults = this.appQuery(queryArgs.criteria, null, error);
       
@@ -2354,7 +2386,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
     /**
      * Performs three queries to retrive the Featured, Most Liked, and Newest. 
-     * This is for the front page ribbon.
+     * This is for the front page ribbon. Will also get the message of the day. 
      *
      * @param requestedFields {Map?}
      *   The list of fields to be returned in all of the results
@@ -2596,13 +2628,15 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             aiagallery.dbif.MApps._requestedFields(app, requestedFields);
           }
         });
-
+        
       //Construct map of data
+      // Grab the motd and put it into the map at the end
       var data = 
         {
           "Featured"     :    searchResponseFeatured,   
           "MostLiked"    :    searchResponseLiked,
-          "Newest"       :    searchResponseNewest
+          "Newest"       :    searchResponseNewest,
+          "Motd"         :    this.getMotd()
         };
 
       //Return the map containing the arrays containing the apps. 
@@ -2749,7 +2783,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             likesList;
       var             displayName;
       var             url;
-      var             bAddedOwner = false;
       var             ret = {};
 
       whoami = this.getWhoAmI();
@@ -2791,12 +2824,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         error.setMessage("Application is not available. " +
                          "It may have been removed recently.");
         return error;
-      }
- 
-      if (requestedFields.displayName && ! requestedFields.owner)
-      {
-        requestedFields.owner = "owner";
-        bAddedOwner = true;
       }
 
       if (requestedFields.displayName)
@@ -2903,12 +2930,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // If there were requested fields specified...
       if (requestedFields)
       {
-        // If we added the owner, ...
-        if (bAddedOwner)
-        {
-          // ... then remove it now
-          delete requestedFields.owner;
-        }
 
         // If the "comments" field was requested
         if (requestedFields["comments"])
@@ -2960,7 +2981,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       }
       
       // Not allowed to return the id of the app owner, remove it
-      delete ret.owner; 
+      delete ret.app.owner; 
       
       // Give 'em what they came for
       return ret;

@@ -244,7 +244,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     this.getChildControl("txtDescription");
     this.getChildControl("imgTags");
     this.getChildControl("txtTags");
-    this.getChildControl("txtAuthorId");
+    this.getChildControl("txtAuthorName");
     this.getChildControl("lblAuthorName");
 
     this.getChildControl("imgLikes");
@@ -257,7 +257,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     this.getChildControl("lstViewsOp");
     this.getChildControl("spnViews");
     this.getChildControl("imgAuthorId");
-    this.getChildControl("txtAuthorId");
+    this.getChildControl("txtAuthorName");
 
     this.getChildControl("imgCategories");
     this.getChildControl("lstCategories");
@@ -473,8 +473,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           this.getChildControl("lstCategories").setSelection(selection);
           break;
 
-        case "authorId":
-          this.getChildControl("txtAuthorId").setValue(data[field]);
+        case "authorName":
+          this.getChildControl("txtAuthorName").setValue(data[field]);
           break;
           
         case "likes":
@@ -577,7 +577,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             txtTitle       : getValue.textField,
             txtDescription : getValue.textField,
             txtTags        : getValue.textField,
-            txtAuthorId    : getValue.textField,
+            txtAuthorName  : getValue.textField,
 
             lstLikesOp     : getValue.list,
             spnLikes       : getValue.spinner,
@@ -670,11 +670,11 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
               data.tags = qx.lang.Array.unique(data.tags).sort();
               break;
               
-            case "txtAuthorId" :
+            case "txtAuthorName" :
               // Retrieve the data, convert it to lower case, remove embedded
               // extra spaces, and then split at spaces.
-              data.authorId =
-                qx.lang.String.trim(fieldData.txtAuthorId.toLowerCase());
+              data.authorName =
+                qx.lang.String.trim(fieldData.txtAuthorName.toLowerCase());
               break;
               
             case "lstLikesOp" :
@@ -776,7 +776,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           txtTitle       : clear.textField,
           txtDescription : clear.textField,
           txtTags        : clear.textField,
-          txtAuthorId    : clear.textField,
+          txtAuthorName  : clear.textField,
 
           lstLikesOp     : clear.list,
           spnLikes       : clear.spinner,
@@ -954,12 +954,12 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         this.__containerAdvanced._add(control, this.__advConfig.imgAuthorId);
         break;
 
-      case "txtAuthorId" :
+      case "txtAuthorName" :
         control = new qx.ui.form.TextField();
         control.set(
           {
             width       : 100,
-            placeholder : "Author's unique ID",
+            placeholder : "Author's Name",
             tabIndex    : 5
           });
 
@@ -975,7 +975,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
         control.addListener("input", f, this);
         control.addListener("changeValue", f, this);
 
-        this.__containerAdvanced._add(control, this.__advConfig.txtAuthorId);
+        this.__containerAdvanced._add(control, this.__advConfig.txtAuthorName);
         break;
 
       case "lblAuthorName" :
@@ -1322,7 +1322,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
           txtTags        : { row : 3, column : 3 },
           imgAuthorId    : { row : 4, column : 1 },
           lblAuthorId    : { row : 4, column : 2 },
-          txtAuthorId    : { row : 4, column : 3 },
+          txtAuthorName  : { row : 4, column : 3 },
           lblAuthorName  : { row : 4, column : 4, colSpan : 3 },
 
           imgLikes       : { row : 1, column : 4 },
@@ -1403,7 +1403,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       container.add(o, this.__advConfig.lblViews);
       
       // Add the author id label
-      o = new qx.ui.basic.Label(this.tr("Author ID"));
+      o = new qx.ui.basic.Label(this.tr("Author Name"));
       container.add(o, this.__advConfig.lblAuthorId);
     }
   }
