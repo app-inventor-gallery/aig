@@ -13,7 +13,7 @@
 qx.Class.define("aiagallery.module.mgmt.motd.Gui",
 {
   type : "singleton",
-  extend : qx.core.Object,
+  extend : qx.ui.core.Widget,
 
   members :
   {
@@ -30,17 +30,17 @@ qx.Class.define("aiagallery.module.mgmt.motd.Gui",
       var             canvas = module.canvas;
       
       // Buttons
-      var             submitBtn;
+      var             saveBtn;
       var             clearTextBtn;
       
       // Layout
       var             hBoxBtns;
-      var             hBox;
+      var             vBox;
       var             layout;
       
       // GUI Elements
       var             label;
-      var             motdTextArea; 
+      //var             motdTextArea; 
       
       // Create a layout for this page
       canvas.setLayout(new qx.ui.layout.VBox());
@@ -55,23 +55,23 @@ qx.Class.define("aiagallery.module.mgmt.motd.Gui",
       layout.setSpacing(10);      
       hBoxBtns = new qx.ui.container.Composite(layout);
       
-      // Create a submit motd button, this.tr
-      submitBtn = 
-        new qx.ui.form.Button(("Submit"));
-      submitBtn.set(
+      // Create a submit motd button
+      saveBtn = 
+        new qx.ui.form.Button(this.tr("Submit"));
+      saveBtn.set(
       {
         maxHeight : 24,
         width     : 150
       });
-      hBoxBtns.add(submitBtn);
-      submitBtn.addListener("execute", fsm.eventListener, fsm);
+      hBoxBtns.add(saveBtn);
+      saveBtn.addListener("execute", fsm.eventListener, fsm);
       
       // We'll be receiving events on the object so save its friendly name
-      fsm.addObject("submitBtn", 
-         submitBtn, "main.fsmUtils.disable_during_rpc");
+      fsm.addObject("saveBtn", 
+         saveBtn, "main.fsmUtils.disable_during_rpc");
 
       // Create a clear 
-      clearTextBtn = new qx.ui.form.Button(("Clear"));
+      clearTextBtn = new qx.ui.form.Button(this.tr("Clear"));
       clearTextBtn.set(
       {
         maxHeight : 24,
@@ -82,28 +82,31 @@ qx.Class.define("aiagallery.module.mgmt.motd.Gui",
       // Clear text box on press
       clearTextBtn.addListener("execute", function(e)
       {
-        motdTextArea.setValue("");  
+        this.motdTextArea.setValue("");  
       }, this);
       
       // Create a label for describing the textfields 
-      label = new qx.ui.basic.Label("Enter Message of the day here:");
+      label = new qx.ui.basic.Label(this.tr("Enter Message of the day here:"));
       vBox.add(label);
       
       // Create textarea for entering in a motd
-      motdTextArea = new qx.ui.form.TextArea;
-      motdTextArea.set(
+      this.motdTextArea = new qx.ui.form.TextArea;
+      this.motdTextArea.set(
       {
         maxWidth     : 500,
         height       : 250
       });
-      vBox.add(motdTextArea);
+      vBox.add(this.motdTextArea);
+      
+      // Set friendly name so we can get the text area value later
+      fsm.addObject("motdTextArea", 
+        this.motdTextArea, "main.fsmUtils.disable_during_rpc")
       
       // Add buttons to layout
       vBox.add(hBoxBtns);
       
       // Add to the page
       canvas.add(vBox);
-      
       
     },
 
@@ -142,6 +145,14 @@ qx.Class.define("aiagallery.module.mgmt.motd.Gui",
       // Dispatch to the appropriate handler, depending on the request type
       switch(requestType)
       {
+      // On appear if there is a current motd place it in the textArea
+      case "appear" :
+      
+        this.motdTextArea.setValue(response.data.result);
+      
+        break;
+      
+      
       default:
         throw new Error("Unexpected request type: " + requestType);
       }

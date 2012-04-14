@@ -50,7 +50,7 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
             var rpcRequest = this.popRpcRequest();
 
             // Call the standard result handler
-            var gui = aiagallery.module.testing.temp.Gui.getInstance();
+            var gui = aiagallery.module.mgmt.motd.Gui.getInstance();
             gui.handleResponse(module, rpcRequest);
 
             // Dispose of the request
@@ -68,7 +68,7 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
           "execute" :
           {
             
-            "queryBtn" : "Transition_Idle_to_AwaitRpcResult_via_query"
+            "saveBtn" : "Transition_Idle_to_AwaitRpcResult_via_saveBtn"
             
           },
           
@@ -101,7 +101,7 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
        * Cause: "appear" on canvas
        *
        * Action:
-       *  If this is the very first appear, retrieve the category list.
+       *  If this is the very first appear, retrieve the current if any motd. 
        */
 
       trans = new qx.util.fsm.Transition(
@@ -129,7 +129,16 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-         // If we wanted to do something as the page appeared, it would go here.
+         // Get the current motd if there is one
+         var request = 
+             this.callRpc(fsm,
+                          "aiagallery.features",
+                          "getMotd",
+                          []);
+                          
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "appear");                          
         }
       });
 
@@ -139,14 +148,14 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
         /*
        * Transition: Idle to Awaiting RPC Result
        *
-       * Cause: "Search" button pressed
+       * Cause: "Save" button pressed
        *
        * Action:
-       *  Initiate a request for the list of  matching applications.
+       *  Save the content in the textarea in a new or existing motd
        */
         
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_query",
+        "Transition_Idle_to_AwaitRpcResult_via_saveBtn",
       {
         "nextState" : "State_AwaitRpcResult",
 
@@ -154,27 +163,22 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          var             criteria;
-          var             criterium;
-          var             request;
-          var             selection;
-
-
-
-          // Issue the remote procedure call to execute the query
-          request =
-            this.callRpc(fsm,
-                         "aiagallery.features",
-                         "mobileRequest",
-                         [
-
-                          fsm.getObject("queryField").getValue()
-                           
-                        ]);
+         
+          var        motdText; 
+          
+          // Get the motd text
+          motdText = fsm.getObject("motdTextArea").getValue()
+         
+          // Update motd on db
+          var request =
+              this.callRpc(fsm,
+                           "aiagallery.features",
+                           "saveMotd",
+                           [motdText]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "mobileRequest");
+          request.setUserData("requestType", "save");
 
         }
       });
