@@ -489,7 +489,7 @@ qx.Class.define("aiagallery.main.Gui",
             bAllowed = false;
             [ 
               // These permissions allow access to the page
-              "setFeaturedApps"
+              "setMotd"
             ].forEach(
               function(rpcFunc)
               {

@@ -14,8 +14,8 @@ qx.Mixin.define("aiagallery.dbif.MSystem",
                          this.getMotd,
                          []);
 
-    this.registerService("aiagallery.features.saveMotd",
-                         this.saveMotd,
+    this.registerService("aiagallery.features.setMotd",
+                         this.setMotd,
                          [ "motdContent" ]);
 
   },
@@ -23,7 +23,7 @@ qx.Mixin.define("aiagallery.dbif.MSystem",
   members :
   {
     /** 
-     * Create a new motd or save a new message for an already existing motd
+     * Create a new motd or set a new message for an already existing motd
      *
      * @param motdContent {String}
      *   The actual string content of the new motd
@@ -32,7 +32,7 @@ qx.Mixin.define("aiagallery.dbif.MSystem",
      *   This returns the actual motd string, or an error if
      *   something went wrong
      */
-     saveMotd : function(motdContent)
+     setMotd : function(motdContent)
      {
        var             systemObj;
        var             systemObjData;

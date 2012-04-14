@@ -172,7 +172,7 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
           var request =
               this.callRpc(fsm,
                            "aiagallery.features",
-                           "saveMotd",
+                           "setMotd",
                            [motdText]);
 
           // When we get the result, we'll need to know what type of request
