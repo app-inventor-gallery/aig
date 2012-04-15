@@ -103,11 +103,13 @@ qx.Class.define("aiagallery.dbif.Constants",
       "setFeaturedApps" : "Specify the set of featured apps",
 
       /* Anonymous access...
-      "getAppList"    : "Get logged in user application list",
-      "appQuery"      : "Query for applications",
-      "getAppInfo"    : "Get application detail information",
+      "getAppList"               : "Get logged in user application list",
+      "getHomeRibbonData"        : "Retrieve apps displayed on home page",
+      "appQuery"                 : "Query for applications",
       "intersectKeywordAndQuery" : "Get intersection of keyword search and" +
-                                   "appQuery"
+                                   "appQuery",
+      "getAppListByList"         : "Get list of apps given list of UIDs"
+      "getAppInfo"               : "Get application detail information",
       ... */
       
       //
@@ -133,6 +135,13 @@ qx.Class.define("aiagallery.dbif.Constants",
       ... */
 
       //
+      // MSearch
+      //
+      /* Anonymous access...
+      "keywordSearch" : "Search for apps",
+      ... */
+
+      //
       // MTags
       //
       /* Anonymous access...
@@ -145,6 +154,7 @@ qx.Class.define("aiagallery.dbif.Constants",
       "addOrEditVisitor"           : "Add and edit visitors",
       "whitelistVisitors"          : "Edit the whitelist",
       "deleteVisitor"              : "Delete visitors",
+      "editProfile"                : "Edit user profile",
       "getVisitorListAndPGroups"   : "Retrieve list of visitors",
       
       //

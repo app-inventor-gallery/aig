@@ -313,6 +313,12 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         return true;            // Anonymous access
 
       //
+      // MSearch
+      //
+      case "keywordSearch":
+        return true;            // Anonymous access
+
+      //
       // MTags
       //
       case "getCategoryTags":
@@ -326,10 +332,10 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       case "deleteVisitor":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
-      case "getVisitorListAndPGroups":
+      case "editProfile":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
-      case "editProfile":
+      case "getVisitorListAndPGroups":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       //
