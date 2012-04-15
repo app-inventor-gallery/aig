@@ -2,6 +2,7 @@
  * Cell editor for all cells of the Applications table
  *
  * Copyright (c) 2011 Derrell Lipman
+ * Copyright (c) 2012 Mike Dawson
  *
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html
