@@ -266,8 +266,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-// Not sure what's going on here.  Works without this line.
-//          aiagallery.module.mgmt.applications.Fsm._stopTimer(fsm);
         }
       });
 
@@ -326,7 +324,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
                 flagsLabel.setValue("0");
 
                 // ... and dispose of the request
-// Why is this conditional necessary?
                 if (rpcRequest.request)
                 {
                   rpcRequest.request.dispose();

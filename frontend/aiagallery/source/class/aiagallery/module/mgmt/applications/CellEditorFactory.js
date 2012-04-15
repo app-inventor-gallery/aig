@@ -43,7 +43,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       windowTitle = this.tr("Edit App: ") + rowData.title;
 
       // Cell editor layout
-// TWEAK ME!
       var layout = new qx.ui.layout.Grid();
       layout.setColumnAlign(0, "right", "top");
       layout.setColumnWidth(0, 80);
@@ -104,7 +103,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       cellEditor.add(descriptionField, { row : 1, column : 1 });
      
       // Is there an image?
-// TESTME:  no image
       if (rowData.image1)
       {
         // Yes--display it with a "Remove Image" button below it.
@@ -126,7 +124,8 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
           });
         vBox.add(image, { flex : 1 });
 
-/*        // Remove for now--no function
+        /*
+        // Remove for now--no function
         // "Remove Image" button
         removeImageButton = new qx.ui.form.Button(this.tr("Remove Image"));
         removeImageButton.set(
@@ -140,11 +139,11 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
           });
         vBox.add(removeImageButton);
 
-// This won't be passed to FSM if no image; beware possible bug?
+         // This won't be passed to FSM if no image; beware possible bug?
         fsm.addObject("removeImage",
                        removeImageButton,
                        "main.fsmUtils.disable_during_rpc");
-*/
+         */
       }
 
 
