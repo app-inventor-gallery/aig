@@ -309,32 +309,35 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       cellEditor.add(flagGrid, {row: 3, column : 2});
 
 
-      // "Ok" and "Cancel" buttons
-      var buttonLayout = new qx.ui.layout.HBox();
-      buttonLayout.set(
+      // "Ok" and "Cancel" buttons, and user email
+      var bottomRowLayout = new qx.ui.layout.HBox();
+      bottomRowLayout.set(
         {
-          spacing: 4,
-          alignX : "right"
+          alignY : "middle",
+          spacing: 10
         });
-      var buttonPane = new qx.ui.container.Composite(buttonLayout);
-      buttonPane.set(
-        {
-          paddingTop: 11
-        });
-      cellEditor.add(buttonPane, {row: 4, column: 0, colSpan: 2});
 
-// Maybe OK button should be on left--not important ATM.
+      var bottomRow = new qx.ui.container.Composite(bottomRowLayout);
+      cellEditor.add(bottomRow, {row: 4, column: 1, colSpan: 2});
+
       var okButton =
         new qx.ui.form.Button(this.tr("Ok"), "icon/22/actions/dialog-ok.png");
       fsm.addObject("ok", okButton, "main.fsmUtils.disable_during_rpc");
       okButton.addListener("execute", fsm.eventListener, fsm);
-      buttonPane.add(okButton);
+      bottomRow.add(okButton);
 
       var cancelButton =
         new qx.ui.form.Button(this.tr("Cancel"), "icon/22/actions/dialog-cancel.png");
       fsm.addObject("cancel", cancelButton, "main.fsmUtils.disable_during_rpc");
       cancelButton.addListener("execute", fsm.eventListener, fsm);
-      buttonPane.add(cancelButton);
+      bottomRow.add(cancelButton);
+
+      // Spacer
+      bottomRow.add(new qx.ui.core.Widget(), { flex : 1 });
+
+      var emailLabel = new qx.ui.basic.Label("Email: " + rowData.email);
+      emailLabel.setSelectable(true);
+      bottomRow.add(emailLabel);
 
       // Save the input fields for access by getCellEditorValue() and the FSM
       cellEditor.setUserData("titleField", titleField);
