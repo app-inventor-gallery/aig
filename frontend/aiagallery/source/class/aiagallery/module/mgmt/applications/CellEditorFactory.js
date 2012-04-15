@@ -183,7 +183,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
      
       // Create a grid layout for it
       layout = new qx.ui.layout.Grid(4, 4);
-      layout.setColumnWidth(0, 60);
+      layout.setColumnWidth(0, 65);
       layout.setColumnWidth(1, 55);
       layout.setColumnWidth(2, 50);
       layout.setColumnWidth(3, 65);
@@ -214,7 +214,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
       newTag.setFilter(/[- a-zA-Z0-9]/); // only allow these characters in tags
       
       // Text placeholder for tags field
-      newTag.setPlaceholder("add tags");
+      newTag.setPlaceholder(this.tr("add tags"));
 
       grid.add(newTag, { row : 1, column : 1, colSpan : 2});
       var tagAdd = new qx.ui.form.Button(this.tr("Add tag"));
@@ -286,7 +286,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
 
       var flagNum = new qx.ui.container.Composite(layout);
 
-      flagNum.add(new qx.ui.basic.Label("Flags: "));
+      flagNum.add(new qx.ui.basic.Label(this.tr("Flags") + ": "));
 
       var numFlags = rowData.numCurFlags;  // Might be null (simData)
       var flagString = qx.lang.Type.isNumber(numFlags) ? numFlags.toString() : '0';
@@ -299,7 +299,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
 
       flagGrid.add(flagNum, { row : 0, column : 0});
 
-      var removeFlagsButton = new qx.ui.form.Button("Remove all flags");
+      var removeFlagsButton = new qx.ui.form.Button(this.tr("Remove all flags"));
       fsm.addObject("removeFlags",
                     removeFlagsButton,
                     "main.fsmUtils.disable_during_rpc");
@@ -325,13 +325,13 @@ qx.Class.define("aiagallery.module.mgmt.applications.CellEditorFactory",
 
 // Maybe OK button should be on left--not important ATM.
       var okButton =
-        new qx.ui.form.Button("Ok", "icon/22/actions/dialog-ok.png");
+        new qx.ui.form.Button(this.tr("Ok"), "icon/22/actions/dialog-ok.png");
       fsm.addObject("ok", okButton, "main.fsmUtils.disable_during_rpc");
       okButton.addListener("execute", fsm.eventListener, fsm);
       buttonPane.add(okButton);
 
       var cancelButton =
-        new qx.ui.form.Button("Cancel", "icon/22/actions/dialog-cancel.png");
+        new qx.ui.form.Button(this.tr("Cancel"), "icon/22/actions/dialog-cancel.png");
       fsm.addObject("cancel", cancelButton, "main.fsmUtils.disable_during_rpc");
       cancelButton.addListener("execute", fsm.eventListener, fsm);
       buttonPane.add(cancelButton);
