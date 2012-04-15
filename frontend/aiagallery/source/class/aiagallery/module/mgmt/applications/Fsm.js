@@ -23,11 +23,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
       var trans;
 
       var FSM = qx.util.fsm.FiniteStateMachine;
-// Debug
-      fsm.setDebugFlags(FSM.DebugFlags.EVENTS |
-                        FSM.DebugFlags.TRANSITIONS |
-                        FSM.DebugFlags.FUNCTION_DETAIL |
-                        FSM.DebugFlags.OBJECT_NOT_FOUND);
 
       // ------------------------------------------------------------ //
       // State: Idle
