@@ -2364,7 +2364,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
              }
              else
              {
-               throw new Error("Unrecognized criterion");
+               //Search is not based on author name
+               return; 
              }
            })(queryArgs.criteria);
         }
