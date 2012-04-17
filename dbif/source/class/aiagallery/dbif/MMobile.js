@@ -132,6 +132,9 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
             // Yup. Abort the request.
             throw error;
           }
+          
+          // Remove the owner field
+          delete obj["owner"];
         });
       }
       catch(error)
@@ -176,7 +179,6 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       // Request specific fields
       var requestedFields = 
       {
-        owner              : "owner",
         title              : "title",
         description        : "description",
         tags               : "tags",
@@ -284,6 +286,9 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
             // Yup. Abort the request.
             throw error;
           }
+
+          // Remove the owner field
+          delete obj["owner"];
         });
       }
       catch(error)
@@ -392,6 +397,9 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       results.forEach(function(obj)
         {
           obj["displayName"] = displayName;
+
+          // Remove the owner field
+          delete obj["owner"];
         });
      
       return results;
@@ -420,7 +428,6 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       // Request specific fields
       var requestedFields = 
       {
-        owner              : "owner",
         displayName        : "displayName",
         title              : "title",
         description        : "description",

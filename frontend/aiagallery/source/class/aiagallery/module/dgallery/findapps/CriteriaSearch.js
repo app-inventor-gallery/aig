@@ -191,7 +191,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
             {
               [
                 "uid",
-                "owner",
                 "image1",
                 "title",
                 "numLikes",

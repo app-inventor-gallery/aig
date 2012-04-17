@@ -186,7 +186,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
             {
               [
                 "uid",
-                "owner",
                 "image1",
                 "title",
                 "numLikes",

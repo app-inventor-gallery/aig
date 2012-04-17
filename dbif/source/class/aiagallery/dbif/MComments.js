@@ -176,6 +176,9 @@ qx.Mixin.define("aiagallery.dbif.MComments",
           // Add his display name, for return.
           commentObjData.displayName     = whoami.displayName;
 
+          // Remove the visitor field
+          delete commentObjData.visitor;
+
           // This includes newly-created key
           return commentObjData;  
         },
@@ -287,6 +290,9 @@ qx.Mixin.define("aiagallery.dbif.MComments",
               // Yup. Abort the request.
               throw error;
             }
+            
+            // Remove the visitor field
+            delete obj.visitor;
           });
       }
       catch(error)

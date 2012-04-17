@@ -248,12 +248,6 @@ qx.Class.define("aiagallery.widget.SearchResult",
       nullable : false
     },
 
-    owner :
-    {
-      check    : "String",
-      nullable : false
-    },
-
     image1 :
     {
       apply    : "_applyImage1",
@@ -589,7 +583,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
             cursor    : "pointer"
           });
 
-        // Owner clicks initiate a search for apps of that owner
+        // Author clicks initiate a search for apps of that author
         control.addListener(
           "click",
           function(e)
@@ -602,11 +596,8 @@ qx.Class.define("aiagallery.widget.SearchResult",
             e.stop();
 
             // Remove "by" from displayName
-            displayName = this.getDisplayName().replace("by", "");
+            displayName = this.getDisplayName().replace("by ", "");
 
-            // Trim off white space
-            displayName = displayName.trim();             
-            
             query  =
               {
                 authorName : displayName

@@ -1919,6 +1919,11 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               // ... then add the email address too
               app["email"] = email || owners[0].email || "<>";
             }
+            else
+            {
+              // Otherwise, it's a user query, so don't return the owner field
+              delete app["owner"];
+            }
 
             // Do special App Engine processing to scale images
             if (liberated.dbif.Entity.getCurrentDatabaseProvider() ==
@@ -2101,6 +2106,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           // Add the owner's display name
           app.displayName = displayName || owners[0].displayName || "<>";
           
+          // Remove the owner field
+          delete app.owner;
+
           // If there were requested fields specified...
           if (requestedFields)
           {
@@ -2306,81 +2314,107 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       }
 
       // Were there any query args specified?
-      if (queryArgs.criteria)
+      try
       {
-        // Determine if this is a search for an app with an author's name. 
-        for(var i = 0; i < queryArgs.criteria.children.length; i++) {
-          if(queryArgs.criteria.children[i].field == "displayName")
-          {
-            var criteria = 
-            {
-              type  : "element",
-              field : "displayName",
-              value : queryArgs.criteria.children[i].value
-            }; 
-        
-            // get this user's id
-            var resultList = 
-              liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
-                                    criteria);
-                       
-            // Should be just one result                       
-            if(resultList.length != 0)
-            {
-              queryArgs.criteria.children[i].value = resultList[0].id;
-            }
-            else 
-            {
-              // No results on that author search 
-            
-            }
-          
-            // Change the field of the criteria
-            queryArgs.criteria.children[i].field = "owner";  
-          }
-        }
-      
-        // Yes. Issue the query.
-        appQueryResults = this.appQuery(queryArgs.criteria, null, error);
-      
-        // If there was a problem
-        if (appQueryResults === error)
+        if (queryArgs.criteria)
         {
-          // Propagate the failure
-          return error; 
-        }
+          (function doCriterion(criterion)
+           {
+             var             criteria;
+             var             resultList;
 
-        // Unwrap the appQuery results
-        appQueryResultArr = appQueryResults["apps"];
-        
-        // If we did a keyword query...
-        if (bKeywordUsed)
-        {
-          // ... then remove any of the queryargs results not in keyword results
-          appQueryResultArr.forEach(
-            function(app)
-            {
-              // Does this app's uid exist in the keyword uid list?
-              if (qx.lang.Array.contains(keywordSearchResultArr, app.uid))
-              {
-                // Yup. Add it to the list to be returned
-                intersectionArr.push(app);
-              }
-            },
-            this);
-          
-          // We now have our final list. Return it.
-          return intersectionArr;
-        }
-        else
-        {
-          // No keywords, so we can return the app query results
-          return appQueryResultArr;
+             if (criterion.type == "op")
+             {
+               // Determine if this is a search for an app with an author's
+               // name.
+               for(i = 0; i < criterion.children.length; i++) 
+               {
+                 doCriterion(criterion.children[i]);
+               }
+             }
+             else if ((typeof criterion.type == "undefined" ||
+                       criterion.type == "element") &&
+                      criterion.field == "displayName")
+             {
+               criteria = 
+               {
+                 type  : "element",
+                 field : "displayName",
+                 value : criterion.value
+               }; 
+
+               // get this user's id
+               resultList = 
+                 liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                             criteria);
+
+               // Should be just one result                       
+               if (resultList.length != 0)
+               {
+                 // We can now look for this visitor by owner id rather than
+                 // by display name.
+                 criterion.field = "owner";  
+                 criterion.value = resultList[0].id;
+               }
+               else 
+               {
+                 // No results on that author search 
+                 throw new Error("No visitor with this display name");
+               }
+             }
+             else
+             {
+               throw new Error("Unrecognized criterion");
+             }
+           })(queryArgs.criteria);
         }
       }
+      catch (e)
+      {
+        // We could not map a display name to the visitor id. Define that to
+        // mean an empty result set.
+        return [];
+      }
+      
+      // Yes. Issue the query.
+      appQueryResults = this.appQuery(queryArgs.criteria, null, error);
 
-      // There was no app query, so we just need to retrieve the apps
-      // corresponding to the UIDs we got from the keyword search.
+      // If there was a problem
+      if (appQueryResults === error)
+      {
+        // Propagate the failure
+        return error; 
+      }
+
+      // Unwrap the appQuery results
+      appQueryResultArr = appQueryResults["apps"];
+
+      // If we did a keyword query...
+      if (bKeywordUsed)
+      {
+        // ... then remove any of the queryargs results not in keyword results
+        appQueryResultArr.forEach(
+          function(app)
+          {
+            // Does this app's uid exist in the keyword uid list?
+            if (qx.lang.Array.contains(keywordSearchResultArr, app.uid))
+            {
+              // Yup. Add it to the list to be returned
+              intersectionArr.push(app);
+            }
+          },
+          this);
+
+        // We now have our final list. Return it.
+        return intersectionArr;
+      }
+      else
+      {
+        // No keywords, so we can return the app query results
+        return appQueryResultArr;
+      }
+
+      // Do the query for these apps.
       return this.getAppListByList(keywordSearchResultArr);
     },
 
@@ -2436,12 +2470,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         requestedFields = {};
       }
       
-      if (requestedFields.displayName && ! requestedFields.owner)
-      {
-        requestedFields.owner = "owner";
-        bAddedOwner = true;
-      }
-
       searchResponseFeatured = 
         liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData", criteria);
 
@@ -2455,30 +2483,16 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
                                                  app["owner"]);
 
-            // FIXME: should never occur (but does)
-            if (true)
-            {
-              displayName = null;
-              if (owners.length == 0)
-              {
-                displayName = "<>";
-              }
-            }
-
             // Add his display name
-            app["displayName"] = displayName || owners[0].displayName || "<>";
+            app["displayName"] = owners[0].displayName || "<>";
           }
+
+          // Remove the owner field
+          delete app.owner;
 
           // If there were requested fields specified...
           if (requestedFields)
           {
-            // If we added the owner, ...
-            if (bAddedOwner)
-            {
-              // ... then remove it now
-              delete requestedFields.owner;
-            }
-
             // Send to the requestedFields function for removal and remapping
             aiagallery.dbif.MApps._requestedFields(app, requestedFields);
           }
@@ -2535,19 +2549,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
                                                  app["owner"]);
 
-            // FIXME: should never occur (but does)
-            if (true)
-            {
-              displayName = null;
-              if (owners.length == 0)
-              {
-                displayName = "<>";
-              }
-            }
-
             // Add his display name
-            app["displayName"] = displayName || owners[0].displayName || "<>";
+            app["displayName"] = owners[0].displayName || "<>";
           }
+
+          // Remove the owner field
+          delete app.owner;
 
           // If there were requested fields specified...
           if (requestedFields)
@@ -2600,19 +2607,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
                                                  app["owner"]);
 
-            // FIXME: should never occur (but does)
-            if (true)
-            {
-              displayName = null;
-              if (owners.length == 0)
-              {
-                displayName = "<>";
-              }
-            }
-
             // Add his display name
-            app["displayName"] = displayName || owners[0].displayName || "<>";
+            app["displayName"] = owners[0].displayName || "<>";
           }
+
+          // Remove the owner field
+          delete app.owner;
 
           // If there were requested fields specified...
           if (requestedFields)
@@ -2666,7 +2666,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      *  UIDs were specified.
      * 
      */
-    getAppListByList : function( uidArr, requestedFields)
+    getAppListByList: function( uidArr, requestedFields)
     {
       var             appList = [];
       var             owners;
@@ -2688,19 +2688,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
                                                app.owner);
 
-          // FIXME: should never occur (but does)
-          if (true)
-          {
-            displayName = null;
-            if (owners.length == 0)
-            {
-              displayName = "<>";
-            }
-          }
-
           // Add his display name
-          app.displayName = displayName || owners[0].displayName || "<>";
+          app.displayName = owners[0].displayName || "<>";
           
+          // Remove the owner field
+          delete app.owner;
+
           // Do special App Engine processing to scale images
           if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
           {
@@ -2720,7 +2713,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             // Send to the requestedFields function for removal and remapping
             aiagallery.dbif.MApps._requestedFields(app, requestedFields);
           }
-          
         });
 
       return appList;
@@ -2830,20 +2822,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
                                              ret.app.owner);
 
-        // FIXME: should never occur (but does)
-        if (true)
-        {
-          displayName = null;
-          if (owners.length == 0)
-          {
-            displayName = "<>";
-          }
-        }
-
         // Add his display name
-        ret.app.displayName = displayName || owners[0].displayName || "<>";
+        ret.app.displayName = owners[0].displayName || "<>";
       }
-
+      
       // If there's a user signed in...
       if (whoami && whoami.id)
       {
@@ -2909,15 +2891,15 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                                  criteria,
                                                  null);
 
-      if (requestedFields.displayName)
-      {
-        // Add the author's display name to each app
-        ret.byAuthor.forEach(
-          function(app)
-          {
-            app.displayName = displayName || owners[0].displayName || "<>";
-          });
-      }
+      // Add the author's display name to each app
+      ret.byAuthor.forEach(
+        function(app)
+        {
+          app.displayName = owners[0].displayName || "<>";
+
+          // Remove the owner field
+          delete app.owner;
+        });
 
       // If we were asked to stringize the values...
       if (bStringize)
