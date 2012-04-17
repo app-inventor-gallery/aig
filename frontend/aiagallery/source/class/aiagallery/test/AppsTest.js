@@ -143,7 +143,6 @@ qx.Class.define("aiagallery.test.AppsTest",
                                          // Requested Fields
                                          "comments" : "comments",
                                          "title"    : "title",
-                                         "owner"    : "author",
                                          "uid"      : "uid"
                                        },
                                       error);
@@ -154,13 +153,7 @@ qx.Class.define("aiagallery.test.AppsTest",
 
       this.assertInstance(appInfo, Object, "get app info");
       this.assertEquals(105, appInfo.app.uid, "incorrect app returned");
-      
-      this.assertKeyInMap("author", 
-                          appInfo.app,
-                          "requested fields unsuccessful");
-      
-      this.assert(typeof(appInfo["owner"]) === "undefined", 
-                  "requested fields very successful");
+     
 
       this.assertKeyInMap("comments", appInfo, "comments were returned");
       this.assertArray(appInfo.comments, "comments not returned correctly");

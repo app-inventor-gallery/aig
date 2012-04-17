@@ -2818,11 +2818,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         return error;
       }
 
+            // Issue a query for this visitor
+      owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                           ret.app.owner);
+      
       if (requestedFields.displayName)
       {
-        // Issue a query for this visitor
-        owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
-                                             ret.app.owner);
 
         // Add his display name
         ret.app.displayName = owners[0].displayName || "<>";
