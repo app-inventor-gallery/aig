@@ -152,8 +152,7 @@ qx.Class.define("aiagallery.test.AppsTest",
                   "Error: " + error.getCode() + ": " + error.getMessage());
 
       this.assertInstance(appInfo, Object, "get app info");
-      this.assertEquals(105, appInfo.app.uid, "incorrect app returned");
-     
+      this.assertEquals(105, appInfo.app.uid, "incorrect app returned");    
 
       this.assertKeyInMap("comments", appInfo, "comments were returned");
       this.assertArray(appInfo.comments, "comments not returned correctly");

@@ -2818,7 +2818,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         return error;
       }
 
-            // Issue a query for this visitor
+      // Issue a query for this visitor
       owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
                                            ret.app.owner);
       
