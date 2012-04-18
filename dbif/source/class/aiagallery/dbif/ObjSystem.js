@@ -29,7 +29,7 @@ qx.Class.define("aiagallery.dbif.ObjSystem",
   statics : 
   { 
     /** The key for the one and only ObjSystem object ever created */ 
-    SINGLETON : 0
+    SINGLETON : 1
   }, 
   
   defer : function(clazz)
@@ -39,7 +39,7 @@ qx.Class.define("aiagallery.dbif.ObjSystem",
     var databaseProperties =
       {
         /** The object's key */
-        "key" : "Number",
+        "key" : "Integer",
         
         /** Actual content of the message of the day */
         "motd" : "String",
