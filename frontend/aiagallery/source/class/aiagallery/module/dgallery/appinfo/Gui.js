@@ -294,7 +294,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
             // Create a new comment object for this comment
             comment = new aiagallery.module.dgallery.appinfo.Comment();
             comment.setText(commentData.text);
-            comment.setVisitor(commentData.visitor);
             comment.setDisplayName(commentData.displayName);
             comment.setTimestamp(commentData.timestamp);
             
@@ -375,7 +374,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         // Create a new comment object for this comment
         comment = new aiagallery.module.dgallery.appinfo.Comment();
         comment.setText(result.text);
-        comment.setVisitor(result.visitor);
         comment.setDisplayName(result.displayName);
         comment.setTimestamp(result.timestamp);
 
