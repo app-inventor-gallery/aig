@@ -256,7 +256,8 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
           isAdmin: false,
           logoutUrl: "undefined",
           permissions: [],
-          displayName :  "Billy The Kid"
+          displayName :  "Billy The Kid",
+	  displayName_lc: "billy the kid"
         });
 
       // Ensure the database is properly initialized
@@ -322,8 +323,9 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
           
       queryResults = 
         dbifSim.keywordSearch(["should"], ["description"], null, error);
-        
-      this.assertEquals(queryResults.length, 0, "#" + i++ + " " +
+      
+      //Should find the word correctly
+      this.assertEquals(queryResults.length, 1, "#" + i++ + " " +
         "Word Detected in ObjSearch that should not be there" +
         error.stringify());
         

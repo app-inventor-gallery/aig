@@ -130,7 +130,7 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
       var error = new liberated.rpc.error.Error("2.0");
       
       // testing by_developer
-      mobileRequest = dbifSim.mobileRequest("by_developer:1003:0:1",
+      mobileRequest = dbifSim.mobileRequest("by_developer:joe blow:0:1",
                                            error);
 
       // Ensure that an error was not returned
@@ -181,10 +181,6 @@ qx.Class.define("aiagallery.test.MobileRequestTest",
                   "Error: " + error.getCode() + ": " + error.getMessage());
       
       this.assertObject(mobileRequest, "mobile request getinfo returns object");
-      
-      this.assertKeyInMap("owner",
-                          mobileRequest.app,
-                          "apps retrieved from mobile getinfo");
 
       this.assertKeyInMap("displayName",
                           mobileRequest.app,
