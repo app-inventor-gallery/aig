@@ -110,6 +110,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Fsm",
             
           // Issue the remote procedure call to execute the query.
           // In essence get the front page ribbons.
+          // Also grab the MOTD
           var request =
               this.callRpc(fsm,
                          "aiagallery.features",

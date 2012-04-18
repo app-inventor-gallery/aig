@@ -2422,7 +2422,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
     /**
      * Performs three queries to retrive the Featured, Most Liked, and Newest. 
-     * This is for the front page ribbon.
+     * This is for the front page ribbon. Will also get the message of the day. 
      *
      * @param requestedFields {Map?}
      *   The list of fields to be returned in all of the results
@@ -2630,13 +2630,15 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             aiagallery.dbif.MApps._requestedFields(app, requestedFields);
           }
         });
-
+        
       //Construct map of data
+      // Grab the motd and put it into the map at the end
       var data = 
         {
           "Featured"     :    searchResponseFeatured,   
           "MostLiked"    :    searchResponseLiked,
-          "Newest"       :    searchResponseNewest
+          "Newest"       :    searchResponseNewest,
+          "Motd"         :    this.getMotd()
         };
 
       //Return the map containing the arrays containing the apps. 
