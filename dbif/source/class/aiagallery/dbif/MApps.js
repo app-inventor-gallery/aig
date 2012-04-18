@@ -2318,6 +2318,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       {
         if (queryArgs.criteria)
         {  
+          // Determine if this is a search for an app with an author's name.
           (function doCriterion(criterion)
            {
              var             criteria;
@@ -2325,8 +2326,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
              if (criterion.type == "op")
              {
-               // Determine if this is a search for an app with an author's
-               // name.
                for(i = 0; i < criterion.children.length; i++) 
                {
                  doCriterion(criterion.children[i]);
@@ -2369,44 +2368,44 @@ qx.Mixin.define("aiagallery.dbif.MApps",
              }
            })(queryArgs.criteria);
            
-           //Issue the query.
-           appQueryResults = this.appQuery(queryArgs.criteria, null, error);
+          //Issue the query.
+          appQueryResults = this.appQuery(queryArgs.criteria, null, error);
 
-           // If there was a problem
-           if (appQueryResults === error)
-           {
-             // Propagate the failure
-             return error; 
-           }
+          // If there was a problem
+          if (appQueryResults === error)
+          {
+            // Propagate the failure
+            return error; 
+          }
 
-           // Unwrap the appQuery results
-           appQueryResultArr = appQueryResults["apps"];
+          // Unwrap the appQuery results
+          appQueryResultArr = appQueryResults["apps"];
 
-           // If we did a keyword query...
-           if (bKeywordUsed)
-           {
-             // ... then remove any of the queryargs results not in keyword results
-             appQueryResultArr.forEach(
-             function(app)
-             {
-               // Does this app's uid exist in the keyword uid list?
-               if (qx.lang.Array.contains(keywordSearchResultArr, app.uid))
-               {
-                 // Yup. Add it to the list to be returned
-                 intersectionArr.push(app);
-               }
-             },
-             this);
+          // If we did a keyword query...
+          if (bKeywordUsed)
+          {
+            // ... then remove any of the queryargs results not in keyword
+            // results
+            appQueryResultArr.forEach(
+              function(app)
+              {
+                // Does this app's uid exist in the keyword uid list?
+                if (qx.lang.Array.contains(keywordSearchResultArr, app.uid))
+                {
+                  // Yup. Add it to the list to be returned
+                  intersectionArr.push(app);
+                }
+              },
+              this);
 
-             // We now have our final list. Return it.
-             return intersectionArr;
+            // We now have our final list. Return it.
+            return intersectionArr;
           }
           else
           {
             // No keywords, so we can return the app query results
             return appQueryResultArr;
           }
-           
         }
       }
       catch (e)

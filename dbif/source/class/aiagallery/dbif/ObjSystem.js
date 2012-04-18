@@ -1,5 +1,6 @@
 /**
- * Copyright (c) 2012 Derrell Lipman and Paul Geromini
+ * Copyright (c) 2012 Paul Geromini
+ * Copyright (c) 2012 Derrell Lipman
  * 
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html 
@@ -27,7 +28,7 @@ qx.Class.define("aiagallery.dbif.ObjSystem",
   
   statics : 
   { 
-    /** Ensure that only one ObjSystem object is ever created */ 
+    /** The key for the one and only ObjSystem object ever created */ 
     SINGLETON : 0
   }, 
   

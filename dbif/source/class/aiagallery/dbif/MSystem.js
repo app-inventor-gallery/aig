@@ -1,5 +1,6 @@
 /**
- * Copyright (c) 2012 Derrell Lipman and Paul Geromini 
+ * Copyright (c) 2012 Paul Geromini 
+ * Copyright (c) 2012 Derrell Lipman
  *
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html
