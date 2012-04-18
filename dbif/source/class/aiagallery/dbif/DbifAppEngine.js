@@ -112,8 +112,20 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
           {
             // Yup, he exists.
             data = visitor.getData();
-            displayName = (data.displayName ||
-                           this.__randNameGen(visitor, email));
+            
+            // To allow for backwards compatibility, where the displayName
+            // fied was not lower-case canonicalized, force a random name
+            // generation the first time we find a visitor without a
+            // canonicalized display name.
+            if (! data.displayName_lc)
+            {
+              displayName = this.__randNameGen(visitor, email);
+            }
+            else
+            {
+              displayName = (data.displayName ||
+                             this.__randNameGen(visitor, email));
+            }
             permissions = 
               aiagallery.dbif.MVisitors.getVisitorPermissions(data);
           }
