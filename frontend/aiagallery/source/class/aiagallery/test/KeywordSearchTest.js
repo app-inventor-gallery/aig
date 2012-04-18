@@ -257,7 +257,7 @@ qx.Class.define("aiagallery.test.KeywordSearchTest",
           logoutUrl: "undefined",
           permissions: [],
           displayName :  "Billy The Kid",
-	  displayName_lc: "billy the kid"
+          displayName_lc: "billy the kid"
         });
 
       // Ensure the database is properly initialized
