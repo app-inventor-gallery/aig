@@ -1,5 +1,6 @@
 /**
- * Copyright (c) 2012 Derrell Lipman and Paul Geromini
+ * Copyright (c) 2012 Paul Geromini
+ * Copyright (c) 2012 Derrell Lipman
  * 
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html 
@@ -67,17 +68,14 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
           // On the clicking of a button, execute is fired
           "execute" :
           {
-            
             "saveBtn" : "Transition_Idle_to_AwaitRpcResult_via_saveBtn"
-            
           },
           
           // When we get an appear event, retrieve the current motd if 
           // there is one
           "appear"    :
           {
-            "main.canvas" : 
-              qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
+            "main.canvas" : "Transition_Idle_to_AwaitRpcResult_via_appear"
           },
 
           // When we get a disappear event
@@ -91,8 +89,6 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
       // Replace the initial Idle state with this one
       fsm.replaceState(state, true);
 
-
-      // The following transitions have a predicate, so must be listed first
 
       /*
        * Transition: Idle to Idle
@@ -121,14 +117,14 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
                           
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "getMotd");                          
+          request.setUserData("requestType", "getMotd");
         }
       });
 
       state.addTransition(trans);
 
 
-        /*
+      /*
        * Transition: Idle to Awaiting RPC Result
        *
        * Cause: "Save" button pressed
@@ -150,7 +146,7 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
           var        motdText; 
           
           // Get the motd text
-          motdText = fsm.getObject("motdTextArea").getValue()
+          motdText = fsm.getObject("motdTextArea").getValue();
          
           // Update motd on db
           var request =
@@ -174,7 +170,6 @@ qx.Class.define("aiagallery.module.mgmt.motd.Fsm",
 
       // Add the AwaitRpcResult state and all of its transitions
       this.addAwaitRpcResultState(module);
-
     }
   }
 });

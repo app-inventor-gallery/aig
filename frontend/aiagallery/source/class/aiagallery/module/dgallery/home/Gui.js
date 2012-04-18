@@ -212,7 +212,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       vbox.add(motdLabel);
       
       // Add a MOTD text 
-      this.motdText = new qx.ui.basic.Label()  
+      this.motdText = new qx.ui.basic.Label();
       this.motdText.set(
         {
           rich         : true,
@@ -223,7 +223,8 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // Add listener to hide motd label if the actual motd is empty
       this.motdText.addListener("changeValue", function(e) 
       {
-        if(this.motdText.getValue().trim() == ""){
+        if(this.motdText.getValue().trim() == "")
+        {
           motdLabel.hide(); 
         } 
         else

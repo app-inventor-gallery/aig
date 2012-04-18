@@ -1,5 +1,6 @@
 /**
- * Copyright (c) 2012 Derrell Lipman and Paul Geromini 
+ * Copyright (c) 2012 Paul Geromini 
+ * Copyright (c) 2012 Derrell Lipman
  * 
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html 
@@ -56,8 +57,7 @@ qx.Class.define("aiagallery.module.mgmt.motd.Gui",
       hBoxBtns = new qx.ui.container.Composite(layout);
       
       // Create a submit motd button
-      saveBtn = 
-        new qx.ui.form.Button(this.tr("Submit"));
+      saveBtn = new qx.ui.form.Button(this.tr("Submit"));
       saveBtn.set(
       {
         maxHeight : 24,
@@ -67,8 +67,7 @@ qx.Class.define("aiagallery.module.mgmt.motd.Gui",
       saveBtn.addListener("execute", fsm.eventListener, fsm);
       
       // We'll be receiving events on the object so save its friendly name
-      fsm.addObject("saveBtn", 
-         saveBtn, "main.fsmUtils.disable_during_rpc");
+      fsm.addObject("saveBtn", saveBtn, "main.fsmUtils.disable_during_rpc");
 
       // Create a clear 
       clearTextBtn = new qx.ui.form.Button(this.tr("Clear"));
@@ -100,14 +99,14 @@ qx.Class.define("aiagallery.module.mgmt.motd.Gui",
       
       // Set friendly name so we can get the text area value later
       fsm.addObject("motdTextArea", 
-        this.motdTextArea, "main.fsmUtils.disable_during_rpc")
+                    this.motdTextArea,
+                    "main.fsmUtils.disable_during_rpc");
       
       // Add buttons to layout
       vBox.add(hBoxBtns);
       
       // Add to the page
       canvas.add(vBox);
-      
     },
 
     
@@ -147,13 +146,10 @@ qx.Class.define("aiagallery.module.mgmt.motd.Gui",
       {
       // On appear if there is a current motd place it in the textArea
       case "getMotd" :
-      
         this.motdTextArea.setValue(response.data.result);
-      
         break;
       
       case "setMotd" : 
-      
         // Do nothing 
         break;
       
