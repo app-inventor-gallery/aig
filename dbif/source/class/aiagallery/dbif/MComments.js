@@ -265,15 +265,31 @@ qx.Mixin.define("aiagallery.dbif.MComments",
     getComments : function(appId, resultCriteria, error)
     {
       var             commentList;
+      var             criteria;
   
+      // Retrieve all Active comments for this app
+      criteria = 
+        {
+          type : "op",
+          method : "and",
+          children : 
+          [
+            {
+              type : "element",
+              field: "app",
+              value: appId
+            },
+            {
+              type: "element",
+              field: "status",
+              value: aiagallery.dbif.Constants.Status.Active 
+            }
+          ]
+        };
 
       // Issue a query for all comments, with limit and offset settings applied
       commentList = liberated.dbif.Entity.query("aiagallery.dbif.ObjComments", 
-                                                {
-                                                  type : "element",
-                                                  field: "app",
-                                                  value: appId
-                                                },
+                                                criteria,
                                                 resultCriteria);
 
       try
