@@ -2466,18 +2466,25 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      */
     getAppListByList: function( uidArr, requestedFields)
     {
+      var             app;
       var             appList = [];
       var             owners;
       var             displayName;
       var             url;
       
-      uidArr.forEach(function(uid)
+      uidArr.forEach(
+        function(uid)
+        {
+          app = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData", 
+                                            uid)[0];
+          
+          // Ignore apps which are not active
+          if (app.status == aiagallery.dbif.Constants.Status.Active)
           {
-            appList.push(
-              liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData", 
-                                          uid)[0]);
-          });
-      
+            appList.push(app);
+          }
+        });
+
       // FIXME: Manipulate each App individually (AAAAAH!!!!)
       appList.forEach(
         function(app)
