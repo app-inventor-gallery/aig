@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2011 Derrell Lipman
+ * Copyright (c) 2012 Mike Dawson
  *
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html
@@ -21,6 +22,8 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
       var fsm = module.fsm;
       var state;
       var trans;
+
+      var FSM = qx.util.fsm.FiniteStateMachine;
 
       // ------------------------------------------------------------ //
       // State: Idle
@@ -127,12 +130,11 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var selection = selectionModel.getSelectedRanges()[0].minIndex;
           var data = table.getTableModel().getDataAsMapArray()[selection];
 
-//console.log("mgmt/apps--Transition_Idle_to_AwaitRpcResult_via_deleteApp -- data[]: " + qx.lang.Json.stringify(data));
           // Issue a Delete App call
           var request =
             this.callRpc(fsm,
                           "aiagallery.features",
-                          "deleteApp",
+                          "mgmtDeleteApp",
                           [
                             data.uid
                           ]);
@@ -231,19 +233,13 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
         "ontransition" : function(fsm, event)
         {
           // Issue the remote procedure call to get the application list.
-          // Request that the permissions and status be converted to strings
-          // for us.
+          // (Maybe could have specified descending sort by flags here,
+          // rather than in Gui.js getAppListAll--let the back end do the work.)
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
                          "getAppListAll",
-// Superfluous 5th param?   ->  ->  ->  ->  ->  ->  vvvv
-//                         [true, null, null, null, true]);
-//                         [true, null, null, null]);    // to bStringize...
-                       [32, null, null, null]);    // image size
-// Two issues:
-// - Should 1st param, bStringize, be true (as in mystuff) or null (as in myapps)?
-// - Less importantly--specify a default sortCriteria?
+                         [32, null, null, null]);    // image size
 
           // When we get the result, we'll need to know what type of request
           // we made.
@@ -271,7 +267,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-//          aiagallery.module.mgmt.applications.Fsm._stopTimer(fsm);
         }
       });
 
@@ -321,12 +316,31 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
             }
             else
             {
-              // It succeeded. Resubmit the event to move us back to Idle
-              fsm.eventListener(event);
+              // Success! Was it a clearAppFlags RPC?
+              if (rpcRequest.getUserData("requestType") == "clearAppFlags")
+              {
+                // Yes. Reset cell editor flag count...
+                var cellEditor = this.getUserData("cellEditor");
+                var flagsLabel = cellEditor.getUserData("flagsLabel");
+                flagsLabel.setValue("0");
 
-              // Push the RPC request back on the stack so it's available for
-              // the next transition.
-              this.pushRpcRequest(rpcRequest);
+                // ... and dispose of the request
+                if (rpcRequest.request)
+                {
+                  rpcRequest.request.dispose();
+                  rpcRequest.request = null;
+                }
+                // Remain in the EditApp state
+              }
+              else
+              {
+                // Not a clearAppFlags RPC. Resubmit the event to move us back to Idle.
+                fsm.eventListener(event);
+
+                // Push the RPC request back on the stack so it's available for
+                // the next transition.
+                this.pushRpcRequest(rpcRequest);
+              }
             }
           }
         },
@@ -338,7 +352,9 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
             // When the Ok button is pressed in the cell editor
             "ok" : "Transition_EditApp_to_AwaitRpcResult_via_ok",
 
-            "cancel" : "Transition_EditApp_to_Idle_via_cancel"
+            "cancel" : "Transition_EditApp_to_Idle_via_cancel",
+
+            "removeFlags" : "Transition_EditApp_to_AwaitRpcResult_via_removeFlags"
           },
 
           // When we received a "completed" event on RPC
@@ -373,50 +389,70 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var             appTitle;
           var             description;
           var             selection;
-          var             internal = { permissions : [], status : null };
           var             request;
+          var             categories;
+          var             additionalTags;
+          var             tags;
+          var             statusName;
+          var             status;
 
           // Retrieve the cell editor and cell info
           cellEditor = this.getUserData("cellEditor");
           cellInfo = this.getUserData("cellInfo");
 
           // Retrieve the values from the cell editor
-          uid            = cellEditor.getUserData("uid");
+
+          // One-liners
+          uid = cellEditor.getUserData("uid");
           appTitle = cellEditor.getUserData("titleField").getValue();
           description = cellEditor.getUserData("descriptionField").getValue();
 
-// also required:  owner, tags, source, image1
-// Get them from the table, for the moment
+          // Create the tags list out of a combination of the categories and
+          // additionalTags lists.
+          categories     = cellEditor.getUserData("categories");
+          additionalTags = cellEditor.getUserData("additionalTags");
+          tags = [];
 
-          var row = cellInfo.row;
-          var table = cellInfo.table;
-          var dataModel = table.getTableModel();
-          var rowData = dataModel.getRowDataAsMap(row);
+          // Add the selected categories
+          selection = categories.getSelection();
+          selection.forEach(
+            function(item)
+            {
+              // Add this selection to the tags list
+              tags.push(item.getLabel());
+            });
 
-          var owner = rowData.owner;
-          var tags = rowData.tags;
-          var source = rowData.source;
-          var image1 = rowData.image1;
+          // Add the selected additional tags
+          selection = additionalTags.getSelectables();
+          selection.forEach(
+            function(item)
+            {
+              // Add this selection to the tags list
+              tags.push(item.getLabel());
+            });
+
+          // Status
+          // (Former bug: Status is not inverse to StatusToName (e.g.
+          // Pending/"Under Review", and NotSaved/"Not Saved!"), so don't 
+          // use it to determine status!)
+          statusName = cellEditor.getUserData("statusBox").getSelection()[0].getLabel();
+          var StatusToName = aiagallery.dbif.Constants.StatusToName;
+          status = StatusToName.indexOf(statusName);
 
           // Save the request data
           var requestData =
             {
               title       : appTitle,
               description : description,
-              owner       : owner,
               tags        : tags,
-              source      : source,
-              image1      : image1
+              status      : status
             };
  
-          // Issue an Add Or Edit Application call.
+          // Issue an Edit Application call.
           request = this.callRpc(fsm,
                      "aiagallery.features",
                      "mgmtEditApp",
                      [ uid, requestData ]);
-
-          // Save the user id in the request data too
-          requestData.uid = uid;
 
           // Save the request data
           request.setUserData("requestData", requestData);
@@ -425,9 +461,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           // we made.
 
           request.setUserData("requestType", "mgmtEditApp");
-
-//          // Save the permissions and status
-//          request.setUserData("internal", internal);
         }
       });
 
@@ -454,9 +487,8 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var             cellEditor;
           var             cellInfo;
 
-          // Retrieve the cell editor and cell info
+          // Retrieve the cell editor
           cellEditor = this.getUserData("cellEditor");
-//          cellInfo = this.getUserData("cellInfo");
 
           // Retrieve the table object
           var table = fsm.getObject("table");
@@ -464,18 +496,14 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           // Tell the table we're no longer editing
           table.cancelEditing();
 
+          // Remove Fsm objects added by cell editor
+          fsm.removeObject("ok");
+          fsm.removeObject("cancel");
+          //fsm.removeObject("removeImage");
+          fsm.removeObject("removeFlags");
+
           // close the cell editor
           cellEditor.close();
-
-/* // This won't happen since not adding apps...
-          // If we created this cell editor (cellInfo has only 'table')...
-          if (typeof(cellInfo.row) == "undefined")
-          {
-            // ... then clean it up. (If editing, Table will clean it up.)
-            cellEditor.destroy();
-            cellEditor = null;
-          }
-*/
 
           // We can remove the cell editor and cell info from our own user
           // data now.
@@ -485,6 +513,48 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
       });
 
       state.addTransition(trans);
+
+
+      /*
+       * Transition: EditApp to AwaitRpcResult
+       *
+       * Cause: "execute" on "Remove Flags" button in cell editor
+       *
+       * Action:
+       *  Issue an RPC to remove flags for the app
+       */
+
+      trans = new qx.util.fsm.Transition(
+        "Transition_EditApp_to_AwaitRpcResult_via_removeFlags",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var             cellEditor;
+          var             uid;
+          var             request;
+
+          // Retrieve the UID from the cell editor
+          cellEditor = this.getUserData("cellEditor");
+          uid = cellEditor.getUserData("uid");
+ 
+          // Issue a Clear Flags call.
+          request = this.callRpc(fsm,
+                     "aiagallery.features",
+                     "clearAppFlags",
+                     [ uid ]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "clearAppFlags");
+        }
+      });
+
+      state.addTransition(trans);
+
 
       /*
        * Transition: EditApp to Idle
@@ -507,10 +577,8 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           var             cellEditor;
           var             cellInfo;
           var             rpcRequest;
-          var             requestData;
           var             response;
           var             result;
-//          var             internal;
           var             table;
           var             dataModel;
           var             permissions;
@@ -522,11 +590,8 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           // Get the cell editor and the request data from the RPC request
           cellEditor = this.getUserData("cellEditor");
           cellInfo = this.getUserData("cellInfo");
-          requestData = rpcRequest.getUserData("requestData");
           response = rpcRequest.getUserData("rpc_response");
           result = response.data.result;
-
-//          internal = rpcRequest.getUserData("internal");
 
           // We'll also need the Table object, from the FSM
           table = fsm.getObject("table");
@@ -534,52 +599,19 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           // Get the table's data model
           dataModel = table.getTableModel();
 
-/* Don't need any of this stuff!
-          var fields =
-            [
-              "uid",
-              "title",
-              "description",
-              "image1",
-              "source",
-              "sourceFileName",
-              "tags"
-            ];
-
-          // Create the row data for the table
-          fields.forEach(
-            function(field)
-            {
-              
-            });
-
-          // Create the row data for the table
-          rowData.uid          = result.uid;
-          rowData.title        = result.title;
-          rowData.description  = result.description;
-          rowData.image1       = result.image1;
-          rowData.image2       = result.image2;
-          rowData.image3       = result.image3;
-          rowData.prevAuthors  = result.prevAuthors;
-          rowData.tags         = result.tags.join(", ");
-          rowData.sourceFileName = result.sourceFileName;
-          rowData.apkFileName = result.apkFileName;
-          rowData.uploadTime   = result.uploadTime;
-          rowData.numLikes     = result.numLikes;
-          rowData.numDownloads = result.numDownloads;
-          rowData.numViewed    = result.numViewed;
-          rowData.status       = statusCodes[result.status];
-*/
 
           // Put the data where it belongs. Preserve hidden data and sort order.
-//          dataModel.setRowsAsMapArray( [ rowData ], cellInfo.row, true, false);
           dataModel.setRowsAsMapArray( [ result ] , cellInfo.row, true, false);
-// Might need to munge tags and status here!
 
           // Save the data so that the cell editor's getCellEditorValue()
           // method can retrieve it.
-// ??
-          cellEditor.setUserData("newData", rowData);
+          cellEditor.setUserData("newData", result);
+
+          // Remove Fsm objects added by cell editor
+          fsm.removeObject("ok");
+          fsm.removeObject("cancel");
+          //fsm.removeObject("removeImage");
+          fsm.removeObject("removeFlags");
 
           // close the cell editor
           cellEditor.close();

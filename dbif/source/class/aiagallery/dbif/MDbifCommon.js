@@ -278,8 +278,10 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
 
       case "addOrEditApp":
       case "deleteApp":
+      case "mgmtDeleteApp":
       case "getAppListAll":
       case "mgmtEditApp":
+      case "clearAppFlags":
       case "setFeaturedApps":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 

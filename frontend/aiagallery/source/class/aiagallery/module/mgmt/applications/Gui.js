@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2011 Derrell Lipman
+ * Copyright (c) 2012 Mike Dawson
  *
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html
@@ -72,8 +73,6 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
 
       // Column info.  Width parameters 1*, 2* indicate flex; see docs for
       // qx.ui.table.columnmodel.resizebehavior.Default.setWidth()
-      // Re-titled image columns "Image <n>" to "I<n>", and widened 24 to 30 px,
-      // to make title visible.
       var columns =
         [
           {
@@ -104,9 +103,9 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
             colSet  : { width : "2*" }
           },
           {
-            heading : this.tr("Tags"),
-            id      : "tags",
-            colSet  : { width : 120 }
+            heading : this.tr("Flags"),
+            id      : "numCurFlags",
+            colSet  : { width : 50 }
           },
           {
             heading : this.tr("Status"),
@@ -114,45 +113,33 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
             colSet  : { width : 50 }
           },
           {
-            heading : this.tr("Flags"),
-            id      : "numCurFlags",
-            colSet  : { width : 40 }
+            heading : this.tr("Tags"),
+            id      : "tags",
+            colSet  : { width : 120 }
           },
           {
             heading : this.tr("Views"),
             id      : "numViewed",
-            colSet  : { width : 40 }
+            colSet  : { width : 50 }
           },
           {
             heading : this.tr("DLs"),
             id      : "numDownloads",
-            colSet  : { width : 40 }
+            colSet  : { width : 50 }
           },
           {
             heading : this.tr("Likes"),
             id      : "numLikes",
-            colSet  : { width : 40 }
+            colSet  : { width : 50 }
           },
           {
             heading : this.tr("Coms"),
             id      : "numComments",
-            colSet  : { width : 40 }
+            colSet  : { width : 50 }
           },
           {
-            heading : this.tr("I1"),
+            heading : this.tr("Im"),
             id      : "image1",
-            colSet  : { width : 30 },
-            type    : "image"
-          },
-          {
-            heading : this.tr("I2"),
-            id      : "image2",
-            colSet  : { width : 30 },
-            type    : "image"
-          },
-          {
-            heading : this.tr("I3"),
-            id      : "image3",
             colSet  : { width : 30 },
             type    : "image"
           }
@@ -200,7 +187,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
       // Specify the resize behavior. Obtain the behavior object to manipulate
       var resizeBehavior = tcm.getBehavior();
 
-      // We'll use our cell editor factory for getting editor of for any column
+      // We'll use our cell editor factory for getting editor for any column
       var editor = new aiagallery.module.mgmt.applications.CellEditorFactory();
 
       // Set cell editor factory and behavior for each column
@@ -214,6 +201,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
           resizeBehavior.set(col, elem.colSet);
 
           // If this is an image column...
+          // (this made a little more sense when there were multiple image cols)
           if (elem.type && elem.type == "image")
           {
             // Instantiate an image cell renderer
@@ -223,6 +211,37 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
             o.setRepeat("scale");
 
             // Use this cell renderer for the specified column
+            tcm.setDataCellRenderer(col, o);
+          }
+
+          // If this is the status column, replace values with names
+          if (elem.id == "status")
+          {
+            var o = new qx.ui.table.cellrenderer.Replace();
+            o.setReplaceFunction(
+              function(value)
+              {
+                // Null?  (Is that possible?)
+                if (value === null)
+                {
+                  return "";
+                }
+                return aiagallery.dbif.Constants.StatusToName[value];
+              }
+            );
+            tcm.setDataCellRenderer(col, o);
+          }
+
+          // If this is the tags column, replace arrays with strings separated by ', '
+          if (elem.id == "tags")
+          {
+            var o = new qx.ui.table.cellrenderer.Replace();
+            o.setReplaceFunction(
+              function(value)
+              {
+                return value.join(", ");
+              }
+            );
             tcm.setDataCellRenderer(col, o);
           }
         },
@@ -298,6 +317,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
       var             requestType = rpcRequest.getUserData("requestType");
       var             cellEditor;
       var             table;
+      var             model;
       var             deletedRow;
 
       if (response.type == "failed")
@@ -313,18 +333,62 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
       {
       case "getAppListAll":
         table = fsm.getObject("table");
+        model = table.getTableModel();
 
         // Set the entire data model given the result array
         // 2nd parameter, "rememberMaps", set to true (default: false), so that
-        // columns not in the model are accessible (such as uid, e.g. when deleting an app)
-        // (3rd param "clearSorting", changed from T default to F so sorting preserved)
-        table.getTableModel().setDataAsMapArray(response.data.result.apps, true, false);
+        // columns not in the model are still accessible
+        // (such as uid, importantly).
+        // The 3rd param "clearSorting", is changed from T default to F so
+        // that sorting is preserved)
+        model.setDataAsMapArray(response.data.result.apps, true, false);
+
+        // Sort the table by flags, descending
+
+        // Sort functions that treat non-numbers, specifically 'undefined', as zero
+        // Verified that this is required to correctly order the sim data, where
+        // numCurFlags is usually undefined.
+        // Probably unnecessary in build environment where everything's 
+        // initialized to 0
+        var ascending = function(row1,row2)
+        {
+          var col = arguments.callee.columnIndex;
+          var arg1 = row1[col];
+          var i = qx.lang.Type.isNumber(arg1) ? arg1 : 0;
+          var arg2 = row2[col];
+          var j = qx.lang.Type.isNumber(arg2) ? arg2 : 0;
+          return (i > j) ? 1 : ((i == j) ? 0 : -1);
+        };
+        var descending = function(row1,row2)
+        {
+          var col = arguments.callee.columnIndex;
+          var arg1 = row1[col];
+          var i = qx.lang.Type.isNumber(arg1) ? arg1 : 0;
+          var arg2 = row2[col];
+          var j = qx.lang.Type.isNumber(arg2) ? arg2 : 0;
+          return (i > j) ? -1 : ((i == j) ? 0 : 1);
+        };
+
+        // Column to sort on.
+        var flagColumn = model.getColumnIndexById("numCurFlags");
+        // How to sort.  Specifying this as a single function rather than a map of
+        // 2 functions did not work, contradicting API docs for
+        // qx.ui.table.model.Simple#setSortMethods()
+        model.setSortMethods(flagColumn, {
+            ascending  : ascending,
+            descending : descending
+          });
+        // Sort, in descending order.
+        model.sortByColumn(flagColumn, false);
+
+
+        // Save the category list in a known place, for later access
+        // FIXME (maybe): Same place in the myapps module does this same thing.
+        // (Not so important, really.)
+        this.getApplicationRoot().setUserData("categories",
+                                              response.data.result.categories);
+
         break;
-// Todo:  If no longer stringizing app rpc results, need to fix up status and tag displays
-//   both here, and when get rpc result from editing.
-// Maybe better idea:  Use special cell renderers
-//   qx.ui.table.cellrenderer.Replace looks tailor-made for that
-//   (use replaceMap for status and replaceFunction for arrays like tags)
 
       case "EditApp":
         // Nothing more to do but close the cell editor

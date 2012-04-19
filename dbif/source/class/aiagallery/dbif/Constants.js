@@ -125,7 +125,8 @@ qx.Class.define("aiagallery.dbif.Constants",
       //
       // MFlags
       //
-      "flagIt"       : "Flag an app or comment",
+      "flagIt"         : "Flag an app or comment",
+      "clearAppFlags"  : "Clear all of an app's flags, and reset count to 0",
       
       //
       // MMobile
