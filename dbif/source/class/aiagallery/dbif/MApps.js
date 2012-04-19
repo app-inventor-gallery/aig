@@ -169,7 +169,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         case "title":
         case "description":
           // Split up the words and...
-          wordsToAdd = dataObj[appDataField].match(acceptable_word);
+          wordsToAdd = dataObj[appDataField].match(acceptable_word) || [];
           wordsToAdd.forEach(function(word)
               {
                 // Make sure to only add lower case words to the search
