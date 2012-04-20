@@ -12,10 +12,17 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
   implement : [qx.ui.form.IModel],
   include   : [qx.ui.form.MModelProperty],
   
-  construct : function(data)
+  construct : function(data, fsm, treeId, appId)
   {
     var             layout;
     var             flagBtn; 
+    
+    // Set fsm so its available later
+    this.fsm = fsm;
+    
+    // Also the tree it
+    this.treeId = treeId; 
+    this.appId
     
     // Call the superclass constructor
     this.base(arguments);
@@ -53,6 +60,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
       // ... then display it now
       this.set(data);
     }
+    
   },
 
   properties :
@@ -92,6 +100,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
     {
       var             control;
       var             font;
+      var             flagComment; 
 
       switch(id)
       {
@@ -132,31 +141,68 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
           });
 
         // Visitor clicks initiate a search for apps of that owner
-        control.addListener(
+         control.addListener(
           "click",
           function(e)
           {
+            var             query;
+            var             displayName;
+
             // Prevent the default 'click' behavior
             e.preventDefault();
             e.stop();
 
+            // Remove "by" from displayName
+            displayName = this.getDisplayName().replace("by ", "");
+
+            query  =
+              {
+                authorName : displayName
+              };
+            
             // Initiate a search
-            alert("Future: initiate search for visitor " +
-                  this.getDisplayName() + " (" + this.getVisitor() + ")");
+            aiagallery.main.Gui.getInstance().selectModule(
+              {
+                page  : aiagallery.main.Constant.PageName.FindApps,
+                query : qx.lang.Json.stringify(query)
+              });
           },
           this);
 
         this._add(control, { row : 1, column : 1 });
         
         // add a flagit button after that
-        flagBtn = new qx.ui.form.Button(this.tr("Flag It!"));
-          flagBtn.set(
+        flagComment = new qx.ui.form.Button(this.tr("Flag It!"));
+          flagComment.set(
           {
             maxHeight : 24,
             width     : 80
           });
           
-        this._add(flagBtn, { row : 2, column : 1 });
+        // Add to fsm
+        this.fsm.addObject("flagComment", flagComment);
+        
+        // Create listener to catch click and send to fsm
+        //flagComment.addListener("execute", this.fsm.eventListener, this.fsm);
+        flagComment.addListener(
+          "click",
+          function(e)
+          {
+            var             query;
+            var             displayName;
+
+            // Prevent the default 'click' behavior
+            e.preventDefault();
+            e.stop();
+
+            // Package up data for fsm
+            flagComment.setUserData("appId", id);
+            flagComment.setUserData("treeId", this.treeId);
+          },
+          this);
+          
+        // Add to comment  
+        this._add(flagComment, { row : 2, column : 1 });
  
         break;
         
