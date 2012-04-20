@@ -71,12 +71,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
           "likeIt"  : "Transition_Idle_to_AwaitRpcResult_via_likeIt",
 
-          "flagIt"  : "Transition_Idle_to_AwaitRpcResult_via_flagIt",
+          "flagIt"  : "Transition_Idle_to_AwaitRpcResult_via_flagIt",     
 
           "execute" :
           {
             "butAddComment" :
-            "Transition_Idle_to_AwaitRpcResult_via_submit_comment"
+            "Transition_Idle_to_AwaitRpcResult_via_submit_comment",
+            
+            "flagComment" : "Transition_Idle_to_AwaitRpcResult_via_flagComment",
           }
         }
       });
@@ -111,7 +113,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
           // Prevent this transition from being taken next time.
           fsm.setUserData("noUpdate", true);
-
+          
           // Accept this transition
           return true;
         },
@@ -293,9 +295,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
       state.addTransition(trans);
 
-
-      state.addTransition(trans);
-
       trans = new qx.util.fsm.Transition(
         "Transition_Idle_to_AwaitRpcResult_via_flagIt",
       {
@@ -319,6 +318,39 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
                            "inappropriate", // reason
                            appId,           // ID of application being banned
                            null             // comment ID
+                         ]);
+
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "flagIt");
+        }
+      });
+      state.addTransition(trans);
+      
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_flagComment",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var             appId;
+
+          // Retrieve the UID of the current app, and the new comment
+          appId = fsm.getObject("searchResult").getUid();
+
+          var request =
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "flagIt",
+                         [ 
+                           1,               // flag type: 0 = app, 1 = comment
+                           "inappropriate", // reason
+                           appId,           // ID of application being banned
+                           0             // comment ID
                          ]);
 
 

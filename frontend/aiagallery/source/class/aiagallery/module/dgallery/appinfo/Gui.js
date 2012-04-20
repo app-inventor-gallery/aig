@@ -48,6 +48,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // application information at the top, and comments at the bottom; and
       // the right (narrow) portion has a list of all apps by this author.
       //
+
       
       // First, create the grid layout
       grid = new qx.ui.layout.Grid(10, 10);
@@ -292,10 +293,12 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
             var             comment;
             
             // Create a new comment object for this comment
-            comment = new aiagallery.module.dgallery.appinfo.Comment();
+            comment = new aiagallery.module.dgallery.appinfo.Comment
+              (null, fsm, commentData.treeId, commentData.app);
             comment.setText(commentData.text);
             comment.setDisplayName(commentData.displayName);
             comment.setTimestamp(commentData.timestamp);
+            
             
             // Add it to the scroll container
             this.commentsScrollContainer.add(comment);
