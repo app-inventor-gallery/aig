@@ -15,6 +15,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
   construct : function(data)
   {
     var             layout;
+    var             flagBtn; 
     
     // Call the superclass constructor
     this.base(arguments);
@@ -33,6 +34,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
     layout.setColumnAlign(0, "right", "middle");
     layout.setRowAlign(0, "left", "bottom");
     layout.setRowAlign(1, "left", "top");
+    
     this.setLayout(layout);
     
     // Specify the format of date output
@@ -145,6 +147,17 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
           this);
 
         this._add(control, { row : 1, column : 1 });
+        
+        // add a flagit button after that
+        flagBtn = new qx.ui.form.Button(this.tr("Flag It!"));
+          flagBtn.set(
+          {
+            maxHeight : 24,
+            width     : 80
+          });
+          
+        this._add(flagBtn, { row : 2, column : 1 });
+ 
         break;
         
       case "timestamp":
