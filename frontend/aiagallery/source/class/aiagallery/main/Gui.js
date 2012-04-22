@@ -691,32 +691,78 @@ qx.Class.define("aiagallery.main.Gui",
           loader.send();
         });
 
-        // Create the footer
+        // Create the footer, containing links to terms of service,
+        // privacy policy, and supported browsers pages.
+        // Put spacers surrounding and between these links
+
         hbox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
 
-        // Add a spacer to center the Terms of Service link
-        hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
-
-        // Add a link to the terms of service
+        // Font for footer links
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.setDecoration("underline");
+
+        // Spacer
+        hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 2 });
+
+        // Add a link to the terms of service
         o = new qx.ui.basic.Label("Terms of Service");
         o.set(
           {
             font   : font,
-            height : 20
+            height : 20,
+            cursor : "pointer"
           });
         o.addListener(
           "click",
           function(e)
           {
             window.open("http://www.google.com/intl/en/policies/terms/",
-                        "Terms of Service");
+                        "App Inventor Gallery Terms of Service");
           });
         hbox.add(o);
 
-        // Add a spacer to center the Terms of Service link
+        // Spacer
         hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
+
+        // Add a link to the privacy policy
+        o = new qx.ui.basic.Label("Privacy Policy");
+        o.set(
+          {
+            font   : font,
+            height : 20,
+            cursor : "pointer"
+          });
+        o.addListener(
+          "click",
+          function(e)
+          {
+            window.open("privacy.html",
+                        "App Inventor Gallery Privacy Policy");
+          });
+        hbox.add(o);
+
+        // Spacer
+        hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
+
+        // Add a link to the supported browser page
+        o = new qx.ui.basic.Label("Supported Browsers");
+        o.set(
+          {
+            font   : font,
+            height : 20,
+            cursor : "pointer"
+          });
+        o.addListener(
+          "click",
+          function(e)
+          {
+            window.open("browsers.html",
+                        "App Inventor Gallery Supported Browsers");
+          });
+        hbox.add(o);
+
+        // Spacer
+        hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 2 });
 
         // Add the hbox to the application
         application.add(hbox);
