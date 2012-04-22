@@ -705,7 +705,7 @@ qx.Class.define("aiagallery.main.Gui",
         hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 2 });
 
         // Add a link to the terms of service
-        o = new qx.ui.basic.Label("Terms of Service");
+        o = new qx.ui.basic.Label("Terms of Use");
         o.set(
           {
             font   : font,
@@ -716,8 +716,8 @@ qx.Class.define("aiagallery.main.Gui",
           "click",
           function(e)
           {
-            window.open("http://www.google.com/intl/en/policies/terms/",
-                        "App Inventor Gallery Terms of Service");
+            window.open("TOU.html",
+                        "App Inventor Gallery Terms of Use");
           });
         hbox.add(o);
 
