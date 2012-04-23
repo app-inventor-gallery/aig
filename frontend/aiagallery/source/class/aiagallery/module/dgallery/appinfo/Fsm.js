@@ -76,9 +76,13 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
           "execute" :
           {
             "butAddComment" :
-            "Transition_Idle_to_AwaitRpcResult_via_submit_comment",
+            "Transition_Idle_to_AwaitRpcResult_via_submit_comment"
             
-            "flagComment" : "Transition_Idle_to_AwaitRpcResult_via_flagComment",
+          },
+          
+          "flagComment" :
+          { 
+            "flagComment" : "Transition_Idle_to_AwaitRpcResult_via_flagComment"
           }
         }
       });
@@ -347,10 +351,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
                          "aiagallery.features",
                          "flagIt",
                          [ 
-                           1,               // flag type: 0 = app, 1 = comment
+                           1,               // flag type: 1 = comment
                            "inappropriate", // reason
-                           appId,           // ID of application being banned
-                           0             // comment ID
+                           event.getData.appId,// ID of comment's app
+                           event.getData.eventId // comment ID
                          ]);
 
 

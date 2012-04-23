@@ -47,10 +47,9 @@ qx.Class.define("aiagallery.module.mgmt.applications.Fsm",
           {
             // Yup.  Display the result.  We need to get the request object
             var rpcRequest = this.popRpcRequest();
-            console.log(rpcRequest);
-            // Otherewise, call the standard result handler
-            var gui = aiagallery.module.mgmt.applications.Gui.getInstance();
 
+            // Otherwise, call the standard result handler
+            var gui = aiagallery.module.mgmt.applications.Gui.getInstance();
             gui.handleResponse(module, rpcRequest);
 
             // Dispose of the request
