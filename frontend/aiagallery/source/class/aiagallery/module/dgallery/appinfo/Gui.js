@@ -57,6 +57,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       grid.setRowFlex(1, 1);      // Comments take up remaining space
       canvas.setLayout(grid);
       
+      // Put grid in a scroller
+      var scrollContainer = new qx.ui.container.Scroll();
+      canvas.add(scrollContainer, { flex : 1 });
+      
       // Put the application detail in the top-left
       this.searchResult = new aiagallery.widget.SearchResult("appInfo");
       this.__flagItListener =
