@@ -177,7 +177,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
         flagComment = new qx.ui.form.Button(this.tr("Flag It!"));
           flagComment.set(
           {
-            maxHeight : 24,
+            maxHeight : 26,
             width     : 80
           });
           
@@ -191,22 +191,114 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
           function(e)
           {
             var             commentToFlagData;
-
-            // Prevent the default 'click' behavior
-            e.preventDefault();
-            e.stop();
-
-            // Package up data for fsm in a map
-            // FIXME Eventually include system to have user include reason
-            commentToFlagData = {
-              "appId" : this.appId,
-              "treeId" : this.treeId
-            };
+            var             win;
+            var             instructionLabel;
+            var             ok; 
+            var             cancel;
+            var             hBox;
             
-            // Fire our own event to capture this click
-            this.fsm.fireImmediateEvent("flagComment", this, commentToFlagData);
+            // Pop a window, ask the user to give a reason or cancel
+            win = new qx.ui.window.Window(this.tr("Flag A Comment"));
+            win.set(
+            {
+              maxWidth : 500,
+              layout : new qx.ui.layout.VBox(30),
+              modal  : true
+            });
+            this.getApplicationRoot().add(win);
+            
+            // Add info about flagging
+            instructionLabel = new qx.ui.basic.Label().set(
+            {
+               value : this.tr("Flagging a comment means you think\n" +
+                               "the comment does not reach the level of\n" +
+                               "discorse suitable for the gallery.\n <br><br>" +
+                               "Please enter a reason why you think this " + 
+                               "comment should be removed:"),
+                            
+               rich : true             
+                   
+                           
+             });
+            win.add(instructionLabel);
+            
+            // Add the Text Area
+            win._reasonField = new qx.ui.form.TextArea();
+            win._reasonField.set(
+            {
+              width  : 120,
+              filter : /[a-zA-Z0-9 _-]/
+            });
+            
+            win.add(win._reasonField);
+            
+            // Create a horizontal box to hold the buttons
+            hBox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
+            
+            // Add the Ok button
+            ok = new qx.ui.form.Button(this.tr("Ok"));
+            ok.setWidth(100);
+            ok.setHeight(30);
+            hBox.add(ok);
+
+            // Allow 'Enter' to confirm entry
+            command = new qx.ui.core.Command("Enter");
+            ok.setCommand(command);
+
+            // add listener to ok
+            ok.addListener(
+              "execute", 
+              function(e)
+              {
+                // Package up data for fsm in a map
+                commentToFlagData = 
+                {
+                 "appId" : this.appId,
+                 "treeId" : this.treeId,
+                 "reason" : win._reasonField.getValue()
+                };
+                
+                // Close the window 
+                win.close();
+              
+                // Clear out text field
+                win._reasonField.setValue(""); 
+                
+                // Fire our own event to capture this click
+                this.fsm.fireImmediateEvent("flagComment", this, commentToFlagData);
+              },
+              this); 
+            
+            // Add the Cancel button
+            cancel = new qx.ui.form.Button(this.tr("Cancel"));
+            cancel.setWidth(100);
+            cancel.setHeight(30);
+            hBox.add(cancel);
+
+            // Allow 'Escape' to cancel
+            command = new qx.ui.core.Command("Esc");
+            cancel.setCommand(command);
+
+            // Close the window if the cancel button is pressed
+            cancel.addListener(
+            "execute",
+            function(e)
+            {
+              win.close();
+              
+              // Clear out text field
+              win._reasonField.setValue(""); 
+            },
+            this);
+
+            // Add the button bar to the window
+            win.add(hBox);
+            
+            // Center and show the window
+            win.center(); 
+            win.show(); 
           },
-          this);
+          this); 
           
         // Add to comment  
         this._add(flagComment, { row : 2, column : 1 });

@@ -374,7 +374,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         result = response.data.result;
         
         // Create a new comment object for this comment
-        comment = new aiagallery.module.dgallery.appinfo.Comment();
+        comment = new aiagallery.module.dgallery.appinfo.Comment
+          (null, fsm, result.treeId, result.app);
         comment.setText(result.text);
         comment.setDisplayName(result.displayName);
         comment.setTimestamp(result.timestamp);
@@ -429,7 +430,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
       case "flagComment" :
         // Display message that comment has been flagged
-         dialog.Dialog.warning(this.tr("This comment has been flagged. /n" + 
+         dialog.Dialog.warning(this.tr("This comment has been flagged. " + 
                                        "An admin will review it.")); 
         
       default:

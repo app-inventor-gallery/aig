@@ -341,6 +341,17 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
         "ontransition" : function(fsm, event)
         {
           var             appId;
+          var             treeId;
+          var             reason;
+          var             map;
+          
+          // Get the data map
+          map = event.getData();
+          
+          // Break out the map
+          appId = map.appId;
+          treeId = map.treeId;
+          reason = map.reason;
 
           var request =
             this.callRpc(fsm,
@@ -348,9 +359,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
                          "flagIt",
                          [ 
                            1,               // flag type: 1 = comment
-                           "inappropriate", // reason
-                           event.getData.appId,// ID of comment's app
-                           event.getData.eventId // comment ID
+                           reason, // reason
+                           appId,// ID of comment's app
+                           treeId // comment ID
                          ]);
 
 
