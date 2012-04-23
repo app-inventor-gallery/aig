@@ -22,7 +22,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
     
     // Also the tree it
     this.treeId = treeId; 
-    this.appId
+    this.appId = appId;
     
     // Call the superclass constructor
     this.base(arguments);
@@ -190,14 +190,20 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
           {
             var             query;
             var             displayName;
+            var             commentToFlagData;
 
             // Prevent the default 'click' behavior
             e.preventDefault();
             e.stop();
 
-            // Package up data for fsm
-            flagComment.setUserData("appId", id);
-            flagComment.setUserData("treeId", this.treeId);
+            // Package up data for fsm in a map
+            commentToFlagData = {
+              "appId" : this.appId,
+              "treeId" : this.treeId
+            } ;
+            
+            // Fire our own event to capture this click
+            this.fireDataEvent("flagComment", commentToFlagData);
           },
           this);
           
