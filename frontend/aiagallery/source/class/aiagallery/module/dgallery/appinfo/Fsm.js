@@ -73,17 +73,16 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
           "flagIt"  : "Transition_Idle_to_AwaitRpcResult_via_flagIt",     
 
+          // Event is called directly from a comment
+          "flagComment" : "Transition_Idle_to_AwaitRpcResult_via_flagComment",
+          
           "execute" :
           {
             "butAddComment" :
             "Transition_Idle_to_AwaitRpcResult_via_submit_comment"
             
-          },
-          
-          "flagComment" :
-          { 
-            "flagComment" : "Transition_Idle_to_AwaitRpcResult_via_flagComment"
           }
+
         }
       });
 
@@ -343,9 +342,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
         {
           var             appId;
 
-          // Retrieve the UID of the current app, and the new comment
-          appId = fsm.getObject("searchResult").getUid();
-
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
@@ -360,11 +356,11 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "flagIt");
+          request.setUserData("requestType", "flagComment");
         }
       });
+      
       state.addTransition(trans);
-
 
       // ------------------------------------------------------------ //
       // State: AwaitRpcResult

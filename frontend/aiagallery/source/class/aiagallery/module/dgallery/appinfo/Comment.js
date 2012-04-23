@@ -16,12 +16,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
   {
     var             layout;
     var             flagBtn; 
-    
-    // Set fsm so its available later
+         
+    // Set fsm, treeId, and appId so its available later for comments
     this.fsm = fsm;
     
-    // Also the tree it
+    // Tree id of the comment 
     this.treeId = treeId; 
+    
+    // App id on which the comment is located
     this.appId = appId;
     
     // Call the superclass constructor
@@ -188,8 +190,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
           "click",
           function(e)
           {
-            var             query;
-            var             displayName;
             var             commentToFlagData;
 
             // Prevent the default 'click' behavior
@@ -197,13 +197,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             e.stop();
 
             // Package up data for fsm in a map
+            // FIXME Eventually include system to have user include reason
             commentToFlagData = {
               "appId" : this.appId,
               "treeId" : this.treeId
-            } ;
+            };
             
             // Fire our own event to capture this click
-            this.fireDataEvent("flagComment", commentToFlagData);
+            this.fsm.fireImmediateEvent("flagComment", this, commentToFlagData);
           },
           this);
           

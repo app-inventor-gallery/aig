@@ -298,8 +298,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
             comment.setText(commentData.text);
             comment.setDisplayName(commentData.displayName);
             comment.setTimestamp(commentData.timestamp);
-            
-            
+          
             // Add it to the scroll container
             this.commentsScrollContainer.add(comment);
           },
@@ -428,6 +427,11 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         this.searchResult.getChildControl("flagIt").setCursor("default");
         break;
 
+      case "flagComment" :
+        // Display message that comment has been flagged
+         dialog.Dialog.warning(this.tr("This comment has been flagged. /n" + 
+                                       "An admin will review it.")); 
+        
       default:
         throw new Error("Unexpected request type: " + requestType);
       }
