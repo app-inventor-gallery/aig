@@ -239,7 +239,7 @@ qx.Class.define("aiagallery.main.Gui",
         mainTabs.setAppearance("radioview");
 
         // We're going to control the tab view via the link bar
-        mainTabs.getChildControl("bar").exclude();
+        //mainTabs.getChildControl("bar").exclude();
 
         pagePane.add(mainTabs, { flex : 1 });
 
@@ -1351,6 +1351,8 @@ qx.Class.define("aiagallery.main.Gui",
       var             hierarchy;
       var             pageId;
       var             tempRadioButton; 
+      var             pageLabel;
+      var             bPageExists;
 
       // Is this a request for the App page?
       if (components.page == aiagallery.main.Constant.PageName.AppInfo)
@@ -1364,9 +1366,6 @@ qx.Class.define("aiagallery.main.Gui",
         {
           throw new Error("Got request for AppInfo without label");
         }
-
-        aiagallery.module.dgallery.appinfo.AppInfo.addAppView(
-          Number(components.uid), components.label);
         
         // Get the page selector bar
         pageSelectorBar =
@@ -1374,9 +1373,9 @@ qx.Class.define("aiagallery.main.Gui",
           
         // Get the children
         pageArray = pageSelectorBar.getChildren();
-          
-        // Its possible we an app radio button page already exists if
-        // so do nothing
+               
+        // Its possible an app radio button page already exists if
+        // so remove it 
         for (j = 0; j < pageArray.length; j++)
         {
           if (pageArray[j].getUserData("app"))
@@ -1389,7 +1388,37 @@ qx.Class.define("aiagallery.main.Gui",
             break; 
           }
         }
+        
+        // Retrieve the previously-created top-level tab view
+        mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
+        tabArray = mainTabs.getChildren();
+        
+        // Make sure the page is opened, it will be on the pageSelectorBar
+        // if not we just entered via a bookmark and have to open it ourselves   
+        bPageExists = false;
+        
+        for (i = 0; i < tabArray.length; i++)
+        {
+          // Get the pageId
+          var pageLabel = tabArray[i].getLabel(); 
+
+          // Is this the one we're looking for?
+          if (-1 != pageLabel.indexOf("-"))
+          {
+            bPageExists = true;
+            break;
+          }
+        }
+        
+        // If this is false we need to open the page ourselves
+        if (!bPageExists)
+        {
+          aiagallery.module.dgallery.appinfo.AppInfo.addAppView(
+            Number(components.uid), components.label);
+        }
           
+          
+        // All ephemeral pages have been removed at this point via addAppView
         // Create new temporary app radio button page
         tempRadioButton = new qx.ui.form.RadioButton(components.label);
         tempRadioButton.set(
@@ -1412,6 +1441,9 @@ qx.Class.define("aiagallery.main.Gui",
       // Retrieve the previously-created top-level tab view
       mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
       tabArray = mainTabs.getChildren();
+      
+      // Ensure no ephemeral pages are open 
+      this.removeEphemeralPages(); 
 
       // It's not an AppInfo request. Iterate through the tabs' labels to find
       // the tab.
