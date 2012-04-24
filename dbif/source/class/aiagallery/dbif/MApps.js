@@ -571,8 +571,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           if (appObj.getBrandNew())
           {
             // It didn't!
-            error.setCode(1);
-            error.setMessage("Unrecognized UID");
+            error.setCode(this.ErrorCode.UnknownUID.code);
+            error.setMessage(this.ErrorCode.UnknownUID.message);
             return error;
           }
 
@@ -580,7 +580,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           if (appData.owner != whoami.id)
           {
             // He doesn't. Someone's doing something nasty!
-            error.setCode(2);
+            error.setCode(aiagallery.dbif.Constants.ErrorCode.NotOwner);
             error.setMessage("Not owner");
             return error;
           }

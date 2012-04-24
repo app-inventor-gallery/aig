@@ -189,6 +189,44 @@ qx.Class.define("aiagallery.dbif.Constants",
       "getChannelToken" : "Request server push"
     },
     
+    // Error codes
+    ErrorCode :
+    {
+      "UnknownUID" : 
+      {
+        code    : 1,
+        message : this.tr("Unrecognized UID")
+      },
+      
+      "NotOwner"   : this.tr("Not owner"),
+      "Field data too long" : 3,
+      "Invalid image data" : 4,
+      "At least one category is required" : 5,
+      "No keyword or search criteria given" : 1,
+      "Application is not available. " : 1,
+      "Empty Comment" : 3,
+      "Unrecognized parent treeId" : 1,
+      "Attempted to overwrite existing comment" : 3,
+      "Unknown entity type" : 1,
+      "Application with that ID not found. Unable to flag." : 1,
+      "Comment not found. Unable to flag." : 2,
+      "unknown flag type." : 3,
+      "Reached an un-reachable section in the flagIt rpc." : 4,
+      "Reached an un-reachable section in the flagIt rpc." : 4,
+      "App with that ID not found. Unable to like." : 1,
+      "Unrecognized request" : 1,
+      "Malformed mobile request: Incorrect parameter type." : 5,
+      "No search terms given" : 3,
+      "No tag name given" : 3,
+      "No developer's display name given" : 3,
+      "Developer not found" : 4,
+      "No App UID given" : 3,
+      "At least 1 keyword required for keyword search" : 3,
+      "Unexpected parameter type" : 1,
+      "Display name must be between 2 and 30 characters." : 2,
+      "The display name you specified is already in use." : 2
+    },
+
     // Log messages. Comments above each are required parameters
     LogMessage :
     {

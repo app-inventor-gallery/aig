@@ -98,61 +98,12 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
           visitor === null ||
           visitor.getBrandNew())
       {
-        // FIXME:
-        if (false)
-        {
-          // Yes, report the error
-          error.setCode(1);
-          error.setMessage("Unrecognized user ID in MVisitors");
-          return error;
-        }
-        else
-        {
-          return "<>";
-        }
+        return "<>";
       }
       
       // No problems, give them the display name
       return visitor.getData().displayName;
     }
-    
-    /**
-     * Exchange user's displayName for id
-     * 
-     *@param displayName {String}
-     * Visitor's display name
-     * 
-     *@return {String} 
-     * Visitor's id
-     */
-/*
-    _getVisitorId : function(displayName, error)
-    {
-      
-      var owners = liberated.dbif.Entity.query(
-        "aiagallery.dbif.ObjVisitors",
-        {
-          type  : "element",
-          field : "displayName",
-          value : displayName
-          
-        },
-        // No resultCriteria. Only need a single result
-        null);
-      
-      // Was there a problem with the query?
-      if (typeof owners[0] === "undefined" || owners[0] === null)
-      {
-        // Yes, report the error
-        error.setCode(2);
-        error.setMessage("Unrecognized display name: " + displayName);
-        return error;
-      }
-      
-      // No problems, give them the ID
-      return owners[0].id;
-    }
-*/
   },
   
   members :
@@ -401,9 +352,12 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                 {
                   // Nope. Error ends up in returnVal
                   error.setCode(1);
-                  error.setMessage("Unexpected parameter type. " +
-                                   "Expected " + fields[fieldName] +
-                               ", got " + typeof profileParams[fieldName]);
+                  error.setMessage("Unexpected parameter type");
+                  error.setData(
+                    {
+                      expected : fields[fieldName],
+                      got      : typeof profileParams[fieldName]
+                    });
                   throw error;
                 }
 
@@ -520,8 +474,11 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       {
         // Name is not valid return error
         error.setCode(2);
-        error.setMessage("The displayname you specified: \"" + name +
-                       "\" is already in use. Please select a different one."); 
+        error.setMessage("The display name you specified is already in use."); 
+        error.setData(
+          {
+            name : name
+          });
         throw error;
       }  
       

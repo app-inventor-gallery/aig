@@ -41,7 +41,11 @@ qx.Mixin.define("aiagallery.dbif.MDbMgmt",
       catch(e)
       {
         error.setCode(1);
-        error.setMessage("Unknown entity type: " + entityType);
+        error.setMessage("Unknown entity type");
+        error.setData(
+          {
+            entityType : entityType
+          });
         return error;
       }
     }

@@ -28,6 +28,9 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
 
   construct : function()
   {
+    // Provide easy access to the error codes and messages
+    this.ErrorCode = aiagallery.dbif.Constants.ErrorCode;
+
     // Use our authorization function
     liberated.AbstractRpcHandler.authorizationFunction =
       function(fqMethod)

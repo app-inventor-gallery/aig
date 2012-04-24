@@ -75,7 +75,11 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
         
       default:
         error.setCode(1);
-        error.setMessage("Unrecognized request: " + field);
+        error.setMessage("Unrecognized request");
+        error.setData(
+          {
+            field : field
+          });
         return error;
       }
     },
@@ -351,7 +355,11 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
       if (visitors.length != 1)
       {
         error.setCode(4);
-        error.setMessage("Developer (owner) not found: " + displayName);
+        error.setMessage("Developer not found");
+        error.setData(
+          {
+            displayName : displayName
+          });
         return error;
       }
       
