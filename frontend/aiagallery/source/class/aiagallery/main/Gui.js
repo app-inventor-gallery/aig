@@ -827,14 +827,14 @@ qx.Class.define("aiagallery.main.Gui",
               var             page = this.getUserData("page");
               var             label = page.getChildControl("button").getLabel();
 
-              // Remove any ephemeral pages
-              _this.removeEphemeralPages();
-
               // Set this page to be the selected (visible) one
               mainTabs.setSelection([ this.getUserData("page") ]);
 
               // Reinitialize the hierarchy to show only this page
               hierarchy.setHierarchy([ label ]);
+              
+              // Remove any ephemeral pages
+              _this.removeEphemeralPages();
             });
           this.getUserData("pageSelectorBar").add(o);
         }
@@ -1288,11 +1288,11 @@ qx.Class.define("aiagallery.main.Gui",
 
       // Get the main tab view
       mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
-
+      
       // Get the currently selected page
       selectedPage = mainTabs.getSelection()[0];
 
-      // Get its page id string, star building fragment
+      // Get its page id string, start building fragment
       fragment = "page=" + selectedPage.getUserData("pageId");
 
       // If its an App Page we need to record the appid to switch to it
@@ -1393,16 +1393,30 @@ qx.Class.define("aiagallery.main.Gui",
         mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
         tabArray = mainTabs.getChildren();
         
-        // Make sure the page is opened, it will be on the pageSelectorBar
-        // if not we just entered via a bookmark and have to open it ourselves   
-        bPageExists = false;
-        
+        // Ensure no ephemeral pages are open 
         for (i = 0; i < tabArray.length; i++)
         {
           // Get the pageId
           var pageLabel = tabArray[i].getLabel(); 
 
           // Is this the one we're looking for?
+          if (-1 != pageLabel.indexOf("-") 
+            && pageLabel.substring(1) != components.label)
+          {
+            mainTabs.remove(tabArray[i]); 
+          }
+        }
+        
+        // Make sure the page is opened, it will be on the pageSelectorBar
+        // if not we just entered via a bookmark and have to open it ourselves   
+        bPageExists = false;
+        
+        for (i = 0; i < tabArray.length; i++)
+        {
+          // Get the page label
+          var pageLabel = tabArray[i].getLabel(); 
+
+          // is this an ephemeral page
           if (-1 != pageLabel.indexOf("-"))
           {
             bPageExists = true;
@@ -1443,7 +1457,17 @@ qx.Class.define("aiagallery.main.Gui",
       tabArray = mainTabs.getChildren();
       
       // Ensure no ephemeral pages are open 
-      this.removeEphemeralPages(); 
+      for (i = 0; i < tabArray.length; i++)
+      {
+        // Get the pageId
+        var pageLabel = tabArray[i].getLabel(); 
+
+        // Is this the one we're looking for?
+        if (-1 != pageLabel.indexOf("-"))
+        {
+          mainTabs.remove(tabArray[i]); 
+        }
+      }
 
       // It's not an AppInfo request. Iterate through the tabs' labels to find
       // the tab.
