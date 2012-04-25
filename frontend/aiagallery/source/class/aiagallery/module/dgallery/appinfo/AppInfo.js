@@ -30,9 +30,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.AppInfo",
       var             app;
       var             page;
       var             moduleList;
-
-      // Ensure all existing ephemeral pages are removed
-      //aiagallery.main.Gui.getInstance().removeEphemeralPages();
       
       // Get the main tab view
       var mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");

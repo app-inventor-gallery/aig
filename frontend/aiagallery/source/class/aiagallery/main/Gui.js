@@ -1373,7 +1373,7 @@ qx.Class.define("aiagallery.main.Gui",
           
         // Get the children
         pageArray = pageSelectorBar.getChildren();
-               
+                   
         // Its possible an app radio button page already exists if
         // so remove it 
         for (j = 0; j < pageArray.length; j++)
@@ -1388,11 +1388,11 @@ qx.Class.define("aiagallery.main.Gui",
             break; 
           }
         }
-        
+              
         // Retrieve the previously-created top-level tab view
         mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
         tabArray = mainTabs.getChildren();
-        /*
+        
         // Ensure no ephemeral pages are open 
         for (i = 0; i < tabArray.length; i++)
         {
@@ -1405,8 +1405,7 @@ qx.Class.define("aiagallery.main.Gui",
           {
             mainTabs.remove(tabArray[i]); 
           }
-        }
-        */
+        }  
         
         // Make sure the page is opened, it will be on the pageSelectorBar
         // if not we just entered via a bookmark and have to open it ourselves   
@@ -1497,7 +1496,7 @@ qx.Class.define("aiagallery.main.Gui",
 
       // Get children
       pageArray = pageSelectorBar.getChildren();
-      
+           
       //If there was a previously created app tab it must be removed
       for (j = 0; j < pageArray.length; j++)
       {
@@ -1511,7 +1510,7 @@ qx.Class.define("aiagallery.main.Gui",
           break; 
         }
       }
-
+      
       // Get the label of the selected tab, to find it in the page
       // selector bar.
       selectedLabel = selectedPage.getLabel();
@@ -1527,9 +1526,10 @@ qx.Class.define("aiagallery.main.Gui",
           break; 
         }
       }
-      
-/*      
+           
       // Ensure no ephemeral pages are open 
+      // Needed since when we switch out of an app page 
+      // an ephemeral page will be left
       for (i = 0; i < tabArray.length; i++)
       {
         // Get the pageId
@@ -1541,7 +1541,7 @@ qx.Class.define("aiagallery.main.Gui",
           mainTabs.remove(tabArray[i]); 
         }
       }
-*/
+
       // FIXME On app entry the title of the page is not set
       // We set it here, even though in app when a user selects
       // another module this will be done twice. 
@@ -1602,7 +1602,7 @@ qx.Class.define("aiagallery.main.Gui",
           components[ part.substring(0, index) ] 
             = part.substring(index + 1);
         },
-        this);
+        this); 
 
       // Now select the module
       this.selectModule(components);
