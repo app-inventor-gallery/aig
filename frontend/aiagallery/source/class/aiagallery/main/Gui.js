@@ -1392,7 +1392,7 @@ qx.Class.define("aiagallery.main.Gui",
         // Retrieve the previously-created top-level tab view
         mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
         tabArray = mainTabs.getChildren();
-        
+        /*
         // Ensure no ephemeral pages are open 
         for (i = 0; i < tabArray.length; i++)
         {
@@ -1406,6 +1406,7 @@ qx.Class.define("aiagallery.main.Gui",
             mainTabs.remove(tabArray[i]); 
           }
         }
+        */
         
         // Make sure the page is opened, it will be on the pageSelectorBar
         // if not we just entered via a bookmark and have to open it ourselves   
@@ -1455,19 +1456,6 @@ qx.Class.define("aiagallery.main.Gui",
       // Retrieve the previously-created top-level tab view
       mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
       tabArray = mainTabs.getChildren();
-      
-      // Ensure no ephemeral pages are open 
-      for (i = 0; i < tabArray.length; i++)
-      {
-        // Get the pageId
-        var pageLabel = tabArray[i].getLabel(); 
-
-        // Is this the one we're looking for?
-        if (-1 != pageLabel.indexOf("-"))
-        {
-          mainTabs.remove(tabArray[i]); 
-        }
-      }
 
       // It's not an AppInfo request. Iterate through the tabs' labels to find
       // the tab.
@@ -1539,7 +1527,21 @@ qx.Class.define("aiagallery.main.Gui",
           break; 
         }
       }
+      
+/*      
+      // Ensure no ephemeral pages are open 
+      for (i = 0; i < tabArray.length; i++)
+      {
+        // Get the pageId
+        var pageLabel = tabArray[i].getLabel(); 
 
+        // Is this the one we're looking for?
+        if (-1 != pageLabel.indexOf("-"))
+        {
+          mainTabs.remove(tabArray[i]); 
+        }
+      }
+*/
       // FIXME On app entry the title of the page is not set
       // We set it here, even though in app when a user selects
       // another module this will be done twice. 
