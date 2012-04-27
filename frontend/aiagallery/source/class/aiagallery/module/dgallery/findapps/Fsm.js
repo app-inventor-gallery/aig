@@ -299,8 +299,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
        *
        * Cause: "disappear" on canvas
        *
-       * Action:
-       *  Stop our timer
+       * Action: Disable "Enter" command for search button
+       *  
        */
 
       trans = new qx.util.fsm.Transition(
@@ -312,6 +312,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
 
         "ontransition" : function(fsm, event)
         {
+          var gui = aiagallery.module.dgallery.findapps.Gui.getInstance();
+          gui.getSearchButton().getCommand().setEnabled(false);
         }
       });
 
