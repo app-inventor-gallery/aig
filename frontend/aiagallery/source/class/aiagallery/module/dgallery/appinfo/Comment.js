@@ -172,13 +172,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
           this);
 
         this._add(control, { row : 1, column : 1 });
-        
+                
         // add a flagit button after that
-        flagComment = new qx.ui.form.Button(this.tr("Flag It!"));
+        flagComment = new qx.ui.form.Button();
           flagComment.set(
           {
-            maxHeight : 26,
-            width     : 80
+            maxHeight : 30,
+            width     : 40,
+            icon      : "aiagallery/comments.png"
           });
           
         // Add to fsm
@@ -301,7 +302,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
           this); 
           
         // Add to comment  
-        this._add(flagComment, { row : 2, column : 1 });
+        this._add(flagComment, { row : 1, column : 3 });
  
         break;
         
