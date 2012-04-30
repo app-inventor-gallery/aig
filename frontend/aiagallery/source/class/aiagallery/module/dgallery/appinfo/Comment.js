@@ -174,20 +174,20 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
         this._add(control, { row : 1, column : 1 });
                 
         // add a flagit button after that
-        flagComment = new qx.ui.form.Button();
-          flagComment.set(
+        this.flagComment = new qx.ui.form.Button();
+          this.flagComment.set(
           {
-            maxHeight : 30,
-            width     : 20,
-            icon      : "aiagallery/flagIcon.png"
+            maxHeight   : 30,
+            width       : 20,
+            icon        : "aiagallery/flagIcon.png",
+	    toolTipText : this.tr("Flag this comment")
           });
           
         // Add to fsm
-        this.fsm.addObject("flagComment", flagComment);
+        this.fsm.addObject("flagComment", this.flagComment);
         
         // Create listener to catch click and send to fsm
-        //flagComment.addListener("execute", this.fsm.eventListener, this.fsm);
-        flagComment.addListener(
+        this.flagComment.addListener(
           "click",
           function(e)
           {
@@ -209,11 +209,13 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             });
             this.getApplicationRoot().add(win);
             
-            instructionText = this.tr("Flagging a comment means you think\n" +
-                               "the comment does not reach the level of\n" +
-                               "discorse suitable for the gallery.\n <br><br>" +
-                               "Please enter a reason why you think this " + 
-                               "comment should be removed:");
+            // Concatonate this instruction string
+            instructionText = 
+              this.tr("Flagging a comment means you think\n the comment") +
+              this.tr("does not reach the level of\n discorse") + 
+              this.tr("suitable for the gallery.\n <br><br>") +
+              this.tr("Please enter a reason why you think this") +
+              this.tr("comment should be removed:");  
             
             // Add info about flagging
             instructionLabel = new qx.ui.basic.Label().set(
@@ -243,7 +245,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             hBox.add(ok);
 
             // Allow 'Enter' to confirm entry
-            command = new qx.ui.core.Command("Enter");
+            var command = new qx.ui.core.Command("Enter");
             ok.setCommand(command);
 
             // add listener to ok
@@ -267,6 +269,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
                 
                 // Fire our own event to capture this click
                 this.fsm.fireImmediateEvent("flagComment", this, commentToFlagData);
+		
+		// Disable the flag button
+                this.flagComment.setEnabled(false); 
               },
               this); 
             
@@ -302,7 +307,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
           this); 
           
         // Add to comment  
-        this._add(flagComment, { row : 1, column : 3 });
+        this._add(this.flagComment, { row : 1, column : 3 });
  
         break;
         

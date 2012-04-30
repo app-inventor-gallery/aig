@@ -251,6 +251,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       var             source;
       var             model;
       var             comment;
+      var             warningText;
 
       if (response.type == "failed")
       {
@@ -429,9 +430,12 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         break;
 
       case "flagComment" :
-        // Display message that comment has been flagged
-         dialog.Dialog.warning(this.tr("This comment has been flagged. " + 
-                                       "An admin will review it.")); 
+         // Display message that comment has been flagged
+        warningText = this.tr("This comment has been flagged.") +
+                      this.tr("An admin will review it.");
+        
+        dialog.Dialog.warning(warningText); 
+	break; 
         
       default:
         throw new Error("Unexpected request type: " + requestType);
