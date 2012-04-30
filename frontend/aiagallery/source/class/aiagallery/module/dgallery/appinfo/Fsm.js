@@ -358,10 +358,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
                          "aiagallery.features",
                          "flagIt",
                          [ 
-                           1,               // flag type: 1 = comment
-                           reason, // reason
-                           appId,// ID of comment's app
-                           treeId // comment ID
+                           1,       // flag type: 1 = comment
+                           reason,  // reason
+                           appId,   // ID of comment's app
+                           treeId   // comment ID
                          ]);
 
 

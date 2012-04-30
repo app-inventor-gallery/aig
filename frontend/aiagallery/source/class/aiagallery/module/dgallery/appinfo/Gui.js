@@ -435,7 +435,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
                       this.tr("An admin will review it.");
         
         dialog.Dialog.warning(warningText); 
-	break; 
+        break; 
         
       default:
         throw new Error("Unexpected request type: " + requestType);

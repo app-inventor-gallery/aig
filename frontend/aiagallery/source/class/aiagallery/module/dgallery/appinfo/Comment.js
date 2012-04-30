@@ -143,7 +143,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
           });
 
         // Visitor clicks initiate a search for apps of that owner
-         control.addListener(
+        control.addListener(
           "click",
           function(e)
           {
@@ -180,7 +180,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             maxHeight   : 30,
             width       : 20,
             icon        : "aiagallery/flagIcon.png",
-	    toolTipText : this.tr("Flag this comment")
+            toolTipText : this.tr("Flag this comment")
           });
           
         // Add to fsm
