@@ -145,7 +145,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
 
       state.addTransition(trans);
 
-//---------------
 
       /*
        * Transition: Idle to Idle
@@ -173,14 +172,13 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
       state.addTransition(trans);
 
 
-//---------------
       /*
-       * Transition: Idle to Awaiting RPC Result
+       * Transition: Idle to AwaitRpcResult
        *
        * Cause: "queryChanged" event from CriteriaSearch
        *
        * Action:
-       *  Initiate a request for the list of  matching applications.
+       *  Initiate a request for the list of matching applications.
        */
         
       trans = new qx.util.fsm.Transition(
