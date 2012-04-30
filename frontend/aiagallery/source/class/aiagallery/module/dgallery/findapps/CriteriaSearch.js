@@ -139,8 +139,17 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
       });
     
     // Fire a data event with the current query when search button is pressed
-    this.__butSearch.addListener("execute", this._fireQueryChangedEvent, this);
-    
+    // First, grab focus, since this is also fired when "Enter" is pressed,
+    // and another gui element may have focus.
+    this.__butSearch.addListener(
+      "execute",
+      function(e)
+      {
+        this.__butSearch.focus();
+        this._fireQueryChangedEvent();
+      },      
+      this);
+
     // Allow 'Enter' to fire a seach
     command = new qx.ui.core.Command("Enter");
     this.__butSearch.setCommand(command);
