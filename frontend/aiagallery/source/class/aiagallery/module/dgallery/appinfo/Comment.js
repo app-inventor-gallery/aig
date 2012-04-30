@@ -268,9 +268,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
                 win._reasonField.setValue(""); 
                 
                 // Fire our own event to capture this click
-                this.fsm.fireImmediateEvent("flagComment", this, commentToFlagData);
-		
-		// Disable the flag button
+                this.fsm.fireImmediateEvent(
+                  "flagComment", this, commentToFlagData);
+                
+                // Disable the flag button
                 this.flagComment.setEnabled(false); 
               },
               this); 
