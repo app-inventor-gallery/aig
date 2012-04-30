@@ -178,8 +178,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
           flagComment.set(
           {
             maxHeight : 30,
-            width     : 40,
-            icon      : "aiagallery/comments.png"
+            width     : 20,
+            icon      : "aiagallery/flagIcon.png"
           });
           
         // Add to fsm
@@ -194,6 +194,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             var             commentToFlagData;
             var             win;
             var             instructionLabel;
+            var             instructionText; 
             var             ok; 
             var             cancel;
             var             hBox;
@@ -208,19 +209,18 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             });
             this.getApplicationRoot().add(win);
             
-            // Add info about flagging
-            instructionLabel = new qx.ui.basic.Label().set(
-            {
-               value : this.tr("Flagging a comment means you think\n" +
+            instructionText = this.tr("Flagging a comment means you think\n" +
                                "the comment does not reach the level of\n" +
                                "discorse suitable for the gallery.\n <br><br>" +
                                "Please enter a reason why you think this " + 
-                               "comment should be removed:"),
-                            
-               rich : true             
-                   
-                           
-             });
+                               "comment should be removed:");
+            
+            // Add info about flagging
+            instructionLabel = new qx.ui.basic.Label().set(
+            {
+               value : instructionText,                  
+               rich  : true                                   
+            });
             win.add(instructionLabel);
             
             // Add the Text Area
