@@ -6,7 +6,7 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
-qx.Class.define("aiagallery.module.mgmt.comment.CommentDetailBox",
+qx.Class.define("aiagallery.module.mgmt.comments.CommentDetailBox",
 {
   extend    : qx.ui.container.Composite,
   implement : [qx.ui.form.IModel],

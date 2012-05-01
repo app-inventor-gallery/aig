@@ -72,13 +72,11 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
             
           },
           
-          // When we get an appear event, retrieve the category tags list. We
-          // only want to do it the first time, though, so we use a predicate
-          // to determine if it's necessary.
+          // When we get an appear event, retrieve all pending comments
           "appear"    :
           {
             "main.canvas" : 
-              qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
+              "Transition_Idle_to_AwaitRpcResult_via_appear"
           },
 
           // When we get a disappear event
@@ -91,9 +89,6 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
 
       // Replace the initial Idle state with this one
       fsm.replaceState(state, true);
-
-
-      // The following transitions have a predicate, so must be listed first
 
       /*
        * Transition: Idle to Idle
@@ -111,40 +106,25 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
 
         "context" : this,
 
-        "predicate" : function(fsm, event)
-        {
-          // Have we already been here before?
-          if (fsm.getUserData("noUpdate"))
-          {
-            // Yup. Don't accept this transition and no need to check further.
-            return null;
-          }
-          
-          // Prevent this transition from being taken next time.
-          fsm.setUserData("noUpdate", true);
-          
-          // Accept this transition
-          return true;
-        },
-
         "ontransition" : function(fsm, event)
         {
-	 var     request;  
-	  
+         var     request;  
+          
          // Query to get all pending comments return in a list.
          request =
             this.callRpc(fsm,
                          "aiagallery.features",
                          "getPendingComments",
-                         [ 
-                         ]);
+                         []);
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "appear");
+          request.setUserData("requestType", "getPendingComments");
 
         }
       });
+      
+      state.addTransition(trans);
 
       /*
        * Transition: Idle to Idle
@@ -168,16 +148,6 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
       });
 
       state.addTransition(trans);
-
-      
-      // ------------------------------------------------------------ //
-      // State: <some other state>
-      // ------------------------------------------------------------ //
-
-      // put state and transitions here
-
-
-
 
       // ------------------------------------------------------------ //
       // State: AwaitRpcResult

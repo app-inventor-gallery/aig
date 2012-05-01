@@ -86,7 +86,7 @@ qx.Class.define("aiagallery.module.mgmt.comments.Gui",
       switch(requestType)
       {
         
-      case "appear":
+      case "getPendingComments":
         // Take the comments that are flagged
         // create new commentDetailBoxes for each of them
         // add them all to the vBox
@@ -103,7 +103,7 @@ qx.Class.define("aiagallery.module.mgmt.comments.Gui",
           commentDB.setTimestamp(result[i].timestamp);
 
           // Add it to the scroll container
-          this.commentsScrollContainer.add(comment);    
+          this.commentsScrollContainer.add(commentDB);    
         }
         
         break; 
