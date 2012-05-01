@@ -27,7 +27,25 @@ qx.Class.define("aiagallery.module.mgmt.comments.Gui",
       var             o;
       var             fsm = module.fsm;
       var             canvas = module.canvas;
-
+      var             titleLabel;
+      var             layout;
+      var             scroller;
+      
+      // Create a layout
+      canvas.setLayout(new qx.ui.layout.VBox());   
+      
+      // Create title label
+      titleLabel = new qx.ui.basic.Label("Flagged Comments");
+      canvas.add(titleLabel);       
+      
+      // Create the scroller to hold all of the comments
+      scroller = new qx.ui.container.Scroll();
+      canvas.add(scroller);
+      
+      // The Scroller may contain only one container, so create that container.
+      this.commentsScrollContainer = 
+        new qx.ui.container.Composite(new qx.ui.layout.VBox());
+      scroller.add(this.commentsScrollContainer);
       
     },
 
@@ -48,13 +66,14 @@ qx.Class.define("aiagallery.module.mgmt.comments.Gui",
       var             response = rpcRequest.getUserData("rpc_response");
       var             requestType = rpcRequest.getUserData("requestType");
       var             result;
-
+      var             commentDB;
+      var             i;
+      
       // We can ignore aborted requests.
       if (response.type == "aborted")
       {
           return;
       }
-
       if (response.type == "failed")
       {
         // FIXME: Add the failure to the cell editor window rather than alert
@@ -66,6 +85,29 @@ qx.Class.define("aiagallery.module.mgmt.comments.Gui",
       // Dispatch to the appropriate handler, depending on the request type
       switch(requestType)
       {
+        
+      case "appear":
+        // Take the comments that are flagged
+        // create new commentDetailBoxes for each of them
+        // add them all to the vBox
+        
+        result = response.data.result;
+        
+        //result is a list
+        for(i in result)
+        {
+           // Create a new commentDetailBox object for this comment
+          commentDB = new aiagallery.module.mgmt.comments.CommentDetailBox();
+          commentDB.setText(result[i].text);
+          commentDB.setDisplayName(result[i].displayName);
+          commentDB.setTimestamp(result[i].timestamp);
+
+          // Add it to the scroll container
+          this.commentsScrollContainer.add(comment);    
+        }
+        
+        break; 
+        
       default:
         throw new Error("Unexpected request type: " + requestType);
       }

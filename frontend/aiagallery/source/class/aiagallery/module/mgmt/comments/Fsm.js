@@ -77,8 +77,8 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
           // to determine if it's necessary.
           "appear"    :
           {
-            //"main.canvas" : 
-              //qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
+            "main.canvas" : 
+              qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
           },
 
           // When we get a disappear event
@@ -129,58 +129,22 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-         // If we wanted to do something as the page appeared, it would go here.
-        }
-      });
-
-      state.addTransition(trans);
-
-
-        /*
-       * Transition: Idle to Awaiting RPC Result
-       *
-       * Cause: "Search" button pressed
-       *
-       * Action:
-       *  Initiate a request for the list of  matching applications.
-       */
-        
-      trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_query",
-      {
-        "nextState" : "State_AwaitRpcResult",
-
-        "context" : this,
-
-        "ontransition" : function(fsm, event)
-        {
-          var             criteria;
-          var             criterium;
-          var             request;
-          var             selection;
-
-
-
-          // Issue the remote procedure call to execute the query
-          request =
+	 var     request;  
+	  
+         // Query to get all pending comments return in a list.
+         request =
             this.callRpc(fsm,
                          "aiagallery.features",
-                         "mobileRequest",
-                         [
-
-                          fsm.getObject("queryField").getValue()
-                           
-                        ]);
+                         "getPendingComments",
+                         [ 
+                         ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "mobileRequest");
+          request.setUserData("requestType", "appear");
 
         }
       });
-
-      state.addTransition(trans);
-
 
       /*
        * Transition: Idle to Idle

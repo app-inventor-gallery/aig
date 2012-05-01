@@ -22,6 +22,10 @@ qx.Mixin.define("aiagallery.dbif.MComments",
     this.registerService("aiagallery.features.getComments",
                          this.getComments,
                          [ "appId", "resultCriteria" ]);
+    
+    this.registerService("aiagllery.features.getPendingComments",
+			 this.getPendingComments,
+			 []);
   },
 
   statics :
@@ -317,6 +321,33 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       }
       
       return commentList;
+    },
+    
+    /**
+     * Get the list of pending comments
+     * 
+     * @return {List}
+     *   A list (possibly empty) containing all pending comments
+     */
+    getPendingComments : function()
+    {
+      var         criteria;
+      var         resultList;
+      
+      // Retrieve all Active comments for this app
+      criteria = 
+        {
+          type: "element",
+          field: "status",
+          value: aiagallery.dbif.Constants.Status.Pending 
+        };
+
+      // Issue a query for all comments, with limit and offset settings applied
+      resultList = liberated.dbif.Entity.query("aiagallery.dbif.ObjComments", 
+                                               criteria,
+                                               null);
+      
+      return resultList; 
     },
    
     /**
