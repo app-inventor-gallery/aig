@@ -26,6 +26,10 @@ qx.Mixin.define("aiagallery.dbif.MComments",
     this.registerService("aiagallery.features.getPendingComments",
                          this.getPendingComments,
                          []);
+                        
+    this.registerService("aiagallery.features.setCommentActive",
+                         this.setCommentActive,
+                         []);
   },
 
   statics :
@@ -376,6 +380,56 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       }
                                                    
       return resultList; 
+    },
+    
+    /**
+     * Set a comment to active (so it can be viewed)
+     *
+     * @param appId {Number}
+     *   This is the unique identifier for the app containing the comment to
+     *   delete
+     * 
+     * @param treeId {String}
+     *   This is the thread tree identifier for the comment which is to be
+     *   deleted
+     * 
+     * @return {Boolean}
+     *   Returns true if setting comment to active was successful. 
+     */
+    setCommentActive : function(appId, treeId)
+    {
+      var             commentObj;
+      var             commentObjData;
+    
+      // Retrieve an instance of this comment entity
+      commentObj = new aiagallery.dbif.ObjComments([appId, treeId]);
+      
+      // Get data
+      commentObjData = commentObj.getBrandNew()
+      
+      // Does this comment exist?
+      if (commentObjData)
+      {
+        // It doesn't. Let 'em know.
+        return false;
+      } 
+      else
+      {
+        commentObjData = commentObj.getData(); 
+      }
+      
+      // Change status to active
+      commentObjData.status = aiagallery.dbif.Constants.Status.Active;  
+      
+      liberated.dbif.Entity.asTransaction(
+        function()
+        {
+          // Commit change
+          commentObj.put();
+        });
+        
+      // Success
+      return true; 
     },
    
     /**
