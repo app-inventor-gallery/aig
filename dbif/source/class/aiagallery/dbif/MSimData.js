@@ -2197,16 +2197,16 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
       "comments" : 
       {
         "1020000" : 
-	{
-	  "app"         : 102,
-	  "numChildren" : 0,
-	  "numCurFlags" : 5,
-	  "status"      : 3,
-	  "text"        : "Terrible Comment",
-	  "timestamp"   : 1335818787541,
-	  "treeId"      : "0000",
-	  "visitor"     : "1001"
-	}
+        {
+           "app"         : 102,
+           "numChildren" : 0,
+           "numCurFlags" : 5,
+           "status"      : 1,
+           "text"        : "Terrible Comment",
+           "timestamp"   : 1335818787541,
+           "treeId"      : "0000",
+           "visitor"     : "1001"
+         }
       },
       "likes" : 
       {

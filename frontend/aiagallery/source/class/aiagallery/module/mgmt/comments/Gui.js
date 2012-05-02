@@ -97,7 +97,8 @@ qx.Class.define("aiagallery.module.mgmt.comments.Gui",
         for(i in result)
         {
            // Create a new commentDetailBox object for this comment
-          commentDB = new aiagallery.module.mgmt.comments.CommentDetailBox();
+          commentDB = new aiagallery.module.dgallery.appinfo.Comment
+            (null, fsm, result[i].treeId, result[i].app, true);
           commentDB.setText(result[i].text);
           commentDB.setDisplayName(result[i].displayName);
           commentDB.setTimestamp(result[i].timestamp);

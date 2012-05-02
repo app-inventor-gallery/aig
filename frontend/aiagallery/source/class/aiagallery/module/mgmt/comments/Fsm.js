@@ -50,7 +50,7 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
             var rpcRequest = this.popRpcRequest();
 
             // Call the standard result handler
-            var gui = aiagallery.module.testing.temp.Gui.getInstance();
+            var gui = aiagallery.module.mgmt.comments.Gui.getInstance();
             gui.handleResponse(module, rpcRequest);
 
             // Dispose of the request
@@ -109,6 +109,8 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
         "ontransition" : function(fsm, event)
         {
          var     request;  
+          
+         var x = aiagallery.dbif.DbifSim.getInstance(); 
           
          // Query to get all pending comments return in a list.
          request =

@@ -23,9 +23,9 @@ qx.Mixin.define("aiagallery.dbif.MComments",
                          this.getComments,
                          [ "appId", "resultCriteria" ]);
     
-    this.registerService("aiagllery.features.getPendingComments",
-			 this.getPendingComments,
-			 []);
+    this.registerService("aiagallery.features.getPendingComments",
+                         this.getPendingComments,
+                         []);
   },
 
   statics :
@@ -333,20 +333,48 @@ qx.Mixin.define("aiagallery.dbif.MComments",
     {
       var         criteria;
       var         resultList;
+      var         i;
+      var         error;
+      
+      error = new liberated.rpc.error.Error();
       
       // Retrieve all Active comments for this app
       criteria = 
         {
-          type: "element",
-          field: "status",
-          value: aiagallery.dbif.Constants.Status.Pending 
+          type  : "element",
+          field : "status",
+          value : aiagallery.dbif.Constants.Status.Pending 
         };
 
       // Issue a query for all comments, with limit and offset settings applied
       resultList = liberated.dbif.Entity.query("aiagallery.dbif.ObjComments", 
                                                criteria,
                                                null);
-      
+                                               
+      try
+      {
+        resultList.forEach(function(obj)
+          {
+            // Add this visitor's display name
+            obj.displayName = 
+              aiagallery.dbif.MVisitors._getDisplayName(obj.visitor, error);
+            
+            // Did we fail to find this owner?
+            if (obj.visitor === error)
+            {
+              // Yup. Abort the request.
+              throw error;
+            }
+            
+            // Remove the visitor field
+            delete obj.visitor;
+          });
+      }
+      catch(error)
+      {
+        return error;
+      }
+                                                   
       return resultList; 
     },
    
