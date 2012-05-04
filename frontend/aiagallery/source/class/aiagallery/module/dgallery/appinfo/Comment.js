@@ -12,7 +12,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
   implement : [qx.ui.form.IModel],
   include   : [qx.ui.form.MModelProperty],
   
-  construct : function(data, fsm, treeId, appId, bMgmt)
+  construct : function(data, fsm, treeId, appId)
   {
     var             layout;
     var             flagBtn; 
@@ -25,9 +25,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
     
     // App id on which the comment is located
     this.appId = appId;
-    
-    // Determine if this is a management view or not
-    this.bMgmt = bMgmt; 
     
     // Call the superclass constructor
     this.base(arguments);
@@ -42,7 +39,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
     layout = new qx.ui.layout.Grid(6, 0);
     layout.setRowFlex(0, 1);    // comment text takes up space as needed
     layout.setColumnWidth(0, 40);
-    layout.setColumnFlex(2, 1);
+    layout.setColumnFlex(4, 1);
     layout.setColumnAlign(0, "right", "middle");
     layout.setRowAlign(0, "left", "bottom");
     layout.setRowAlign(1, "left", "top");
@@ -121,7 +118,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             autoSize          : true,
             minimalLineHeight : 1
           });
-        this._add(control, { row : 0, column : 0, colSpan : 3 });
+        this._add(control, { row : 0, column : 0, colSpan : 5 });
         break;
         
       case "pointer":
@@ -176,211 +173,152 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
 
         this._add(control, { row : 1, column : 1 });
                 
-        // If this is true, viewing comment from management view
-        if(this.bMgmt)
-        {
-          var         commentToFlagData; 
-        
-          // Package up data for fsm in a map
-          commentToFlagData = 
+        // add a flagit label that will be a link after that
+        this.flagComment = new qx.ui.basic.Label(this.tr("Flag"));
+          this.flagComment.set(
           {
-            "appId"  : this.appId,
-            "treeId" : this.treeId
-          };
-        
-          // Add the nessesary mgmt buttons
-          // Keep comment 
-          this.keepCommentButton = 
-            new qx.ui.form.Button(this.tr("Keep Comment"));
-            this.keepCommentButton.set(
-            {
-              maxHeight      : 50,
-              maxWidth       : 200
-            });
-            
-          // Create listener to catch click and send to fsm
-          this.keepCommentButton.addListener(
-            "click",
-            function(e)
-            {
-              // Fire our own event to capture this click
-              this.fsm.fireImmediateEvent(
-              "keepComment", this, commentToFlagData);
-            }, 
-            this);
-            
-          // Add to comment  
-          this._add(this.keepCommentButton, { row : 2, column : 1 });
-            
-          // Delete comment 
-          this.deleteCommentButton = 
-            new qx.ui.form.Button(this.tr("Delete Comment"));
-            this.deleteCommentButton.set(
-            {
-              maxHeight      : 50,
-              maxWidth       : 200
-            });
-            
-          // Create listener to catch click and send to fsm
-          this.deleteCommentButton.addListener(
-            "click",
-            function(e)
-            {
-            
-              // Fire our own event to capture this click
-              this.fsm.fireImmediateEvent(
-              "deleteComment", this, commentToFlagData);
-            }, 
-            this);
-            
-          // Add to comment  
-          this._add(this.deleteCommentButton, { row : 2, column : 2 });
-            
-        } 
-        else 
-        {
-          // Viewing regular comment from appInfo page
-          // add a flagit button after that
-        
-          this.flagComment = new qx.ui.form.Button();
-            this.flagComment.set(
-            {
-              maxHeight   : 30,
-              width       : 20,
-              icon        : "aiagallery/flagIcon.png",
-              toolTipText : this.tr("Flag this comment")
-            });
+            maxHeight   : 30,
+            width       : 30,
+            textColor   : null, 
+            font        : font, 
+            toolTipText : this.tr("Flag this comment")
+          });
           
-          // Create listener to catch click and send to fsm
-          this.flagComment.addListener(
-            "click",
-            function(e)
+        // Add to fsm
+        this.fsm.addObject("flagComment", this.flagComment);
+        
+        // Create listener to catch click and send to fsm
+        this.flagComment.addListener(
+          "click",
+          function(e)
+          {
+            var             commentToFlagData;
+            var             win;
+            var             instructionLabel;
+            var             instructionText; 
+            var             ok; 
+            var             cancel;
+            var             hBox;
+            
+            // Pop a window, ask the user to give a reason or cancel
+            win = new qx.ui.window.Window(this.tr("Flag A Comment"));
+            win.set(
             {
-              var             commentToFlagData;
-              var             win;
-              var             instructionLabel;
-              var             instructionText; 
-              var             ok; 
-              var             cancel;
-              var             hBox;
+              maxWidth : 500,
+              layout : new qx.ui.layout.VBox(30),
+              modal  : true
+            });
+            this.getApplicationRoot().add(win);
             
-              // Pop a window, ask the user to give a reason or cancel
-              win = new qx.ui.window.Window(this.tr("Flag A Comment"));
-              win.set(
-              {
-                maxWidth : 500,
-                layout : new qx.ui.layout.VBox(30),
-                modal  : true
-              });
-              this.getApplicationRoot().add(win);
+            // Concatonate this instruction string
+            instructionText = 
+              this.tr("Flagging a comment means you think\n the comment does not reach the level of\n discorse suitable for the gallery.\n <br><br>") +
+              this.tr("Please enter a reason why you think this comment should be removed:");  
             
-              // Concatonate this instruction string
-              instructionText = 
-                this.tr("Flagging a comment means you think\n the comment") +
-                this.tr("does not reach the level of\n discorse") + 
-                this.tr("suitable for the gallery.\n <br><br>") +
-                this.tr("Please enter a reason why you think this") +
-                this.tr("comment should be removed:");  
+            // Add info about flagging
+            instructionLabel = new qx.ui.basic.Label().set(
+            {
+               value : instructionText,                  
+               rich  : true                                   
+            });
+            win.add(instructionLabel);
             
-              // Add info about flagging
-              instructionLabel = new qx.ui.basic.Label().set(
-              {
-                 value : instructionText,                  
-                 rich  : true                                   
-              });
-              win.add(instructionLabel);
+            // Add the Text Area
+            win._reasonField = new qx.ui.form.TextArea();
+            win._reasonField.set(
+            {
+              width  : 120,
+              filter : /[a-zA-Z0-9 _-]/
+            });
             
-              // Add the Text Area
-              win._reasonField = new qx.ui.form.TextArea();
-              win._reasonField.set(
-              {
-                width  : 120,
-                filter : /[a-zA-Z0-9 _-]/
-              });
+            win.add(win._reasonField);
             
-              win.add(win._reasonField);
+            // Create a horizontal box to hold the buttons
+            hBox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
             
-              // Create a horizontal box to hold the buttons
-              hBox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
-            
-              // Add the Ok button
-              ok = new qx.ui.form.Button(this.tr("Ok"));
-              ok.setWidth(100);
-              ok.setHeight(30);
-              hBox.add(ok);
+            // Add the Ok button
+            ok = new qx.ui.form.Button(this.tr("Ok"));
+            ok.set(
+            {
+              width  : 100,
+              height : 30
+            });
+            hBox.add(ok);
 
-              // Allow 'Enter' to confirm entry
-              var command = new qx.ui.core.Command("Enter");
-              ok.setCommand(command);
+            // Allow 'Enter' to confirm entry
+            var command = new qx.ui.core.Command("Enter");
+            ok.setCommand(command);
 
-              // add listener to ok
-              ok.addListener(
-                "execute", 
-                function(e)
-                {
-                  // Package up data for fsm in a map
-                  commentToFlagData = 
-                  {
-                   "appId"  : this.appId,
-                   "treeId" : this.treeId,
-                   "reason" : win._reasonField.getValue()
-                  };
-                
-                  // Close the window 
-                  win.close();
-              
-                  // Clear out text field
-                  win._reasonField.setValue(""); 
-                
-                  // Fire our own event to capture this click
-                  this.fsm.fireImmediateEvent(
-                    "flagComment", this, commentToFlagData);
-                
-                  // Disable the flag button
-                  this.flagComment.setEnabled(false); 
-                },
-                this); 
-            
-              // Add the Cancel button
-              cancel = new qx.ui.form.Button(this.tr("Cancel"));
-              cancel.setWidth(100);
-              cancel.setHeight(30);
-              hBox.add(cancel);
-
-              // Allow 'Escape' to cancel
-              command = new qx.ui.core.Command("Esc");
-              cancel.setCommand(command);
-
-              // Close the window if the cancel button is pressed
-              cancel.addListener(
-              "execute",
+            // add listener to ok
+            ok.addListener(
+              "execute", 
               function(e)
               {
+                // Package up data for fsm in a map
+                commentToFlagData = 
+                {
+                 "appId"  : this.appId,
+                 "treeId" : this.treeId,
+                 "reason" : win._reasonField.getValue()
+                };
+                
+                // Close the window 
                 win.close();
               
                 // Clear out text field
                 win._reasonField.setValue(""); 
+                
+                // Fire our own event to capture this click
+                this.fsm.fireImmediateEvent(
+                  "flagComment", this, commentToFlagData);
+                
+                // Disable the flag button
+                this.flagComment.setEnabled(false); 
               },
-              this);
-
-              // Add the button bar to the window
-              win.add(hBox);
+              this); 
             
-              // Center and show the window
-              win.center(); 
-              win.show(); 
+            // Add the Cancel button
+            cancel = new qx.ui.form.Button(this.tr("Cancel"));
+            cancel.set(
+            {
+              width  : 100,
+              height : 30
+            });
+            hBox.add(cancel);
+
+
+            // Allow 'Escape' to cancel
+            command = new qx.ui.core.Command("Esc");
+            cancel.setCommand(command);
+
+            // Close the window if the cancel button is pressed
+            cancel.addListener(
+            "execute",
+            function(e)
+            {
+              win.close();
+              
+              // Clear out text field
+              win._reasonField.setValue(""); 
             },
-            this); 
-          
-          // Add to comment  
-          this._add(this.flagComment, { row : 1, column : 3 });
-        }
-        
+            this);
+
+            // Add the button bar to the window
+            win.add(hBox);
+            
+            // Center and show the window
+            win.center(); 
+            win.show(); 
+          },
+          this); 
+       
+        // Add to comment  
+        this._add(this.flagComment, { row : 1, column : 3 });
         break;
         
       case "timestamp":
         control = new qx.ui.basic.Label();
-        this._add(control, { row : 1, column : 2 });
+        this._add(control, { row : 1, column : 2});
         break;
         
       case "spacer":
