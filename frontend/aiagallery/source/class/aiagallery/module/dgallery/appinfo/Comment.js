@@ -323,9 +323,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
                   // Package up data for fsm in a map
                   commentToFlagData = 
                   {
-                   "appId"  : this.appId,
-                   "treeId" : this.treeId,
-                   "reason" : win._reasonField.getValue()
+                    "appId"  : this.appId,
+                    "treeId" : this.treeId,
+                    "reason" : win._reasonField.getValue()
                   };
                   
                   // Close the window 
