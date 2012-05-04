@@ -172,7 +172,8 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "keepComment");
+          request.setUserData("requestType", "setCommentActive");
+          request.setUserData("commentInfo", map); 
 
         }
       });
@@ -219,6 +220,7 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
           // When we get the result, we'll need to know what type of request
           // we made.
           request.setUserData("requestType", "deleteComment");
+          request.setUserData("commentInfo", map); 
 
         }
       });

@@ -12,7 +12,7 @@
 qx.Class.define("aiagallery.module.mgmt.comments.Gui",
 {
   type : "singleton",
-  extend : qx.core.Object,
+  extend : qx.ui.core.Widget,
 
   members :
   {
@@ -47,6 +47,7 @@ qx.Class.define("aiagallery.module.mgmt.comments.Gui",
         new qx.ui.container.Composite(new qx.ui.layout.VBox());
       scroller.add(this.commentsScrollContainer);
       
+      
     },
 
     
@@ -68,6 +69,7 @@ qx.Class.define("aiagallery.module.mgmt.comments.Gui",
       var             result;
       var             commentDB;
       var             i;
+      var             scrollChildren;
       
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -108,6 +110,59 @@ qx.Class.define("aiagallery.module.mgmt.comments.Gui",
         }
         
         break; 
+        
+      // Comment was deemed acceptable so keep it
+      case "setCommentActive":
+      
+        // Pop msg of action
+        dialog.Dialog.warning(this.tr("Message Kept")); 
+        
+        // Get comment info
+        result = rpcRequest.getUserData("commentInfo"); 
+        
+        // Remove from list
+        scrollChildren = this.commentsScrollContainer.getChildren();
+      
+        for(i in scrollChildren)
+        {
+          if(scrollChildren[i].appId == result.appId && 
+             scrollChildren[i].treeId == result.treeId)
+          {
+            // Remove this from the list
+            this.commentsScrollContainer.remove(scrollChildren[i]);
+            
+            // Found the comment so break
+            break;            
+          }
+        }
+      
+        break;
+        
+      case "deleteComment":
+      
+        // Pop msg of action
+        dialog.Dialog.warning(this.tr("Message Deleted")); 
+        
+        // Get comment info
+        result = rpcRequest.getUserData("commentInfo"); 
+        
+        // Remove from list
+        scrollChildren = this.commentsScrollContainer.getChildren();
+      
+        for(i in scrollChildren)
+        {
+          if(scrollChildren[i].appId == result.appId && 
+             scrollChildren[i].treeId == result.treeId)
+          {
+            // Remove this from the list
+            this.commentsScrollContainer.remove(scrollChildren[i]);
+            
+            // Found the comment so break
+            break;            
+          }
+        }
+      
+        break;
         
       default:
         throw new Error("Unexpected request type: " + requestType);
