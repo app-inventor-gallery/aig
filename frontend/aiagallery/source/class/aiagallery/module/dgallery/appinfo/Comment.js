@@ -174,12 +174,13 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
         this._add(control, { row : 1, column : 1 });
                 
         // add a flagit button after that
-        this.flagComment = new qx.ui.form.Button();
+        this.flagComment = new qx.ui.basic.Label(this.tr("Flag"));
           this.flagComment.set(
           {
             maxHeight   : 30,
-            width       : 20,
-            icon        : "aiagallery/flagIcon.png",
+            width       : 30,
+            textColor : null, 
+            font        : font, 
             toolTipText : this.tr("Flag this comment")
           });
           
@@ -211,11 +212,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             
             // Concatonate this instruction string
             instructionText = 
-              this.tr("Flagging a comment means you think\n the comment") +
-              this.tr("does not reach the level of\n discorse") + 
-              this.tr("suitable for the gallery.\n <br><br>") +
-              this.tr("Please enter a reason why you think this") +
-              this.tr("comment should be removed:");  
+              this.tr("Flagging a comment means you think\n the comment does not reach the level of\n discorse suitable for the gallery.\n <br><br>") +
+              this.tr("Please enter a reason why you think this comment should be removed:");  
             
             // Add info about flagging
             instructionLabel = new qx.ui.basic.Label().set(
@@ -240,8 +238,11 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             
             // Add the Ok button
             ok = new qx.ui.form.Button(this.tr("Ok"));
-            ok.setWidth(100);
-            ok.setHeight(30);
+            ok.set(
+            {
+              width : 100,
+              height : 30
+            });
             hBox.add(ok);
 
             // Allow 'Enter' to confirm entry
