@@ -39,7 +39,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
     layout = new qx.ui.layout.Grid(6, 0);
     layout.setRowFlex(0, 1);    // comment text takes up space as needed
     layout.setColumnWidth(0, 40);
-    layout.setColumnFlex(2, 1);
+    layout.setColumnFlex(4, 1);
     layout.setColumnAlign(0, "right", "middle");
     layout.setRowAlign(0, "left", "bottom");
     layout.setRowAlign(1, "left", "top");
@@ -118,7 +118,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             autoSize          : true,
             minimalLineHeight : 1
           });
-        this._add(control, { row : 0, column : 0, colSpan : 3 });
+        this._add(control, { row : 0, column : 0, colSpan : 5 });
         break;
         
       case "pointer":
@@ -173,13 +173,13 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
 
         this._add(control, { row : 1, column : 1 });
                 
-        // add a flagit button after that
+        // add a flagit label that will be a link after that
         this.flagComment = new qx.ui.basic.Label(this.tr("Flag"));
           this.flagComment.set(
           {
             maxHeight   : 30,
             width       : 30,
-            textColor : null, 
+            textColor   : null, 
             font        : font, 
             toolTipText : this.tr("Flag this comment")
           });
@@ -240,7 +240,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             ok = new qx.ui.form.Button(this.tr("Ok"));
             ok.set(
             {
-              width : 100,
+              width  : 100,
               height : 30
             });
             hBox.add(ok);
@@ -257,7 +257,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
                 // Package up data for fsm in a map
                 commentToFlagData = 
                 {
-                 "appId" : this.appId,
+                 "appId"  : this.appId,
                  "treeId" : this.treeId,
                  "reason" : win._reasonField.getValue()
                 };
@@ -279,9 +279,13 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             
             // Add the Cancel button
             cancel = new qx.ui.form.Button(this.tr("Cancel"));
-            cancel.setWidth(100);
-            cancel.setHeight(30);
+            cancel.set(
+            {
+              width  : 100,
+              height : 30
+            });
             hBox.add(cancel);
+
 
             // Allow 'Escape' to cancel
             command = new qx.ui.core.Command("Esc");
@@ -307,15 +311,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             win.show(); 
           },
           this); 
-          
+       
         // Add to comment  
         this._add(this.flagComment, { row : 1, column : 3 });
- 
         break;
         
       case "timestamp":
         control = new qx.ui.basic.Label();
-        this._add(control, { row : 1, column : 2 });
+        this._add(control, { row : 1, column : 2});
         break;
         
       case "spacer":
