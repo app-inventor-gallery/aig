@@ -12,6 +12,25 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
   implement : [qx.ui.form.IModel],
   include   : [qx.ui.form.MModelProperty],
   
+ /**
+  * Create a new comment object. 
+  *
+  * @param data {Map}
+  *   Initial data to display if any
+  *
+  * @param fsm {FSM}
+  *   The finate state machine associated with the module creating the comment
+  *
+  * @param treeId {String}
+  *   The tree id of the comment
+  *
+  * @param appId {Integer}
+  *   The app id associated with the comment
+  *
+  * @param bMgmt {Boolean}
+  *   True if this comment is beaing created on the management page.
+  *   False if this comment is created on an app info page. 
+  */
   construct : function(data, fsm, treeId, appId, bMgmt)
   {
     var             layout;
