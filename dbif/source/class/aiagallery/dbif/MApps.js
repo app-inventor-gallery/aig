@@ -260,9 +260,82 @@ qx.Mixin.define("aiagallery.dbif.MApps",
   members :
   {
     /**
+     * Check that the supplied data is a valid App Inventor source file
+     *
+     * @param fileData {Array}  IT'S A SORT-OF ARRAY OF BYTES; IS THIS ACCURATE?
+     *   File data to be checked
+     *   
+     * @return {Boolean}
+     *   True if input is a valid App Inventor source file
+     */
+    _validSource : function(fileData)
+    {
+      // This function is based on 
+      // http://code.google.com/p/app-inventor-releases/source/browse/
+      // appinventor/appengine/src/com/google/appinventor/server/
+      // FileImporterImpl.java
+      // 
+      // That function created a new project, and indicates failure by
+      // throwing an exception.
+      // This function simply checks that we have a valid AI source file, and
+      // indicates success or failure via a returned Boolean.
+      // It checks that the input stream is a valid zip file that contains a
+      // top-level entry named "youngandroidproject/project.properties"
+      //
+      // No size check is performed.
+      
+      var PROJECT_PROPERTIES_FNAME = "youngandroidproject/project.properties";
+
+      // Set false if a zip file scan error occurs (bad)
+      var isZipArchive = true;
+      // Set true if a project properties file is found (good)
+      var isProjectArchive = false;
+
+      var zin;
+      // Originally declared thusly: java.util.zip.ZipEntry entry;
+      // Is this OK in this mixed environment?
+      var entry;
+      var fileName;
+      
+      zin = new java.util.zip.ZipInputStream(fileData);
+      try 
+      {
+        // Extract files one-by-one.
+        // An exception will be thrown (and caught) if we have a bad zip file.
+        while (true)
+        {
+          entry = zin.getNextEntry();
+          // Completed scanning zip file?
+          if (entry == null)  // js and j same nulls?
+          {
+            break;
+          }
+          fileName = entry.getName();
+          if ( fileName == PROJECT_PROPERTIES_FNAME )
+          {
+            isProjectArchive = true;
+          }
+        }
+      }
+      catch (e)
+      {
+        // Error scanning (apparently non-)zip file
+        isZipArchive = false;
+      }
+      finally
+      {
+        zin.close();
+      }
+
+      return ( isZipArchive && isProjectArchive);
+    },
+
+
+    /**
      * Do post processing of an uploaded app. This function base64-decodes the
      * data url values, saves the images as blobs, and replaces each data url
-     * with an http: url for retrieving the image (with scaling).
+     * with an http: url for retrieving the image (with scaling).  It also
+     * checks that source files are valid App Inventor source files.
      *
      * @param requestData {Map}
      *   Map which includes a uid member that uniquely identifies the app to
@@ -382,7 +455,25 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       
           // Decode the data
           fileData = aiagallery.dbif.Decoder64.decode(fileData);
-          
+
+          // Check that it's a valid App Inventor source file
+
+          // DEBUG
+          var vs = this._validSource(fileData);
+          console.log('_validSource:  ' + vs);
+/*          if (! this._validSource(fileData) )
+            {
+              throw (
+                {
+                  code    : 1234,
+                  message : "Invalid Source File"
+                });
+            }
+*/
+// TODO HERE:
+// Is throwing an error here the right move?  Am I doing it right?
+// What to do about bad source file, delete it here?
+
           // Disregard the MIME type of the uploaded ZIP file and use one that
           // is known to be appropriate.
           mimeType = "application/zip";
@@ -418,7 +509,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         throw e;
       }
       
-      // Conform that this app has all necessary data, and that all changes
+      // Confirm that this app has all necessary data, and that all changes
       // have been processed.
       if (appData.newsource.length === 0 && appData.newimage1 === null)
       {
