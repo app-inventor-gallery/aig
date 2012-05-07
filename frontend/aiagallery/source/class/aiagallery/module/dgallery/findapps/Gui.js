@@ -234,6 +234,13 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
       
       // Set the value back to null so we're ready for next time
       this.setQuery(null);
+    },
+
+    // Retrieve search button.  Used by fsm on appear/disappear
+    // events to enable/disable association with "Enter" key.
+    getSearchButton : function()
+    {
+        return this.__criteria.__butSearch;
     }
   }
 });

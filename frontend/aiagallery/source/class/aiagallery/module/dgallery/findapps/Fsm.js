@@ -95,12 +95,13 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
       // The following transitions have a predicate, so must be listed first
 
       /*
-       * Transition: Idle to Idle
+       * Transition: Idle to AwaitRpcResult
        *
        * Cause: "appear" on canvas
        *
        * Action:
        *  If this is the very first appear, retrieve the category list.
+       *  Otherwise, continue to next transition.
        */
 
       trans = new qx.util.fsm.Transition(
@@ -112,11 +113,12 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
 
         "predicate" : function(fsm, event)
         {
-          // Have we already been here before?
+          // Have we already been here?
           if (fsm.getUserData("noUpdate"))
           {
-            // Yup. Don't accept this transition and no need to check further.
-            return null;
+            // Yup. Don't accept this transition, but continue to the next
+            // one, where pressing "Enter" to search will be re-enabled.
+            return false;
           }
           
           // Prevent this transition from being taken next time.
@@ -145,12 +147,38 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
 
 
       /*
-       * Transition: Idle to Awaiting RPC Result
+       * Transition: Idle to Idle
+       *
+       * Cause: "appear" on canvas, not for the first time
+       *
+       * Action: Enable "Enter" command for search button
+       *  
+       */
+
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_Idle_via_appear",
+      {
+        "nextState" : "State_Idle",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var gui = aiagallery.module.dgallery.findapps.Gui.getInstance();
+          gui.getSearchButton().getCommand().setEnabled(true);
+        }
+      });
+
+      state.addTransition(trans);
+
+
+      /*
+       * Transition: Idle to AwaitRpcResult
        *
        * Cause: "queryChanged" event from CriteriaSearch
        *
        * Action:
-       *  Initiate a request for the list of  matching applications.
+       *  Initiate a request for the list of matching applications.
        */
         
       trans = new qx.util.fsm.Transition(
@@ -299,8 +327,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
        *
        * Cause: "disappear" on canvas
        *
-       * Action:
-       *  Stop our timer
+       * Action: Disable "Enter" command for search button
+       *  
        */
 
       trans = new qx.util.fsm.Transition(
@@ -312,6 +340,8 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
 
         "ontransition" : function(fsm, event)
         {
+          var gui = aiagallery.module.dgallery.findapps.Gui.getInstance();
+          gui.getSearchButton().getCommand().setEnabled(false);
         }
       });
 
