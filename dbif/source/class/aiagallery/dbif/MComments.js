@@ -22,6 +22,14 @@ qx.Mixin.define("aiagallery.dbif.MComments",
     this.registerService("aiagallery.features.getComments",
                          this.getComments,
                          [ "appId", "resultCriteria" ]);
+    
+    this.registerService("aiagallery.features.getPendingComments",
+                         this.getPendingComments,
+                         []);
+                        
+    this.registerService("aiagallery.features.setCommentActive",
+                         this.setCommentActive,
+                         []);
   },
 
   statics :
@@ -317,6 +325,111 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       }
       
       return commentList;
+    },
+    
+    /**
+     * Get the list of pending comments
+     * 
+     * @return {List}
+     *   A list (possibly empty) containing all pending comments
+     */
+    getPendingComments : function()
+    {
+      var         criteria;
+      var         resultList;
+      var         i;
+      var         error;
+      
+      error = new liberated.rpc.error.Error();
+      
+      // Retrieve all Active comments for this app
+      criteria = 
+        {
+          type  : "element",
+          field : "status",
+          value : aiagallery.dbif.Constants.Status.Pending 
+        };
+
+      // Issue a query for all comments, with limit and offset settings applied
+      resultList = liberated.dbif.Entity.query("aiagallery.dbif.ObjComments", 
+                                               criteria,
+                                               null);
+                                               
+      try
+      {
+        resultList.forEach(function(obj)
+          {
+            // Add this visitor's display name
+            obj.displayName = 
+              aiagallery.dbif.MVisitors._getDisplayName(obj.visitor, error);
+            
+            // Did we fail to find this owner?
+            if (obj.visitor === error)
+            {
+              // Yup. Abort the request.
+              throw error;
+            }
+            
+            // Remove the visitor field
+            delete obj.visitor;
+          });
+      }
+      catch(error)
+      {
+        return error;
+      }
+                                                   
+      return resultList; 
+    },
+    
+    /**
+     * Set a comment to active (so it can be viewed)
+     *
+     * @param appId {Number}
+     *   This is the unique identifier for the app containing the comment to
+     *   delete
+     * 
+     * @param treeId {String}
+     *   This is the thread tree identifier for the comment which is to be
+     *   deleted
+     * 
+     * @return {Boolean}
+     *   Returns true if setting comment to active was successful. 
+     */
+    setCommentActive : function(appId, treeId)
+    {
+      var             commentObj;
+      var             commentObjData;
+    
+      // Retrieve an instance of this comment entity
+      commentObj = new aiagallery.dbif.ObjComments([appId, treeId]);
+      
+      // Get data
+      commentObjData = commentObj.getBrandNew()
+      
+      // Does this comment exist?
+      if (commentObjData)
+      {
+        // It doesn't. Let 'em know.
+        return false;
+      } 
+      else
+      {
+        commentObjData = commentObj.getData(); 
+      }
+      
+      // Change status to active
+      commentObjData.status = aiagallery.dbif.Constants.Status.Active;  
+      
+      liberated.dbif.Entity.asTransaction(
+        function()
+        {
+          // Commit change
+          commentObj.put();
+        });
+        
+      // Success
+      return true; 
     },
    
     /**
