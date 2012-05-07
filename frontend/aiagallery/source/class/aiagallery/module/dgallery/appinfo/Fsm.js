@@ -71,13 +71,18 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
           "likeIt"  : "Transition_Idle_to_AwaitRpcResult_via_likeIt",
 
-          "flagIt"  : "Transition_Idle_to_AwaitRpcResult_via_flagIt",
+          "flagIt"  : "Transition_Idle_to_AwaitRpcResult_via_flagIt",     
 
+          // Event is called directly from a comment
+          "flagComment" : "Transition_Idle_to_AwaitRpcResult_via_flagComment",
+          
           "execute" :
           {
             "butAddComment" :
             "Transition_Idle_to_AwaitRpcResult_via_submit_comment"
+            
           }
+
         }
       });
 
@@ -111,7 +116,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
           // Prevent this transition from being taken next time.
           fsm.setUserData("noUpdate", true);
-
+          
           // Accept this transition
           return true;
         },
@@ -293,9 +298,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
       state.addTransition(trans);
 
-
-      state.addTransition(trans);
-
       trans = new qx.util.fsm.Transition(
         "Transition_Idle_to_AwaitRpcResult_via_flagIt",
       {
@@ -328,7 +330,48 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
         }
       });
       state.addTransition(trans);
+      
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_flagComment",
+      {
+        "nextState" : "State_AwaitRpcResult",
 
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var             appId;
+          var             treeId;
+          var             reason;
+          var             map;
+          
+          // Get the data map
+          map = event.getData();
+          
+          // Break out the map
+          appId = map.appId;
+          treeId = map.treeId;
+          reason = map.reason;
+
+          var request =
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "flagIt",
+                         [ 
+                           1,       // flag type: 1 = comment
+                           reason,  // reason
+                           appId,   // ID of comment's app
+                           treeId   // comment ID
+                         ]);
+
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "flagComment");
+        }
+      });
+      
+      state.addTransition(trans);
 
       // ------------------------------------------------------------ //
       // State: AwaitRpcResult

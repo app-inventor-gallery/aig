@@ -48,6 +48,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // application information at the top, and comments at the bottom; and
       // the right (narrow) portion has a list of all apps by this author.
       //
+
       
       // First, create the grid layout
       grid = new qx.ui.layout.Grid(10, 10);
@@ -250,6 +251,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       var             source;
       var             model;
       var             comment;
+      var             warningText;
 
       if (response.type == "failed")
       {
@@ -292,11 +294,12 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
             var             comment;
             
             // Create a new comment object for this comment
-            comment = new aiagallery.module.dgallery.appinfo.Comment();
+            comment = new aiagallery.module.dgallery.appinfo.Comment
+              (null, fsm, commentData.treeId, commentData.app);
             comment.setText(commentData.text);
             comment.setDisplayName(commentData.displayName);
             comment.setTimestamp(commentData.timestamp);
-            
+          
             // Add it to the scroll container
             this.commentsScrollContainer.add(comment);
           },
@@ -372,7 +375,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         result = response.data.result;
         
         // Create a new comment object for this comment
-        comment = new aiagallery.module.dgallery.appinfo.Comment();
+        comment = new aiagallery.module.dgallery.appinfo.Comment
+          (null, fsm, result.treeId, result.app);
         comment.setText(result.text);
         comment.setDisplayName(result.displayName);
         comment.setTimestamp(result.timestamp);
@@ -425,6 +429,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         this.searchResult.getChildControl("flagIt").setCursor("default");
         break;
 
+      case "flagComment" :
+         // Display message that comment has been flagged
+        warningText = this.tr("This comment has been flagged.") +
+                      this.tr("An admin will review it.");
+        
+        dialog.Dialog.warning(warningText); 
+        break; 
+        
       default:
         throw new Error("Unexpected request type: " + requestType);
       }
