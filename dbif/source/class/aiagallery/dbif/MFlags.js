@@ -199,14 +199,19 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
           children : 
           [
             {
-              type: "element",
-              field: "comment",
-              value: commentNum
+              type  : "element",
+              field : "comment",
+              value : commentNum
             },
             {
-              type: "element",
-              field: "visitor",
-              value: visitorId
+              type  : "element",
+              field : "app",
+              value : appId
+            },
+            {
+              type  : "element",
+              field : "visitor",
+              value : visitorId
             }
           ]
         };
@@ -228,7 +233,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
           var data = newFlag.getData();
 
           data.type = flagType;
-          data.app = appNum;
+          data.app = appId;
           data.comment = commentId;
           data.visitor = visitorId;
           data.explanation = explanationInput;

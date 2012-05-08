@@ -30,6 +30,7 @@ qx.Class.define("aiagallery.module.mgmt.comments.Gui",
       var             titleLabel;
       var             layout;
       var             scroller;
+      var             vBox;
       
       // Create a layout
       canvas.setLayout(new qx.ui.layout.VBox());   
@@ -40,12 +41,13 @@ qx.Class.define("aiagallery.module.mgmt.comments.Gui",
       
       // Create the scroller to hold all of the comments
       scroller = new qx.ui.container.Scroll();
-      canvas.add(scroller);
+      canvas.add(scroller, {flex : 1});
       
       // The Scroller may contain only one container, so create that container.
+      vBox = new qx.ui.layout.VBox();     
       this.commentsScrollContainer = 
-        new qx.ui.container.Composite(new qx.ui.layout.VBox());
-      scroller.add(this.commentsScrollContainer);
+        new qx.ui.container.Composite(vBox);
+      scroller.add(this.commentsScrollContainer});
       
       
     },
@@ -90,14 +92,8 @@ qx.Class.define("aiagallery.module.mgmt.comments.Gui",
         
       case "getFlaggedComments":
         // First make sure the commentScrollContainer is clear
-        scrollChildren = this.commentsScrollContainer.getChildren();
+        this.commentsScrollContainer.removeAll(); 
         
-        for(i in scrollChildren)
-        {
-          // Remove this from the list
-          this.commentsScrollContainer.remove(scrollChildren[i]);
-        }
-      
         // Take the comments that are flagged
         // create new commentDetailBoxes for each of them
         // add them all to the vBox
