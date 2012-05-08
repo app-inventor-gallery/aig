@@ -216,7 +216,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
           ]
         };
 
-        // Query for the likes of this app by the current visitor
+        // Query for the flags of this comment by the current visitor
         // (an array, which should have length zero or one).
         flagsList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
                                                 criteria,

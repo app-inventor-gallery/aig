@@ -423,6 +423,56 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       // Change status to active
       commentObjData.status = aiagallery.dbif.Constants.Status.Active;  
       
+      // Set number of current flags to zero
+      commentObjData.numCurFlags = 0;
+      
+      // Remove any flags related to comment 
+      // Construct query of flags related to this comment
+      criteria = 
+      {
+        type : "op",
+        method : "and",
+        children : 
+        [
+          { 
+            type  : "element",
+            field : "comment",
+            value : treeId
+          },
+          {
+            type  : "element",
+            field : "app",
+            value : appId
+          }
+        ]
+      };
+
+      liberated.dbif.Entity.asTransaction(
+        function()
+        {
+          // Query for the flags of this comment 
+          flagsList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                  criteria,
+                                                  null);
+                                                  
+          // Each of these flags should be removed
+          flagsList.forEach(
+            function(result)
+            {
+                var             obj;
+                
+                // Get this Flags object
+                obj = new aiagallery.dbif.ObjFlags(result.uid);
+                
+                // Assuming it exists (it had better!)...
+                if (! obj.getBrandNew())
+                {
+                  // ... then remove this object
+                  obj.removeSelf();
+                }
+            });
+        }); 
+      
       liberated.dbif.Entity.asTransaction(
         function()
         {
