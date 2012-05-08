@@ -2196,7 +2196,6 @@ qx.Mixin.define("aiagallery.dbif.MSimData",
       },
       "comments" : 
       {
-
       },
       "likes" : 
       {

@@ -22,6 +22,14 @@ qx.Mixin.define("aiagallery.dbif.MComments",
     this.registerService("aiagallery.features.getComments",
                          this.getComments,
                          [ "appId", "resultCriteria" ]);
+    
+    this.registerService("aiagallery.features.getFlaggedComments",
+                         this.getFlaggedComments,
+                         []);
+                        
+    this.registerService("aiagallery.features.setCommentActive",
+                         this.setCommentActive,
+                         []);
   },
 
   statics :
@@ -207,6 +215,8 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       var             parentAppObj;
       var             parentAppData;
       var             parentTreeId;
+      var             criteria;
+      var             flagsList; 
       
       // Retrieve an instance of this comment entity
       commentObj = new aiagallery.dbif.ObjComments([appId, treeId]);
@@ -229,12 +239,16 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       liberated.dbif.Entity.asTransaction(
         function()
         {
+          // Did this comment have any flags related to it
+          // if so delete them
+          this.__removeFlags(appId, treeId); 
+            
           // Save this change
           parentAppObj.put();
       
           // Delete the app
           commentObj.removeSelf();
-        });
+        }, [], this);
       
       // We were successful
       return true;
@@ -318,6 +332,120 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       
       return commentList;
     },
+    
+    /**
+     * Get the list of flagged comments
+     * 
+     * @return {List}
+     *   A list (possibly empty) containing all flagged comments
+     */
+    getFlaggedComments : function()
+    {
+      var         criteria;
+      var         resultList;
+      var         i;
+      var         error;
+      
+      // Create error for when we get display names
+      error = new liberated.rpc.error.Error();
+      
+      // Retrieve all Active comments for this app
+      criteria = 
+        {
+          type     : "element",
+          field    : "numCurFlags",
+          value    : 0,
+          filterOp : ">"  
+        };
+
+      // Issue a query for all flagged comments
+      resultList = liberated.dbif.Entity.query("aiagallery.dbif.ObjComments", 
+                                               criteria,
+                                               null);
+                                               
+      try
+      {
+        resultList.forEach(function(obj)
+          {
+            // Add this visitor's display name
+            obj.displayName = 
+              aiagallery.dbif.MVisitors._getDisplayName(obj.visitor, error);
+            
+            // Did we fail to find this owner?
+            if (obj.visitor === error)
+            {
+              // Yup. Abort the request.
+              throw error;
+            }
+            
+            // Remove the visitor field
+            delete obj.visitor;
+          });
+      }
+      catch(error)
+      {
+        return error;
+      }
+                                                   
+      return resultList; 
+    },
+    
+    /**
+     * Set a comment to active (so it can be viewed)
+     *
+     * @param appId {Number}
+     *   This is the unique identifier for the app containing the comment to
+     *   delete
+     * 
+     * @param treeId {String}
+     *   This is the thread tree identifier for the comment which is to be
+     *   deleted
+     * 
+     * @return {Boolean}
+     *   Returns true if setting comment to active was successful. 
+     */
+    setCommentActive : function(appId, treeId)
+    {
+      var             commentObj;
+      var             commentObjData;
+    
+      // Retrieve an instance of this comment entity
+      commentObj = new aiagallery.dbif.ObjComments([appId, treeId]);
+      
+      // Get data
+      commentObjData = commentObj.getBrandNew()
+      
+      // Does this comment exist?
+      if (commentObjData)
+      {
+        // It doesn't. Let 'em know.
+        return false;
+      } 
+      else
+      {
+        commentObjData = commentObj.getData(); 
+      }
+      
+      liberated.dbif.Entity.asTransaction(
+        function()
+        {     
+            // Change status to active
+            commentObjData.status = aiagallery.dbif.Constants.Status.Active;  
+            
+            // Set number of flags to 0
+            commentObjData.numCurFlags = 0;
+        
+            // Remove any flags related to comment 
+            this.__removeFlags(appId, treeId); 
+            
+            // Commit change
+            commentObj.put();
+            
+        }, [], this); 
+
+      // Success
+      return true; 
+    },
    
     /**
      * Encode an integer as a string of base160 characters
@@ -393,6 +521,69 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       }
      
       return notMyPiece + retStr;
+    },
+    
+    /**
+     * If a comment is being set back to active, or delete, 
+     * delete any flags associated with it. 
+     * Should be called within a transaction. 
+     * 
+     * @param appId {Key}
+     *   The application id with which the comment is associated
+     *
+     * @param treeId {String}
+     *   The tree id of the comment
+     * 
+     * @return {Boolean}
+     *   True for success
+     */
+    __removeFlags : function(appId, treeId)
+    {
+      var             criteria;
+      var             flagsList;
+      
+      // Construct query of flags related to this comment
+      criteria = 
+      {
+        type : "op",
+        method : "and",
+        children : 
+        [
+          { 
+            type  : "element",
+            field : "comment",
+            value : treeId
+          },
+          {
+            type  : "element",
+            field : "app",
+            value : appId
+          }
+        ]
+      };
+    
+      // Query for the flags of this comment 
+      flagsList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                              criteria,
+                                              null);
+                                              
+      // Each of these flags should be removed
+      flagsList.forEach(
+        function(result)
+        {
+            var             obj;
+            
+            // Get this Flags object
+            obj = new aiagallery.dbif.ObjFlags(result.uid);
+            
+            // Assuming it exists (it had better!)...
+            if (! obj.getBrandNew())
+            {
+              // ... then remove this object
+              obj.removeSelf();
+            }
+        });
+    
     }
   }
 });

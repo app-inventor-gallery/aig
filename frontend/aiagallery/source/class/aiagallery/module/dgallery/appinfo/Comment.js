@@ -12,7 +12,26 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
   implement : [qx.ui.form.IModel],
   include   : [qx.ui.form.MModelProperty],
   
-  construct : function(data, fsm, treeId, appId)
+ /**
+  * Create a new comment object. 
+  *
+  * @param data {Map}
+  *   Initial data to display if any
+  *
+  * @param fsm {FSM}
+  *   The finate state machine associated with the module creating the comment
+  *
+  * @param treeId {String}
+  *   The tree id of the comment
+  *
+  * @param appId {Integer}
+  *   The app id associated with the comment
+  *
+  * @param bMgmt {Boolean}
+  *   True if this comment is beaing created on the management page.
+  *   False if this comment is created on an app info page. 
+  */
+  construct : function(data, fsm, treeId, appId, bMgmt)
   {
     var             layout;
     var             flagBtn; 
@@ -25,6 +44,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
     
     // App id on which the comment is located
     this.appId = appId;
+    
+    // Determine if this is a management view or not
+    this.bMgmt = bMgmt; 
     
     // Call the superclass constructor
     this.base(arguments);
@@ -173,30 +195,95 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
 
         this._add(control, { row : 1, column : 1 });
                 
-        // add a flagit label that will be a link after that
-        this.flagComment =
-          new qx.ui.basic.Label(this.tr("Flag as inappropriate?"));
-        this.flagComment.set(
-          {
-            maxHeight   : 30,
-            textColor   : null, 
-            font        : font, 
-            toolTipText : this.tr("Flag this comment")
-          });
-          
-        // Add to fsm
-        this.fsm.addObject("flagComment", this.flagComment);
+        // If this is true, viewing comment from management view
+        if(this.bMgmt)
+        {
+          var         commentToFlagData; 
         
-        // Create listener to catch click and send to fsm
-        this.flagComment.addListener( "click", this._onFlagClick, this); 
-       
-        // Add to comment  
-        this._add(this.flagComment, { row : 1, column : 3 });
+          // Package up data for fsm in a map
+          commentToFlagData = 
+          {
+            "appId"  : this.appId,
+            "treeId" : this.treeId
+          };
+        
+          // Add the nessesary mgmt buttons
+          // Keep comment 
+          this.keepCommentButton = 
+            new qx.ui.form.Button(this.tr("Keep Comment"));
+            this.keepCommentButton.set(
+            {
+              maxHeight      : 50,
+              maxWidth       : 200
+            });
+            
+          // Create listener to catch click and send to fsm
+          this.keepCommentButton.addListener(
+            "click",
+            function(e)
+            {
+              // Fire our own event to capture this click
+              this.fsm.fireImmediateEvent(
+              "keepComment", this, commentToFlagData);
+            }, 
+            this);
+            
+          // Add to comment  
+          this._add(this.keepCommentButton, { row : 2, column : 1 });
+            
+          // Delete comment 
+          this.deleteCommentButton = 
+            new qx.ui.form.Button(this.tr("Delete Comment"));
+            this.deleteCommentButton.set(
+            {
+              maxHeight      : 50,
+              maxWidth       : 200
+            });
+            
+          // Create listener to catch click and send to fsm
+          this.deleteCommentButton.addListener(
+            "click",
+            function(e)
+            {
+            
+              // Fire our own event to capture this click
+              this.fsm.fireImmediateEvent(
+              "deleteComment", this, commentToFlagData);
+            }, 
+            this);
+            
+          // Add to comment  
+          this._add(this.deleteCommentButton, { row : 2, column : 2 });
+            
+        } 
+        else 
+        {
+          // add a flagit label that will be a link after that
+          this.flagComment =
+            new qx.ui.basic.Label(this.tr("Flag as inappropriate?"));
+          this.flagComment.set(
+            {
+              maxHeight   : 30,
+              textColor   : null, 
+              font        : font, 
+              toolTipText : this.tr("Flag this comment")
+            });
+          
+          // Add to fsm
+          this.fsm.addObject("flagComment", this.flagComment);
+          
+          // Create listener to catch click and send to fsm
+          this.flagComment.addListener( "click", this._onFlagClick, this); 
+         
+          // Add to comment  
+          this._add(this.flagComment, { row : 1, column : 3 });
+        }
+        
         break;
         
       case "timestamp":
         control = new qx.ui.basic.Label();
-        this._add(control, { row : 1, column : 2});
+        this._add(control, { row : 1, column : 2 });
         break;
         
       case "spacer":
@@ -208,9 +295,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
       return control || this.base(arguments, id);
     },
 
-    /**
-     * Handler for a click on the comment's "Flag as inappropriate" button
-     */
     _onFlagClick : function()
     {
       var             commentToFlagData;
@@ -278,9 +362,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
           // Package up data for fsm in a map
           commentToFlagData = 
           {
-           "appId"  : this.appId,
-           "treeId" : this.treeId,
-           "reason" : win._reasonField.getValue()
+            "appId"  : this.appId,
+            "treeId" : this.treeId,
+            "reason" : win._reasonField.getValue()
           };
 
           // Close the window 
@@ -293,8 +377,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
           this.fsm.fireImmediateEvent(
             "flagComment", this, commentToFlagData);
 
-          // Hide the flag button. (Can't flag more than once.)
-          this.flagComment.setVisibility("hidden");
+          // Disable the flag button
+          this.flagComment.setVisibility("hidden"); 
         },
         this); 
 
@@ -331,7 +415,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
       win.center(); 
       win.show(); 
     },
-
 
     // Property apply.
     _applyText : function(value, old)
