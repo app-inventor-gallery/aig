@@ -47,7 +47,7 @@ qx.Class.define("aiagallery.module.mgmt.comments.Gui",
       vBox = new qx.ui.layout.VBox();     
       this.commentsScrollContainer = 
         new qx.ui.container.Composite(vBox);
-      scroller.add(this.commentsScrollContainer});
+      scroller.add(this.commentsScrollContainer);
       
       
     },
