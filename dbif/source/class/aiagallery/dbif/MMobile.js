@@ -469,11 +469,9 @@ qx.Mixin.define("aiagallery.dbif.MMobile",
         error.setMessage("No App UID given");
         return error;
       }      
-      
-      // FIXME: UNTESTED. At time of dev, no comments available to query on
-      
+           
       // The appId is passed in here as a string, but is a number in reality.
-      return this.getComments(appId, null, null, error);
+      return this.getComments(appId, null, error);
     },
     
     __getCategories : function(fields, error)
