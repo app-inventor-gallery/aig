@@ -291,26 +291,36 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // Set true if a project properties file is found (good)
       var isProjectArchive = false;
 
+      var fileDataStream;
       var zin;
-      // Originally declared thusly: java.util.zip.ZipEntry entry;
-      // Is this OK in this mixed environment?
       var entry;
       var fileName;
-      
-      zin = new java.util.zip.ZipInputStream(fileData);
+
+      // convert JS string to Java string (happens implicitly in many 
+      // cases, but here you explicitly need a Java string to call its
+      // getBytes() method.
+      var javaFileData = java.lang.String(fileData);
+
+      // convert String into InputStream
+      // Emperically, ISO-8859-1 is the correct charset.
+      fileDataStream = new java.io.ByteArrayInputStream(javaFileData.getBytes("ISO-8859-1"));
+      zin = new java.util.zip.ZipInputStream(fileDataStream);
       try 
-      {
+    {
         // Extract files one-by-one.
         // An exception will be thrown (and caught) if we have a bad zip file.
         while (true)
         {
           entry = zin.getNextEntry();
           // Completed scanning zip file?
-          if (entry == null)  // js and j same nulls?
+          if ( ! entry )
           {
+            // Yes.
             break;
           }
           fileName = entry.getName();
+          // DEBUG: Print full path name of each file contained in the archive
+          this.warn('*** File Name:  ' + fileName);
           if ( fileName == PROJECT_PROPERTIES_FNAME )
           {
             isProjectArchive = true;
@@ -327,6 +337,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         zin.close();
       }
 
+      // DEBUG -- print results of the two checks.
+      this.warn('isZipArchive: ' + isZipArchive + ';  isProjectArchive: ' + isProjectArchive);
       return ( isZipArchive && isProjectArchive);
     },
 
@@ -457,10 +469,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           fileData = aiagallery.dbif.Decoder64.decode(fileData);
 
           // Check that it's a valid App Inventor source file
-
-          // DEBUG
           var vs = this._validSource(fileData);
-          console.log('_validSource:  ' + vs);
+
+          // DEBUG -- just print the result for now, don't do anything with it.
+          this.warn('*** _validSource:  ' + vs);
+
+          // Hmmm, need to think about this...
 /*          if (! this._validSource(fileData) )
             {
               throw (
