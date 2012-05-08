@@ -473,15 +473,12 @@ qx.Mixin.define("aiagallery.dbif.MComments",
                   obj.removeSelf();
                 }
             });
+            
+            // Commit change
+            commentObj.put();
+            
         }); 
-      
-      liberated.dbif.Entity.asTransaction(
-        function()
-        {
-          // Commit change
-          commentObj.put();
-        });
-        
+
       // Success
       return true; 
     },
