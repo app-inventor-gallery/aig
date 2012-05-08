@@ -23,8 +23,8 @@ qx.Mixin.define("aiagallery.dbif.MComments",
                          this.getComments,
                          [ "appId", "resultCriteria" ]);
     
-    this.registerService("aiagallery.features.getPendingComments",
-                         this.getPendingComments,
+    this.registerService("aiagallery.features.getFlaggedComments",
+                         this.getFlaggedComments,
                          []);
                         
     this.registerService("aiagallery.features.setCommentActive",
@@ -328,29 +328,31 @@ qx.Mixin.define("aiagallery.dbif.MComments",
     },
     
     /**
-     * Get the list of pending comments
+     * Get the list of flagged comments
      * 
      * @return {List}
-     *   A list (possibly empty) containing all pending comments
+     *   A list (possibly empty) containing all flagged comments
      */
-    getPendingComments : function()
+    getFlaggedComments : function()
     {
       var         criteria;
       var         resultList;
       var         i;
       var         error;
       
+      // Create error for when we get display names
       error = new liberated.rpc.error.Error();
       
       // Retrieve all Active comments for this app
       criteria = 
         {
-          type  : "element",
-          field : "status",
-          value : aiagallery.dbif.Constants.Status.Pending 
+          type     : "element",
+          field    : "numCurFlags",
+          value    : 0,
+          filterOp : ">"  
         };
 
-      // Issue a query for all comments, with limit and offset settings applied
+      // Issue a query for all flagged comments
       resultList = liberated.dbif.Entity.query("aiagallery.dbif.ObjComments", 
                                                criteria,
                                                null);

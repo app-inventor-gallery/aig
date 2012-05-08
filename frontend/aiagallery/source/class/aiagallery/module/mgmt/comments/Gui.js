@@ -88,11 +88,19 @@ qx.Class.define("aiagallery.module.mgmt.comments.Gui",
       switch(requestType)
       {
         
-      case "getPendingComments":
+      case "getFlaggedComments":
+        // First make sure the commentScrollContainer is clear
+        scrollChildren = this.commentsScrollContainer.getChildren();
+        
+        for(i in scrollChildren)
+        {
+          // Remove this from the list
+          this.commentsScrollContainer.remove(scrollChildren[i]);
+        }
+      
         // Take the comments that are flagged
         // create new commentDetailBoxes for each of them
         // add them all to the vBox
-        
         result = response.data.result;
         
         //result is a list

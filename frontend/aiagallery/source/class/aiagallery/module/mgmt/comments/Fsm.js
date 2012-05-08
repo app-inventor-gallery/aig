@@ -88,7 +88,7 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
           // When we get a disappear event
           "disappear" :
           {
-            //"main.canvas" : "Transition_Idle_to_Idle_via_disappear"
+            "main.canvas" : "Transition_Idle_to_Idle_via_disappear"
           }
         }
       });
@@ -121,12 +121,12 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
           request =
              this.callRpc(fsm,
                           "aiagallery.features",
-                          "getPendingComments",
+                          "getFlaggedComments",
                           []);
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "getPendingComments");
+          request.setUserData("requestType", "getFlaggedComments");
 
         }
       });
