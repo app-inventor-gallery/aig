@@ -12,9 +12,19 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
   implement : [qx.ui.form.IModel],
   include   : [qx.ui.form.MModelProperty],
   
-  construct : function(data)
+  construct : function(data, fsm, treeId, appId)
   {
     var             layout;
+    var             flagBtn; 
+         
+    // Set fsm, treeId, and appId so its available later for comments
+    this.fsm = fsm;
+    
+    // Tree id of the comment 
+    this.treeId = treeId; 
+    
+    // App id on which the comment is located
+    this.appId = appId;
     
     // Call the superclass constructor
     this.base(arguments);
@@ -29,10 +39,11 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
     layout = new qx.ui.layout.Grid(6, 0);
     layout.setRowFlex(0, 1);    // comment text takes up space as needed
     layout.setColumnWidth(0, 40);
-    layout.setColumnFlex(2, 1);
+    layout.setColumnFlex(4, 1);
     layout.setColumnAlign(0, "right", "middle");
     layout.setRowAlign(0, "left", "bottom");
     layout.setRowAlign(1, "left", "top");
+    
     this.setLayout(layout);
     
     // Specify the format of date output
@@ -51,6 +62,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
       // ... then display it now
       this.set(data);
     }
+    
   },
 
   properties :
@@ -90,6 +102,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
     {
       var             control;
       var             font;
+      var             flagComment; 
 
       switch(id)
       {
@@ -105,7 +118,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             autoSize          : true,
             minimalLineHeight : 1
           });
-        this._add(control, { row : 0, column : 0, colSpan : 3 });
+        this._add(control, { row : 0, column : 0, colSpan : 5 });
         break;
         
       case "pointer":
@@ -134,22 +147,56 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
           "click",
           function(e)
           {
+            var             query;
+            var             displayName;
+
             // Prevent the default 'click' behavior
             e.preventDefault();
             e.stop();
 
+            // Remove "by" from displayName
+            displayName = this.getDisplayName().replace("by ", "");
+
+            query  =
+              {
+                authorName : displayName
+              };
+            
             // Initiate a search
-            alert("Future: initiate search for visitor " +
-                  this.getDisplayName() + " (" + this.getVisitor() + ")");
+            aiagallery.main.Gui.getInstance().selectModule(
+              {
+                page  : aiagallery.main.Constant.PageName.FindApps,
+                query : qx.lang.Json.stringify(query)
+              });
           },
           this);
 
         this._add(control, { row : 1, column : 1 });
+                
+        // add a flagit label that will be a link after that
+        this.flagComment =
+          new qx.ui.basic.Label(this.tr("Flag as inappropriate?"));
+        this.flagComment.set(
+          {
+            maxHeight   : 30,
+            textColor   : null, 
+            font        : font, 
+            toolTipText : this.tr("Flag this comment")
+          });
+          
+        // Add to fsm
+        this.fsm.addObject("flagComment", this.flagComment);
+        
+        // Create listener to catch click and send to fsm
+        this.flagComment.addListener( "click", this._onFlagClick, this); 
+       
+        // Add to comment  
+        this._add(this.flagComment, { row : 1, column : 3 });
         break;
         
       case "timestamp":
         control = new qx.ui.basic.Label();
-        this._add(control, { row : 1, column : 2 });
+        this._add(control, { row : 1, column : 2});
         break;
         
       case "spacer":
@@ -160,6 +207,131 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
 
       return control || this.base(arguments, id);
     },
+
+    /**
+     * Handler for a click on the comment's "Flag as inappropriate" button
+     */
+    _onFlagClick : function()
+    {
+      var             commentToFlagData;
+      var             win;
+      var             instructionLabel;
+      var             instructionText; 
+      var             ok; 
+      var             cancel;
+      var             hBox;
+
+      // Pop a window, ask the user to give a reason or cancel
+      win = new qx.ui.window.Window(this.tr("Flag A Comment"));
+      win.set(
+      {
+        maxWidth : 500,
+        layout : new qx.ui.layout.VBox(30),
+        modal  : true
+      });
+      this.getApplicationRoot().add(win);
+
+      // Concatonate this instruction string
+      instructionText = 
+        this.tr("Flagging a comment means you think\n the comment does not reach the level of\n discorse suitable for the gallery.\n <br><br>") +
+        this.tr("Please enter a reason why you think this comment should be removed:");  
+
+      // Add info about flagging
+      instructionLabel = new qx.ui.basic.Label().set(
+      {
+         value : instructionText,                  
+         rich  : true                                   
+      });
+      win.add(instructionLabel);
+
+      // Add the Text Area
+      win._reasonField = new qx.ui.form.TextArea();
+      win._reasonField.set(
+      {
+        width  : 120,
+        filter : /[a-zA-Z0-9 _-]/
+      });
+
+      win.add(win._reasonField);
+
+      // Create a horizontal box to hold the buttons
+      hBox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
+
+      // Add the Ok button
+      ok = new qx.ui.form.Button(this.tr("Ok"));
+      ok.set(
+      {
+        width  : 100,
+        height : 30
+      });
+      hBox.add(ok);
+
+      // Allow 'Enter' to confirm entry
+      var command = new qx.ui.core.Command("Enter");
+      ok.setCommand(command);
+
+      // add listener to ok
+      ok.addListener(
+        "execute", 
+        function(e)
+        {
+          // Package up data for fsm in a map
+          commentToFlagData = 
+          {
+           "appId"  : this.appId,
+           "treeId" : this.treeId,
+           "reason" : win._reasonField.getValue()
+          };
+
+          // Close the window 
+          win.close();
+
+          // Clear out text field
+          win._reasonField.setValue(""); 
+
+          // Fire our own event to capture this click
+          this.fsm.fireImmediateEvent(
+            "flagComment", this, commentToFlagData);
+
+          // Hide the flag button. (Can't flag more than once.)
+          this.flagComment.setVisibility("hidden");
+        },
+        this); 
+
+      // Add the Cancel button
+      cancel = new qx.ui.form.Button(this.tr("Cancel"));
+      cancel.set(
+      {
+        width  : 100,
+        height : 30
+      });
+      hBox.add(cancel);
+
+
+      // Allow 'Escape' to cancel
+      command = new qx.ui.core.Command("Esc");
+      cancel.setCommand(command);
+
+      // Close the window if the cancel button is pressed
+      cancel.addListener(
+      "execute",
+      function(e)
+      {
+        win.close();
+
+        // Clear out text field
+        win._reasonField.setValue(""); 
+      },
+      this);
+
+      // Add the button bar to the window
+      win.add(hBox);
+
+      // Center and show the window
+      win.center(); 
+      win.show(); 
+    },
+
 
     // Property apply.
     _applyText : function(value, old)
