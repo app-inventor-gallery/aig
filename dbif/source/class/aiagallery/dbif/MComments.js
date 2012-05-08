@@ -402,6 +402,8 @@ qx.Mixin.define("aiagallery.dbif.MComments",
     {
       var             commentObj;
       var             commentObjData;
+      var             criteria;
+      var             flagsList;
     
       // Retrieve an instance of this comment entity
       commentObj = new aiagallery.dbif.ObjComments([appId, treeId]);
