@@ -262,13 +262,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     /**
      * Check that the supplied data is a valid App Inventor source file
      *
-     * @param fileData {Array}  IT'S A SORT-OF ARRAY OF BYTES; IS THIS ACCURATE?
+     * @param fileData {String}
      *   File data to be checked
      *   
      * @return {Boolean}
      *   True if input is a valid App Inventor source file
      */
-    _validSource : function(fileData)
+    _isValidSource : function(fileData)
     {
       // This function is based on 
       // http://code.google.com/p/app-inventor-releases/source/browse/
@@ -291,19 +291,26 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // Set true if a project properties file is found (good)
       var isProjectArchive = false;
 
+      var fileDataByteArray;
       var fileDataStream;
       var zin;
       var entry;
       var fileName;
 
-      // convert JS string to Java string (happens implicitly in many 
-      // cases, but here you explicitly need a Java string to call its
-      // getBytes() method.
+      // convert JS string to Java string...
+      // (that happens implicitly in many cases, but here you explicitly
+      // need a Java string to call its getBytes() method)
       var javaFileData = java.lang.String(fileData);
 
-      // convert String into InputStream
-      // Emperically, ISO-8859-1 is the correct charset.
-      fileDataStream = new java.io.ByteArrayInputStream(javaFileData.getBytes("ISO-8859-1"));
+      // ... then to byte array...
+      // (emperically, ISO-8859-1 is the correct charset; else chaos ensues)
+      fileDataByteArray = javaFileData.getBytes("ISO-8859-1");
+
+      // ... then to InputStream...
+      fileDataStream = new java.io.ByteArrayInputStream(fileDataByteArray);
+
+      // ... and finally to ZipInputStream.
+      // (pleading the 5th on how long all that took to figure out...)
       zin = new java.util.zip.ZipInputStream(fileDataStream);
       try 
     {
@@ -313,15 +320,15 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         {
           entry = zin.getNextEntry();
           // Completed scanning zip file?
-          if ( ! entry )
+          if (! entry)
           {
-            // Yes.
+            // Yes, we're done here
             break;
           }
           fileName = entry.getName();
           // DEBUG: Print full path name of each file contained in the archive
           this.warn('*** File Name:  ' + fileName);
-          if ( fileName == PROJECT_PROPERTIES_FNAME )
+          if (fileName == PROJECT_PROPERTIES_FNAME)
           {
             isProjectArchive = true;
           }
@@ -329,16 +336,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       }
       catch (e)
       {
-        // Error scanning (apparently non-)zip file
+        // Error scanning (apparently non-) zip file
         isZipArchive = false;
       }
       finally
       {
         zin.close();
       }
-
-      // DEBUG -- print results of the two checks.
-      this.warn('isZipArchive: ' + isZipArchive + ';  isProjectArchive: ' + isProjectArchive);
       return ( isZipArchive && isProjectArchive);
     },
 
@@ -372,6 +376,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var         ImagesServiceFactory = Images.ImagesServiceFactory;
       var         imagesService = ImagesServiceFactory.getImagesService();
       var         BlobKey = Packages.com.google.appengine.api.blobstore.BlobKey;
+      // Init. this to true to properly handle the case of no new source files.
+      var         bValidSource = true;
 
       // Ensure we have the requisite UID
       if (typeof requestData.uid == "undefined" || requestData.uid == null)
@@ -422,16 +428,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           // If there's already a blob...
           if (appData.image1blob)
           {
-            // ... then add that blob ID to the list of ones to be removed
-            oldBlobId = appData.image1blob;
+            // ... then add its ID to the list of ones to be removed
+            removeBlobs.push(appData.image1blob);
           }
 
           // Save the image data as a blob
           appData.image1blob = 
             liberated.dbif.Entity.putBlob(imageData, mimeType);
-
-          // Note that we need to remove the old blob
-          removeBlobs.push(oldBlobId);
 
           // Save the blob id to remove it if something fails
           addedBlobs.push(appData.image1blob);
@@ -452,7 +455,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
            // off to get them in FIFO order.
           sourceBlobId = appData.newsource.pop();
           
-          // Note that we need to remove the blob upon error
+          // Note that we need to remove the blob upon success
           removeBlobs.push(sourceBlobId);
 
           // Retrieve the blob
@@ -468,40 +471,28 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           // Decode the data
           fileData = aiagallery.dbif.Decoder64.decode(fileData);
 
-          // Check that it's a valid App Inventor source file
-          var vs = this._validSource(fileData);
+          // Does it have the structure of a valid App Inventor source file?
+          bValidSource = this._isValidSource(fileData);
+          // DEBUG
+          this.warn('bValidSource: ' + bValidSource);
+          if (bValidSource)
+          // Yes.  It's a keeper.
+          {
+            // Disregard the MIME type of the uploaded ZIP file and use one that
+            // is known to be appropriate.
+            mimeType = "application/zip";
 
-          // DEBUG -- just print the result for now, don't do anything with it.
-          this.warn('*** _validSource:  ' + vs);
-
-          // Hmmm, need to think about this...
-/*          if (! this._validSource(fileData) )
-            {
-              throw (
-                {
-                  code    : 1234,
-                  message : "Invalid Source File"
-                });
-            }
-*/
-// TODO HERE:
-// Is throwing an error here the right move?  Am I doing it right?
-// What to do about bad source file, delete it here?
-
-          // Disregard the MIME type of the uploaded ZIP file and use one that
-          // is known to be appropriate.
-          mimeType = "application/zip";
-
-          // Write it to a new blob
-          destBlobId = liberated.dbif.Entity.putBlob(fileData, 
-                                                     mimeType,
-                                                     appData.sourceFileName);
+            // Write it to a new blob
+            destBlobId = liberated.dbif.Entity.putBlob(fileData, 
+                                                       mimeType,
+                                                       appData.sourceFileName);
           
-          // Remember that we added this blob, in case of later error
-          addedBlobs.push(destBlobId);
+            // Remember that we added this blob, in case of later error
+            addedBlobs.push(destBlobId);
           
-          // Add the new blob id to the source blob list
-          appData.source.unshift(destBlobId);
+            // Add the new blob id to the source blob list
+            appData.source.unshift(destBlobId);
+          }
         }
       }
       catch (e)
@@ -522,13 +513,15 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         // Rethrow the error
         throw e;
       }
-      
-      // Confirm that this app has all necessary data, and that all changes
-      // have been processed.
+
+      // If all changes have been processed...
       if (appData.newsource.length === 0 && appData.newimage1 === null)
       {
-        // If the image has all necessary data (new or prior), ...
-        if (appData.image1 !== null && appData.source.length !== 0)
+        // ... and the app has all necessary data (new or prior), and the most
+        // recent source file was valid...
+        if (appData.image1 !== null &&
+            appData.source.length !== 0 &&
+            bValidSource)
         {
           // ... then we can set the application status to Active.
           appData.status = aiagallery.dbif.Constants.Status.Active;
