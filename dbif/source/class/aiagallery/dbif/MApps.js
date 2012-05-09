@@ -2576,6 +2576,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             criteria;
       var             owners;
       var             likesList;
+      var             flagList;
       var             displayName;
       var             url;
       var             ret = {};
@@ -2664,7 +2665,35 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
         // If there were any results, this user has already liked it.
         ret.bAlreadyLiked = likesList.length > 0;
-      }
+        
+        // Determine if this user has flagged this app before
+        // Construct query criteria for "flags of this app by current visitor"
+        criteria = 
+          {
+            type     : "op",
+            method   : "and",
+            children : 
+            [
+              {
+                type   : "element",
+                field  : "app",
+                value  : uid
+              },
+              {
+                type   : "element",
+                field  : "visitor",
+                value  : whoami.id
+              }
+            ]
+          };
+        
+        // If there were any results, this user has already flaged it.
+        flagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                criteria,
+                                                null);
+        
+        ret.bAlreadyFlagged = flagList.length > 0;  
+      }      
 
       // Find all active apps other than the current one, by this same author
       criteria = 

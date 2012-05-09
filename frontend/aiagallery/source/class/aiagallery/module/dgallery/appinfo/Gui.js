@@ -60,8 +60,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       
       // Put the application detail in the top-left
       this.searchResult = new aiagallery.widget.SearchResult("appInfo");
-      this.__flagItListener =
-        this.searchResult.addListener("flagIt", fsm.eventListener, fsm);
       fsm.addObject("searchResult", this.searchResult);
       canvas.add(this.searchResult, { row : 0, column : 0 });
       
@@ -323,6 +321,24 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
             this.searchResult.addListener("likeIt", fsm.eventListener, fsm);
         }
         
+        // Enable or disable the flag button, depending on whether they've
+        // already flagged this app.
+        if (result.bAlreadyFlagged)
+        {
+          // He already flagged it. Change the label.
+          this.searchResult.getChildControl("flagIt").set(
+            {
+              value : this.tr("Flagged as inappropriate."),
+              font  : "default"
+            });
+        }
+        else
+        {
+          // He hasn't flagged it, so listen for a flag event
+          this.__flagItListener =
+            this.searchResult.addListener("flagIt", fsm.eventListener, fsm);
+        }
+        
         // Arrange to download the source when the download button is clicked
         this.searchResult.addListener(
           "download",
@@ -432,7 +448,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       case "flagComment" :
          // Display message that comment has been flagged
         warningText = this.tr("This comment has been flagged.") +
-                      this.tr("An admin will review it.");
+                      this.tr(" An admin will review it.");
         
         dialog.Dialog.warning(warningText); 
         break; 
