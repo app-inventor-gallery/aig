@@ -2577,9 +2577,11 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             owners;
       var             likesList;
       var             flagList;
+      var             commentFlagList; 
       var             displayName;
       var             url;
       var             ret = {};
+      var             flagged = {};
 
       whoami = this.getWhoAmI();
 
@@ -2687,11 +2689,11 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             ]
           };
         
-        // If there were any results, this user has already flaged it.
         flagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
                                                 criteria,
                                                 null);
-        
+                                                
+        // If there were any results, this user has already flaged it.
         ret.bAlreadyFlagged = flagList.length > 0;  
       }      
 
@@ -2760,6 +2762,34 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                             }
                                           ],
                                           error);
+                                          
+          // Determine if any of the comments have been flagged by the user  
+          criteria = 
+          {
+             type  : "element",
+             field : "app",
+             value : uid
+          };
+                 
+          commentFlagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                 criteria,
+                                                 null);
+                                                 
+          // Create map of flagged comment ids
+          commentFlagList.forEach(
+            function(flag)
+            {
+              flagged[flag.comment] = true;
+            });
+
+          // Look through the comments if there is a comment that has been
+          // flagged mark it as true
+          ret.comments.forEach(
+            function(comment)
+            {
+              comment.flaggedByThisUser = flagged[comment.treeId];
+            });
+  
         }
         
         // Send the app itself to the requestedFields function for stripping
