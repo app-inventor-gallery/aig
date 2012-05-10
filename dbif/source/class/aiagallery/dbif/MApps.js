@@ -2784,7 +2784,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                 type   : "element",
                 field  : "visitor",
                 value  : whoami.id
-              }
+              },
+              {
+                type   : "element",
+                field  : "type",
+                value  : aiagallery.dbif.Constants.FlagType.App
+              }              
             ]
           };
         
@@ -2864,11 +2869,28 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                           
           // Determine if any of the comments have been flagged by the user  
           criteria = 
-          {
-             type  : "element",
-             field : "app",
-             value : uid
-          };
+            {
+              type     : "op",
+              method   : "and",
+              children : 
+              [
+                {
+                  type   : "element",
+                  field  : "app",
+                  value  : uid
+                },
+                {
+                  type   : "element",
+                  field  : "visitor",
+                  value  : whoami.id
+                },
+                {
+                  type   : "element",
+                  field  : "type",
+                  value  : aiagallery.dbif.Constants.FlagType.Comment
+                }              
+              ]
+            };
                  
           commentFlagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
                                                  criteria,

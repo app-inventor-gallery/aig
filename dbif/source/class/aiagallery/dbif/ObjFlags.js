@@ -34,7 +34,7 @@ qx.Class.define("aiagallery.dbif.ObjFlags",
     var databaseProperties =
       {
         /** Type of flag ("App" = application, "Comment" = comment) */
-        "type" : "String",
+        "type" : "Integer",
 
         /** UID of the AppData object which was flagged */
         "app" : "Key",
