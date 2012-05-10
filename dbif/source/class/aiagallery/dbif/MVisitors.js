@@ -183,17 +183,14 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       visitorData = visitor.getData();
       
       // Provide the new data
-      visitor.setData(
-        {
-          id          : id,
-          email       : email,
-          displayName : displayName || visitorData.displayName || "<>",
-          permissions : permissions || visitorData.permissions || [],
-          permissionGroups :
-            permissionGroups || visitorData.permissionGroups || [],
-          status      : status != -1 ? status : (visitorData.status || 2)
-        });
-      
+      visitorData.id = id;
+      visitorData.email = email;
+      visitorData.displayName = displayName || visitorData.displayName || "<>";
+      visitorData.permissions = permissions || visitorData.permissions || [];
+      visitorData.permissionGroups = 
+        permissionGroups || visitorData.permissionGroups || [];
+      visitorData.status = status != -1 ? status : (visitorData.status || 2);
+
       // Write the new data
       visitor.put();
 

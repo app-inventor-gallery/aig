@@ -58,6 +58,10 @@
     </datastore-index>
 
     <datastore-index kind="comments" ancestor="true" source="manual">
+        <property name="numCurFlags" direction="asc"/>
+    </datastore-index>
+    
+    <datastore-index kind="comments" ancestor="true" source="manual">
         <property name="app" direction="asc"/>
         <property name="status" direction="asc"/>
         <property name="timestamp" direction="desc"/>
