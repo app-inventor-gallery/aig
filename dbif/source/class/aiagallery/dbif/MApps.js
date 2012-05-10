@@ -275,22 +275,21 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // appinventor/appengine/src/com/google/appinventor/server/
       // FileImporterImpl.java
       // 
-      // That function created a new project, and indicates failure by
-      // throwing an exception.
-      // This function simply checks that we have a valid AI source file, and
-      // indicates success or failure via a returned Boolean.
-      // It checks that the input stream is a valid zip file that contains a
-      // top-level entry named "youngandroidproject/project.properties"
+      // That function created a new project from the given data.
+      // This function simply checks that we have a valid AI source file.
+      // Specifically, it checks that the input stream is a valid zip file that
+      // contains an entry named "youngandroidproject/project.properties"
       //
       // No size check is performed.
       
       var PROJECT_PROPERTIES_FNAME = "youngandroidproject/project.properties";
 
-      // Set false if a zip file scan error occurs (bad)
+      // Changed to false if a zip file scan error occurs (bad)
       var isZipArchive = true;
-      // Set true if a project properties file is found (good)
+      // Changed to true if a project properties file is found (good)
       var isProjectArchive = false;
 
+      var javaFileData;
       var fileDataByteArray;
       var fileDataStream;
       var zin;
@@ -298,9 +297,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var fileName;
 
       // convert JS string to Java string...
-      // (that happens implicitly in many cases, but here you explicitly
+      // (that happens implicitly in many cases, but here we explicitly
       // need a Java string to call its getBytes() method)
-      var javaFileData = java.lang.String(fileData);
+      javaFileData = java.lang.String(fileData);
 
       // ... then to byte array...
       // (emperically, ISO-8859-1 is the correct charset; else chaos ensues)
@@ -310,7 +309,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       fileDataStream = new java.io.ByteArrayInputStream(fileDataByteArray);
 
       // ... and finally to ZipInputStream.
-      // (pleading the 5th on how long all that took to figure out...)
       zin = new java.util.zip.ZipInputStream(fileDataStream);
       try 
     {
@@ -326,8 +324,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             break;
           }
           fileName = entry.getName();
-          // DEBUG: Print full path name of each file contained in the archive
-          this.warn('*** File Name:  ' + fileName);
           if (fileName == PROJECT_PROPERTIES_FNAME)
           {
             isProjectArchive = true;
@@ -473,8 +469,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
           // Does it have the structure of a valid App Inventor source file?
           bValidSource = this._isValidSource(fileData);
-          // DEBUG
-          this.warn('bValidSource: ' + bValidSource);
           if (bValidSource)
           // Yes.  It's a keeper.
           {
@@ -493,6 +487,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             // Add the new blob id to the source blob list
             appData.source.unshift(destBlobId);
           }
+          else
+          {
+            // Log the error
+            java.lang.System.err.println(
+              "postAppUpload: invalid source file for UID " + requestData.uid +
+              " (" + appData.newsource.length + " remaining to process)");
+          }
         }
       }
       catch (e)
@@ -506,9 +507,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           {
             liberated.dbif.Entity.removeBlob(blobId);
           });
-        
-        // Let the user know something failed
-        this.logMessage(appData.owner, "Unknown app error", appData.title);
 
         // Rethrow the error
         throw e;
@@ -530,10 +528,25 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         {
           // Otherwise set it to Invalid so the user can deal with it
           appData.status = aiagallery.dbif.Constants.Status.Invalid;
+          // and log the error
+          java.lang.System.err.println(
+            "postAppUpload: Error for UID " + requestData.uid +
+            ": image1 " + (appData.image1 ? "present" : "absent") +
+            "; source.length = " + appData.source.length +
+            "; most recent source file " +
+            (bValidSource ? "valid" : "invalid"));
         }
       }
+      else
+      {
+        // There's data remaining to process for some reason.  Log that.
+        java.lang.System.err.println(
+          "postAppUpload: Unprocessed changes for UID " + requestData.uid +
+          ": newsource.length = " + appData.newsource.length + "; " +
+          (appData.newimage1 ? "newimage1 remaining" : "no newimage1"));
+      }
 
-      // Save the app object with the updates
+      // Save the updated app object
       try
       {
         // Write the app object
@@ -559,16 +572,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           });
       }
 
-      // Success
-      if (appData.status == aiagallery.dbif.Constants.Status.Active)
-      {
-        this.logMessage(appData.owner, "App available", appData.title);
-      }
-      else
-      {
-        this.logMessage(appData.owner, "Unknown app error", appData.title);
-      }
-      
       // We succeeded, so now we can remove obsolete blobs
       // Do this after the catch() above, so that added blobs aren't removed
       // if the put() succeeded.
@@ -589,7 +592,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
       java.lang.System.out.println("postAppUpload completed uid " +
                                    requestData.uid);
-
     },
 
 
