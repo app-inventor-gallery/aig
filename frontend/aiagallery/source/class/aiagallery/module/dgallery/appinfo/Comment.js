@@ -317,7 +317,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
 
       // Concatonate this instruction string
       instructionText = 
-        this.tr("Flagging a comment means you think\n the comment does not reach the level of\n discorse suitable for the gallery.\n <br><br>") +
+        this.tr("Flagging a comment means you think\n the comment does not reach the level of\n discourse suitable for the gallery.\n <br><br>") +
         this.tr("Please enter a reason why you think this comment should be removed:");  
 
       // Add info about flagging
