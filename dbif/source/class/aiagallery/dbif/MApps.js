@@ -311,7 +311,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // ... and finally to ZipInputStream.
       zin = new java.util.zip.ZipInputStream(fileDataStream);
       try 
-    {
+      {
         // Extract files one-by-one.
         // An exception will be thrown (and caught) if we have a bad zip file.
         while (true)
@@ -365,7 +365,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var         imageData;
       var         image;
       var         blobKey;
-      var         oldBlobId;
       var         addedBlobs = [];
       var         removeBlobs = [];
       var         Images = Packages.com.google.appengine.api.images;
@@ -470,8 +469,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           // Does it have the structure of a valid App Inventor source file?
           bValidSource = this._isValidSource(fileData);
           if (bValidSource)
-          // Yes.  It's a keeper.
           {
+            // Yes.  It's a keeper.
             // Disregard the MIME type of the uploaded ZIP file and use one that
             // is known to be appropriate.
             mimeType = "application/zip";
