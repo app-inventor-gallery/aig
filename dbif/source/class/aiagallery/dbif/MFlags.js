@@ -108,7 +108,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
               {
                 type  : "element",
                 field : "type",
-                value : aiagallery.dbif.Constants.FlagType.App
+                value : "0"
               }              
             ]
           };
@@ -221,7 +221,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
             {
               type  : "element",
               field : "type",
-              value : aiagallery.dbif.Constants.FlagType.Comment
+              value : "1"
             }  
           ]
         };

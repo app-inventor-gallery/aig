@@ -318,7 +318,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
                          "flagIt",
                          [ 
                            // flag type: 0 = app, 1 = comment
-                           aiagallery.dbif.Constants.FlagType.App,     
+                           0,     
                            "inappropriate", // reason
                            appId,           // ID of application being banned
                            null             // comment ID
@@ -360,7 +360,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
                          "flagIt",
                          [ 
                            // flag type: 1 = comment
-                           aiagallery.dbif.Constants.FlagType.Comment,     
+                           1,     
                            reason,  // reason
                            appId,   // ID of comment's app
                            treeId   // comment ID
