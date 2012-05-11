@@ -2788,7 +2788,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               {
                 type   : "element",
                 field  : "type",
-                value  : "0"
+                value  : aiagallery.dbif.Constants.FlagType.App
               }              
             ]
           };
@@ -2887,7 +2887,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                 {
                   type   : "element",
                   field  : "type",
-                  value  : "1"
+                  value  : aiagallery.dbif.Constants.FlagType.Comment
                 }              
               ]
             };
