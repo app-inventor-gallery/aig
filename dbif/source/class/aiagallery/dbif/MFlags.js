@@ -96,15 +96,20 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
             children : 
             [
               {
-                type: "element",
-                field: "app",
-                value: appId
+                type  : "element",
+                field : "app",
+                value : appId
               },
               {
-                type: "element",
-                field: "visitor",
-                value: visitorId
-              }
+                type  : "element",
+                field : "visitor",
+                value : visitorId
+              },
+              {
+                type  : "element",
+                field : "type",
+                value : aiagallery.dbif.Constants.FlagType.App
+              }              
             ]
           };
 
@@ -123,7 +128,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
           // store the new flags data
           var data = newFlag.getData();
 
-          data.type = flagType;
+          data.type = aiagallery.dbif.Constants.FlagType.App;
           data.app = appNum;
           data.comment = null;
           data.visitor = visitorId;
@@ -212,7 +217,12 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
               type  : "element",
               field : "visitor",
               value : visitorId
-            }
+            },
+            {
+              type  : "element",
+              field : "type",
+              value : aiagallery.dbif.Constants.FlagType.Comment
+            }  
           ]
         };
 
@@ -232,7 +242,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
           // store the flags data 
           var data = newFlag.getData();
 
-          data.type = flagType;
+          data.type = aiagallery.dbif.Constants.FlagType.Comment;
           data.app = appId;
           data.comment = commentId;
           data.visitor = visitorId;

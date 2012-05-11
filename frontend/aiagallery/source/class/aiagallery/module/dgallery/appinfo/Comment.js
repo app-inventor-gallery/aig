@@ -30,8 +30,11 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
   * @param bMgmt {Boolean}
   *   True if this comment is beaing created on the management page.
   *   False if this comment is created on an app info page. 
+  *
+  * @param bFlagged {Boolean}
+  *   True if the user has already flagged this comment
   */
-  construct : function(data, fsm, treeId, appId, bMgmt)
+  construct : function(data, fsm, treeId, appId, bMgmt, bFlagged)
   {
     var             layout;
     var             flagBtn; 
@@ -47,6 +50,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
     
     // Determine if this is a management view or not
     this.bMgmt = bMgmt; 
+    
+    // Has the user flagged this comment once before
+    this.bFlagged = bFlagged; 
     
     // Call the superclass constructor
     this.base(arguments);
@@ -259,21 +265,38 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
         else 
         {
           // add a flagit label that will be a link after that
-          this.flagComment =
-            new qx.ui.basic.Label(this.tr("Flag as inappropriate?"));
-          this.flagComment.set(
+          // If the user has already flagged this comment do not
+          // add the listener nor display the flag text
+          if(this.bFlagged)
+          {
+            this.flagComment = 
+              new qx.ui.basic.Label(this.tr("Comment Flagged"));
+            this.flagComment.set(
             {
-              maxHeight   : 30,
-              textColor   : null, 
-              font        : font, 
-              toolTipText : this.tr("Flag this comment")
+              font        : "default", 
+              textColor   : "black"
             });
-          
-          // Add to fsm
-          this.fsm.addObject("flagComment", this.flagComment);
-          
-          // Create listener to catch click and send to fsm
-          this.flagComment.addListener( "click", this._onFlagClick, this); 
+          }
+          else 
+          {
+            this.flagComment =
+              new qx.ui.basic.Label(this.tr("Flag as inappropriate?"));
+            this.flagComment.set(
+              {
+                maxHeight   : 30,
+                textColor   : null, 
+                font        : font, 
+                toolTipText : this.tr("Flag this comment")
+              });
+            
+            // Add to fsm
+            this.fsm.addObject("flagComment", this.flagComment);
+            
+            // Create listener to catch click and send to fsm
+            // Record id so we can remove it later
+            this.flagCommentListener = 
+              this.flagComment.addListener( "click", this._onFlagClick, this); 
+          }
          
           // Add to comment  
           this._add(this.flagComment, { row : 1, column : 3 });
@@ -377,8 +400,20 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
           this.fsm.fireImmediateEvent(
             "flagComment", this, commentToFlagData);
 
-          // Disable the flag button
-          this.flagComment.setVisibility("hidden"); 
+          // Change label of flag button to show user has flagged comment
+          this.flagComment.set(
+            {
+              value       : this.tr("Comment Flagged"), 
+              font        : "default", 
+              textColor   : "black", 
+              toolTipText : null
+            });
+          
+          // Remove listener, if needed, so it cannot be clicked
+          if(this.flagCommentListener !== null)
+          {
+            this.flagComment.removeListenerById(this.flagCommentListener); 
+          }
         },
         this); 
 

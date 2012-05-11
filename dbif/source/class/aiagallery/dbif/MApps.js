@@ -2675,9 +2675,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             criteria;
       var             owners;
       var             likesList;
+      var             flagList;
+      var             commentFlagList; 
       var             displayName;
       var             url;
       var             ret = {};
+      var             flagged = {};
 
       whoami = this.getWhoAmI();
 
@@ -2763,7 +2766,40 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
         // If there were any results, this user has already liked it.
         ret.bAlreadyLiked = likesList.length > 0;
-      }
+        
+        // Determine if this user has flagged this app before
+        // Construct query criteria for "flags of this app by current visitor"
+        criteria = 
+          {
+            type     : "op",
+            method   : "and",
+            children : 
+            [
+              {
+                type   : "element",
+                field  : "app",
+                value  : uid
+              },
+              {
+                type   : "element",
+                field  : "visitor",
+                value  : whoami.id
+              },
+              {
+                type   : "element",
+                field  : "type",
+                value  : aiagallery.dbif.Constants.FlagType.App
+              }              
+            ]
+          };
+        
+        flagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                criteria,
+                                                null);
+                                                
+        // If there were any results, this user has already flaged it.
+        ret.bAlreadyFlagged = flagList.length > 0;  
+      }      
 
       // Find all active apps other than the current one, by this same author
       criteria = 
@@ -2830,6 +2866,51 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                             }
                                           ],
                                           error);
+                                          
+          // Determine if any of the comments have been flagged by the user  
+          criteria = 
+            {
+              type     : "op",
+              method   : "and",
+              children : 
+              [
+                {
+                  type   : "element",
+                  field  : "app",
+                  value  : uid
+                },
+                {
+                  type   : "element",
+                  field  : "visitor",
+                  value  : whoami.id
+                },
+                {
+                  type   : "element",
+                  field  : "type",
+                  value  : aiagallery.dbif.Constants.FlagType.Comment
+                }              
+              ]
+            };
+                 
+          commentFlagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                 criteria,
+                                                 null);
+                                                 
+          // Create map of flagged comment ids
+          commentFlagList.forEach(
+            function(flag)
+            {
+              flagged[flag.comment] = true;
+            });
+
+          // Look through the comments if there is a comment that has been
+          // flagged mark it as true
+          ret.comments.forEach(
+            function(comment)
+            {
+              comment.flaggedByThisUser = flagged[comment.treeId];
+            });
+  
         }
         
         // Send the app itself to the requestedFields function for stripping
