@@ -239,7 +239,7 @@ qx.Class.define("aiagallery.main.Gui",
         mainTabs.setAppearance("radioview");
 
         // We're going to control the tab view via the link bar
-        //mainTabs.getChildControl("bar").exclude();
+        mainTabs.getChildControl("bar").exclude();
 
         pagePane.add(mainTabs, { flex : 1 });
 
@@ -1219,7 +1219,7 @@ qx.Class.define("aiagallery.main.Gui",
           // Find apps page. These events should be ignored
           // if the user stays on the Find Apps page, but does a
           // different search. This issue cannot be fixed simply and
-          //is documented on the issue tracker as issue #64. 
+          // is documented on the issue tracker as issue #64. 
 	  
           this.__selectModuleByFragment(state);
 
@@ -1353,7 +1353,9 @@ qx.Class.define("aiagallery.main.Gui",
       var             tempRadioButton; 
       var             pageLabel;
       var             bPageExists;
-
+      var             pageLocation;
+      var             mainTabsLocation; 
+      
       // Is this a request for the App page?
       if (components.page == aiagallery.main.Constant.PageName.AppInfo)
       {
@@ -1381,8 +1383,9 @@ qx.Class.define("aiagallery.main.Gui",
           if (pageArray[j].getUserData("app"))
           {
           
-            // Remove child from Page Selector
-            pageSelectorBar.remove(pageArray[j]); 
+            // Save the page location to replace later on else
+            // the preceding tab will be selected incorrectly
+            pageLocation = j; 
           
             // All done so break
             break; 
@@ -1397,27 +1400,30 @@ qx.Class.define("aiagallery.main.Gui",
         for (i = 0; i < tabArray.length; i++)
         {
           // Get the pageId
-          var pageLabel = tabArray[i].getLabel(); 
+          pageLabel = tabArray[i].getLabel(); 
 
           // Is this the one we're looking for?
           if (-1 != pageLabel.indexOf("-") 
             && pageLabel.substring(1) != components.label)
           {
-            mainTabs.remove(tabArray[i]); 
+            // Save the page location to replace later on else
+            // the preceding tab will be selected incorrectly            
+            mainTabsLocation = i; 
           }
-        }  
+        }         
         
         // Make sure the page is opened, it will be on the pageSelectorBar
-        // if not we just entered via a bookmark and have to open it ourselves   
+        // if not we just entered via a bookmark or back button 
+        // and have to open it ourselves   
         bPageExists = false;
         
         for (i = 0; i < tabArray.length; i++)
         {
           // Get the page label
-          var pageLabel = tabArray[i].getLabel(); 
+          pageLabel = tabArray[i].getLabel(); 
 
           // is this an ephemeral page
-          if (-1 != pageLabel.indexOf("-"))
+          if (pageLabel.substring(1) == components.label)
           {
             bPageExists = true;
             break;
@@ -1442,9 +1448,24 @@ qx.Class.define("aiagallery.main.Gui",
             });
         tempRadioButton.setUserData("app", true);
           
-        //Add to children a new temporary App Page
-        pageSelectorBar.add(tempRadioButton);
-                 
+        // Add to children a new temporary App Page
+        // If there is a page to remove do it here, if not just add 
+        if(pageLocation)
+        {
+          pageSelectorBar.add(tempRadioButton);
+          pageSelectorBar.remove(pageArray[pageLocation]); 
+        }
+        else 
+        {  
+          pageSelectorBar.add(tempRadioButton);
+        }       
+        
+        // If we need to remove from the main tabs do so now
+        if(mainTabsLocation)
+        {
+          mainTabs.remove(tabArray[mainTabsLocation]); 
+        }
+        
         //Select it  
         pageSelectorBar.setSelection([pageArray[pageArray.length - 1]]);
 
