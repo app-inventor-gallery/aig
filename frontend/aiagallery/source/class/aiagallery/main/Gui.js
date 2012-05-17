@@ -864,14 +864,14 @@ qx.Class.define("aiagallery.main.Gui",
               var             page = this.getUserData("page");
               var             label = page.getChildControl("button").getLabel();
 
-              // Remove any ephemeral pages
-              _this.removeEphemeralPages();
-
               // Set this page to be the selected (visible) one
               mainTabs.setSelection([ this.getUserData("page") ]);
 
               // Reinitialize the hierarchy to show only this page
               hierarchy.setHierarchy([ label ]);
+              
+              // Remove any ephemeral pages
+              _this.removeEphemeralPages();
             });
           this.getUserData("pageSelectorBar").add(o);
         }
@@ -1256,7 +1256,7 @@ qx.Class.define("aiagallery.main.Gui",
           // Find apps page. These events should be ignored
           // if the user stays on the Find Apps page, but does a
           // different search. This issue cannot be fixed simply and
-          //is documented on the issue tracker as issue #64. 
+          // is documented on the issue tracker as issue #64. 
 	  
           this.__selectModuleByFragment(state);
 
@@ -1325,11 +1325,11 @@ qx.Class.define("aiagallery.main.Gui",
 
       // Get the main tab view
       mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
-
+      
       // Get the currently selected page
       selectedPage = mainTabs.getSelection()[0];
 
-      // Get its page id string, star building fragment
+      // Get its page id string, start building fragment
       fragment = "page=" + selectedPage.getUserData("pageId");
 
       // If its an App Page we need to record the appid to switch to it
@@ -1388,7 +1388,11 @@ qx.Class.define("aiagallery.main.Gui",
       var             hierarchy;
       var             pageId;
       var             tempRadioButton; 
-
+      var             pageLabel;
+      var             bPageExists;
+      var             pageLocation;
+      var             mainTabsLocation; 
+      
       // Is this a request for the App page?
       if (components.page == aiagallery.main.Constant.PageName.AppInfo)
       {
@@ -1401,9 +1405,6 @@ qx.Class.define("aiagallery.main.Gui",
         {
           throw new Error("Got request for AppInfo without label");
         }
-
-        aiagallery.module.dgallery.appinfo.AppInfo.addAppView(
-          Number(components.uid), components.label);
         
         // Get the page selector bar
         pageSelectorBar =
@@ -1411,22 +1412,70 @@ qx.Class.define("aiagallery.main.Gui",
           
         // Get the children
         pageArray = pageSelectorBar.getChildren();
-          
-        // Its possible we an app radio button page already exists if
-        // so do nothing
+                   
+        // Its possible an app radio button page already exists if
+        // so remove it 
         for (j = 0; j < pageArray.length; j++)
         {
           if (pageArray[j].getUserData("app"))
           {
           
-            // Remove child from Page Selector
-            pageSelectorBar.remove(pageArray[j]); 
+            // Save the page location to replace later on else
+            // the preceding tab will be selected incorrectly
+            pageLocation = j; 
           
             // All done so break
             break; 
           }
         }
+              
+        // Retrieve the previously-created top-level tab view
+        mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
+        tabArray = mainTabs.getChildren();
+        
+        // Ensure no ephemeral pages are open 
+        for (i = 0; i < tabArray.length; i++)
+        {
+          // Get the pageId
+          pageLabel = tabArray[i].getLabel(); 
+
+          // Is this the one we're looking for?
+          if (-1 != pageLabel.indexOf("-") 
+            && pageLabel.substring(1) != components.label)
+          {
+            // Save the page location to replace later on else
+            // the preceding tab will be selected incorrectly            
+            mainTabsLocation = i; 
+          }
+        }         
+        
+        // Make sure the page is opened, it will be on the pageSelectorBar
+        // if not we just entered via a bookmark or back button 
+        // and have to open it ourselves   
+        bPageExists = false;
+        
+        for (i = 0; i < tabArray.length; i++)
+        {
+          // Get the page label
+          pageLabel = tabArray[i].getLabel(); 
+
+          // is this an ephemeral page
+          if (pageLabel.substring(1) == components.label)
+          {
+            bPageExists = true;
+            break;
+          }
+        }
+        
+        // If this is false we need to open the page ourselves
+        if (!bPageExists)
+        {
+          aiagallery.module.dgallery.appinfo.AppInfo.addAppView(
+            Number(components.uid), components.label);
+        }
           
+          
+        // All ephemeral pages have been removed at this point via addAppView
         // Create new temporary app radio button page
         tempRadioButton = new qx.ui.form.RadioButton(components.label);
         tempRadioButton.set(
@@ -1436,9 +1485,24 @@ qx.Class.define("aiagallery.main.Gui",
             });
         tempRadioButton.setUserData("app", true);
           
-        //Add to children a new temporary App Page
-        pageSelectorBar.add(tempRadioButton);
-                 
+        // Add to children a new temporary App Page
+        // If there is a page to remove do it here, if not just add 
+        if(pageLocation)
+        {
+          pageSelectorBar.add(tempRadioButton);
+          pageSelectorBar.remove(pageArray[pageLocation]); 
+        }
+        else 
+        {  
+          pageSelectorBar.add(tempRadioButton);
+        }       
+        
+        // If we need to remove from the main tabs do so now
+        if(mainTabsLocation)
+        {
+          mainTabs.remove(tabArray[mainTabsLocation]); 
+        }
+        
         //Select it  
         pageSelectorBar.setSelection([pageArray[pageArray.length - 1]]);
 
@@ -1490,7 +1554,7 @@ qx.Class.define("aiagallery.main.Gui",
 
       // Get children
       pageArray = pageSelectorBar.getChildren();
-      
+           
       //If there was a previously created app tab it must be removed
       for (j = 0; j < pageArray.length; j++)
       {
@@ -1504,7 +1568,7 @@ qx.Class.define("aiagallery.main.Gui",
           break; 
         }
       }
-
+      
       // Get the label of the selected tab, to find it in the page
       // selector bar.
       selectedLabel = selectedPage.getLabel();
@@ -1518,6 +1582,21 @@ qx.Class.define("aiagallery.main.Gui",
 
           // All done so break
           break; 
+        }
+      }
+           
+      // Ensure no ephemeral pages are open 
+      // Needed since when we switch out of an app page 
+      // an ephemeral page will be left
+      for (i = 0; i < tabArray.length; i++)
+      {
+        // Get the pageId
+        var pageLabel = tabArray[i].getLabel(); 
+
+        // Is this the one we're looking for?
+        if (-1 != pageLabel.indexOf("-"))
+        {
+          mainTabs.remove(tabArray[i]); 
         }
       }
 
@@ -1581,7 +1660,7 @@ qx.Class.define("aiagallery.main.Gui",
           components[ part.substring(0, index) ] 
             = part.substring(index + 1);
         },
-        this);
+        this); 
 
       // Now select the module
       this.selectModule(components);
