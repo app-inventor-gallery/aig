@@ -217,10 +217,11 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
       
       cellEditor.add(pGroups, { row : 4, column : 1 });
 
-      var status = new qx.ui.form.SelectBox();
+      var Status = aiagallery.dbif.Constants.Status;
+      var statusBox = new qx.ui.form.SelectBox();
 
       // Add each of the status values by pulling the array from Constants.js
-      qx.lang.Object.getKeys(aiagallery.dbif.Constants.Status).forEach(
+      qx.lang.Object.getKeys(Status).forEach(
         function(stat)
         {
           var             item;
@@ -229,20 +230,20 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
           item = new qx.ui.form.ListItem(stat);
           
           // Set the internal name of the status to the display name for now
-          item.setUserData("internal", stat);
+          item.setUserData("internal", Status[stat]);
 
           // Add this item to the selectbox
-          status.add(item);
+          statusBox.add(item);
           
           // Is this the current status?
-          if (rowData["status"] == stat)
+          if (rowData["status"] === Status[stat])
           {
-            status.setSelection( [ item ] );
+            statusBox.setSelection( [ item ] );
           }
         },
         this);
       
-      cellEditor.add(status, { row : 5, column : 1 });
+      cellEditor.add(statusBox, { row : 5, column : 1 });
       
       // Save the input fields for access by getCellEditorValue() and the FSM
       cellEditor.setUserData("displayName", displayName);
@@ -250,7 +251,7 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
       cellEditor.setUserData("id", id);
       cellEditor.setUserData("permissions", permissions);
       cellEditor.setUserData("pgroups", pGroups);
-      cellEditor.setUserData("status", status);
+      cellEditor.setUserData("statusBox", statusBox);
 
       // buttons
       var paneLayout = new qx.ui.layout.HBox();

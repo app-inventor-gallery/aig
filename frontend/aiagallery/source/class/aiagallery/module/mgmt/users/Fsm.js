@@ -283,7 +283,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
         "ontransition" : function(fsm, event)
         {
           // Issue the remote procedure call to get the visitor list. Request
-          // that the permissions and status be converted to strings for us.
+          // that the permissions and status not be converted to strings for us.
           var request =
             this.callRpc(fsm,
                          "aiagallery.features",
@@ -453,7 +453,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
               internal.permissionGroups.push(item.getUserData("internal"));
             
             });
-          selection = cellEditor.getUserData("status").getSelection()[0];
+          selection = cellEditor.getUserData("statusBox").getSelection()[0];
           internal.status = selection.getUserData("internal");
           
           // Save the request data
