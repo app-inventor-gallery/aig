@@ -1243,6 +1243,14 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     },
     
     /**
+     * Getter for CriteriaSearch's __butSearch
+     */
+     getSearchButton : function()
+     {
+       return this.__butSearch; 
+     },
+    
+    /**
      * Create the static content in the Text Search page.
      * 
      * @param container {qx.ui.core.Widget}

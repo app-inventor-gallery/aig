@@ -240,7 +240,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
     // events to enable/disable association with "Enter" key.
     getSearchButton : function()
     {
-        return this.__criteria.__butSearch;
+        return this.__criteria.getSearchButton();
     }
   }
 });
