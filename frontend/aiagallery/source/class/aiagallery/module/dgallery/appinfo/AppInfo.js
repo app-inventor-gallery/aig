@@ -30,7 +30,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.AppInfo",
       var             app;
       var             page;
       var             moduleList;
-
+      
       // Get the main tab view
       var mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
 
