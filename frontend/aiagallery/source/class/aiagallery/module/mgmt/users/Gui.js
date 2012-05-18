@@ -51,6 +51,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       hBox.add(edit);
       fsm.addObject("edit", edit);
 
+/*
       // Create an Add User button
       var addUser = new qx.ui.form.Button(this.tr("Add User"));
       addUser.set(
@@ -63,6 +64,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       
       // We'll be receiving events on the object so save its friendly name
       fsm.addObject("addUser", addUser, "main.fsmUtils.disable_during_rpc");
+*/
 
       // Now right-justify the Delete button
       hBox.add(new qx.ui.core.Widget(), { flex : 1 });
