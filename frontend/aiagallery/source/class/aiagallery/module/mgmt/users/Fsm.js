@@ -451,8 +451,9 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
             {
               // Add to our pGroup list the "internal" (English) permission
               internal.permissionGroups.push(item.getUserData("internal"));
-            
             });
+
+          // numeric status
           selection = cellEditor.getUserData("statusBox").getSelection()[0];
           internal.status = selection.getUserData("internal");
           

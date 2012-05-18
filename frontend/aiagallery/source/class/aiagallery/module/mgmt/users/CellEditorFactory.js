@@ -52,7 +52,7 @@ qx.Class.define("aiagallery.module.mgmt.users.CellEditorFactory",
             id               : "",
             permissions      : "",
             permissionGroups : "",
-            status           : ""
+            status           : aiagallery.dbif.Constants.Status["Active"]
           };
       }
       
