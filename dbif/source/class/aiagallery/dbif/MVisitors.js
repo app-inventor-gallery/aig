@@ -173,10 +173,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       displayName = attributes.displayName;
       permissions = attributes.permissions;
       permissionGroups = attributes.permissionGroups; 
-      
-      // Get the status value. If the status string isn't found, we'll use
-      // "Active" when we set the database.
-      status = aiagallery.dbif.Constants.StatusToName.indexOf(status);
+      status = attributes.status;
       
       // Get the old visitor entry
       visitor = new aiagallery.dbif.ObjVisitors(id);
@@ -189,7 +186,21 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       visitorData.permissions = permissions || visitorData.permissions || [];
       visitorData.permissionGroups = 
         permissionGroups || visitorData.permissionGroups || [];
-      visitorData.status = status != -1 ? status : (visitorData.status || 2);
+      // If the returned status is legit...
+      if ( typeof status == "number" && 
+           status >= 0 &&
+           status < aiagallery.dbif.Constants.StatusToName.length )
+      {
+        // ... copy it over
+        visitorData.status = status;
+      }
+      // ...otherwise, if the old status is not OK...
+      else if ( typeof visitorData.status != "number" )
+      {
+        // ... just make it "Active"
+        visitorData.status = aiagallery.dbif.Constants.Status["Active"];
+      }
+        // (if old status OK, leave it as is)
 
       // Write the new data
       visitor.put();
