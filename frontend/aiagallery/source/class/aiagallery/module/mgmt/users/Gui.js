@@ -141,7 +141,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       resizeBehavior.set(2, { width:"1*", minWidth:200 }); // Id
       resizeBehavior.set(3, { width:200                }); // Permissions
       resizeBehavior.set(4, { width:200                }); // Permission Groups
-      resizeBehavior.set(5, { width:60                 }); // Status
+      resizeBehavior.set(5, { width:100                 }); // Status
 
       // Use our own cell renderer for the status field, to convert from the
       // numeric value to the textual one.
