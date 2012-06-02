@@ -265,10 +265,31 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // Do per-method authorization.
 
       // Are they logged in, or anonymous?
+// TEMPORARY:
+if (false)
+{
+      // Anonymous users have automatic access to certain functionality
       bAnonymous = (aiagallery.dbif.MDbifCommon.__whoami === null);
-
+}
+else
+{
+  // Temporarily disallow anonymous access. Only whitelisted users have access.
+  bAnonymous = aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+}
       switch(methodName)
       {
+// TEMPORARY: whitelist nearly every RPC...
+      case "getAppList" :
+      case "getHomeRibbonData" :
+      case "appQuery" :
+      case "intersectKeywordAndQuery" :
+      case "getAppListByList" :
+      case "getAppInfo" :
+      case "getComments" :
+      case "keywordSearch" :
+      case "getCategoryTags" :
+        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+// ...TEMPORARY
 
       //
       // MApps
@@ -285,12 +306,14 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       case "setFeaturedApps":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
+/* TEMPORARY... (see above)
       case "appQuery":
       case "intersectKeywordAndQuery":
       case "getAppInfo":
       case "getAppListByList":
       case "getHomeRibbonData":
           return true;            // Anonymous access
+*/
 
       //
       // MComments
@@ -299,8 +322,10 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       case "deleteComment":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
+/* TEMPORARY... (see above)
       case "getComments":
         return true;            // Anonymous access
+*/
 
       //
       // MFlags
@@ -312,12 +337,6 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MMobile
       //
       case "mobileRequest":
-        return true;            // Anonymous access
-
-      //
-      // MSearch
-      //
-      case "keywordSearch":
         return true;            // Anonymous access
 
       //
@@ -349,8 +368,10 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       //
       // MSearch
       //
+/* TEMPORARY (see above)...
       case "keywordSearch":
         return true;          // Anonymous access
+*/
 
       //
       // MLiking
@@ -377,6 +398,13 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MChannel
       //
       case "getChannelToken" :
+        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+
+      //
+      // MSystem
+      //
+      case "getMotd" :
+      case "setMotd" :
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       default:

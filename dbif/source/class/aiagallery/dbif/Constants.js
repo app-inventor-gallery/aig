@@ -96,21 +96,21 @@ qx.Class.define("aiagallery.dbif.Constants",
       //
       // MApps
       //
-      "addOrEditApp"    : "Add and edit applications",
-      "deleteApp"       : "Delete applications",
-      "getAppListAll"   : "Get all users application list",
-      "mgmtEditApp"     : "Managment override for application management",
-      "setFeaturedApps" : "Specify the set of featured apps",
+      "addOrEditApp"      : "Add and edit applications",
+      "deleteApp"         : "Delete applications",
+      "getAppListAll"     : "Get all users application list",
+      "mgmtEditApp"       : "Managment override for application management",
+      "setFeaturedApps"   : "Specify the set of featured apps",
 
-      /* Anonymous access...
+      // Anonymous access...
       "getAppList"               : "Get logged in user application list",
       "getHomeRibbonData"        : "Retrieve apps displayed on home page",
       "appQuery"                 : "Query for applications",
       "intersectKeywordAndQuery" : "Get intersection of keyword search and" +
                                    "appQuery",
-      "getAppListByList"         : "Get list of apps given list of UIDs"
+      "getAppListByList"         : "Get list of apps given list of UIDs",
       "getAppInfo"               : "Get application detail information",
-      ... */
+      // ... Anonymous access
       
       //
       // MComments
@@ -118,9 +118,9 @@ qx.Class.define("aiagallery.dbif.Constants",
       "addComment"   : "Add comments to an application",
       "deleteComment": "Delete comments from an application",
       
-      /* Anonymous access...
+      // Anonymous access...
       "getComments"  : "Retrieve comments about an application",
-      ... */
+      // ... Anonymous access
       
       //
       // MFlags
@@ -131,23 +131,23 @@ qx.Class.define("aiagallery.dbif.Constants",
       //
       // MMobile
       //
-      /* Anonymous access...
+      // Anonymous access...
       "mobileRequest" : "Mobile client requests",
-      ... */
+      // ... Anonymous access
 
       //
       // MSearch
       //
-      /* Anonymous access...
+      // Anonymous access...
       "keywordSearch" : "Search for apps",
-      ... */
+      // ... Anonymous access
 
       //
       // MTags
       //
-      /* Anonymous access...
+      // Anonymous access...
       "getCategoryTags" : "Get the list of category tags",
-      ... */
+      // ... Anonymous access
       
       //
       // MVisitors
@@ -161,9 +161,9 @@ qx.Class.define("aiagallery.dbif.Constants",
       //
       // MWhoAmI
       //
-      /* Anonymous access...
-      "whoAmI" : "Identify the current user id and permissions"
-       */
+      // Anonymous access...
+      "whoAmI" : "Identify the current user id and permissions",
+      // ... Anonymous access
 
       //
       // MLikes
@@ -186,7 +186,13 @@ qx.Class.define("aiagallery.dbif.Constants",
       //
       // MChannel
       //
-      "getChannelToken" : "Request server push"
+      "getChannelToken" : "Request server push",
+      
+      //
+      // MSystem
+      //
+      "getMotd" : "Get the message of the day",
+      "setMotd" : "Set the message of the day"
     },
     
     // Log messages. Comments above each are required parameters
