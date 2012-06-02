@@ -404,6 +404,11 @@ else
       // MSystem
       //
       case "getMotd" :
+        // This doesn't really take effect at present, because getMotd() is
+        // called directly from gethomePageRibbons() which is separately
+        // whitelisted.
+        return true;
+
       case "setMotd" :
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 

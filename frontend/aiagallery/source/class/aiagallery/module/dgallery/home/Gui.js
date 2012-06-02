@@ -190,11 +190,15 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           
           "<hr />",
 
-          "<p style='font-size:larger;'><b>",
-          "Please note: The App Inventor Community Gallery is presently in a ",
-          "closed beta.  All projects, comments, etc. will be erased ",
-          "prior to launch.",
-          "</b></p>"
+          "<div style='background-color:#dddddd;",
+          " font-size:larger;font-weight:bold; padding:6px;'><b>",
+          "Please note: ",
+          "The App Inventor Community Gallery is currently in a ",
+          "closed beta. ",
+          "If you are not a beta tester, the home page content will be blank, ",
+          "and you will receive 'Permission Denied' ",
+          "messages for most features of this Gallery.",
+          "</div>"
         ].join("");
       o = new qx.ui.basic.Label(text);
       o.set(
