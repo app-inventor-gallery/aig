@@ -194,10 +194,12 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           " font-size:larger;font-weight:bold; padding:6px;'><b>",
           "Please note: ",
           "The App Inventor Community Gallery is currently in a ",
-          "closed beta. ",
-          "If you are not a beta tester, the home page content will be blank, ",
-          "and you will receive 'Permission Denied' ",
-          "messages for most features of this Gallery.",
+          "closed beta. To apply to be a tester, please complete ",
+          "<a href='https://docs.google.com/spreadsheet/viewform",
+          "?formkey=dHlzWWNyNFhuLVdvNVRJVFRYcUZhb3c6MQ#gid=0'",
+          " target='new'>",
+          "this form",
+          "</a>.",
           "</div>"
         ].join("");
       o = new qx.ui.basic.Label(text);
