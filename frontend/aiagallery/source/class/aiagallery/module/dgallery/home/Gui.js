@@ -189,17 +189,19 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 */
           
           "<hr />",
-
+/*
+          beta002: add helper text
+*/
           "<div style='background-color:#dddddd;",
           " font-size:larger;font-weight:bold; padding:6px;'><b>",
           "Please note: ",
           "The App Inventor Community Gallery is currently in a ",
           "closed beta. To apply to be a tester, please complete ",
-          "<a href='https://docs.google.com/spreadsheet/viewform",
-          "?formkey=dHlzWWNyNFhuLVdvNVRJVFRYcUZhb3c6MQ#gid=0'",
+          "<a href='https://docs.google.com/spreadsheet/viewform?formkey=dGxHTXAzNURGSTdIVkJpZXcwNG1kRkE6MA#gid=0'",
           " target='new'>",
           "this form",
-          "</a>.",
+          "</a>.<br/><br/>",
+          "Already in? We need your feedback! Please join <a href='http://groups.google.com/group/app-inventor-gallery/topics' target='new'>the forum</a>, and post bugs, issues, and feature requests there.",
           "</div>"
         ].join("");
       o = new qx.ui.basic.Label(text);
