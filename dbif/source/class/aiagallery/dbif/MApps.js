@@ -2338,6 +2338,29 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             searchResponseNewest;
       var             requestedData; 
 
+      // Before we search for apps to display check and see if
+      // some past searches have been cached with memcache.
+      var             MemcacheServiceFactory;
+      var             syncCache;
+      var             value;
+
+      // Bool to know if we need to cache this search or not
+      var             bCache = false;
+     
+      // Today's date (the day), used as the key in the cache
+      var             date = new Date().getDate();
+
+      MemcacheServiceFactory = Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+      syncCache = MemcacheServiceFactory.getMemcacheService();
+//    syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+      value = syncCache.get(date); // read from cache
+      if (value == null) {
+        bCache = true;
+      } else {
+          // This is the map containing the home ribbon data
+          return value; 
+      }
+
       // Create and execute query for "Featured" apps.
       // Limit results to only active apps
       criteria =
@@ -2526,7 +2549,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         
       //Construct map of data
       // Grab the motd and put it into the map at the end
-      var data = 
+      var homeRibbonData = 
         {
           "Featured"     :    searchResponseFeatured,   
           "MostLiked"    :    searchResponseLiked,
@@ -2534,8 +2557,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           "Motd"         :    this.getMotd()
         };
 
+      if (bCache) {
+	  // If this is true these queries were not in the cache, put them in the cache
+	  syncCache.put(date, homeRibbonData); // just for testing
+      }
+
       //Return the map containing the arrays containing the apps. 
-      return data;
+      return homeRibbonData;
     },
       
     /**
