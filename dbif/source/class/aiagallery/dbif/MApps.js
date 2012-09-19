@@ -2352,7 +2352,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
       MemcacheServiceFactory = Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
       syncCache = MemcacheServiceFactory.getMemcacheService();
-//    syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+      syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
       value = syncCache.get(date); // read from cache
       if (value == null) {
         bCache = true;
