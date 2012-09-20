@@ -2349,15 +2349,17 @@ qx.Mixin.define("aiagallery.dbif.MApps",
      
       // Today's date (the day), used as the key in the cache
       var             date = new Date().getDate();
-
+ 
       MemcacheServiceFactory = Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
       syncCache = MemcacheServiceFactory.getMemcacheService();
-      syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+      //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
       value = syncCache.get(date); // read from cache
       if (value == null) {
         bCache = true;
       } else {
           // This is the map containing the home ribbon data
+          // The map is stored as a JSON string so convert it and then send it back
+          value = qx.lang.Json.parse(value); 
           return value; 
       }
 
@@ -2554,12 +2556,15 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           "Featured"     :    searchResponseFeatured,   
           "MostLiked"    :    searchResponseLiked,
           "Newest"       :    searchResponseNewest,
-          "Motd"         :    this.getMotd()
+          "Motd"         :    this.getMotd(),
+          "bCache"       :    bCache
         };
 
       if (bCache) {
 	  // If this is true these queries were not in the cache, put them in the cache
-	  syncCache.put(date, homeRibbonData); // just for testing
+          // Convert map to a JSON string and save that
+	  var serialMap = qx.lang.Json.stringify(homeRibbonData); 
+	  syncCache.put(date, serialMap);
       }
 
       //Return the map containing the arrays containing the apps. 
