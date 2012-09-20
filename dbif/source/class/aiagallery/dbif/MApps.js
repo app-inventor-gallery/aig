@@ -2350,17 +2350,28 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // Today's date (the day), used as the key in the cache
       var             date = new Date().getDate();
  
-      MemcacheServiceFactory = Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
-      syncCache = MemcacheServiceFactory.getMemcacheService();
-      //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
-      value = syncCache.get(date); // read from cache
-      if (value == null) {
-        bCache = true;
-      } else {
-          // This is the map containing the home ribbon data
-          // The map is stored as a JSON string so convert it and then send it back
-          value = qx.lang.Json.parse(value); 
-          return value; 
+      // If we're on App Engine we can use java code if not do not cache
+      switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+      {
+      case "appengine":
+          MemcacheServiceFactory = Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+          syncCache = MemcacheServiceFactory.getMemcacheService();
+          //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+          value = syncCache.get(date); // read from cache
+          if (value == null) {
+            bCache = true;
+          } else {
+            // This is the map containing the home ribbon data
+            // The map is stored as a JSON string so convert it and then send it back
+            value = qx.lang.Json.parse(value); 
+            return value; 
+          }
+
+          break;
+
+      default:
+        // We are not using appengine
+        break; 
       }
 
       // Create and execute query for "Featured" apps.
