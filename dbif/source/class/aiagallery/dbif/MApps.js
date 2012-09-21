@@ -2346,9 +2346,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
       // Bool to know if we need to cache this search or not
       var             bCache = false;
-     
-      // Today's date (the day), used as the key in the cache
-      var             date = new Date().getDate();
  
       // If we're on App Engine we can use java code if not do not cache
       switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
@@ -2357,13 +2354,14 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           MemcacheServiceFactory = Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
           syncCache = MemcacheServiceFactory.getMemcacheService();
           //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
-          value = syncCache.get(date); // read from cache
+          value = syncCache.get(-1); // read from cache, -1 is magic number to get homeRibbonData
           if (value == null) {
             bCache = true;
           } else {
             // This is the map containing the home ribbon data
             // The map is stored as a JSON string so convert it and then send it back
-            value = qx.lang.Json.parse(value); 
+            value = JSON.parse(value);
+               
             return value; 
           }
 
@@ -2567,15 +2565,23 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           "Featured"     :    searchResponseFeatured,   
           "MostLiked"    :    searchResponseLiked,
           "Newest"       :    searchResponseNewest,
-          "Motd"         :    this.getMotd(),
-          "bCache"       :    bCache
+          "Motd"         :    this.getMotd()
         };
 
       if (bCache) {
 	  // If this is true these queries were not in the cache, put them in the cache
           // Convert map to a JSON string and save that
-	  var serialMap = qx.lang.Json.stringify(homeRibbonData); 
-	  syncCache.put(date, serialMap);
+          var serialMap = JSON.stringify(homeRibbonData);
+
+          // I know I am in appengine code when this if clause executes.
+          // Create a Java date object and add one day to set the expiration time
+          var calendarClass = java.util.Calendar;
+          var date = calendarClass.getInstance();  
+          date.add(calendarClass.DATE, 1); 
+
+          var expirationClass = com.google.appengine.api.memcache.Expiration;
+          var expirationDate = expirationClass.onDate(date.getTime());
+	  syncCache.put(-1, serialMap, expirationDate);
       }
 
       //Return the map containing the arrays containing the apps. 

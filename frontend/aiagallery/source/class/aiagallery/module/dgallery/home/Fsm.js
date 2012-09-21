@@ -106,8 +106,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Fsm",
         "context" : this,
 
         "ontransition" : function(fsm, event)
-        {          
-            
+        {                
           // Issue the remote procedure call to execute the query.
           // In essence get the front page ribbons.
           // Also grab the MOTD
@@ -122,10 +121,6 @@ qx.Class.define("aiagallery.module.dgallery.home.Fsm",
                                owner        : "owner",
                                image1       : "image1",
                                title        : "title",
-                               numLikes     : "numLikes",
-                               numDownloads : "numDownloads",
-                               numViewed    : "numViewed",
-                               numComments  : "numComments",
                                displayName  : "displayName"
                              }
                            ]);
