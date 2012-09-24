@@ -684,7 +684,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             return error;
           }
           
-	  // Delete all data in the search db, we only want the newest stuff
+          // Delete all data in the search db, we only want the newest stuff
           // Set a flag here so that we know to do it later
           // avoid race condition
           bRemoveAppFromSearchFlag = true; 
@@ -923,7 +923,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             // Delete all data in the search db, we only want the newest stuff
             if (bRemoveAppFromSearchFlag)
             {          
-              aiagallery.dbif.MApps._removeAppFromSearch(uid);	 
+              aiagallery.dbif.MApps._removeAppFromSearch(uid);   
             }
             
             // If tags were provided...
@@ -1351,7 +1351,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         function()
         {
           // Delete all data in the search db, we only want the newest stuff
-          aiagallery.dbif.MApps._removeAppFromSearch(uid);	 
+          aiagallery.dbif.MApps._removeAppFromSearch(uid);       
 
           // If tags were provided...
           if (attributes.tags)
@@ -2569,7 +2569,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         };
 
       if (bCache) {
-	  // If this is true these queries were not in the cache, put them in the cache
+          // If this is true these queries were not in the cache, put them in the cache
           // Convert map to a JSON string and save that
           var serialMap = JSON.stringify(homeRibbonData);
 
@@ -2581,7 +2581,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
           var expirationClass = com.google.appengine.api.memcache.Expiration;
           var expirationDate = expirationClass.onDate(date.getTime());
-	  syncCache.put(-1, serialMap, expirationDate);
+          syncCache.put(-1, serialMap, expirationDate);
       }
 
       //Return the map containing the arrays containing the apps. 
