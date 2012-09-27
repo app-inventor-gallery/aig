@@ -746,7 +746,7 @@ qx.Class.define("aiagallery.main.Gui",
 
           loader.open("GET", "/_ah/channel/jsapi");
           loader.send();
-*/ 
+*/
         });
 
         // Create the footer, containing links to terms of service,
