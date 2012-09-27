@@ -588,8 +588,7 @@ qx.Class.define("aiagallery.main.Gui",
           },
           "whoAmI",
           []);
-
-
+/*
           // Load the Channel API. If we're on App Engine, it'll succeed
           var loader = new qx.bom.request.Script();
           loader.onload = 
@@ -747,6 +746,7 @@ qx.Class.define("aiagallery.main.Gui",
 
           loader.open("GET", "/_ah/channel/jsapi");
           loader.send();
+*/ 
         });
 
         // Create the footer, containing links to terms of service,
