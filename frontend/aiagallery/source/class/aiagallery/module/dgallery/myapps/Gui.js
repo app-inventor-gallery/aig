@@ -428,7 +428,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
 
      _createChannel : function()
     {
-      var _this = this; 
+      var             _this = this; 
 
       // Load the Channel API. If we're on App Engine, it'll succeed
       qx.util.TimerManager.getInstance().start(
@@ -454,7 +454,6 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
         {
         case 200:
           // Found the Channel API. Reqest a server push channel
-          alert("Found Channel API ");
           rpc.callAsync(
             function(e)
             {
@@ -529,7 +528,6 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
               socket = channel.open();
  
               // Save the channel socket
-              alert("Saving Channel"); 
               _this.setUserData("channelSocket", socket);
  
               // When we receive a message on the channel, post a
@@ -592,7 +590,6 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
             },
             "getChannelToken",
             []);
-            alert("Finished channel create"); 
             break;
 
           default:
