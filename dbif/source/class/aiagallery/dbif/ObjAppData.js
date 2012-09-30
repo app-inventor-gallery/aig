@@ -9,7 +9,9 @@
 qx.Class.define("aiagallery.dbif.ObjAppData",
 {
   extend : aiagallery.dbif.Entity,
-  
+  //beta002: memcache requires an instance of a class to implement Serializable.
+  //implement: Serializable,
+
   construct : function(uid)
   {
     // Pre-initialize the data

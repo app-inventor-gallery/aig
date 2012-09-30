@@ -253,7 +253,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
       // Add the list for other apps by the tags
       this.byTags = new qx.ui.list.List();
-      this.byTags.set(
+/**      this.byTags.set(
         {
           itemHeight : 130,
           labelPath  : "title",
@@ -296,7 +296,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
       vbox.add(this.byTags, { flex : 1 });
 
-/**
+
       // Add the list for other apps by this author
       this.listTags = new qx.ui.list.List();
       var existingTags;
@@ -381,7 +381,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         // app data. We'll use it for the Download button
         source = result.app.source;
         delete result.app.source;
-	alert(result.app.toSource()); //beta002
+	// alert(result.app.toSource()); //beta002
 
         // Add the app detail
         this.searchResult.set(result.app);

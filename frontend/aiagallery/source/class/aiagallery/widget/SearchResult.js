@@ -159,7 +159,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           likeIt       : { row : 4, column : 4 },
           flagIt       : { row : 4, column : 6 },
           //beta002: dummy
-          tags      : { row : 5, column : 5 }
+          tags         : { row : 5, column : 4 }
 	  
 
         };

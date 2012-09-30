@@ -2683,11 +2683,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             flagged = {};
 
       whoami = this.getWhoAmI();
-
+beta002
       //Update the views and last viewed date
 
       //Get the actual object
       appObj = new aiagallery.dbif.ObjAppData(uid);    
+
 
       // See if this app exists.  
       if (appObj.getBrandNew())
@@ -2700,7 +2701,42 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         return error;
       }
   
-      ret.app = appObj.getData();
+
+      // beta002: Experiment with app engine's Memcache.
+      // Code samples from https://developers.google.com/appengine/docs/java/memcache/overview
+      // Only use memcache if we are on Google App Engine.
+      switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+      {
+      case "appengine":
+
+	      var memcacheServiceFactory;
+	      var syncCache;
+	      var value;
+
+	      // Setting up memcache references
+	      memcacheServiceFactory = Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+	      syncCache = memcacheServiceFactory.getMemcacheService();
+
+	      // Setting up the recommended ErrorHandler
+	      syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+
+	      // Before calling getData(), check if the uid already exists in memcache
+	      value = syncCache.get(uid);
+	      // If not, we call getData(), and put the stuff in memcache
+	      if (value == null) {
+		ret.app = appObj.getData();
+		syncCache.put(uid, appObj);
+	      }
+	      // If so, grab the app object from the memcache and replace it in ret.app
+	      else {
+		ret.app = value;
+	      }
+
+	      break;
+      default:
+	      break;
+      }
+
 
       //Increment the number of views by 1. 
       ret.app.numViewed++; 
