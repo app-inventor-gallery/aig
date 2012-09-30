@@ -148,7 +148,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
                              uploadTime   : "uploadTime",
                              source       : "source",
                              comments     : "comments"
-                             //tags         : "tags" //beta002: added tags for tag panel.
                            }
                          ]);
 

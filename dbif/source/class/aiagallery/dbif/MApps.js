@@ -2683,7 +2683,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             flagged = {};
 
       whoami = this.getWhoAmI();
-beta002
       //Update the views and last viewed date
 
       //Get the actual object
@@ -2703,38 +2702,39 @@ beta002
   
 
       // beta002: Experiment with app engine's Memcache.
-      // Code samples from https://developers.google.com/appengine/docs/java/memcache/overview
+      var memcacheServiceFactory;
+      var syncCache;
+      var value;
+
+      // Bool to know if we need to cache this search or not
+      var bCache = false;
+
       // Only use memcache if we are on Google App Engine.
-      switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+      if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
       {
-      case "appengine":
-
-	      var memcacheServiceFactory;
-	      var syncCache;
-	      var value;
-
+              //alert(uid);
 	      // Setting up memcache references
 	      memcacheServiceFactory = Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
 	      syncCache = memcacheServiceFactory.getMemcacheService();
 
 	      // Setting up the recommended ErrorHandler
-	      syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+	      //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
 
 	      // Before calling getData(), check if the uid already exists in memcache
-	      value = syncCache.get(uid);
+	      value = syncCache.get(uid); //TODO: change uid to a more static key perhaps?
 	      // If not, we call getData(), and put the stuff in memcache
 	      if (value == null) {
-		ret.app = appObj.getData();
-		syncCache.put(uid, appObj);
+	        bCache = true; // true: we need to cache this search
 	      }
 	      // If so, grab the app object from the memcache and replace it in ret.app
 	      else {
 		ret.app = value;
 	      }
 
-	      break;
-      default:
-	      break;
+      } else { // Call getData() normally if we are not running on app engine
+	      ret.app = appObj.getData();
+	      
+              
       }
 
 
@@ -2984,6 +2984,24 @@ beta002
       
       // Not allowed to return the id of the app owner, remove it
       delete ret.app.owner; 
+
+
+
+      // beta002: Memcache the ret object here.
+      if (bCache) {
+        var serialize = JSON.stringify(ret.app);
+
+        // I know I am in appengine code when this if clause executes.
+        // Create a Java date object and add one day to set the expiration time
+        var calendarClass = java.util.Calendar;
+        var date = calendarClass.getInstance();  
+        date.add(calendarClass.DATE, 1); 
+
+        var expirationClass = com.google.appengine.api.memcache.Expiration;
+        var expirationDate = expirationClass.onDate(date.getTime());
+
+        syncCache.put(uid, serialMap, expirationDate); // Here use uid as key, may change later
+      }
       
       // Give 'em what they came for
       return ret;

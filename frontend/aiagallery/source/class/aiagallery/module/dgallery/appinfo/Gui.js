@@ -76,14 +76,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       canvas.add(commentsGrid, { row : 1, column : 0 });
 
 
-//beta002 start
+/**beta002 start
 
       o = new qx.ui.basic.Label("Clickable Test");
       o.set({ cursor: "pointer" });
       // o.addListener("mousedown", this._onViewApp, this);
       commentsGrid.add(o, { row : 0, column : 0 });
 
-//beta002 end
+*///beta002 end
 
       o = new qx.ui.basic.Label("Comments");
       o.set(
@@ -227,7 +227,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
 //beta002 start: dummy!
       // Create the by-this-author area
-      vbox = new qx.ui.container.Composite(new qx.ui.layout.VBox());
+/**      vbox = new qx.ui.container.Composite(new qx.ui.layout.VBox());
       canvas.add(vbox, { row : 0, column : 3, rowSpan : 2 });
 
       // Android-green line
@@ -253,7 +253,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
       // Add the list for other apps by the tags
       this.byTags = new qx.ui.list.List();
-/**      this.byTags.set(
+      this.byTags.set(
         {
           itemHeight : 130,
           labelPath  : "title",
@@ -295,8 +295,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         });
 
       vbox.add(this.byTags, { flex : 1 });
-
-
+**/
+/**
       // Add the list for other apps by this author
       this.listTags = new qx.ui.list.List();
       var existingTags;
@@ -381,7 +381,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         // app data. We'll use it for the Download button
         source = result.app.source;
         delete result.app.source;
-	// alert(result.app.toSource()); //beta002
+	//alert(result.app.toSource()); //beta002
 
         // Add the app detail
         this.searchResult.set(result.app);
