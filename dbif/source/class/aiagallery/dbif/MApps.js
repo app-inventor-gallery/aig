@@ -2732,8 +2732,23 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
       } else { // Call getData() normally if we are not running on app engine
 	      ret.app = appObj.getData();
-	      
-              
+      }
+
+      // beta002: Memcache the ret object here.
+      if (bCache) {
+        ret.app = appObj.getData();
+        var serialize = JSON.stringify(ret.app);
+
+        // I know I am in appengine code when this if clause executes.
+        // Create a Java date object and add one day to set the expiration time
+        var calendarClass = java.util.Calendar;
+        var date = calendarClass.getInstance();  
+        date.add(calendarClass.DATE, 1); 
+
+        var expirationClass = com.google.appengine.api.memcache.Expiration;
+        var expirationDate = expirationClass.onDate(date.getTime());
+
+        syncCache.put(uid, serialize, expirationDate); // Here use uid as key, may change later
       }
 
 
@@ -2986,21 +3001,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
 
 
-      // beta002: Memcache the ret object here.
-      if (bCache) {
-        var serialize = JSON.stringify(ret.app);
-
-        // I know I am in appengine code when this if clause executes.
-        // Create a Java date object and add one day to set the expiration time
-        var calendarClass = java.util.Calendar;
-        var date = calendarClass.getInstance();  
-        date.add(calendarClass.DATE, 1); 
-
-        var expirationClass = com.google.appengine.api.memcache.Expiration;
-        var expirationDate = expirationClass.onDate(date.getTime());
-
-        syncCache.put(uid, serialize, expirationDate); // Here use uid as key, may change later
-      }
       
       // Give 'em what they came for
       return ret;
