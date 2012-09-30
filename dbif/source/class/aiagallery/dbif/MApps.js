@@ -2712,6 +2712,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var retlikes = "retlikes_";
       var retbyauthor = "retbyauthor_";
       var retcomments = "retcomments_";
+      var retcommentsflag = "retcommentsflag_";
       // "Owners" is a special case that it doesn't belong to ret.
       var stringowners = "owners_";
 
@@ -2721,6 +2722,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var key_likes = retlikes.concat(uid);
       var key_byauthor = retbyauthor.concat(uid);
       var key_comments = retcomments.concat(uid);
+      var key_commentsflag = retcommentsflag.concat(uid);
 
       var key_owners = stringowners.concat(uid);
 
@@ -2730,6 +2732,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var byAuthorCache = false;
       var flagCache = false;
       var likesCache = false;
+      var commentsCache = false;
+      var commentsFlagCache = false;
 
       // Only use memcache if we are on Google App Engine.
       if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
@@ -2969,7 +2973,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                                 criteria, null);
         }
 
-        // beta002: Memcache the flagList here.
+        // beta002: Memcache the byAuthor list here.
         if (byAuthorCache) {
           ret.byAuthor = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
                                                 criteria, null);
@@ -3002,7 +3006,30 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         // If the "comments" field was requested
         if (requestedFields["comments"])
         {
+
+
+        // beta002: Only use memcache if we are on Google App Engine.
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+	      value = syncCache.get(key_comments);
+	      if (value == null) {
+	        commentsCache = true; // true: we need to cache this search
+	      } else {
+		ret.comments = JSON.parse(value);
+	      }
+
+        } else { // make the database call normally if we are not running on app engine
           
+          // Use function from Mixin MComments to retrieve comments
+          ret.comments = this.getComments(uid, [{
+                                              type  : "sort",
+                                              field : "timestamp",
+                                              order : "desc"
+                                            }], error);
+        }
+
+        // beta002: Memcache the comments here.
+        if (commentsCache) {
           // Use function from Mixin MComments to retrieve comments
           ret.comments = this.getComments(uid, 
                                           [
@@ -3013,6 +3040,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                             }
                                           ],
                                           error);
+          var serialize = JSON.stringify(ret.comments);
+
+          syncCache.put(key_comments, serialize, expirationDate);
+        }
+          
+
                                           
           // Determine if any of the comments have been flagged by the user  
           criteria = 
@@ -3039,9 +3072,34 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               ]
             };
                  
+
+        // beta002: Only use memcache if we are on Google App Engine.
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+	      value = syncCache.get(key_commentsflag);
+	      if (value == null) {
+	        commentsFlagCache = true; // true: we need to cache this search
+	      } else {
+		commentFlagList = JSON.parse(value);
+	      }
+
+        } else { // make the database call normally if we are not running on app engine
+          // Query for those comments          
           commentFlagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
-                                                 criteria,
-                                                 null);
+                                                 criteria, null);
+        }
+
+        // beta002: Memcache the commentsFlagList here.
+        if (commentsFlagCache) {
+          commentFlagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                 criteria, null);
+          var serialize = JSON.stringify(commentFlagList);
+
+          syncCache.put(key_commentsflag, serialize, expirationDate);
+        }
+
+
+
                                                  
           // Create map of flagged comment ids
           commentFlagList.forEach(
