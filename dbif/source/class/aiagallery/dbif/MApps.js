@@ -2851,7 +2851,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                                 criteria, null);
         }
 
-        // beta002: Memcache the ret object here.
+        // beta002: Memcache the likesList here.
         if (likesCache) {
           // Query for the likes of this app by the current visitor
           // (an array, which should have length zero or one).
@@ -2893,11 +2893,34 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               }              
             ]
           };
-        
-        flagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
-                                                criteria,
-                                                null);
-                                                
+
+
+
+        // beta002: Only use memcache if we are on Google App Engine.
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+	      value = syncCache.get(key_flag);
+	      if (value == null) {
+	        flagCache = true; // true: we need to cache this search
+	      } else {
+		flagList = JSON.parse(value);
+	      }
+
+        } else { // make the database call normally if we are not running on app engine
+          
+          flagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                criteria, null);
+        }
+
+        // beta002: Memcache the flagList here.
+        if (flagCache) {
+          flagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                criteria, null);
+          var serialize = JSON.stringify(flagList);
+
+          syncCache.put(key_flag, serialize, expirationDate);
+        }
+                                                        
         // If there were any results, this user has already flaged it.
         ret.bAlreadyFlagged = flagList.length > 0;  
       }      
@@ -2927,11 +2950,34 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             }
           ]
         };
-      
-      // Query for those apps
-      ret.byAuthor = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
-                                                 criteria,
-                                                 null);
+
+
+
+        // beta002: Only use memcache if we are on Google App Engine.
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+	      value = syncCache.get(key_byauthor);
+	      if (value == null) {
+	        byAuthorCache = true; // true: we need to cache this search
+	      } else {
+		ret.byAuthor = JSON.parse(value);
+	      }
+
+        } else { // make the database call normally if we are not running on app engine
+          // Query for those apps          
+          ret.byAuthor = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                                criteria, null);
+        }
+
+        // beta002: Memcache the flagList here.
+        if (byAuthorCache) {
+          ret.byAuthor = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                                criteria, null);
+          var serialize = JSON.stringify(ret.byAuthor);
+
+          syncCache.put(key_byauthor, serialize, expirationDate);
+        }
+        
 
       // Add the author's display name to each app
       ret.byAuthor.forEach(
