@@ -2718,7 +2718,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 	      syncCache = memcacheServiceFactory.getMemcacheService();
 
 	      // Setting up the recommended ErrorHandler
-	      //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+	      syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
 
 	      // Before calling getData(), check if the uid already exists in memcache
 	      value = syncCache.get(uid); //TODO: change uid to a more static key perhaps?
@@ -3000,7 +3000,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         var expirationClass = com.google.appengine.api.memcache.Expiration;
         var expirationDate = expirationClass.onDate(date.getTime());
 
-        syncCache.put(uid, serialMap, expirationDate); // Here use uid as key, may change later
+        syncCache.put(uid, serialize, expirationDate); // Here use uid as key, may change later
       }
       
       // Give 'em what they came for
