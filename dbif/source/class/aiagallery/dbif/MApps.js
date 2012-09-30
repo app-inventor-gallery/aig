@@ -2706,27 +2706,50 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var syncCache;
       var value;
 
+      // Concat a bunch of strings with UID as keys in memcache.
+      var retapp = "retapp_";
+      var retflag = "retflag_";
+      var retlikes = "retlikes_";
+      var retbyauthor = "retbyauthor_";
+      var retcomments = "retcomments_";
+      // "Owners" is a special case that it doesn't belong to ret.
+      var stringowners = "owners_";
+
+
+      var key_app = retapp.concat(uid);
+      var key_flag = retflag.concat(uid);
+      var key_likes = retlikes.concat(uid);
+      var key_byauthor = retbyauthor.concat(uid);
+      var key_comments = retcomments.concat(uid);
+
+      var key_owners = stringowners.concat(uid);
+
       // Bool to know if we need to cache this search or not
       var bCache = false;
+      var ownersCache = false;
+      var byAuthorCache = false;
+      var flagCache = false;
+      var likesCache = false;
 
       // Only use memcache if we are on Google App Engine.
       if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
       {
-              //alert(uid);
+
 	      // Setting up memcache references
-	      memcacheServiceFactory = Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+	      memcacheServiceFactory = 
+                Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
 	      syncCache = memcacheServiceFactory.getMemcacheService();
 
 	      // Setting up the recommended ErrorHandler
 	      //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
 
 	      // Before calling getData(), check if the uid already exists in memcache
-	      value = syncCache.get(uid); //TODO: change uid to a more static key perhaps?
+	      value = syncCache.get(key_app); 
 	      // If not, we call getData(), and put the stuff in memcache
 	      if (value == null) {
 	        bCache = true; // true: we need to cache this search
 	      } else {
-	        // If so, grab the app object from the memcache and parse it to retrieve ret.app
+	        // If so, grab the app object and parse it to retrieve ret.app
 		ret.app = JSON.parse(value);
 	      }
 
@@ -2748,7 +2771,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         var expirationClass = com.google.appengine.api.memcache.Expiration;
         var expirationDate = expirationClass.onDate(date.getTime());
 
-        syncCache.put(uid, serialize, expirationDate); // Here use uid as key, may change later
+        syncCache.put(key_app, serialize, expirationDate); 
       }
 
 
@@ -2772,6 +2795,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                          "It may have been removed recently.");
         return error;
       }
+
+
+
 
       // Issue a query for this visitor
       owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
@@ -2808,11 +2834,36 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             ]
           };
 
-        // Query for the likes of this app by the current visitor
-        // (an array, which should have length zero or one).
-        likesList = liberated.dbif.Entity.query("aiagallery.dbif.ObjLikes",
-                                                criteria,
-                                                null);
+
+        // beta002: Only use memcache if we are on Google App Engine.
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+	      value = syncCache.get(key_likes);
+	      if (value == null) {
+	        likesCache = true; // true: we need to cache this search
+	      } else {
+		likesList = JSON.parse(value);
+	      }
+
+        } else { // make the database call normally if we are not running on app engine
+          
+          likesList = liberated.dbif.Entity.query("aiagallery.dbif.ObjLikes",
+                                                criteria, null);
+        }
+
+        // beta002: Memcache the ret object here.
+        if (likesCache) {
+          // Query for the likes of this app by the current visitor
+          // (an array, which should have length zero or one).
+          likesList = liberated.dbif.Entity.query("aiagallery.dbif.ObjLikes",
+                                                criteria, null);
+          var serialize = JSON.stringify(likesList);
+
+          syncCache.put(key_likes, serialize, expirationDate);
+        }
+
+
+
 
         // If there were any results, this user has already liked it.
         ret.bAlreadyLiked = likesList.length > 0;
