@@ -2718,17 +2718,16 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 	      syncCache = memcacheServiceFactory.getMemcacheService();
 
 	      // Setting up the recommended ErrorHandler
-	      syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+	      //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
 
 	      // Before calling getData(), check if the uid already exists in memcache
 	      value = syncCache.get(uid); //TODO: change uid to a more static key perhaps?
 	      // If not, we call getData(), and put the stuff in memcache
 	      if (value == null) {
 	        bCache = true; // true: we need to cache this search
-	      }
-	      // If so, grab the app object from the memcache and replace it in ret.app
-	      else {
-		ret.app = value;
+	      } else {
+	        // If so, grab the app object from the memcache and parse it to retrieve ret.app
+		ret.app = JSON.parse(value);
 	      }
 
       } else { // Call getData() normally if we are not running on app engine
