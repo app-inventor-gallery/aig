@@ -426,9 +426,16 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       }
     },
 
+     // Create a channel for communication to this client from the server.
+     // If a channel exists already we do not need to do this.
      _createChannel : function()
     {
       var             _this = this; 
+
+      if (null != this.getUserData("channelSocket")) {
+	  // A channel already exists, just return. 
+          return;
+      }
 
       // Load the Channel API. If we're on App Engine, it'll succeed
       qx.util.TimerManager.getInstance().start(
