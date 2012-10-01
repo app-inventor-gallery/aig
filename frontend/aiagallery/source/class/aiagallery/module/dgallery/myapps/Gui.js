@@ -70,7 +70,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
           var             children;
 
           // Before we fire the fsm event,
-	  // issue an async request to create a channel
+          // issue an async request to create a channel
           // so the user can receive a response back when
           // the app has been uploaded. 
           this._createChannel();
@@ -433,7 +433,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       var             _this = this; 
 
       if (null != this.getUserData("channelSocket")) {
-	  // A channel already exists, just return. 
+          // A channel already exists, just return. 
           return;
       }
 

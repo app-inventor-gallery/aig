@@ -312,7 +312,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var newestAppsHeader = new qx.ui.basic.Label();
       newestAppsHeader.set(
         {
-          value : "Newest Apps",
+          value : "Recent Apps",
           font  : font,
           decorator : "home-page-header"
         });
