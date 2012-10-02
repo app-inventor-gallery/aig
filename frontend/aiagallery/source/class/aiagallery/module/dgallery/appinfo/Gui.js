@@ -47,6 +47,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // The overall layout if a grid, where the left portion has the
       // application information at the top, and comments at the bottom; and
       // the right (narrow) portion has a list of all apps by this author.
+      // beta002: the right portion also has a list of apps by tags.
       //
 
       
@@ -74,13 +75,24 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       commentsGrid = new qx.ui.container.Composite(grid);
       canvas.add(commentsGrid, { row : 1, column : 0 });
 
+
+//beta002 start
+
+      o = new qx.ui.basic.Label("Clickable Test");
+      o.set({ cursor: "pointer" });
+      // o.addListener("mousedown", this._onViewApp, this);
+      commentsGrid.add(o, { row : 0, column : 0 });
+
+//beta002 end
+
       o = new qx.ui.basic.Label("Comments");
       o.set(
         {
           font          : font,
           paddingBottom : 6
         });
-      commentsGrid.add(o, { row : 0, column : 0, colSpan : 3 });
+      //commentsGrid.add(o, { row : 0, column : 0, colSpan : 3 }); //original
+      commentsGrid.add(o, { row : 0, column : 1 }); //beta002
 
       // Create the scroller to hold all of the comments
       o = new qx.ui.container.Scroll();
@@ -210,7 +222,100 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         });
 
       vbox.add(this.byAuthor, { flex : 1 });
+
+
+
+//beta002 start: dummy!
+      // Create the by-this-author area
+      vbox = new qx.ui.container.Composite(new qx.ui.layout.VBox());
+      canvas.add(vbox, { row : 0, column : 3, rowSpan : 2 });
+
+      // Android-green line
+      o = new qx.ui.container.Composite();
+      o.set(
+        {
+          height    : 4,
+          backgroundColor : "#a5c43c"
+        });
+      vbox.add(o);
+
+      // Spacer before the label
+      vbox.add(new qx.ui.core.Spacer(10, 10));
+
+      o = new qx.ui.basic.Label("Tag Panel");
+      o.set(
+        {
+          font          : font,
+          paddingBottom : 6
+        });
+      vbox.add(o);
+
+
+      // Add the list for other apps by the tags
+      this.byTags = new qx.ui.list.List();
+      this.byTags.set(
+        {
+          itemHeight : 130,
+          labelPath  : "title",
+          iconPath   : "image1",
+          delegate   :
+          {
+
+            createItem : function()
+            {
+              return new aiagallery.widget.SearchResult("byAuthor");
+            },
+            
+            bindItem : function(controller, item, id) 
+            {
+              [
+                "uid",
+                "image1",
+                "title",
+                "numLikes",
+                "numDownloads",
+                "numViewed",
+                "numComments",
+                "displayName"
+              ].forEach(
+                function(name)
+                {
+                  controller.bindProperty(name, name, null, item, id);
+                });
+            },
+
+            configureItem : qx.lang.Function.bind(
+              function(item) 
+              {
+                // Listen for clicks on the title or image, to view the app
+                item.addListener("viewApp", fsm.eventListener, fsm);
+              },
+              this)
+          }
+        });
+
+      vbox.add(this.byTags, { flex : 1 });
+
+/**
+      // Add the list for other apps by this author
+      this.listTags = new qx.ui.list.List();
+      var existingTags;
+      // Get the current list of tags
+      // existingTags = aiagallery.widget.mystuff.Detail.getTags();
+      vbox.add(this.listTags, { flex : 1 });
+**/
     },
+//beta002 ends
+
+
+
+
+
+
+
+
+
+
 
 
     /**
@@ -276,6 +381,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         // app data. We'll use it for the Download button
         source = result.app.source;
         delete result.app.source;
+	alert(result.app.toSource()); //beta002
 
         // Add the app detail
         this.searchResult.set(result.app);

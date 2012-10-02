@@ -90,6 +90,13 @@ qx.Class.define("aiagallery.main.Module",
       // Similarly, save any functions to be called, e.g. to add buttons
       // to the button bar, on the global function list
       aiagallery.main.Module._functionList[menuItem] = functionList;
+
+      // beta002: this is the correct way to detect appinfo pages, but not sure
+      // what would be the right way to handle them.
+      if (moduleName.charAt(0) == "-")
+      {
+      } else {
+      }
     }
 
     // Add this new module to the module list.

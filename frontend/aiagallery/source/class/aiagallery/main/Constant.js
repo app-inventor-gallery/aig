@@ -16,7 +16,9 @@ qx.Class.define("aiagallery.main.Constant",
     SERVICES_URL : "/rpc",
     
     // Maximum upload file sizes
-    MAX_IMAGE_FILE_SIZE  : (1 * 1024 * 1024),
+    // beta002: app engine's mechanism only allow about 350kb upload,
+    // therefore the constant multiplier is modified from 1024 to keep it constant.
+    MAX_IMAGE_FILE_SIZE  : (1 * 350 * 1024),
     MAX_SOURCE_FILE_SIZE : (8 * 1024 * 1024),
     MAX_APK_FILE_SIZE    : (16 * 1024 * 1024),
     

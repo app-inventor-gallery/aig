@@ -125,6 +125,27 @@ qx.Class.define("aiagallery.main.Gui",
           });
         header.add(o);
 
+
+        // beta002: Create a small spacer after the logo label
+        o = new qx.ui.core.Spacer(20);
+        header.add(o);
+
+        // beta002: Add another label to the header for helper text.
+        o = new qx.ui.basic.Label(
+          "<div><br/>" +
+          "Welcome to the gallery! See <a href=\"https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit\" target=\"_blank\" >Release Notes</a><br/>" +
+          "and post feedback / bug reports to the " +
+          "<a href=\"http://groups.google.com/group/app-inventor-gallery/topics\" target=\"_blank\" >Forum</a>." + 
+          "</div>");
+        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+        o.set(
+          {
+            rich : true,
+            font : font
+          });
+        header.add(o);
+
+
         // Add a flexible spacer to take up the whole middle
         o = new qx.ui.core.Widget();
         o.setMinWidth(1);
@@ -567,8 +588,7 @@ qx.Class.define("aiagallery.main.Gui",
           },
           "whoAmI",
           []);
-
-
+/*
           // Load the Channel API. If we're on App Engine, it'll succeed
           var loader = new qx.bom.request.Script();
           loader.onload = 
@@ -726,6 +746,7 @@ qx.Class.define("aiagallery.main.Gui",
 
           loader.open("GET", "/_ah/channel/jsapi");
           loader.send();
+*/
         });
 
         // Create the footer, containing links to terms of service,
@@ -1470,6 +1491,7 @@ qx.Class.define("aiagallery.main.Gui",
         // If this is false we need to open the page ourselves
         if (!bPageExists)
         {
+
           aiagallery.module.dgallery.appinfo.AppInfo.addAppView(
             Number(components.uid), components.label);
         }
