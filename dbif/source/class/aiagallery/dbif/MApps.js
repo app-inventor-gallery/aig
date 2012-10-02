@@ -3028,6 +3028,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     {
       var             apps;
       var             criteria;
+      var             cacheList;
+      var             requestedFields;
 
       // Within a transaction...
       liberated.dbif.Entity.asTransaction(
@@ -3072,14 +3074,28 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               // Write the object back to the database
               appObj.put();
             });
-          
+
+          // List to update the cache with          
+          cacheList = [];
+
+          // The only fields we need to cache this app
+          requestedFields =  
+          {
+            uid          : "uid",
+            owner        : "owner",
+            image1       : "image1",
+            title        : "title",
+            displayName  : "displayName"
+          };
+
           // For each to-be-featured app...
           featuredApps.forEach(
             function(uid)
             {
               var             appObj;
               var             appData;
-              
+              var             owners;              
+
               // Retrieve this app as an object
               appObj = new aiagallery.dbif.ObjAppData(uid);
               
@@ -3101,8 +3117,75 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               
               // Write the object back to the database
               appObj.put();
+
+              // Strip the app of field we do not need so we can
+              // stringize it and store it in the cache
+              // Add the owner's display name
+              owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
+                                                 appData["owner"]);
+
+              // Add his display name
+              appData["displayName"] = owners[0].displayName || "<>";
+
+              // Delete the owner and strip unneded fields
+              delete appData.owner; 
+
+              aiagallery.dbif.MApps._requestedFields(appData, requestedFields);
+
+              // KLUDGE, for some reason appData has an undefined field that is messing up
+              // displaying the app delete it here
+              delete appData.undefined; 
+
+              // Add to list. The list will then update the list in the cache
+              cacheList.push(appData); 
             });
         });
+
+      // Update the cache with the new list of featured apps
+      // If we are running on appengine we need to update memcache
+      switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+      {
+
+      case "appengine":
+        var  MemcacheServiceFactory =
+          Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+        var syncCache = MemcacheServiceFactory.getMemcacheService();
+        //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+
+        // read from cache, -1 is magic number to get homeRibbonData,
+        // the featured app list is stored here
+        var value = syncCache.get(-1); 
+
+        // If nothing is in the cache, do nothing 
+        if (value == null) {
+          break;
+        }
+
+       // Stored as JSON string, so parse back to map
+       value = JSON.parse(value);
+
+       // Update featured apps list with new value
+       // Convert to JSON and back to create a copy to store in the map
+       value.Featured = JSON.parse(JSON.stringify(cacheList));   
+
+       // Store back onto memcache
+       // Convert back to JSON string
+       value = JSON.stringify(value);
+
+       // Create a Java date object and add one day to set the expiration time
+       var calendarClass = java.util.Calendar;
+       var date = calendarClass.getInstance();  
+       date.add(calendarClass.DATE, 1); 
+
+       var expirationClass = com.google.appengine.api.memcache.Expiration;
+       var expirationDate = expirationClass.onDate(date.getTime());
+       syncCache.put(-1, value, expirationDate);
+
+       default:
+         // We are not using appengine
+         break; 
+
+      }
 
       // Always return true
       return true;

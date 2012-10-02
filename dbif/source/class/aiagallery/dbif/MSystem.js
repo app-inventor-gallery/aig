@@ -69,8 +69,8 @@ qx.Mixin.define("aiagallery.dbif.MSystem",
 
              // If nothing is in the cache, do nothing 
              if (value == null) {
-		 break;
-	     }
+                 break;
+             }
 
              // Stored as JSON string, so parse back to map
              value = JSON.parse(value);
