@@ -395,6 +395,22 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         // Change the status to Uploading to provide some feedback
         this.__container.setStatus(aiagallery.dbif.Constants.Status.Uploading);
 
+          // Only use memcache if we are on Google App Engine.
+          if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+          {
+
+	      var memcacheServiceFactory;
+	      var syncCache;
+
+	      // Setting up memcache references
+	      memcacheServiceFactory = 
+                Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+	      syncCache = memcacheServiceFactory.getMemcacheService();	
+              // After pulling data, make sure to clear memcache
+              syncCache.clearAll();
+          }
+
+
         // Fire an event with the changed data
         this.fireDataEvent("saveApp",
                            {

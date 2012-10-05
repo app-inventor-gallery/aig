@@ -874,3 +874,4 @@ qx.Class.define("aiagallery.widget.SearchResult",
     this.removeListener("mouseout", this._onMouseOut, this);
   }
 });
+

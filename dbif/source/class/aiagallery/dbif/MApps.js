@@ -2683,11 +2683,11 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             flagged = {};
 
       whoami = this.getWhoAmI();
-
       //Update the views and last viewed date
 
       //Get the actual object
       appObj = new aiagallery.dbif.ObjAppData(uid);    
+
 
       // See if this app exists.  
       if (appObj.getBrandNew())
@@ -2700,7 +2700,84 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         return error;
       }
   
-      ret.app = appObj.getData();
+
+      // beta002: Experiment with app engine's Memcache.
+      var memcacheServiceFactory;
+      var syncCache;
+      var value;
+
+      // Concat a bunch of strings with UID as keys in memcache.
+      var retapp = "retapp_";
+      var retflag = "retflag_";
+      var retlikes = "retlikes_";
+      var retbyauthor = "retbyauthor_";
+      var retcomments = "retcomments_";
+      var retcommentsflag = "retcommentsflag_";
+      // "Owners" is a special case that it doesn't belong to ret.
+      var stringowners = "owners_";
+
+
+      var key_app = retapp.concat(uid);
+      var key_flag = retflag.concat(uid);
+      var key_likes = retlikes.concat(uid);
+      var key_byauthor = retbyauthor.concat(uid);
+      var key_comments = retcomments.concat(uid);
+      var key_commentsflag = retcommentsflag.concat(uid);
+
+      var key_owners = stringowners.concat(uid);
+
+      // Bool to know if we need to cache this search or not
+      var bCache = false;
+      var ownersCache = false;
+      var byAuthorCache = false;
+      var flagCache = false;
+      var likesCache = false;
+      var commentsCache = false;
+      var commentsFlagCache = false;
+
+      // Only use memcache if we are on Google App Engine.
+      if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+      {
+
+	      // Setting up memcache references
+	      memcacheServiceFactory = 
+                Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+	      syncCache = memcacheServiceFactory.getMemcacheService();
+
+	      // Setting up the recommended ErrorHandler
+	      //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+
+	      // Before calling getData(), check if the uid already exists in memcache
+	      value = syncCache.get(key_app); 
+	      // If not, we call getData(), and put the stuff in memcache
+	      if (value == null) {
+	        bCache = true; // true: we need to cache this search
+	      } else {
+	        // If so, grab the app object and parse it to retrieve ret.app
+		ret.app = JSON.parse(value);
+	      }
+
+      } else { // Call getData() normally if we are not running on app engine
+	      ret.app = appObj.getData();
+      }
+
+      // beta002: Memcache the ret object here.
+      if (bCache) {
+        ret.app = appObj.getData();
+        var serialize = JSON.stringify(ret.app);
+
+        // I know I am in appengine code when this if clause executes.
+        // Create a Java date object and add one day to set the expiration time
+        var calendarClass = java.util.Calendar;
+        var date = calendarClass.getInstance();  
+        date.add(calendarClass.DATE, 1); 
+
+        var expirationClass = com.google.appengine.api.memcache.Expiration; //TODO: it complains: unknown global symbol
+        var expirationDate = expirationClass.onDate(date.getTime());
+
+        syncCache.put(key_app, serialize, expirationDate); 
+      }
+
 
       //Increment the number of views by 1. 
       ret.app.numViewed++; 
@@ -2722,6 +2799,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                          "It may have been removed recently.");
         return error;
       }
+
+
+
 
       // Issue a query for this visitor
       owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
@@ -2758,11 +2838,36 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             ]
           };
 
-        // Query for the likes of this app by the current visitor
-        // (an array, which should have length zero or one).
-        likesList = liberated.dbif.Entity.query("aiagallery.dbif.ObjLikes",
-                                                criteria,
-                                                null);
+
+        // beta002: Only use memcache if we are on Google App Engine.
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+	      value = syncCache.get(key_likes);
+	      if (value == null) {
+	        likesCache = true; // true: we need to cache this search
+	      } else {
+		likesList = JSON.parse(value);
+	      }
+
+        } else { // make the database call normally if we are not running on app engine
+          
+          likesList = liberated.dbif.Entity.query("aiagallery.dbif.ObjLikes",
+                                                criteria, null);
+        }
+
+        // beta002: Memcache the likesList here.
+        if (likesCache) {
+          // Query for the likes of this app by the current visitor
+          // (an array, which should have length zero or one).
+          likesList = liberated.dbif.Entity.query("aiagallery.dbif.ObjLikes",
+                                                criteria, null);
+          var serialize = JSON.stringify(likesList);
+
+          syncCache.put(key_likes, serialize, expirationDate);
+        }
+
+
+
 
         // If there were any results, this user has already liked it.
         ret.bAlreadyLiked = likesList.length > 0;
@@ -2792,11 +2897,34 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               }              
             ]
           };
-        
-        flagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
-                                                criteria,
-                                                null);
-                                                
+
+
+
+        // beta002: Only use memcache if we are on Google App Engine.
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+	      value = syncCache.get(key_flag);
+	      if (value == null) {
+	        flagCache = true; // true: we need to cache this search
+	      } else {
+		flagList = JSON.parse(value);
+	      }
+
+        } else { // make the database call normally if we are not running on app engine
+          
+          flagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                criteria, null);
+        }
+
+        // beta002: Memcache the flagList here.
+        if (flagCache) {
+          flagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                criteria, null);
+          var serialize = JSON.stringify(flagList);
+
+          syncCache.put(key_flag, serialize, expirationDate);
+        }
+                                                        
         // If there were any results, this user has already flaged it.
         ret.bAlreadyFlagged = flagList.length > 0;  
       }      
@@ -2826,11 +2954,34 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             }
           ]
         };
-      
-      // Query for those apps
-      ret.byAuthor = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
-                                                 criteria,
-                                                 null);
+
+
+
+        // beta002: Only use memcache if we are on Google App Engine.
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+	      value = syncCache.get(key_byauthor);
+	      if (value == null) {
+	        byAuthorCache = true; // true: we need to cache this search
+	      } else {
+		ret.byAuthor = JSON.parse(value);
+	      }
+
+        } else { // make the database call normally if we are not running on app engine
+          // Query for those apps          
+          ret.byAuthor = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                                criteria, null);
+        }
+
+        // beta002: Memcache the byAuthor list here.
+        if (byAuthorCache) {
+          ret.byAuthor = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                                criteria, null);
+          var serialize = JSON.stringify(ret.byAuthor);
+
+          syncCache.put(key_byauthor, serialize, expirationDate);
+        }
+        
 
       // Add the author's display name to each app
       ret.byAuthor.forEach(
@@ -2855,7 +3006,30 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         // If the "comments" field was requested
         if (requestedFields["comments"])
         {
+
+
+        // beta002: Only use memcache if we are on Google App Engine.
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+	      value = syncCache.get(key_comments);
+	      if (value == null) {
+	        commentsCache = true; // true: we need to cache this search
+	      } else {
+		ret.comments = JSON.parse(value);
+	      }
+
+        } else { // make the database call normally if we are not running on app engine
           
+          // Use function from Mixin MComments to retrieve comments
+          ret.comments = this.getComments(uid, [{
+                                              type  : "sort",
+                                              field : "timestamp",
+                                              order : "desc"
+                                            }], error);
+        }
+
+        // beta002: Memcache the comments here.
+        if (commentsCache) {
           // Use function from Mixin MComments to retrieve comments
           ret.comments = this.getComments(uid, 
                                           [
@@ -2866,6 +3040,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                             }
                                           ],
                                           error);
+          var serialize = JSON.stringify(ret.comments);
+
+          syncCache.put(key_comments, serialize, expirationDate);
+        }
+          
+
                                           
           // Determine if any of the comments have been flagged by the user  
           criteria = 
@@ -2892,9 +3072,34 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               ]
             };
                  
+
+        // beta002: Only use memcache if we are on Google App Engine.
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+	      value = syncCache.get(key_commentsflag);
+	      if (value == null) {
+	        commentsFlagCache = true; // true: we need to cache this search
+	      } else {
+		commentFlagList = JSON.parse(value);
+	      }
+
+        } else { // make the database call normally if we are not running on app engine
+          // Query for those comments          
           commentFlagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
-                                                 criteria,
-                                                 null);
+                                                 criteria, null);
+        }
+
+        // beta002: Memcache the commentsFlagList here.
+        if (commentsFlagCache) {
+          commentFlagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                 criteria, null);
+          var serialize = JSON.stringify(commentFlagList);
+
+          syncCache.put(key_commentsflag, serialize, expirationDate);
+        }
+
+
+
                                                  
           // Create map of flagged comment ids
           commentFlagList.forEach(
@@ -2948,6 +3153,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       
       // Not allowed to return the id of the app owner, remove it
       delete ret.app.owner; 
+
+
+
       
       // Give 'em what they came for
       return ret;
