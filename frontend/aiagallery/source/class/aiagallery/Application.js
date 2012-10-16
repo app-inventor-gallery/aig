@@ -201,6 +201,14 @@ new aiagallery.main.Module(
   aiagallery.main.Constant.PageName.MyApps,
   aiagallery.module.dgallery.myapps.MyApps);
 
+new aiagallery.main.Module(
+  "Myself",
+  "aiagallery/module/emblem-favorite.png",
+  "Myself",
+  aiagallery.main.Constant.PageName.User,
+  aiagallery.module.dgallery.user.User);
+
+
 
 
 if (qx.core.Environment.get("qx.debug"))
