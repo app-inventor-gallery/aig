@@ -261,15 +261,33 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
           this.userNameField.setValue(userProfile.displayName);
           this.emailField.setValue(userProfile.email);
           
-          if (!typeof userProfile.location === "undefined")
+          if (userProfile.location != "")
           {
             this.locationField.setValue(userProfile.location);        
           }
           
-          if (!typeof userProfile.bio === "undefined")
+          if (userProfile.bio != "")
           {
             this.bioTextArea.setValue(userProfile.bio);
           }
+
+          // Set Selection for month and year
+          var children = this.dobMonthSBox.getChildren();
+          for(var i = 0; i < children.length; i++)
+          {
+            if(children[i].getLabel() == userProfile.birthMonth)
+            {
+              this.dobMonthSBox.setSelection([children[i]]);
+              break; 
+            }
+          }
+
+          children = this.dobYearSBox.getChildren();
+          var date = new Date();
+          date = date.getFullYear();
+        
+          var childToSelect = parseInt(date) - parseInt(userProfile.birthYear); 
+          this.dobYearSBox.setSelection([children[childToSelect]]);
 
           // Select Birthday and year from list
           break;

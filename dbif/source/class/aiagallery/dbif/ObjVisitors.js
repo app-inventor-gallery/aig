@@ -26,7 +26,9 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
           "status"         : aiagallery.dbif.Constants.Status.Active,
           "channels"       : [],
           "recentSearches" : [],
-          "recentViews"    : []
+          "recentViews"    : [],
+          "location"       : "",
+          "bio"            : ""
         });
     }
 

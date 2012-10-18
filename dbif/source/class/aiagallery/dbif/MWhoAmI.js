@@ -88,6 +88,7 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
 
       var             ret;
       var             me;
+      var             meData; 
       var             whoami;
       
       // Get the object indicating who we're logged in as
@@ -105,18 +106,19 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
       
       // Obtain this dude's Visitor record
       me = new aiagallery.dbif.ObjVisitors(whoami.id);
-      
-      // Create the return object, initialized to a clone of whoami.
+      meData = me.getData();
+
+      // Create the return object with the vistor data
       ret =
         {
           id                : String(whoami.id),
           email             : String(whoami.email),
           displayName       : String(whoami.displayName),
           hasSetDisplayName : whoami.hasSetDisplayName,
-          location          : String(whoami.location),
-          bio               : String(whoami.bio),
-          birthYear         : whoami.birthYear,
-          birthMonth        : whoami.birthMonth
+          location          : meData.location,
+          bio               : meData.bio,
+          birthYear         : meData.birthYear,
+          birthMonth        : meData.birthMonth
         };
 
       return ret;
