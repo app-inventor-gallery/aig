@@ -74,7 +74,20 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
         "recentViews" : "KeyArray",
         
         /** Timestamp of last connection */
-        "connectionTimestamp" : "Date"
+        "connectionTimestamp" : "Date",
+
+        /** Short user made biography */
+        "bio" : "String",
+
+        /** User's Location */
+        "location" : "String",
+
+        /** User's birth year */
+        "birthYear" : "Integer",
+
+        /** User's birth month */
+        "birthMonth" : "String"
+
       };
       
     var canonicalize = 

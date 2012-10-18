@@ -69,7 +69,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Fsm",
           "execute" :
           {
             
-            "queryBtn" : "Transition_Idle_to_AwaitRpcResult_via_query"
+            "saveBtn" : "Transition_Idle_to_AwaitRpcResult_via_saveBtn"
             
           },
           
@@ -146,17 +146,17 @@ qx.Class.define("aiagallery.module.dgallery.user.Fsm",
       state.addTransition(trans);
 
 
-        /*
+      /*
        * Transition: Idle to Awaiting RPC Result
        *
-       * Cause: "Search" button pressed
+       * Cause: "save" button pressed
        *
        * Action:
-       *  Initiate a request for the list of  matching applications.
+       *  Save the new user profile chances
        */
         
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_query",
+        "Transition_Idle_to_AwaitRpcResult_via_saveBtn",
       {
         "nextState" : "State_AwaitRpcResult",
 
@@ -164,27 +164,43 @@ qx.Class.define("aiagallery.module.dgallery.user.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          var             criteria;
-          var             criterium;
+          var             newUserInfo = {};
           var             request;
-          var             selection;
+          var             field; 
+          
+          // Parse data from dialog into map
+          field = fsm.getObject("userNameField");
+          newUserInfo["displayName"] = field.getValue(); 
 
+          field = fsm.getObject("dobMonthSBox");
+          newUserInfo["birthMonth"] = field.getSelection()[0].getLabel(); 
 
+          field = fsm.getObject("dobYearSBox");
+          newUserInfo["birthYear"] = field.getSelection()[0].getLabel(); 
+
+          field = fsm.getObject("emailField");
+          newUserInfo["email"] = field.getValue(); 
+
+          field = fsm.getObject("locationField");
+          newUserInfo["location"] = field.getValue(); 
+
+          field = fsm.getObject("bioTextArea");
+          newUserInfo["bio"] = field.getValue(); 
 
           // Issue the remote procedure call to execute the query
           request =
             this.callRpc(fsm,
                          "aiagallery.features",
-                         "mobileRequest",
+                         "editUserProfile",
                          [
 
-                          fsm.getObject("queryField").getValue()
+                          newUserInfo
                            
                         ]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "mobileRequest");
+          request.setUserData("requestType", "editUserProfile");
 
         }
       });

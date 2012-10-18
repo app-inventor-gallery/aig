@@ -64,21 +64,48 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       fsm.addObject("userNameField", 
          this.userNameField,"main.fsmUtils.disable_during_rpc");
 
-      // Create a label for the DOB field 
+      // DOB label 
       label = new qx.ui.basic.Label(this.tr("Date of Birth:"));
       vBoxText.add(label);
       
-      // Create textfield for entering in a DOB
-      this.dobField = new qx.ui.form.TextField;
-      this.dobField.set(
-      {
-        maxWidth     : 200
-      });
-      vBoxText.add(this.dobField);      
-   
+      // Create two DOB drop down menus, one for month and 
+      // the other for year
+      this.dobMonthSBox = new qx.ui.form.SelectBox();
+ 
+      this.dobMonthSBox.add(new qx.ui.form.ListItem("January"));
+      this.dobMonthSBox.add(new qx.ui.form.ListItem("February"));
+      this.dobMonthSBox.add(new qx.ui.form.ListItem("March"));
+      this.dobMonthSBox.add(new qx.ui.form.ListItem("April"));
+      this.dobMonthSBox.add(new qx.ui.form.ListItem("May"));
+      this.dobMonthSBox.add(new qx.ui.form.ListItem("June"));
+      this.dobMonthSBox.add(new qx.ui.form.ListItem("July"));
+      this.dobMonthSBox.add(new qx.ui.form.ListItem("August"));
+      this.dobMonthSBox.add(new qx.ui.form.ListItem("Spetember"));
+      this.dobMonthSBox.add(new qx.ui.form.ListItem("October"));
+      this.dobMonthSBox.add(new qx.ui.form.ListItem("November"));
+      this.dobMonthSBox.add(new qx.ui.form.ListItem("December"));
+
       // Create friendly name to get username field from the FSM
-      fsm.addObject("dobField", 
-         this.dobField,"main.fsmUtils.disable_during_rpc");
+      fsm.addObject("dobMonthSBox", 
+         this.dobMonthSBox,"main.fsmUtils.disable_during_rpc");
+
+      vBoxText.add(this.dobMonthSBox);
+
+      // DOB year list
+      this.dobYearSBox = new qx.ui.form.SelectBox();
+ 
+      // Add Years to the box 
+      var todaysDate = new Date();
+      for(var i = todaysDate.getFullYear(); i > 1900; i--)
+      {
+        this.dobYearSBox.add(new qx.ui.form.ListItem(String(i)));
+      }
+
+      // Create friendly name to get username field from the FSM
+      fsm.addObject("dobYearSBox", 
+         this.dobYearSBox,"main.fsmUtils.disable_during_rpc");
+
+      vBoxText.add(this.dobYearSBox); 
 
       // Create a label for describing the email field
       label = new qx.ui.basic.Label(this.tr("Email:"));
@@ -141,18 +168,22 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       vBoxBtn = new qx.ui.container.Composite(layout);
 
       // Create a submit button
-      submitBtn = 
-        new qx.ui.form.Button(this.tr("Submit Changes"));
-      submitBtn.set(
+      this.submitBtn = 
+        new qx.ui.form.Button(this.tr("Save Changes"));
+      this.submitBtn.set(
       {
         maxHeight : 24,
         width     : 150
       });
-      vBoxBtn.add(submitBtn);
-      submitBtn.addListener("execute", fsm.eventListener, fsm);
+      vBoxBtn.add(this.submitBtn);
+      this.submitBtn.addListener("execute", fsm.eventListener, fsm);
+
+      // We'll be receiving events on the object so save its friendly name
+      fsm.addObject("saveBtn", 
+         this.submitBtn, "main.fsmUtils.disable_during_rpc");
 
       // Disable button on startup since no changes will have been made
-      submitBtn.setEnabled(false);
+      //this.submitBtn.setEnabled(false);
 
       // Overall layout
       layout = new qx.ui.layout.HBox();
@@ -210,12 +241,12 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       {
       // On appear populate fields with data if there is some
       case "appear":
-	  
+          
           // Map of user profile data
           var userProfile = response.data.result;
 
-	  // If the user is anon return pop a warning
-	  if (userProfile.id == "")
+          // If the user is anon return pop a warning
+          if (userProfile.id == "")
           {
              var warnString = this.tr("You must log in to edit your profile"); 
              var label = new qx.ui.mobile.basic.Label(warnString);
@@ -228,8 +259,30 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
 
           // Populate fields with data from map
           this.userNameField.setValue(userProfile.displayName);
-	  
-	  break;
+          this.emailField.setValue(userProfile.email);
+          
+          if (!typeof userProfile.location === "undefined")
+          {
+            this.locationField.setValue(userProfile.location);        
+          }
+          
+          if (!typeof userProfile.bio === "undefined")
+          {
+            this.bioTextArea.setValue(userProfile.bio);
+          }
+
+          // Select Birthday and year from list
+          break;
+
+      case "editUserProfile":
+        // User submited new profile info, disable submit button
+        //this.submitBtn.setEnabled(false);
+
+        // Popup dialog that info was saved
+        var savedStr = this.tr("New profile information saved."); 
+        //dialog.Dialog.warning(savedStr); 
+        alert(savedStr);
+        break;
 
       default:
         throw new Error("Unexpected request type: " + requestType);

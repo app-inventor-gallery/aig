@@ -17,6 +17,10 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
     this.registerService("aiagallery.features.getUserProfile",
                          this.getUserProfile,
                          []);
+
+    this.registerService("aiagallery.features.editUserProfile",
+                         this.editUserProfile,
+                         []);
   },
 
   members :
@@ -74,6 +78,10 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
     /**
      * Retrun the user profile information in the form of a map.
      * This function operates similiar whoAmI, but will differnt more data
+     * 
+     * @return {Map}
+     *   A map of all the user data to display in the myself module
+     * 
      */ 
     getUserProfile : function()
     {
@@ -104,11 +112,70 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
           id                : String(whoami.id),
           email             : String(whoami.email),
           displayName       : String(whoami.displayName),
-          hasSetDisplayName : whoami.hasSetDisplayName
+          hasSetDisplayName : whoami.hasSetDisplayName,
+          location          : String(whoami.location),
+          bio               : String(whoami.bio),
+          birthYear         : whoami.birthYear,
+          birthMonth        : whoami.birthMonth
         };
 
       return ret;
 
+    },
+
+   /**
+    * Receive a user data map, parse it and update the user's
+    * profile data.  
+    *
+    * @param userDataMap {Map}
+    *  Map of all the userData we are going to update
+    * 
+    * @return {Boolean}
+    *  Return True if completed succesfully, false otherwise.
+    * 
+    */
+    editUserProfile : function(userDataMap)
+    {
+
+      var          _this = this;
+
+      // Lock DB for editing
+      return liberated.dbif.Entity.asTransaction(
+        function()
+        {
+          var           whoami;
+          var           me;
+          var           meData;
+
+          // Get the object indicating who we're logged in as
+          whoami = _this.getWhoAmI();
+      
+          // Are they logged in?
+          if (! whoami)
+          {
+            // Nope. This is an error 
+            return false;
+
+          }
+
+          // Obtain this dude's Visitor record
+          me = new aiagallery.dbif.ObjVisitors(whoami.id);
+          meData = me.getData();
+ 
+          // Update with new info
+          meData.bio = userDataMap.bio;
+          meData.location = userDataMap.location;
+          meData.birthYear = parseInt(userDataMap.birthYear);
+          meData.birthMonth = userDataMap.birthMonth;
+          meData.email = userDataMap.email;
+          meData.displayName = userDataMap.displayName;
+
+          // Write back to DB
+          me.put();
+
+          return true;
+
+        });
     }
 
   }
