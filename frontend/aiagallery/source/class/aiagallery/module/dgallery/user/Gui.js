@@ -208,6 +208,29 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // Dispatch to the appropriate handler, depending on the request type
       switch(requestType)
       {
+      // On appear populate fields with data if there is some
+      case "appear":
+	  
+          // Map of user profile data
+          var userProfile = response.data.result;
+
+	  // If the user is anon return pop a warning
+	  if (userProfile.id == "")
+          {
+             var warnString = this.tr("You must log in to edit your profile"); 
+             var label = new qx.ui.mobile.basic.Label(warnString);
+             var dialog = new qx.ui.mobile.dialog.Dialog(label);
+             dialog.setTitle("Not Logged In");
+            
+             dialog.show();
+             break; 
+          }
+
+          // Populate fields with data from map
+          this.userNameField.setValue(userProfile.displayName);
+	  
+	  break;
+
       default:
         throw new Error("Unexpected request type: " + requestType);
       }

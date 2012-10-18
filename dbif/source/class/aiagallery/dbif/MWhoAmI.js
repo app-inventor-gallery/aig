@@ -13,6 +13,10 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
     this.registerService("aiagallery.features.whoAmI",
                          this.whoAmI,
                          []);
+
+    this.registerService("aiagallery.features.getUserProfile",
+                         this.getUserProfile,
+                         []);
   },
 
   members :
@@ -65,6 +69,47 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
         };
 
       return ret;
+    },
+
+    /**
+     * Retrun the user profile information in the form of a map.
+     * This function operates similiar whoAmI, but will differnt more data
+     */ 
+    getUserProfile : function()
+    {
+
+      var             ret;
+      var             me;
+      var             whoami;
+      
+      // Get the object indicating who we're logged in as
+      whoami = this.getWhoAmI();
+      
+      // Are they logged in?
+      if (! whoami)
+      {
+        // Nope.
+        return({
+                 id                : "",
+                 email             : "anonymous"
+               });
+      }
+      
+      // Obtain this dude's Visitor record
+      me = new aiagallery.dbif.ObjVisitors(whoami.id);
+      
+      // Create the return object, initialized to a clone of whoami.
+      ret =
+        {
+          id                : String(whoami.id),
+          email             : String(whoami.email),
+          displayName       : String(whoami.displayName),
+          hasSetDisplayName : whoami.hasSetDisplayName
+        };
+
+      return ret;
+
     }
+
   }
 });
