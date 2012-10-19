@@ -289,7 +289,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
           var childToSelect = parseInt(date) - parseInt(userProfile.birthYear); 
           this.dobYearSBox.setSelection([children[childToSelect]]);
 
-          // Select Birthday and year from list
+          // All done
           break;
 
       case "editUserProfile":

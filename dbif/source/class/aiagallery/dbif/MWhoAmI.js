@@ -199,7 +199,7 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
     {
       var              criteria;
       var              resultList;
-      var              userObj;
+      var              user;
       
       criteria = 
         {
@@ -225,9 +225,13 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
         throw error;
       }
       */ 
-      // Parse user data into map
-      return resultList[0];
-
+      // Return user object
+      user = resultList[0];
+     
+      // Not allowed to reuturn user id
+      delete user.id; 
+ 
+      return user;
     }
 
   }
