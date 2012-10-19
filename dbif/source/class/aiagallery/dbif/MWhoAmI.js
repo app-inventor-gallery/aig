@@ -21,6 +21,10 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
     this.registerService("aiagallery.features.editUserProfile",
                          this.editUserProfile,
                          []);
+
+    this.registerService("aiagallery.features.getPublicUserProfile",
+                         this.getPublicUserProfile,
+                         ["user"]);
   },
 
   members :
@@ -178,6 +182,52 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
           return true;
 
         });
+    },
+
+   /**
+    * Receive a username, search for the user and return a map
+    *  of data to display on the profile page
+    *
+    * @param user {String}
+    *  The username in question
+    * 
+    * @return {Map}
+    *  A map of the user data to display
+    * 
+    */
+    getPublicUserProfile : function(user)
+    {
+      var              criteria;
+      var              resultList;
+      var              userObj;
+      
+      criteria = 
+        {
+          type  : "element",
+          field : "displayName",
+          value : user
+        }; 
+        
+      // Check to ensure name is unique
+      resultList = 
+        liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                    criteria);
+                              
+
+      // Should return one and only one username
+      /*
+      if (resultList.lenght != 1) 
+      {
+        error.setCode(2);
+        error.setMessage("The display name you specified: \"" + user +
+                         "\" cannot be found."); 
+
+        throw error;
+      }
+      */ 
+      // Parse user data into map
+      return resultList[0];
+
     }
 
   }
