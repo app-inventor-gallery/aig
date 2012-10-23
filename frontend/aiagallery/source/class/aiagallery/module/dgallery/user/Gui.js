@@ -35,6 +35,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       var             vBoxBio;
       var             hBox; 
       var             vBoxBtn;
+      var             hBoxDob; 
 
       // GUI objects 
       var             label;
@@ -45,7 +46,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
    
       // Create a vertical layout just for the textfields and labels.
       layout = new qx.ui.layout.VBox();
-      layout.setSpacing(10);      
+      layout.setSpacing(15);      
       vBoxText = new qx.ui.container.Composite(layout);
       
       // Create a label for the username textfield 
@@ -53,10 +54,12 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       vBoxText.add(label);
       
       // Create textfield for entering in a username
+      // Only allow certain values 
       this.userNameField = new qx.ui.form.TextField;
       this.userNameField.set(
       {
-        maxWidth     : 200
+        maxWidth     : 200,
+        filter : /[a-zA-Z0-9 _-]/
       });
       vBoxText.add(this.userNameField);      
    
@@ -68,6 +71,11 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       label = new qx.ui.basic.Label(this.tr("Date of Birth:"));
       vBoxText.add(label);
       
+      // Create a horizantal layout just for the DOB dropdowns
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(5);      
+      hBoxDob = new qx.ui.container.Composite(layout);
+
       // Create two DOB drop down menus, one for month and 
       // the other for year
       this.dobMonthSBox = new qx.ui.form.SelectBox();
@@ -89,7 +97,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       fsm.addObject("dobMonthSBox", 
          this.dobMonthSBox,"main.fsmUtils.disable_during_rpc");
 
-      vBoxText.add(this.dobMonthSBox);
+      hBoxDob.add(this.dobMonthSBox);
 
       // DOB year list
       this.dobYearSBox = new qx.ui.form.SelectBox();
@@ -105,20 +113,25 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       fsm.addObject("dobYearSBox", 
          this.dobYearSBox,"main.fsmUtils.disable_during_rpc");
 
-      vBoxText.add(this.dobYearSBox); 
+      hBoxDob.add(this.dobYearSBox);
+      vBoxText.add(hBoxDob); 
 
       // Create a label for describing the email field
       label = new qx.ui.basic.Label(this.tr("Email:"));
       vBoxText.add(label);
       
       // Create textfield for entering in a email
-      this.emailField = new qx.ui.form.TextField;
+      //this.emailField = new qx.ui.form.TextField;
+      this.emailField = new qx.ui.basic.Label(""); 
       this.emailField.set(
       {
         maxWidth     : 200
       });
       vBoxText.add(this.emailField);      
    
+      // Do not let users edit this field for now
+      //this.emailField.setReadOnly(true); 
+
       // Create friendly name to get username field from the FSM
       fsm.addObject("emailField", 
          this.emailField,"main.fsmUtils.disable_during_rpc");
@@ -135,9 +148,41 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       });
       vBoxText.add(this.locationField);      
    
-      // Create friendly name to get username field from the FSM
+      // Create friendly name to get location field from the FSM
       fsm.addObject("locationField", 
          this.locationField,"main.fsmUtils.disable_during_rpc");
+
+      // Create a label for describing the organization field 
+      label = new qx.ui.basic.Label(this.tr("Organization:"));
+      vBoxText.add(label);
+      
+      // Create textfield for entering in an organization
+      this.orgField = new qx.ui.form.TextField;
+      this.orgField.set(
+      {
+        maxWidth     : 200
+      });
+      vBoxText.add(this.orgField);      
+   
+      // Create friendly name to get organization field from the FSM
+      fsm.addObject("orgField", 
+         this.orgField,"main.fsmUtils.disable_during_rpc");
+
+      // Create a label for describing the URL field 
+      label = new qx.ui.basic.Label(this.tr("URL:"));
+      vBoxText.add(label);
+      
+      // Create textfield for entering in a url
+      this.urlField = new qx.ui.form.TextField;
+      this.urlField.set(
+      {
+        width     : 300
+      });
+      vBoxText.add(this.urlField);      
+   
+      // Create friendly name to get url field from the FSM
+      fsm.addObject("urlField", 
+         this.urlField,"main.fsmUtils.disable_during_rpc");
 
       // Layout for bio box
       layout = new qx.ui.layout.VBox();
@@ -192,6 +237,9 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
 
       // Add to hBox text field objects
       hBox.add(vBoxText);
+
+      // Give some flex space
+      hBox.add(new qx.ui.core.Spacer(25)); 
 
       // Add to hBox bio field
       hBox.add(vBoxBio);
@@ -260,35 +308,51 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
           // Populate fields with data from map
           this.userNameField.setValue(userProfile.displayName);
           this.emailField.setValue(userProfile.email);
-          
-          if (userProfile.location != "")
+
+          // These fields may be empty, do not display null if they are
+          if (userProfile.location != null)
           {
             this.locationField.setValue(userProfile.location);        
           }
           
-          if (userProfile.bio != "")
+          if (userProfile.bio != null)
           {
             this.bioTextArea.setValue(userProfile.bio);
           }
 
-          // Set Selection for month and year
-          var children = this.dobMonthSBox.getChildren();
-          for(var i = 0; i < children.length; i++)
+          if (userProfile.org != null)
           {
-            if(children[i].getLabel() == userProfile.birthMonth)
-            {
-              this.dobMonthSBox.setSelection([children[i]]);
-              break; 
-            }
+            this.orgField.setValue(userProfile.org); 
           }
 
-          children = this.dobYearSBox.getChildren();
-          var date = new Date();
-          date = date.getFullYear();
-        
-          var childToSelect = parseInt(date) - parseInt(userProfile.birthYear); 
-          this.dobYearSBox.setSelection([children[childToSelect]]);
+          if (userProfile.url != null)
+          {
+            this.urlField.setValue(userProfile.url); 
+          }
 
+          // Only work with date if it has been set
+          if(userProfile.birthMonth != null) 
+          {
+                  
+            // Set Selection for month and year
+            var children = this.dobMonthSBox.getChildren();
+            for(var i = 0; i < children.length; i++)
+            {
+              if(children[i].getLabel() == userProfile.birthMonth)
+              {
+                this.dobMonthSBox.setSelection([children[i]]);
+                break; 
+              }
+            }
+
+            children = this.dobYearSBox.getChildren();
+            var date = new Date();
+            date = date.getFullYear();
+        
+            var childToSelect = 
+              parseInt(date) - parseInt(userProfile.birthYear); 
+            this.dobYearSBox.setSelection([children[childToSelect]]);
+          }
           // All done
           break;
 
@@ -296,10 +360,24 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
         // User submited new profile info, disable submit button
         //this.submitBtn.setEnabled(false);
 
+        // Check to see if name change was successful
+        //if (response.data.result.message != null)
+        if(false)
+        {
+          // Name change error 
+          dialog.Dialog.warning(response.data.result.message); 
+          break; 
+        }
+
         // Popup dialog that info was saved
         var savedStr = this.tr("New profile information saved."); 
         //dialog.Dialog.warning(savedStr); 
         alert(savedStr);
+ 
+        // If the username is changed, change it in the application header
+        //this.whoAmI.setDisplayName(this.userNameField.getValue().trim());
+        //this.whoAmI.setHasSetDisplayName(true);
+
         break;
 
       default:

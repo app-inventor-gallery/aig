@@ -35,6 +35,8 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       var             hBoxDataPieceDOB;
       var             hBoxDataPieceEmail;
       var             hBoxDataPieceLoc;
+      var             hBoxDataPieceOrg;
+      var             hBoxDataPieceUrl;
       var             vBoxText;
       var             vBoxBio;
       var             hBox; 
@@ -116,6 +118,34 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
    
       vBoxText.add(hBoxDataPieceLoc);
 
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(10);      
+      hBoxDataPieceOrg = new qx.ui.container.Composite(layout);  
+
+      // Create a label for describing the organization field 
+      label = new qx.ui.basic.Label(this.tr("Organization:"));
+      hBoxDataPieceOrg.add(label);
+      
+      // Create location label
+      this.orgField = new qx.ui.basic.Label("");
+      hBoxDataPieceOrg.add(this.orgField);      
+   
+      vBoxText.add(hBoxDataPieceOrg);
+
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(10);      
+      hBoxDataPieceUrl = new qx.ui.container.Composite(layout);  
+
+      // Create a label for describing the url field 
+      label = new qx.ui.basic.Label(this.tr("User Site:"));
+      hBoxDataPieceUrl.add(label);
+      
+      // Create url label
+      this.urlField = new qx.ui.basic.Label("");
+      hBoxDataPieceUrl.add(this.urlField);      
+   
+      vBoxText.add(hBoxDataPieceUrl);
+
       // Layout for bio box
       layout = new qx.ui.layout.VBox();
       layout.setSpacing(10);      
@@ -186,17 +216,35 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
         // Set values from RPC call 
         this.userNameField.setValue(user.displayName);
         this.emailField.setValue(user.email); 
-        this.dobYearField.setValue(String(user.birthYear)); 
-        this.dobMonthField.setValue(user.birthMonth); 
-   
-        if (user.location != "")
+
+        if (user.birthYear != null) 
+        {
+          this.dobYearField.setValue(String(user.birthYear)); 
+        }
+
+        if (user.birthMonth != null)
+        {
+          this.dobMonthField.setValue(user.birthMonth); 
+        }
+
+        if (user.location != null)
         {
           this.locationField.setValue(user.location);        
         }
           
-        if (user.bio != "")
+        if (user.bio != null)
         {
           this.bioTextArea.setValue(user.bio);
+        }
+
+        if (user.organization != null)
+        {
+          this.orgField.setValue(user.organization);
+        }
+
+        if (user.url != null)
+        {
+          this.urlField.setValue(user.url); 
         }
 
         break;

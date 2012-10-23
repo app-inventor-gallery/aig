@@ -169,32 +169,53 @@ qx.Class.define("aiagallery.module.dgallery.user.Fsm",
           var             field; 
           
           // Parse data from dialog into map
+          // Ensure no added whitespace by using trim()
+          // Ensure no nulls are added as well
           field = fsm.getObject("userNameField");
           newUserInfo["displayName"] = field.getValue(); 
 
-          field = fsm.getObject("dobMonthSBox");
+          field = fsm.getObject("dobMonthSBox");          
           newUserInfo["birthMonth"] = field.getSelection()[0].getLabel(); 
 
-          field = fsm.getObject("dobYearSBox");
-          newUserInfo["birthYear"] = field.getSelection()[0].getLabel(); 
+          field = fsm.getObject("dobYearSBox");         
+          newUserInfo["birthYear"] = 
+            parseInt(field.getSelection()[0].getLabel());        
 
           field = fsm.getObject("emailField");
-          newUserInfo["email"] = field.getValue(); 
+          newUserInfo["email"] = field.getValue().trim(); 
 
           field = fsm.getObject("locationField");
-          newUserInfo["location"] = field.getValue(); 
+          if (field.getValue() != null)
+          {
+            newUserInfo["location"] = field.getValue().trim(); 
+          }
+
+          field = fsm.getObject("orgField");
+          if (field.getValue() != null)
+          {
+            newUserInfo["organization"] = field.getValue().trim(); 
+          }
+
+          field = fsm.getObject("urlField");
+          if (field.getValue() != null)
+          {
+            newUserInfo["url"] = field.getValue().trim(); 
+          }
 
           field = fsm.getObject("bioTextArea");
-          newUserInfo["bio"] = field.getValue(); 
+          if (field.getValue() != null)
+          {
+            newUserInfo["bio"] = field.getValue(); 
+          }
 
           // Issue the remote procedure call to execute the query
           request =
             this.callRpc(fsm,
                          "aiagallery.features",
-                         "editUserProfile",
+                         "editProfile",
                          [
 
-                          newUserInfo
+                          newUserInfo 
                            
                         ]);
 

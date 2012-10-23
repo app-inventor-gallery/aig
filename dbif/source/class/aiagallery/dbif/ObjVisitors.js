@@ -28,7 +28,9 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
           "recentSearches" : [],
           "recentViews"    : [],
           "location"       : "",
-          "bio"            : ""
+          "bio"            : "",
+          "url"            : "",
+          "organization"   : ""
         });
     }
 
@@ -88,7 +90,13 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
         "birthYear" : "Integer",
 
         /** User's birth month */
-        "birthMonth" : "String"
+        "birthMonth" : "String",
+
+        /** Organization user is associated with */
+        "organization" : "String",
+
+        /** User's own website */
+        "url" : "String"
 
       };
       

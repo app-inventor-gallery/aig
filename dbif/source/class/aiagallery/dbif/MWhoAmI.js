@@ -18,10 +18,6 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
                          this.getUserProfile,
                          []);
 
-    this.registerService("aiagallery.features.editUserProfile",
-                         this.editUserProfile,
-                         []);
-
     this.registerService("aiagallery.features.getPublicUserProfile",
                          this.getPublicUserProfile,
                          ["user"]);
@@ -122,66 +118,13 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
           location          : meData.location,
           bio               : meData.bio,
           birthYear         : meData.birthYear,
-          birthMonth        : meData.birthMonth
+          birthMonth        : meData.birthMonth,
+          org               : meData.organization,
+          url               : meData.url
         };
 
       return ret;
 
-    },
-
-   /**
-    * Receive a user data map, parse it and update the user's
-    * profile data.  
-    *
-    * @param userDataMap {Map}
-    *  Map of all the userData we are going to update
-    * 
-    * @return {Boolean}
-    *  Return True if completed succesfully, false otherwise.
-    * 
-    */
-    editUserProfile : function(userDataMap)
-    {
-
-      var          _this = this;
-
-      // Lock DB for editing
-      return liberated.dbif.Entity.asTransaction(
-        function()
-        {
-          var           whoami;
-          var           me;
-          var           meData;
-
-          // Get the object indicating who we're logged in as
-          whoami = _this.getWhoAmI();
-      
-          // Are they logged in?
-          if (! whoami)
-          {
-            // Nope. This is an error 
-            return false;
-
-          }
-
-          // Obtain this dude's Visitor record
-          me = new aiagallery.dbif.ObjVisitors(whoami.id);
-          meData = me.getData();
- 
-          // Update with new info
-          meData.bio = userDataMap.bio;
-          meData.location = userDataMap.location;
-          meData.birthYear = parseInt(userDataMap.birthYear);
-          meData.birthMonth = userDataMap.birthMonth;
-          meData.email = userDataMap.email;
-          meData.displayName = userDataMap.displayName;
-
-          // Write back to DB
-          me.put();
-
-          return true;
-
-        });
     },
 
    /**
@@ -199,7 +142,6 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
     {
       var              criteria;
       var              resultList;
-      var              user;
       
       criteria = 
         {
@@ -228,7 +170,7 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
       // Return user object
       user = resultList[0];
      
-      // Not allowed to reuturn user id
+      // Not allowed to return user id
       delete user.id; 
  
       return user;

@@ -333,7 +333,14 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       var             bValid = true;
       var             validFields = 
         [
-          "displayName"
+          "displayName",
+          "organization",
+          "email",
+          "birthMonth",
+          "birthYear",
+          "location",
+          "bio",
+          "url"
         ];
       
       // Find out who we are
