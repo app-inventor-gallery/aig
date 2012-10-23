@@ -172,7 +172,48 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
 
       // Add to main canvas
       canvas.add(hBox);
+
+      // Create a large bold font
+      var font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+      font.setSize(26);
+
+      // Add in created apps section
+      // Most Liked Apps section
+      var authoredAppsLayout = new qx.ui.layout.VBox();
+      authoredAppsLayout.set(
+        {
+          alignX : "center"
+        });
+      var authoredApps = new qx.ui.container.Composite(authoredAppsLayout);
+      authoredApps.set(
+        {
+          decorator : "home-page-ribbon",
+          padding   : 20
+        });
+
+      var authoredAppsHeader = new qx.ui.basic.Label();
+      authoredAppsHeader.set(
+        {
+          value : "Authored Apps",
+          font  : font,
+          decorator : "home-page-header"
+        });
+      authoredApps.add(authoredAppsHeader);
       
+      // slide bar of Newest Apps
+      var scroller = new qx.ui.container.Scroll();
+      authoredApps.add(scroller);
+      
+      // Scroll container can hold only a single child. Create that child.
+      this.authoredAppsContainer =
+        new qx.ui.container.Composite(new qx.ui.layout.HBox(0));
+      this.authoredAppsContainer.set(
+          {
+            height : 210
+          });
+      scroller.add(this.authoredAppsContainer);
+
+      canvas.add(authoredApps);
     },
 
     
@@ -246,6 +287,41 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
         {
           this.urlField.setValue(user.url); 
         }
+
+        // Add in authored adds if they exist
+        if (user.authoredApps.length > 0) 
+        {
+           for(var i = 0; i < user.authoredApps.length; i++)
+           {
+             // If this isn't the first one, ...
+             if (i > 0)
+             {
+               // ... then add a spacer between the previous one and this one
+               this.authoredAppsContainer.add(new qx.ui.core.Spacer(10));
+             }
+
+             // Add the thumbnail for this app
+             var appLiked = user.authoredApps[i];
+             var appThumbLiked = 
+               new aiagallery.widget.SearchResult("homeRibbon", appLiked);
+             this.authoredAppsContainer.add(appThumbLiked);
+
+             // Associate the app data with the UI widget so it can be passed
+             // in the click event callback
+             appThumbLiked.setUserData("App Data", appLiked);
+         
+             // Fire an event specific to this application, no friendly name.
+             appThumbLiked.addListener(
+               "click", 
+               function(e)
+               {
+                 fsm.fireImmediateEvent(
+                   "homeRibbonAppClick", 
+                   this, 
+                   e.getCurrentTarget().getUserData("App Data"));
+                 });             
+           }  
+         }
 
         break;
 

@@ -276,7 +276,11 @@ qx.Class.define("aiagallery.main.Gui",
             // Create a global function accessible via <a href=
             window.editProfile = function()
               {
-                _this._editProfile();
+                // Take us to the user's edit page
+                aiagallery.main.Gui.getInstance().selectModule(
+                  {
+                    page : aiagallery.main.Constant.PageName.User
+                  });
               };
 
             // Set the header to display just-retrieved values
@@ -1089,152 +1093,6 @@ qx.Class.define("aiagallery.main.Gui",
       }
     },
     
-    _editProfile : function()
-    {
-      var             win;
-      var             errorWin; 
-      var             errorLabel; 
-      var             grid;
-      var             container;
-      var             displayName;
-      var             hBox;
-      var             ok;
-      var             cancel;
-      var             command;
-
-      // Create a modal window for editing the profile
-      if (! this._win)
-      {
-        win = new qx.ui.window.Window(this.tr("Edit Profile"));
-        win.set(
-          {
-            layout : new qx.ui.layout.VBox(30),
-            modal  : true
-          });
-        this.getApplicationRoot().add(win);
-
-        // We'll use a grid to layout the property editor
-        grid = new qx.ui.layout.Grid();
-        grid.setSpacingX(5);
-        grid.setSpacingY(15);
-        grid.setColumnAlign(0, "right", "middle");
-
-        // Create a container for the grid
-        container = new qx.ui.container.Composite(grid);
-        win.add(container);
-
-        // Add the label
-        container.add(new qx.ui.basic.Label(this.tr("Display Name")), 
-                      { row : 0, column : 0 });
-
-        // Add the text field
-        win._displayName = new qx.ui.form.TextField();
-        win._displayName.set(
-        {
-          width  : 120,
-          filter : /[a-zA-Z0-9 _-]/
-        });
-        container.add(win._displayName, { row : 0, column : 1 });
-
-        // Create a horizontal box to hold the buttons
-        hBox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
-
-        // Add spacer to right-align the buttons
-        hBox.add(new qx.ui.core.Spacer(null, 1), { flex : 1 });
-
-        // Add the Ok button
-        ok = new qx.ui.form.Button(this.tr("Ok"));
-        ok.setWidth(100);
-        ok.setHeight(30);
-        hBox.add(ok);
-
-        // Allow 'Enter' to confirm entry
-        command = new qx.ui.core.Command("Enter");
-        ok.setCommand(command);
-
-        // When the Ok button is pressed, issue an editProfile request
-        ok.addListener(
-        "execute", 
-        function(e)
-        {
-          var             rpc;
-          var             _this = this;
-
-          // Get and configure a new RPC object
-          rpc = new qx.io.remote.Rpc();
-          rpc.setProtocol("2.0");
-          rpc.set(
-          {
-            url         : aiagallery.main.Constant.SERVICES_URL,
-            timeout     : 30000,
-            crossDomain : false,
-            serviceName : "aiagallery.features"
-          });
-
-          // Issue the request. When we get the result...
-          rpc.callAsync(
-          function(result, ex, id)
-          {
-            // Check for an error
-            if (ex != null)
-            {
-              // Error occured, display window
-              dialog.Dialog.warning(ex.message); 
-              
-              return; 
-            
-            }
-            // Set the display name in the application header
-            _this.whoAmI.setDisplayName(win._displayName.getValue().trim());
-            _this.whoAmI.setHasSetDisplayName(true);
-
-            // Close the window
-            win.close();
-          },
-          "editProfile",
-          {
-            displayName : win._displayName.getValue()
-          });
-        },
-        this);
-
-        // Add the Cancel button
-        cancel = new qx.ui.form.Button(this.tr("Cancel"));
-        cancel.setWidth(100);
-        cancel.setHeight(30);
-        hBox.add(cancel);
-
-        // Allow 'Escape' to cancel
-        command = new qx.ui.core.Command("Esc");
-        cancel.setCommand(command);
-
-        // Close the window if the cancel button is pressed
-        cancel.addListener(
-        "execute",
-        function(e)
-        {
-          win.close();
-        },
-        this);
-
-        // Add the button bar to the window
-        win.add(hBox);
-
-        // We only want to create this window once.
-        this._win = win;
-      }
-
-      // Clear out the display name field
-      this._win._displayName.setValue("");
-
-      // Set the focus to the display name field
-      this._win._displayName.focus();
-
-      // Show the window
-      this._win.center();
-      this._win.show();
-    },
-
     /**
     * Initialize Back button and bookmark support. Also look at the fragment
     * of the current URL to see if we need to go to a particular module.

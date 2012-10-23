@@ -142,6 +142,16 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
     {
       var              criteria;
       var              resultList;
+      var              requestedFields;
+      var              profile;
+
+      requestedFields = {
+        uid :  "uid",
+        owner : "owner",
+        image1 :"image1",
+        title :"title",
+        displayName : "displayName"
+      }; 
       
       criteria = 
         {
@@ -167,13 +177,54 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
         throw error;
       }
       */ 
-      // Return user object
-      user = resultList[0];
-     
-      // Not allowed to return user id
-      delete user.id; 
+
+      profile = resultList[0];
+    
+      criteria = 
+        {
+          type : "op",
+          method : "and",
+          children : 
+          [
+            {
+              type: "element",
+              field: "owner",
+              value: profile.id
+            },
+            {
+              type: "element",
+              field: "status",
+              value: aiagallery.dbif.Constants.Status.Active
+            }
+          ]
+        };
+
+      resultList =
+        liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData", 
+                                    criteria);       
+      
+
+      // Add the author's name to each app
+      resultList.forEach(
+        function(app)
+        {
+          app.displayName = user.displayName || "<>";
+
+          // Clear out unneeded fields
+          aiagallery.dbif.MApps._requestedFields(app, requestedFields);
+
+          // Remove the owner field
+          delete app.owner;
+        });
+
+
+      // Add in a list of user authored apps 
+      profile["authoredApps"] = resultList; 
  
-      return user;
+      // Not allowed to return user id
+      delete profile.id; 
+
+      return profile;
     }
 
   }

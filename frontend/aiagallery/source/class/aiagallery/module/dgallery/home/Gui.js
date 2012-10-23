@@ -60,24 +60,24 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         [
           "<h2>Welcome to the App Inventor Community Gallery!</h2>",
 
-	  "You can:",
-	  "<ul>",
-	  "<p><li>Browse and download App Inventor projects",
+          "You can:",
+          "<ul>",
+          "<p><li>Browse and download App Inventor projects",
 
-	  "<p><li>Contribute your App Inventor project to share it with others",
+          "<p><li>Contribute your App Inventor project to share it with others",
 
-	  "<p><li>Discuss projects you like and encourage new ideas!",
+          "<p><li>Discuss projects you like and encourage new ideas!",
 
-	  "</ul>",
+          "</ul>",
 
-	  "<p>Get started by clicking on <b>Find Apps</b>, and go ahead ",
-	  "and add your own projects by clicking on <b>My Apps</b>.",
+          "<p>Get started by clicking on <b>Find Apps</b>, and go ahead ",
+          "and add your own projects by clicking on <b>My Apps</b>.",
 
-	  "<p>Also, you can browse projects from your ",
-	  "Android phone by using our companion ",
-	  '<a href="http://www.appinventor.org/mobile-gallery" target="new">',
+          "<p>Also, you can browse projects from your ",
+          "Android phone by using our companion ",
+          '<a href="http://www.appinventor.org/mobile-gallery" target="new">',
           "Mobile Community Gallery</a> ",
-	  "app!"
+          "app!"
         ].join("");
       message.set(
         {
@@ -102,7 +102,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // Add "Find Apps" box to link row
       text =
         [
-	  "Use <b>Find Apps</b> to browse apps by tag, or search for them ",
+          "Use <b>Find Apps</b> to browse apps by tag, or search for them ",
           "using a variety of parameters."
         ].join("");
       var findApps = new aiagallery.module.dgallery.home.LinkBox(
@@ -118,7 +118,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // Add "My Apps" box to link row
       text =
         [
-	 "Go to <b>My Apps</b> to review and change your uploaded projects."
+         "Go to <b>My Apps</b> to review and change your uploaded projects."
         ].join("");
       var myApps = new aiagallery.module.dgallery.home.LinkBox(
         "<b>My Apps</b><br>" + text,
@@ -167,25 +167,25 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           "</div>",
           "</h2>",
 
-	  "You can:",
-	  "<ul>",
-	  "<p><li>Browse and download App Inventor projects",
+          "You can:",
+          "<ul>",
+          "<p><li>Browse and download App Inventor projects",
 
-	  "<p><li>Contribute your App Inventor project to share it with others",
+          "<p><li>Contribute your App Inventor project to share it with others",
 
-	  "<p><li>Discuss projects you like and encourage new ideas!",
+          "<p><li>Discuss projects you like and encourage new ideas!",
 
-	  "</ul>",
+          "</ul>",
 
-	  "<p>Get started by clicking on <b>Find Apps</b>, or ",
+          "<p>Get started by clicking on <b>Find Apps</b>, or ",
           "add your own projects by clicking on <b>My Apps</b>.",
 
 /*
-	  "<p>Also, you can browse projects from your ",
-	  "Android phone by using our companion ",
-	  '<a href="http://www.appinventor.org/mobile-gallery" target="new">',
+          "<p>Also, you can browse projects from your ",
+          "Android phone by using our companion ",
+          '<a href="http://www.appinventor.org/mobile-gallery" target="new">',
           "Mobile Community Gallery</a> ",
-	  "app!"
+          "app!"
 */
           
           "<hr />",
