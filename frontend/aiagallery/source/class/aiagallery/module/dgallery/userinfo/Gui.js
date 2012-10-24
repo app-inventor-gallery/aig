@@ -164,8 +164,14 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       layout.setSpacing(10);      
       hBox = new qx.ui.container.Composite(layout);
 
+      // Add some space between last text element and authored apps
+      vBoxText.add(new qx.ui.core.Spacer(10)); 
+
       // Add to hBox text field objects
       hBox.add(vBoxText);
+
+      // Space things out
+      hBox.add(new qx.ui.core.Spacer(15));
 
       // Add to hBox bio field
       hBox.add(vBoxBio); 
@@ -243,7 +249,11 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       if (response.type == "failed")
       {
         // FIXME: Add the failure to the cell editor window rather than alert
-        alert("Async(" + response.id + ") exception: " + response.data);
+        //alert("Async(" + response.id + ") exception: " + response.data);
+
+        // If we get a failure it is because we could not find the user
+        dialog.Dialog.warning("Could not find user"); 
+
         return;
       }
 
@@ -316,7 +326,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
                function(e)
                {
                  fsm.fireImmediateEvent(
-                   "homeRibbonAppClick", 
+                   "authoredAppClick", 
                    this, 
                    e.getCurrentTarget().getUserData("App Data"));
                  });             

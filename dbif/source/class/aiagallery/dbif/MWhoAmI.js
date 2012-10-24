@@ -138,7 +138,7 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
     *  A map of the user data to display
     * 
     */
-    getPublicUserProfile : function(user)
+    getPublicUserProfile : function(user, error)
     {
       var              criteria;
       var              resultList;
@@ -166,9 +166,8 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
                                     criteria);
                               
 
-      // Should return one and only one username
-      /*
-      if (resultList.lenght != 1) 
+      // Should return one and only one username     
+      if (resultList.length != 1) 
       {
         error.setCode(2);
         error.setMessage("The display name you specified: \"" + user +
@@ -176,7 +175,7 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
 
         throw error;
       }
-      */ 
+      
 
       profile = resultList[0];
     
@@ -208,7 +207,7 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
       resultList.forEach(
         function(app)
         {
-          app.displayName = user.displayName || "<>";
+          app.displayName = user || "<>";
 
           // Clear out unneeded fields
           aiagallery.dbif.MApps._requestedFields(app, requestedFields);

@@ -49,6 +49,9 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       layout.setSpacing(15);      
       vBoxText = new qx.ui.container.Composite(layout);
       
+      // variable to store old username
+      this.oldName = ""; 
+
       // Create a label for the username textfield 
       label = new qx.ui.basic.Label(this.tr("Username:"));
       vBoxText.add(label);
@@ -269,6 +272,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       var             response = rpcRequest.getUserData("rpc_response");
       var             requestType = rpcRequest.getUserData("requestType");
       var             result;
+      var             warnString; 
 
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -279,7 +283,18 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       if (response.type == "failed")
       {
         // FIXME: Add the failure to the cell editor window rather than alert
-        alert("Async(" + response.id + ") exception: " + response.data);
+        //alert("Async(" + response.id + ") exception: " + response.data);
+
+        // An error here indicates the name change was not allowed 
+        warnString = this.tr("This username: \"");
+        warnString += this.userNameField.getValue();
+        warnString += this.tr("\" is not valid.");
+        warnString += this.tr(" It may already be in"
+			      + " use or use invalid characters");  
+
+        dialog.Dialog.warning(warnString); 
+
+        this.userNameField.setValue(this.oldName);
         return;
       }
 
@@ -297,16 +312,15 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
           if (userProfile.id == "")
           {
              var warnString = this.tr("You must log in to edit your profile"); 
-             var label = new qx.ui.mobile.basic.Label(warnString);
-             var dialog = new qx.ui.mobile.dialog.Dialog(label);
-             dialog.setTitle("Not Logged In");
-            
-             dialog.show();
+             dialog.Dialog.warning(warnString);
+
              break; 
           }
 
           // Populate fields with data from map
           this.userNameField.setValue(userProfile.displayName);
+          this.oldName = userProfile.displayName; 
+
           this.emailField.setValue(userProfile.email);
 
           // These fields may be empty, do not display null if they are
@@ -371,12 +385,14 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
 
         // Popup dialog that info was saved
         var savedStr = this.tr("New profile information saved."); 
-        //dialog.Dialog.warning(savedStr); 
-        alert(savedStr);
+        dialog.Dialog.alert(savedStr); 
  
         // If the username is changed, change it in the application header
         //this.whoAmI.setDisplayName(this.userNameField.getValue().trim());
         //this.whoAmI.setHasSetDisplayName(true);
+
+        // change old username value
+        this.oldName = this.userNameField.getValue().trim(); 
 
         break;
 

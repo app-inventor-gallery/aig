@@ -66,6 +66,10 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Fsm",
         "events" :
         {
           
+          // Clicked on an authored app
+          "authoredAppClick" :
+            "Transition_Idle_to_Idle_via_authoredAppClick",
+
           // When we get an appear event, retrieve the category tags list. We
           // only want to do it the first time, though, so we use a predicate
           // to determine if it's necessary.
@@ -163,6 +167,35 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Fsm",
 
       state.addTransition(trans);
 
+      /*
+       * Transition: Idle to Idle
+       *
+       * Cause: An authored app has been clicked
+       *
+       * Action:
+       *  Create (if necessary) and switch to an application-specific tab
+       */
+      
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_Idle_via_authoredAppClick",
+      {
+        "nextState" : "State_Idle",
+      
+        "context" : this,
+      
+        "ontransition" : function(fsm, event)
+        {
+          // Get the event data
+          var             item = event.getData();
+
+          // Add a module for the specified app
+          aiagallery.module.dgallery.appinfo.AppInfo.addAppView(item.uid, 
+                                                               item.title);
+
+        }
+      });
+      
+      state.addTransition(trans);
       
       // ------------------------------------------------------------ //
       // State: <some other state>
