@@ -146,6 +146,9 @@ qx.Class.define("aiagallery.main.Gui",
         }
         header.add(this.whoAmI);
 
+        // Save a copy for global access
+        qx.core.Init.getApplication().setUserData("whoAmI", this.whoAmI); 
+
         // Add a flexible spacer to take up the whole middle
         o = new qx.ui.core.Widget();
         o.setMinWidth(1);

@@ -173,7 +173,7 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
         error.setMessage("The display name you specified: \"" + user +
                          "\" cannot be found."); 
 
-        throw error;
+        return error;
       }
       
 

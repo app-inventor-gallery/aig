@@ -273,6 +273,8 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       var             requestType = rpcRequest.getUserData("requestType");
       var             result;
       var             warnString; 
+      var             savedStr;
+      var             whoAmI; 
 
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -282,19 +284,21 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
 
       if (response.type == "failed")
       {
-        // FIXME: Add the failure to the cell editor window rather than alert
-        //alert("Async(" + response.id + ") exception: " + response.data);
+        // Username is already in use
+        if (response.data.code == 2)
+        {
+          // Display warning about this issue
+          dialog.Dialog.warning(response.data.message);
 
-        // An error here indicates the name change was not allowed 
-        warnString = this.tr("This username: \"");
-        warnString += this.userNameField.getValue();
-        warnString += this.tr("\" is not valid.");
-        warnString += this.tr(" It may already be in"
-			      + " use or use invalid characters");  
+          // Change back to original user name
+          this.userNameField.setValue(this.oldName);
+        }
+        else 
+        {
+          // FIXME: Add the failure to the cell editor window rather than alert
+          alert("Async(" + response.id + ") exception: " + response.data);          
+        }
 
-        dialog.Dialog.warning(warnString); 
-
-        this.userNameField.setValue(this.oldName);
         return;
       }
 
@@ -311,7 +315,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
           // If the user is anon return pop a warning
           if (userProfile.id == "")
           {
-             var warnString = this.tr("You must log in to edit your profile"); 
+             warnString = this.tr("You must log in to edit your profile"); 
              dialog.Dialog.warning(warnString);
 
              break; 
@@ -384,13 +388,14 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
         }
 
         // Popup dialog that info was saved
-        var savedStr = this.tr("New profile information saved."); 
+        savedStr = this.tr("New profile information saved."); 
         dialog.Dialog.alert(savedStr); 
  
         // If the username is changed, change it in the application header
-        //this.whoAmI.setDisplayName(this.userNameField.getValue().trim());
-        //this.whoAmI.setHasSetDisplayName(true);
-
+        whoAmI = qx.core.Init.getApplication().getUserData("whoAmI");
+        whoAmI.setDisplayName(this.userNameField.getValue().trim());
+        whoAmI.setHasSetDisplayName(true);
+        
         // change old username value
         this.oldName = this.userNameField.getValue().trim(); 
 

@@ -248,11 +248,16 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
 
       if (response.type == "failed")
       {
-        // FIXME: Add the failure to the cell editor window rather than alert
-        //alert("Async(" + response.id + ") exception: " + response.data);
-
-        // If we get a failure it is because we could not find the user
-        dialog.Dialog.warning("Could not find user"); 
+        // Username could not be found
+        if (response.data.code == 2)
+        {
+          dialog.Dialog.warning(response.data.message);
+        }
+        else 
+        {
+          // FIXME: Add the failure to the cell editor window rather than alert
+          alert("Async(" + response.id + ") exception: " + response.data);
+        }
 
         return;
       }
