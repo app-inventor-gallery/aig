@@ -405,7 +405,8 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
             }
           }
    
-          if (userProfile.showEmail)
+          // This means show email box is checked 
+          if (userProfile.showEmail == 1)
           {
             this.showEmailCheck.setValue(true); 
           }

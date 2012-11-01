@@ -226,7 +226,7 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
 
       // If the user does not want to show email
       // do not return it
-      if (!profile.showEmail)
+      if (profile.showEmail == 0)
       {
         delete profile.email;
       }

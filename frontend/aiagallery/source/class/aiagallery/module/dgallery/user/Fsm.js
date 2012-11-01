@@ -223,8 +223,18 @@ qx.Class.define("aiagallery.module.dgallery.user.Fsm",
             newUserInfo["bio"] = field.getValue(); 
           }
 
+          // DB Does not support booleans
+          // 0 for false, 1 for true
           field = fsm.getObject("showEmailCheck");
-          newUserInfo["showEmail"] = field.getValue();
+          if (field.getValue())
+          {
+            newUserInfo["showEmail"] = 1;
+          } 
+          else
+          {
+            newUserInfo["showEmail"] = 0;
+          }
+          
 
           // Issue the remote procedure call to execute the query
           request =

@@ -280,8 +280,8 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
         // Set values from RPC call 
         this.userNameField.setValue(user.displayName);
 
-        // True means show email 
-        if (user.showEmail)
+        // 1 means show email 
+        if (user.showEmail == 1)
         {
           this.emailField.setValue(user.email); 
           this.emailField.set(

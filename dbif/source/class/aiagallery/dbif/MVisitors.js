@@ -407,10 +407,6 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                               fields[fieldName] == "Float");
                     break;
 
-                  case "boolean":
-                    bValid = (fields[fieldName] == "Boolean");
-                    break; 
-
                   default:
                     bValid = false;
                     break;
