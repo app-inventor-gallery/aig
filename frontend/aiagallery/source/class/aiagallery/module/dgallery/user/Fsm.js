@@ -167,6 +167,10 @@ qx.Class.define("aiagallery.module.dgallery.user.Fsm",
           var             newUserInfo = {};
           var             request;
           var             field; 
+          var             fieldYear;
+          var             fieldMonth;
+          var             yearString;
+          var             monthString; 
           
           // Parse data from dialog into map
           // Ensure no added whitespace by using trim()
@@ -174,12 +178,23 @@ qx.Class.define("aiagallery.module.dgallery.user.Fsm",
           field = fsm.getObject("userNameField");
           newUserInfo["displayName"] = field.getValue(); 
 
-          field = fsm.getObject("dobMonthSBox");          
-          newUserInfo["birthMonth"] = field.getSelection()[0].getLabel(); 
+          // If one of these fields is not set
+          // then ignore both
+          fieldYear = fsm.getObject("dobYearSBox");  
+          fieldMonth = fsm.getObject("dobMonthSBox");          
 
-          field = fsm.getObject("dobYearSBox");         
-          newUserInfo["birthYear"] = 
-            parseInt(field.getSelection()[0].getLabel());        
+          yearString = fieldYear.getSelection()[0].getLabel(); 
+          monthString = fieldMonth.getSelection()[0].getLabel(); 
+          if (monthString != "Month" && yearString != "Year")
+          {     
+            newUserInfo["birthYear"] = parseInt(yearString); 
+            newUserInfo["birthMonth"] = monthString;
+          } 
+          else 
+          {
+            newUserInfo["birthYear"] = 0; 
+            newUserInfo["birthMonth"] = "";
+          }
 
           field = fsm.getObject("emailField");
           newUserInfo["email"] = field.getValue().trim(); 
@@ -207,6 +222,9 @@ qx.Class.define("aiagallery.module.dgallery.user.Fsm",
           {
             newUserInfo["bio"] = field.getValue(); 
           }
+
+          field = fsm.getObject("showEmailCheck");
+          newUserInfo["showEmail"] = field.getValue();
 
           // Issue the remote procedure call to execute the query
           request =

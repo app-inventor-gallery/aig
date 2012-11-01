@@ -202,9 +202,9 @@ new aiagallery.main.Module(
   aiagallery.module.dgallery.myapps.MyApps);
 
 new aiagallery.main.Module(
-  "Myself",
+  "Profile",
   "aiagallery/module/emblem-favorite.png",
-  "Myself",
+  "Profile",
   aiagallery.main.Constant.PageName.User,
   aiagallery.module.dgallery.user.User);
 

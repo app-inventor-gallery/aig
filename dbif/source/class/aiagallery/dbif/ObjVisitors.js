@@ -30,7 +30,8 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
           "location"       : "",
           "bio"            : "",
           "url"            : "",
-          "organization"   : ""
+          "organization"   : "",
+          "showEmail"      : false
         });
     }
 
@@ -96,7 +97,10 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
         "organization" : "String",
 
         /** User's own website */
-        "url" : "String"
+        "url" : "String", 
+
+        /** Boolean to show email publicly or not */
+        "showEmail" : "Boolean"
 
       };
       

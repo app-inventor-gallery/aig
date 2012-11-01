@@ -340,7 +340,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
           "birthYear",
           "location",
           "bio",
-          "url"
+          "url",
+          "showEmail"
         ];
       
       // Find out who we are
@@ -405,6 +406,10 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                     bValid = (fields[fieldName] == "Integer" || 
                               fields[fieldName] == "Float");
                     break;
+
+                  case "boolean":
+                    bValid = (fields[fieldName] == "Boolean");
+                    break; 
 
                   default:
                     bValid = false;

@@ -120,7 +120,8 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
           birthYear         : meData.birthYear,
           birthMonth        : meData.birthMonth,
           org               : meData.organization,
-          url               : meData.url
+          url               : meData.url,
+          showEmail         : meData.showEmail 
         };
 
       return ret;
@@ -222,6 +223,13 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
  
       // Not allowed to return user id
       delete profile.id; 
+
+      // If the user does not want to show email
+      // do not return it
+      if (!profile.showEmail)
+      {
+        delete profile.email;
+      }
 
       return profile;
     }

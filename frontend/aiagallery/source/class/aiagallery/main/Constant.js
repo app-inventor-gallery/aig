@@ -38,7 +38,7 @@ qx.Class.define("aiagallery.main.Constant",
         Testing    : "Testing",
         Management : "Management",
         AppInfo    : "App",
-        User       : "User",
+        User       : "Profile",
         PublicUser : "PublicUser"
       }
   }

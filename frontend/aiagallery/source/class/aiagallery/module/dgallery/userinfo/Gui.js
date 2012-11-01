@@ -31,7 +31,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
 
       // Layouts
       var             layout; 
-      var             hBoxDataPieceName;
+      //var             hBoxDataPieceName;
       var             hBoxDataPieceDOB;
       var             hBoxDataPieceEmail;
       var             hBoxDataPieceLoc;
@@ -48,6 +48,10 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
 
       // Create a layout for this page
       canvas.setLayout(new qx.ui.layout.VBox());   
+
+      // Create a large bold font
+      var font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+      font.setSize(26);
    
       // Create a vertical layout just for the labels.
       layout = new qx.ui.layout.VBox();
@@ -55,21 +59,19 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       vBoxText = new qx.ui.container.Composite(layout);
       
       // Create a composite to hold all the user data pairs 
-      layout = new qx.ui.layout.HBox();
-      layout.setSpacing(10);      
-      hBoxDataPieceName = new qx.ui.container.Composite(layout);     
+      //layout = new qx.ui.layout.HBox();
+      //layout.setSpacing(10);      
+      //hBoxDataPieceName = new qx.ui.container.Composite(layout);     
 
       // Create a label for the username  
-      label = new qx.ui.basic.Label(this.tr("Username:"));
-      hBoxDataPieceName.add(label);
+      //label = new qx.ui.basic.Label(this.tr("Username:"));
+      //hBoxDataPieceName.add(label);
       
       // Create username label
       this.userNameField = new qx.ui.basic.Label("");
-      hBoxDataPieceName.add(this.userNameField);      
-   
-      // Add Pair to layout
-      vBoxText.add(hBoxDataPieceName); 
+      this.userNameField.setFont(font); 
 
+      canvas.add(this.userNameField); 
       // DOB layout 
       layout = new qx.ui.layout.HBox();
       layout.setSpacing(10);      
@@ -77,6 +79,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
 
       // DOB description label
       label = new qx.ui.basic.Label(this.tr("Date of Birth:"));
+      label.setFont("bold"); 
       hBoxDataPieceDOB.add(label);
       
       // DOB month label
@@ -96,6 +99,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
 
       // Create a label for describing the email field
       label = new qx.ui.basic.Label(this.tr("Email:"));
+      label.setFont("bold"); 
       hBoxDataPieceEmail.add(label);
       
       // Create email label
@@ -110,6 +114,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
 
       // Create a label for describing the location field 
       label = new qx.ui.basic.Label(this.tr("Location:"));
+      label.setFont("bold"); 
       hBoxDataPieceLoc.add(label);
       
       // Create location label
@@ -124,6 +129,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
 
       // Create a label for describing the organization field 
       label = new qx.ui.basic.Label(this.tr("Organization:"));
+      label.setFont("bold"); 
       hBoxDataPieceOrg.add(label);
       
       // Create location label
@@ -137,7 +143,8 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       hBoxDataPieceUrl = new qx.ui.container.Composite(layout);  
 
       // Create a label for describing the url field 
-      label = new qx.ui.basic.Label(this.tr("User Site:"));
+      label = new qx.ui.basic.Label(this.tr("URL:"));
+      label.setFont("bold"); 
       hBoxDataPieceUrl.add(label);
       
       // Create url label
@@ -151,8 +158,13 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       layout.setSpacing(10);      
       vBoxBio = new qx.ui.container.Composite(layout);
 
+      // Add some space for name
+      //vBoxBio.add(new qx.ui.basic.Label(""));
+      //vBoxBio.add(new qx.ui.core.Spacer(20));
+
       // Create a label for describing the bio text area
-      label = new qx.ui.basic.Label(this.tr("Bio:"));
+      label = new qx.ui.basic.Label(this.tr("About this user:"));
+      label.setFont("bold"); 
       vBoxBio.add(label); 
 
       // Create textarea for entering in bio
@@ -179,10 +191,6 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       // Add to main canvas
       canvas.add(hBox);
 
-      // Create a large bold font
-      var font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
-      font.setSize(26);
-
       // Add in created apps section
       // Most Liked Apps section
       var authoredAppsLayout = new qx.ui.layout.VBox();
@@ -197,14 +205,14 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
           padding   : 20
         });
 
-      var authoredAppsHeader = new qx.ui.basic.Label();
-      authoredAppsHeader.set(
+      this.authoredAppsHeader = new qx.ui.basic.Label();
+      this.authoredAppsHeader.set(
         {
-          value : "Authored Apps",
+          //value : "Authored Apps",
           font  : font,
           decorator : "home-page-header"
         });
-      authoredApps.add(authoredAppsHeader);
+      authoredApps.add(this.authoredAppsHeader);
       
       // slide bar of Newest Apps
       var scroller = new qx.ui.container.Scroll();
@@ -271,14 +279,25 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
         
         // Set values from RPC call 
         this.userNameField.setValue(user.displayName);
-        this.emailField.setValue(user.email); 
 
-        if (user.birthYear != null) 
+        // True means show email 
+        if (user.showEmail)
+        {
+          this.emailField.setValue(user.email); 
+          this.emailField.set(
+            {
+              rich  : true,
+              value : "<a href=mailto:" 
+                      + user.email + ">" + user.email + "</a>"
+            });
+        }
+ 
+        if (user.birthYear != null && user.birthYear != 0) 
         {
           this.dobYearField.setValue(String(user.birthYear)); 
         }
 
-        if (user.birthMonth != null)
+        if (user.birthMonth != null && user.birthMonth != "")
         {
           this.dobMonthField.setValue(user.birthMonth); 
         }
@@ -300,12 +319,21 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
 
         if (user.url != null)
         {
-          this.urlField.setValue(user.url); 
+          this.urlField.set(
+            {
+              rich  : true,
+              value : "<a href=" + user.url + "> " + user.url + "</a>"
+            });
         }
 
         // Add in authored adds if they exist
         if (user.authoredApps.length > 0) 
         {
+
+           // Set header
+           this.authoredAppsHeader.
+               setValue(this.tr("Apps By ") + user.displayName); 
+
            for(var i = 0; i < user.authoredApps.length; i++)
            {
              // If this isn't the first one, ...

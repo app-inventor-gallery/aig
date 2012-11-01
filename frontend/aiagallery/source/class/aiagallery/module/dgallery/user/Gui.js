@@ -33,6 +33,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       var             layout; 
       var             vBoxText;
       var             vBoxBio;
+      var             vBoxEmail; 
       var             hBox; 
       var             vBoxBtn;
       var             hBoxDob; 
@@ -54,6 +55,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
 
       // Create a label for the username textfield 
       label = new qx.ui.basic.Label(this.tr("Username:"));
+      label.setFont("bold"); 
       vBoxText.add(label);
       
       // Create textfield for entering in a username
@@ -72,6 +74,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
 
       // DOB label 
       label = new qx.ui.basic.Label(this.tr("Date of Birth:"));
+      label.setFont("bold"); 
       vBoxText.add(label);
       
       // Create a horizantal layout just for the DOB dropdowns
@@ -83,6 +86,9 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // the other for year
       this.dobMonthSBox = new qx.ui.form.SelectBox();
  
+      // Default Value 
+      this.dobMonthSBox.add(new qx.ui.form.ListItem(this.tr("Month")));
+
       this.dobMonthSBox.add(new qx.ui.form.ListItem("January"));
       this.dobMonthSBox.add(new qx.ui.form.ListItem("February"));
       this.dobMonthSBox.add(new qx.ui.form.ListItem("March"));
@@ -106,6 +112,9 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       this.dobYearSBox = new qx.ui.form.SelectBox();
  
       // Add Years to the box 
+      // Default value
+      this.dobYearSBox.add(new qx.ui.form.ListItem(this.tr("Year")));
+
       var todaysDate = new Date();
       for(var i = todaysDate.getFullYear(); i > 1900; i--)
       {
@@ -121,8 +130,14 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
 
       // Create a label for describing the email field
       label = new qx.ui.basic.Label(this.tr("Email:"));
+      label.setFont("bold"); 
       vBoxText.add(label);
-      
+ 
+      // Create a vertical layout for the email and checkbox 
+      layout = new qx.ui.layout.VBox();
+      layout.setSpacing(15);      
+      vBoxEmail = new qx.ui.container.Composite(layout);
+     
       // Create textfield for entering in a email
       //this.emailField = new qx.ui.form.TextField;
       this.emailField = new qx.ui.basic.Label(""); 
@@ -130,7 +145,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       {
         maxWidth     : 200
       });
-      vBoxText.add(this.emailField);      
+      vBoxEmail.add(this.emailField);      
    
       // Do not let users edit this field for now
       //this.emailField.setReadOnly(true); 
@@ -139,8 +154,20 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       fsm.addObject("emailField", 
          this.emailField,"main.fsmUtils.disable_during_rpc");
 
+      // Checkbox to show or not show email
+      // by deafult this is unchecked 
+      this.showEmailCheck = new qx.ui.form.CheckBox(this.tr("Display Email"));
+
+      // Create friendly name to get username field from the FSM
+      fsm.addObject("showEmailCheck", 
+         this.showEmailCheck,"main.fsmUtils.disable_during_rpc");
+
+      vBoxEmail.add(this.showEmailCheck);
+      vBoxText.add(vBoxEmail); 
+
       // Create a label for describing the location field 
       label = new qx.ui.basic.Label(this.tr("Location:"));
+      label.setFont("bold"); 
       vBoxText.add(label);
       
       // Create textfield for entering in a location
@@ -157,6 +184,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
 
       // Create a label for describing the organization field 
       label = new qx.ui.basic.Label(this.tr("Organization:"));
+      label.setFont("bold"); 
       vBoxText.add(label);
       
       // Create textfield for entering in an organization
@@ -173,6 +201,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
 
       // Create a label for describing the URL field 
       label = new qx.ui.basic.Label(this.tr("URL:"));
+      label.setFont("bold"); 
       vBoxText.add(label);
       
       // Create textfield for entering in a url
@@ -193,15 +222,16 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       vBoxBio = new qx.ui.container.Composite(layout);
 
       // Create a label for describing the bio text area
-      label = new qx.ui.basic.Label(this.tr("Bio:"));
+      label = new qx.ui.basic.Label(this.tr("Describe Yourself:"));
+      label.setFont("bold"); 
       vBoxBio.add(label); 
 
       // Create textarea for entering in bio
       this.bioTextArea = new qx.ui.form.TextArea;
       this.bioTextArea.set(
       {
-        maxWidth     : 500,
-        height       : 250
+        width        : 300,
+        height       : 400
       });
       vBoxBio.add(this.bioTextArea);
 
@@ -349,7 +379,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
           }
 
           // Only work with date if it has been set
-          if(userProfile.birthMonth != null) 
+          if (userProfile.birthMonth != null || userProfile.birthMonth == "") 
           {
                   
             // Set Selection for month and year
@@ -363,14 +393,23 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
               }
             }
 
-            children = this.dobYearSBox.getChildren();
-            var date = new Date();
-            date = date.getFullYear();
-        
-            var childToSelect = 
-              parseInt(date) - parseInt(userProfile.birthYear); 
-            this.dobYearSBox.setSelection([children[childToSelect]]);
+            if (userProfile.birthYear != 0)
+            {
+              children = this.dobYearSBox.getChildren();
+              var date = new Date();
+              date = date.getFullYear();
+            
+              var childToSelect = 
+                parseInt(date) - parseInt(userProfile.birthYear); 
+              this.dobYearSBox.setSelection([children[childToSelect]]);
+            }
           }
+   
+          if (userProfile.showEmail)
+          {
+            this.showEmailCheck.setValue(true); 
+          }
+
           // All done
           break;
 
