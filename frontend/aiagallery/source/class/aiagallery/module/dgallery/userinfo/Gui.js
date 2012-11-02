@@ -104,6 +104,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       
       // Create email label
       this.emailField = new qx.ui.basic.Label("");
+      //this.emailField = new qx.ui.embed.Html();
       hBoxDataPieceEmail.add(this.emailField);  
 
       vBoxText.add(hBoxDataPieceEmail);     
@@ -132,7 +133,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       label.setFont("bold"); 
       hBoxDataPieceOrg.add(label);
       
-      // Create location label
+      // Create an organization label
       this.orgField = new qx.ui.basic.Label("");
       hBoxDataPieceOrg.add(this.orgField);      
    
@@ -149,6 +150,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       
       // Create url label
       this.urlField = new qx.ui.basic.Label("");
+      //this.urlField = new qx.ui.embed.Html();
       hBoxDataPieceUrl.add(this.urlField);      
    
       vBoxText.add(hBoxDataPieceUrl);
@@ -283,12 +285,12 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
         // 1 means show email 
         if (user.showEmail == 1)
         {
-          this.emailField.setValue(user.email); 
           this.emailField.set(
             {
-              rich  : true,
-              value : "<a href=mailto:" 
-                      + user.email + ">" + user.email + "</a>"
+              //html  : "<a href=mailto:" 
+                     // + user.email + ">" + user.email + "</a>",
+              value : user.email, 
+              width : 300
             });
         }
  
@@ -319,11 +321,14 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
 
         if (user.url != null)
         {
+
           this.urlField.set(
             {
-              rich  : true,
-              value : "<a href=" + user.url + "> " + user.url + "</a>"
+              value : user.url,  
+              //html  : "<a href=" + user.url + ">" + user.url + "</a>",
+              width : 300
             });
+
         }
 
         // Add in authored adds if they exist

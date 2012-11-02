@@ -176,7 +176,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Fsm",
           // Ensure no added whitespace by using trim()
           // Ensure no nulls are added as well
           field = fsm.getObject("userNameField");
-          newUserInfo["displayName"] = field.getValue(); 
+          newUserInfo["displayName"] = field.getValue().trim(); 
 
           // If one of these fields is not set
           // then ignore both
