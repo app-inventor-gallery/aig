@@ -103,8 +103,11 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       hBoxDataPieceEmail.add(label);
       
       // Create email label
-      this.emailField = new qx.ui.basic.Label("");
-      //this.emailField = new qx.ui.embed.Html();
+      //this.emailField = new qx.ui.basic.Label("");
+
+      // If we allow the user to change email we cannot 
+      // show it as HTML for fear of a cross site scripting error 
+      this.emailField = new qx.ui.embed.Html();
       hBoxDataPieceEmail.add(this.emailField);  
 
       vBoxText.add(hBoxDataPieceEmail);     
@@ -287,9 +290,9 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
         {
           this.emailField.set(
             {
-              //html  : "<a href=mailto:" 
-                     // + user.email + ">" + user.email + "</a>",
-              value : user.email, 
+              html  : "<a href=mailto:" 
+                      + user.email + ">" + user.email + "</a>",
+              //value : user.email, 
               width : 300
             });
         }

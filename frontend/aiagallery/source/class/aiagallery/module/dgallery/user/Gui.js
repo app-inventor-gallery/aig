@@ -251,8 +251,9 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       this.submitBtn.set(
       {
         maxHeight : 24,
-        width     : 150
+        maxWidth     : 150
       });
+      vBoxBtn.add(new qx.ui.core.Spacer(25)); 
       vBoxBtn.add(this.submitBtn);
       this.submitBtn.addListener("execute", fsm.eventListener, fsm);
 
@@ -277,11 +278,12 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // Add to hBox bio field
       hBox.add(vBoxBio);
 
-      // Add Btn layout
-      hBox.add(vBoxBtn); 
-
       // Add to main canvas
       canvas.add(hBox);
+
+      // Add Btn layout
+      canvas.add(vBoxBtn); 
+
 
     },
 
