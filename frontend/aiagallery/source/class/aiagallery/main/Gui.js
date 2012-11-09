@@ -73,6 +73,15 @@ qx.Class.define("aiagallery.main.Gui",
             spacing       : 10
           });
         application = new qx.ui.container.Composite(o);
+
+        // Set site specific format
+        application.set(
+          {
+            maxWidth   : 1280,
+            alignX     : "center"
+            //allowGrowX : true
+          });
+
         this.getApplicationRoot().add(application, { edge : 0 });
 
         // Create a horizontal box layout for the title
@@ -195,7 +204,7 @@ qx.Class.define("aiagallery.main.Gui",
         // page selector
         hbox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
 
-        // Add a spacer to remove the hierarchy from the pane edig
+        // Add a spacer to remove the hierarchy from the pane 
         o = new qx.ui.core.Spacer(20);
         hbox.add(o);
 

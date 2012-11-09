@@ -368,7 +368,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           break;
           
         case "featured":
-          size = 300;
+          size = 200;
           break;
 
         case "appInfo":

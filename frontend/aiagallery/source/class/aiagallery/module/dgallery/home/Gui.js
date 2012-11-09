@@ -252,7 +252,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         {
           minWidth     : 20
         });
-      hbox.add(o, { flex : 1 });
+      hbox.add(o, { flex : 1 });   
 
       // Featured Apps section
       var featuredAppsLayout = new qx.ui.layout.VBox();
@@ -263,7 +263,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var featuredApps = new qx.ui.container.Composite(featuredAppsLayout);
       featuredApps.set(
         {
-          width     : 700,
+          width     : 500,
           decorator : "home-page-ribbon",
           padding   : 20
         });
@@ -283,10 +283,20 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         new qx.ui.container.Composite(new qx.ui.layout.HBox());
       this.featuredAppsContainer.set(
           {
-            height : 420
+            height : 200
           });
       featuredApps.add(this.featuredAppsContainer);
       
+      var featuredAppsHeader2 = new qx.ui.basic.Label();
+      featuredAppsHeader2.set(
+        {
+          value : "Featured Apps are selected by the site admin. " +
+                   "Work hard to be featured.",
+          decorator : "home-page-header"
+        });
+      featuredApps.add(new qx.ui.core.Spacer(), { flex : 1 });
+      featuredApps.add(featuredAppsHeader2); 
+
       // add Featured Apps section to the top hbox
       hbox.add(featuredApps);
 
@@ -325,7 +335,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         new qx.ui.container.Composite(new qx.ui.layout.HBox(0));
       this.newestAppsContainer.set(
           {
-            height : 210
+            height : 200
           });
       scroller.add(this.newestAppsContainer);
       
@@ -364,7 +374,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         new qx.ui.container.Composite(new qx.ui.layout.HBox());
       this.likedAppsContainer.set(
           {
-            height : 210
+            height : 10
           });
       scroller.add(this.likedAppsContainer);
       
@@ -430,7 +440,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           // Add the thumbnail for this app
           var appFeatured = featuredAppsList[i];
           var appThumbFeatured = 
-            new aiagallery.widget.SearchResult("featured", appFeatured);
+            new aiagallery.widget.SearchResult("homeRibbon", appFeatured);
           this.featuredAppsContainer.add(appThumbFeatured);
 
           // Associate the app data with the UI widget so it can be passed
