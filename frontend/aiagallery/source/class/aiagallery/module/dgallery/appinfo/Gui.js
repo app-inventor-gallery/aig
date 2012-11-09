@@ -460,3 +460,4 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
     }
   }
 });
+
