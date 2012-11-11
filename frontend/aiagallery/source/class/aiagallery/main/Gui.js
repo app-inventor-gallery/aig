@@ -125,6 +125,25 @@ qx.Class.define("aiagallery.main.Gui",
           });
         header.add(o);
 
+        // Create a small spacer after the logo label
+        o = new qx.ui.core.Spacer(20);
+        header.add(o);
+
+        // Add another label to header for release note + forum helper text
+        o = new qx.ui.basic.Label(
+          "<div><br/>" +
+          "Welcome to the gallery! See <a href=\"https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit\" target=\"_blank\" >Release Notes</a><br/>" +
+          "and post feedback / bug reports to the " +
+          "<a href=\"http://groups.google.com/group/app-inventor-gallery/topics\" target=\"_blank\" >Forum</a>." + 
+          "</div>");
+        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+        o.set(
+          {
+            rich : true,
+            font : font
+          });
+        header.add(o);
+
         // Add a flexible spacer to take up the whole middle
         o = new qx.ui.core.Widget();
         o.setMinWidth(1);
