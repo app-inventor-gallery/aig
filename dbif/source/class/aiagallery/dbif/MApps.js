@@ -2835,10 +2835,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       //Set the "lastViewedDate" to the time this function was called
       ret.app.lastViewedTime = aiagallery.dbif.MDbifCommon.currentTimestamp(); 
 
-      //Store the tags' list into a separate variable for sidebar
-      ret.appTags = ret.app.tags;
-      ret.appTagsLists = new qx.data.Array();
-
       //Put back on the database
       appObj.put();
  
@@ -3047,30 +3043,51 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           delete app.owner;
         });
 
+
+
+
 //Tagging stuff starts
-      // Find all active apps other than the current one, by this same author
-      criteria = 
-        {
+
+      // Store the tags' list into a separate variable for sidebar
+      ret.appTags = ret.app.tags;
+
+      // Array for storing multiple lists of tag-related apps for sidebar
+      ret.appTagsLists = new qx.data.Array();
+
+      // for each tag in the tag list...
+      for (i = 0; i < ret.appTags.length; i++) {
+
+        // Find all active apps by this tag
+        criteria = {
               type: "element",
               field: "tags",
-              value: "tag1"
-         
-        };
+              value: ret.appTags[i] };
 
-      // Query for those apps
-      ret.byTags = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
-                                                 criteria,
-                                                 null);
+        // Query for those apps
+        var tlist = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                                 criteria, null);
 
-      // Add the author's display name to each app
-      ret.byTags.forEach(
-        function(app)
-        {
-          app.displayName = owners[0].displayName || "<>";
-
-          // Remove the owner field
-          delete app.owner;
+        // Add the author's display name to each app
+        tlist.forEach(
+          function(app) {
+            app.displayName = owners[0].displayName || "<>";
+            delete app.owner; // Remove the owner field
         });
+
+        // Do the same for images for each app by this tag, but 100px.
+        tlist.forEach( function(app) { app.image1 += "=s100"; });
+
+        // Send each of the apps by this tag to the requestedFields
+        // function for stripping and remapping
+        tlist.forEach( function(app) {
+            aiagallery.dbif.MApps._requestedFields(app, requestedFields);
+        });
+
+        ret.appTagsLists.unshift(tlist); // insert it to the front of array
+      }
+
+
+
 //Tagging stuff ends
 
 
@@ -3211,13 +3228,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           {
             aiagallery.dbif.MApps._requestedFields(app, requestedFields);
           });
-        // Send each of the apps by this tag to the requestedFields
-        // function for stripping and remapping
-        ret.byTags.forEach(
-          function(app)
-          {
-            aiagallery.dbif.MApps._requestedFields(app, requestedFields);
-          });
       }
       
       // Do special App Engine processing to scale images
@@ -3238,18 +3248,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           {
             app.image1 += "=s100";
           });
-        // Do the same for images for each app by this tag, but 100px.
-        ret.byTags.forEach(
-          function(app)
-          {
-            app.image1 += "=s100";
-          });
       }
       
       // Not allowed to return the id of the app owner, remove it
       delete ret.app.owner; 
 
-      ret.testFlag = 2;
+      //ret.testFlag = 2;
 
       
       // Give 'em what they came for
