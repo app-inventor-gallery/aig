@@ -266,7 +266,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       vbox.add(o);
 */
 
-      var byTagsTab = new qx.ui.tabview.Page("By tags 03", "aiagallery/test.png");
+      var byTagsTab = new qx.ui.tabview.Page("By tags 04", "aiagallery/test.png");
       byTagsTab.setLayout(new qx.ui.layout.VBox());
 
       // Add the list for other apps by the tags
@@ -403,19 +403,26 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         model = qx.data.marshal.Json.createModel(result.byAuthor);
         this.byAuthor.setModel(model);
 
-        if (result.testFlag > 1) {
-
-          var byTagsTab1 = new qx.ui.tabview.Page("23:25", "aiagallery/test.png");
-          byTagsTab1.setLayout(new qx.ui.layout.VBox());
-          byTagsTab1.setShowCloseButton(true);
-          byTagsTab1.add(new qx.ui.basic.Label(result.appTags.toSource()));
-//          byTagsTab1.add(new qx.ui.basic.Label(result.app.tags.toSource()));
-          byTagsTab1.add(new qx.ui.basic.Label("Hi"));
-          this.tabView.add(byTagsTab1);
-
-          model = qx.data.marshal.Json.createModel(result.byTags);
-          this.byTags.setModel(model);
+        // Generate tagging sidebar(s) based on specific tags of this app
+        var tagsHolder = result.appTags;
+        for (i = 0; i < tagsHolder.length; i++)
+        {
+          var tagTabHolder = new qx.ui.tabview.Page(
+            tagsHolder[i], "aiagallery/test.png");
+          tagTabHolder.setLayout(new qx.ui.layout.VBox());
+          tagTabHolder.setShowCloseButton(true);
+          tagTabHolder.add(new qx.ui.basic.Label(result.appTags.toSource()));
+          this.tabView.add(tagTabHolder);
         }
+
+
+        // Add the other apps by tags. Build a model for the search
+        // results list, then add the model to the list.
+        model = qx.data.marshal.Json.createModel(result.byTags);
+        this.byTags.setModel(model);
+
+
+
         // Display each of the comments
         result.comments.forEach(
           function(commentData)
