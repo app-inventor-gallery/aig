@@ -156,7 +156,8 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
 
       // Checkbox to show or not show email
       // by deafult this is unchecked 
-      this.showEmailCheck = new qx.ui.form.CheckBox(this.tr("Display Email"));
+      this.showEmailCheck = 
+        new qx.ui.form.CheckBox(this.tr("Display Email on Public Profile"));
 
       // Create friendly name to get username field from the FSM
       fsm.addObject("showEmailCheck", 
@@ -231,7 +232,8 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       this.bioTextArea.set(
       {
         width        : 300,
-        height       : 400
+        height       : 400,
+        maxLength    : 500
       });
       vBoxBio.add(this.bioTextArea);
 
@@ -239,6 +241,10 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       fsm.addObject("bioTextArea", 
                     this.bioTextArea,
                     "main.fsmUtils.disable_during_rpc");
+
+      // Warning about character limit
+      label = new qx.ui.basic.Label(this.tr("500 Character Limit"));
+      vBoxBio.add(label);
 
       // Button layout
       layout = new qx.ui.layout.VBox();

@@ -79,13 +79,15 @@ qx.Class.define("aiagallery.module.dgallery.user.Fsm",
           "appear"    :
           {
             "main.canvas" : 
-              qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
+              //qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
+              "Transition_Idle_to_AwaitRpcResult_via_appear"
           },
 
           // When we get a disappear event
           "disappear" :
           {
-            //"main.canvas" : "Transition_Idle_to_Idle_via_disappear"
+            "main.canvas" : //"Transition_Idle_to_checkLeave"
+              "Transition_Idle_to_Idle_via_disappear"
           }
         }
       });
@@ -251,6 +253,43 @@ qx.Class.define("aiagallery.module.dgallery.user.Fsm",
           // we made.
           request.setUserData("requestType", "editUserProfile");
 
+        }
+      });
+
+      state.addTransition(trans);
+
+
+      /*
+       * Transition: Idle to checkLeave
+       *
+       * Cause: "disappear" on canvas
+       *
+       * Action: Check if the user wants to leave this page
+       */
+
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_checkLeave",
+      {
+        "nextState" : "Transition_Idle_to_Idle_via_disappear",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          // If the user leaves the page with unsaved changes 
+          // pop a warning message
+          var val = 
+            dialog.Dialog.confirm("You have unsaved changes. Leave Page?",
+            function(result)
+              {
+                //dialog.Dialog.alert("Your answer was: " + result );
+                return result; 
+              }
+            ); 
+
+          // If user hit yes, return true, else null to not 
+          // take transition
+          return val ? true : null; 
         }
       });
 

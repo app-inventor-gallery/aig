@@ -173,7 +173,15 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       vBoxBio.add(label); 
 
       // Create textarea for entering in bio
-      this.bioTextArea = new qx.ui.basic.Label("");
+      this.bioTextArea = new  qx.ui.form.TextArea("");
+      this.bioTextArea.set(
+        {
+          readOnly : true,
+          wrap     : true,
+          width    : 300,
+          height   : 100   
+        }
+      );
       vBoxBio.add(this.bioTextArea); 
 
       // Overall layout
@@ -304,7 +312,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
 
         if (user.birthMonth != null && user.birthMonth != "")
         {
-          this.dobMonthField.setValue(user.birthMonth); 
+          this.dobMonthField.setValue(user.birthMonth + ","); 
         }
 
         if (user.location != null)
