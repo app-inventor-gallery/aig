@@ -47,6 +47,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // The overall layout if a grid, where the left portion has the
       // application information at the top, and comments at the bottom; and
       // the right (narrow) portion has a list of all apps by this author.
+      // beta002: the right portion also has a list of apps by tags.
       //
 
       
@@ -74,13 +75,24 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       commentsGrid = new qx.ui.container.Composite(grid);
       canvas.add(commentsGrid, { row : 1, column : 0 });
 
+
+//beta002 start
+
+      o = new qx.ui.basic.Label("Clickable Test");
+      o.set({ cursor: "pointer" });
+      // o.addListener("mousedown", this._onViewApp, this);
+      commentsGrid.add(o, { row : 0, column : 0 });
+
+//beta002 end
+
       o = new qx.ui.basic.Label("Comments");
       o.set(
         {
           font          : font,
           paddingBottom : 6
         });
-      commentsGrid.add(o, { row : 0, column : 0, colSpan : 3 });
+      //commentsGrid.add(o, { row : 0, column : 0, colSpan : 3 }); //original
+      commentsGrid.add(o, { row : 0, column : 1 }); //beta002
 
       // Create the scroller to hold all of the comments
       o = new qx.ui.container.Scroll();
@@ -142,10 +154,21 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         },
         this);
       commentsGrid.add(this.butCancelComment, { row : 4, column : 2 });
+
+
+      // Initialize a tabview for both byAuthor and byTags
+      this.tabView = new qx.ui.tabview.TabView();
+      this.tabView.setWidth(350);
+      this.tabView.setHeight(500);
+      this.tabView.setMaxHeight(1000);
+      this.tabView.setContentPadding(0, 0, 0, 0);
       
+
       // Create the by-this-author area
       vbox = new qx.ui.container.Composite(new qx.ui.layout.VBox());
       canvas.add(vbox, { row : 0, column : 1, rowSpan : 2 });
+      
+/*
 
       // Android-green line
       o = new qx.ui.container.Composite();
@@ -166,6 +189,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
           paddingBottom : 6
         });
       vbox.add(o);
+*/
+
+      var byAuthorTab = new qx.ui.tabview.Page("By this author", "aiagallery/test.png");
+      byAuthorTab.setLayout(new qx.ui.layout.VBox());
 
       // Add the list for other apps by this author
       this.byAuthor = new qx.ui.list.List();
@@ -209,8 +236,98 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
           }
         });
 
-      vbox.add(this.byAuthor, { flex : 1 });
+//      vbox.add(this.byAuthor, { flex : 1 });
+      byAuthorTab.add(this.byAuthor, {flex : 1});
+      this.tabView.add(byAuthorTab);
+
+
+/*      // Create the by-this-author area
+      vbox = new qx.ui.container.Composite(new qx.ui.layout.VBox());
+      canvas.add(vbox, { row : 0, column : 3, rowSpan : 2 });
+
+      // Android-green line
+      o = new qx.ui.container.Composite();
+      o.set(
+        {
+          height    : 4,
+          backgroundColor : "#a5c43c"
+        });
+      vbox.add(o);
+
+      // Spacer before the label
+      vbox.add(new qx.ui.core.Spacer(10, 10));
+
+      o = new qx.ui.basic.Label("Tag Panel");
+      o.set(
+        {
+          font          : font,
+          paddingBottom : 6
+        });
+      vbox.add(o);
+*/
+
+      var byTagsTab = new qx.ui.tabview.Page("By tags 03", "aiagallery/test.png");
+      byTagsTab.setLayout(new qx.ui.layout.VBox());
+
+      // Add the list for other apps by the tags
+      this.byTags = new qx.ui.list.List();
+      this.byTags.set(
+        {
+          itemHeight : 130,
+          labelPath  : "title",
+          iconPath   : "image1",
+          delegate   :
+          {
+
+            createItem : function()
+            {
+              return new aiagallery.widget.SearchResult("byAuthor");
+            },
+            
+            bindItem : function(controller, item, id) 
+            {
+              [
+                "uid",
+                "image1",
+                "title",
+                "numLikes",
+                "numDownloads",
+                "numViewed",
+                "numComments",
+                "displayName"
+              ].forEach(
+                function(name)
+                {
+                  controller.bindProperty(name, name, null, item, id);
+                });
+            },
+
+            configureItem : qx.lang.Function.bind(
+              function(item) 
+              {
+                // Listen for clicks on the title or image, to view the app
+                item.addListener("viewApp", fsm.eventListener, fsm);
+              },
+              this)
+          }
+        });
+
+//      vbox.add(this.byTags, { flex : 1 });
+      byTagsTab.add(this.byTags, {flex : 1});
+      this.tabView.add(byTagsTab);
+
+
+
+
+
+      vbox.add(this.tabView);
+
     },
+//beta002 ends
+
+
+
+
 
 
     /**
@@ -276,6 +393,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         // app data. We'll use it for the Download button
         source = result.app.source;
         delete result.app.source;
+	//alert(result.app.tags.toSource()); //beta002
 
         // Add the app detail
         this.searchResult.set(result.app);
@@ -285,6 +403,19 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         model = qx.data.marshal.Json.createModel(result.byAuthor);
         this.byAuthor.setModel(model);
 
+        if (result.testFlag > 1) {
+
+          var byTagsTab1 = new qx.ui.tabview.Page("23:25", "aiagallery/test.png");
+          byTagsTab1.setLayout(new qx.ui.layout.VBox());
+          byTagsTab1.setShowCloseButton(true);
+          byTagsTab1.add(new qx.ui.basic.Label(result.appTags.toSource()));
+//          byTagsTab1.add(new qx.ui.basic.Label(result.app.tags.toSource()));
+          byTagsTab1.add(new qx.ui.basic.Label("Hi"));
+          this.tabView.add(byTagsTab1);
+
+          model = qx.data.marshal.Json.createModel(result.byTags);
+          this.byTags.setModel(model);
+        }
         // Display each of the comments
         result.comments.forEach(
           function(commentData)
