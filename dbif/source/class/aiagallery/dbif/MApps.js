@@ -2837,6 +2837,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
       //Store the tags' list into a separate variable for sidebar
       ret.appTags = ret.app.tags;
+      ret.appTagsLists = new qx.data.Array();
 
       //Put back on the database
       appObj.put();

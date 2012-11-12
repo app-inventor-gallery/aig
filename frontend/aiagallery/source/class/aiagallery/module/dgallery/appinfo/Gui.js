@@ -411,7 +411,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
             tagsHolder[i], "aiagallery/test.png");
           tagTabHolder.setLayout(new qx.ui.layout.VBox());
           tagTabHolder.setShowCloseButton(true);
-          tagTabHolder.add(new qx.ui.basic.Label(result.appTags.toSource()));
+          tagTabHolder.add(new qx.ui.basic.Label(tagsHolder[i]));
           this.tabView.add(tagTabHolder);
         }
 
