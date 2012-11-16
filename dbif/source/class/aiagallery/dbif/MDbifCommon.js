@@ -43,9 +43,11 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         // If we're on App Engine...
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
+
           // ... then log who's trying to do what. First, is someone logged in?
           if (aiagallery.dbif.MDbifCommon.__whoami)
           {
+            java.lang.System.out.println("Got name");
             // Yup. Retrieve our visitor object
             me = new aiagallery.dbif.ObjVisitors(
               aiagallery.dbif.MDbifCommon.__whoami.id);
@@ -266,28 +268,28 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
 
       // Are they logged in, or anonymous?
 // TEMPORARY:
-if (false)
-{
+//if (false)
+//{
       // Anonymous users have automatic access to certain functionality
       bAnonymous = (aiagallery.dbif.MDbifCommon.__whoami === null);
-}
-else
-{
+//}
+//else
+//{
   // Temporarily disallow anonymous access. Only whitelisted users have access.
-  bAnonymous = aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
-}
+  //bAnonymous = aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+//}
       switch(methodName)
       {
 // TEMPORARY: whitelist nearly every RPC...
       case "getAppList" :
-      case "getHomeRibbonData" :
+      //case "getHomeRibbonData" :
       case "appQuery" :
-      case "intersectKeywordAndQuery" :
+      //case "intersectKeywordAndQuery" :
       case "getAppListByList" :
-      case "getAppInfo" :
+      //case "getAppInfo" :
       case "getComments" :
       case "keywordSearch" :
-      case "getCategoryTags" :
+      //case "getCategoryTags" :
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 // ...TEMPORARY
 
@@ -306,14 +308,15 @@ else
       case "setFeaturedApps":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
-/* TEMPORARY... (see above)
+/* TEMPORARY... (see above) */
       case "appQuery":
       case "intersectKeywordAndQuery":
       case "getAppInfo":
       case "getAppListByList":
       case "getHomeRibbonData":
+      case "getCategoryTags" :
           return true;            // Anonymous access
-*/
+
 
       //
       // MComments
@@ -322,10 +325,10 @@ else
       case "deleteComment":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
-/* TEMPORARY... (see above)
+/* TEMPORARY... (see above) */
       case "getComments":
         return true;            // Anonymous access
-*/
+
 
       //
       // MFlags
@@ -363,15 +366,16 @@ else
       // MWhoAmI
       //
       case "whoAmI":
+      case "getPublicUserProfile":
         return true;            // Anonymous access
 
       //
       // MSearch
       //
-/* TEMPORARY (see above)...
+/* TEMPORARY (see above)... */
       case "keywordSearch":
         return true;          // Anonymous access
-*/
+
 
       //
       // MLiking

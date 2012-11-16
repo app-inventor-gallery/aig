@@ -8,6 +8,7 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
+
 qx.Mixin.define("aiagallery.dbif.MApps",
 {
   construct : function()
