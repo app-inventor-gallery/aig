@@ -163,7 +163,9 @@ qx.Class.define("aiagallery.dbif.Constants",
       //
       // Anonymous access...
       "whoAmI" : "Identify the current user id and permissions",
+      "getPublicUserProfile" : "Show user data publicly",
       // ... Anonymous access
+      "getUserProfile" : "User data shown when a user edits their profile",
 
       //
       // MLikes
