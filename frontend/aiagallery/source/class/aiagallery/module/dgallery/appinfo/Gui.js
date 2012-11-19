@@ -418,17 +418,17 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
           tagTabHolder.add(new qx.ui.basic.Label(tlHolder.getItem(i)));
           this.tabView.add(tagTabHolder);
 
-      // Add the list for other apps by the tags
-      var byTagsHolder = new qx.ui.list.List();
-      byTagsHolder.set(
-        {
-          itemHeight : 130,
-          labelPath  : "title",
-          iconPath   : "image1",
-          delegate   :
+        // Add the list for other apps by the tags
+        var byTagsHolder = new qx.ui.list.List();
+        byTagsHolder.set(
           {
-            createItem : function() {
-              return new aiagallery.widget.SearchResult("byAuthor");
+            itemHeight : 130,
+            labelPath  : "title",
+            iconPath   : "image1",
+            delegate   :
+            {
+              createItem : function() {
+                return new aiagallery.widget.SearchResult("byAuthor");
             },
             
             bindItem : function(controller, item, id) {
