@@ -2337,6 +2337,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             searchResponseLiked;
       var             searchResponseNewest;
       var             requestedData; 
+      var             welcomingText;
 
       // Before we search for apps to display check and see if
       // some past searches have been cached with memcache.
@@ -2557,6 +2558,24 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             aiagallery.dbif.MApps._requestedFields(app, requestedFields);
           }
         });
+
+      welcomingText = 
+        [
+          "<div style='padding:0 30px 0 0;'>",
+          "<div style='text-align:center;'>",
+          "<h2>",
+          "Welcome to the <br/>MIT App Inventor Community Gallery!",
+          "</h2>",
+          "</div>",
+
+          "<div style='font-size:larger; font-weight:bold; padding:6px;'>",
+          "<b>",
+          "<ul><li>Check out mobile apps from all over the world!<br/></li>",
+          "<li>Download App Inventor blocks and learn to program!<br/></li>",
+          "<li>Join the community of App Inventor programmers!<br/></li></ul>",
+          "</div>",
+          "</div>"
+        ].join("");
         
       //Construct map of data
       // Grab the motd and put it into the map at the end
@@ -2565,7 +2584,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           "Featured"     :    searchResponseFeatured,   
           "MostLiked"    :    searchResponseLiked,
           "Newest"       :    searchResponseNewest,
-          "Motd"         :    this.getMotd()
+          "Motd"         :    this.getMotd(),
+          "welcomingText":    welcomingText
         };
 
       if (bCache) {

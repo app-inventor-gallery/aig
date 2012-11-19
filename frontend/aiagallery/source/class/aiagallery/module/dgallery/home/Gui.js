@@ -156,70 +156,43 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // Add a top spacer
       vbox.add(new qx.ui.core.Spacer(), { flex : 1 });
 
-      
-
-      // Put in some random text
+      // Put in some welcoming text
       text = 
         [
           "<div style='padding:0 30px 0 0;'>",
           "<div style='text-align:center;'>",
-          "<h2>Welcome to<br>",
-//          "<span style='font-style:italic;'>",
-          "App Inventor Community Gallery!",
-//          "</span>",
-          "</div>",
+          "<h2>",
+          "Welcome to the <br/>MIT App Inventor Community Gallery!",
           "</h2>",
+          "</div>",
 
-          "You can:",
-          "<ul>",
-          "<p><li>Browse and download App Inventor projects",
-
-          "<p><li>Contribute your App Inventor project to share it with others",
-
-          "<p><li>Discuss projects you like and encourage new ideas!",
-
-          "</ul>",
-
-          "<p>Get started by clicking on <b>Find Apps</b>, or ",
-          "add your own projects by clicking on <b>My Apps</b>.",
-
-/*
-          "<p>Also, you can browse projects from your ",
-          "Android phone by using our companion ",
-          '<a href="http://www.appinventor.org/mobile-gallery" target="new">',
-          "Mobile Community Gallery</a> ",
-          "app!"
-*/
-          
-          "<hr />",
-/*
-          beta002: add helper text
-*/
-          "<div",
-          "style='font-size:larger;font-weight:bold; padding:6px;'>",
-          "<b><br/>Please note: ",
-          "The App Inventor Community Gallery is currently in a ",
-          "closed beta. To apply to be a tester, please complete ",
-          "<a style='color:#000000;' href='https://docs.google.com/spreadsheet/viewform?formkey=dGxHTXAzNURGSTdIVkJpZXcwNG1kRkE6MA#gid=0'",
+          "<div style='font-size:larger; font-weight:bold; padding:6px;'>",
+          "<b><br/>",
+          "The Gallery is in Beta and not yet open to the public ",
+          "(this is why you can't see any apps!). <br/><br/>",
+          "To request access, fill out ",
+          "<a href='https://docs.google.com/spreadsheet/viewform?formkey=dGxHTXAzNURGSTdIVkJpZXcwNG1kRkE6MA#gid=0'",
           " target='new'>",
           "this form",
-          "</a>.<br/><br/>",
-          "Already in? We need your feedback! Please join <a style='color:#000000;' href='http://groups.google.com/group/app-inventor-gallery/topics' target='new'>the forum</a>, and post bugs, issues, and feature requests there.",
+          ".</a><br/><br/>",
+          "Within a few days, you should receive an email that you have ",
+          "been added to the Gallery.",
           "</div>",
           "</div>"
         ].join("");
       // Add background
       var homepageBG = new qx.ui.decoration.Background();
       homepageBG.setBackgroundImage("aiagallery/hpbg.png");
-      o = new qx.ui.basic.Label(text);
-      o.set(
+      this.welcomingLabel = new qx.ui.basic.Label();
+      this.welcomingLabel.set(
         {
+          value        : text,
           rich         : true,
           width        : 434,
           height       : 512,
           decorator    : homepageBG
         });
-      vbox.add(o);
+      vbox.add(this.welcomingLabel);
 /**      
       // Add a top spacer
       vbox.add(new qx.ui.core.Spacer(), { flex : 1 });
@@ -416,13 +389,19 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         var featuredAppsList = response.data.result.Featured;
         var newestAppsList = response.data.result.Newest;
         var likedAppsList = response.data.result.MostLiked;
-        
+
+        // Grab the welcomingText
+        var welcomingText = response.data.result.welcomingText;
+        this.welcomingLabel.setValue(welcomingText);
+
+/**        
         // Grab the MOTD as well
         var motd = response.data.result.Motd; 
         
         // Set the motd on the front page
-/**        this.motdText.setValue(motd); 
+        this.motdText.setValue(motd); 
 **/
+
         // Remove everything from the lists. They're about to be refilled.
         this.featuredAppsContainer.removeAll();
         this.newestAppsContainer.removeAll();
