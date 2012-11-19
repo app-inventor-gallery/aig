@@ -333,7 +333,15 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       var             bValid = true;
       var             validFields = 
         [
-          "displayName"
+          "displayName",
+          "organization",
+          "email",
+          "birthMonth",
+          "birthYear",
+          "location",
+          "bio",
+          "url",
+          "showEmail"
         ];
       
       // Find out who we are
@@ -384,6 +392,15 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
 
                   // Store back into me
                   meData[fieldName] = profileParams.displayName; 
+
+                  // Update the cache with the new name
+                  // Only do this if the name actually changes
+                  // In some cases a user can specify a change to the same name
+                  if (whoami.displayName != profileParams.displayName) 
+                  {
+                    this.__updateNameInCache(whoami.displayName, profileParams.displayName);   
+		  }
+                  
                   return true;
                 }
             
@@ -535,6 +552,86 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       // Name is valid 
       return; 
+    },
+
+    /**
+     * Update apps in the cache that use a now defunct user name
+     *
+     * @param oldName {String}
+     *   The Old name of the user 
+     *
+     * @param newName {String} 
+     *   The user's new name
+     */
+    __updateNameInCache : function(oldName, newName)
+    {
+      var    MemcacheServiceFactory;
+      var    syncCache;
+      var    homeRibbonMap;
+      var    i; 
+
+      // If we're on App Engine we can use java code if not do not cache
+      switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+      {
+      case "appengine":
+          MemcacheServiceFactory = Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+          syncCache = MemcacheServiceFactory.getMemcacheService();
+          //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+          homeRibbonMap = syncCache.get(-1); // read from cache, -1 is magic number to get homeRibbonData
+          if (homeRibbonMap == null) {
+            // Nothing to do
+            return; 
+          } else {
+            // This is the map containing the home ribbon data
+            // The map is stored as a JSON string so convert it and then send it back
+            homeRibbonMap = JSON.parse(homeRibbonMap);
+               
+            // Look at every app in the map and switch to new name if we need to
+            for (i = 0; i < homeRibbonMap.Featured.length; i++)
+            {
+              if(homeRibbonMap.Featured[i].displayName == oldName)
+              {
+                homeRibbonMap.Featured[i].displayName = newName; 
+              }
+            }
+            for (i = 0; i < homeRibbonMap.Newest.length; i++)
+            {
+              if(homeRibbonMap.Newest[i].displayName == oldName)
+              {
+                homeRibbonMap.Newest[i].displayName = newName; 
+              }
+            }
+            for (i = 0; i < homeRibbonMap.MostLiked.length; i++)
+            {
+              if(homeRibbonMap.MostLiked[i].displayName == oldName)
+              {
+                homeRibbonMap.MostLiked[i].displayName = newName; 
+              }
+            }
+
+            // All done place it back in the cache 
+            // Convert map to a JSON string and save that
+            var serialMap = JSON.stringify(homeRibbonMap);
+
+            // I know I am in appengine code when this if clause executes.
+            // Create a Java date object and add one day to set the expiration time
+            var calendarClass = java.util.Calendar;
+            var date = calendarClass.getInstance();  
+            date.add(calendarClass.DATE, 1); 
+
+            var expirationClass = com.google.appengine.api.memcache.Expiration;
+            var expirationDate = expirationClass.onDate(date.getTime());
+            syncCache.put(-1, serialMap, expirationDate);
+
+          }
+
+          break;
+
+      default:
+        // We are not using appengine
+        break; 
+      }
+
     }
   }
 });

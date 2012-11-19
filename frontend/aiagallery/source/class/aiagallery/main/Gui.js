@@ -165,6 +165,9 @@ qx.Class.define("aiagallery.main.Gui",
         }
         header.add(this.whoAmI);
 
+        // Save a copy for global access
+        qx.core.Init.getApplication().setUserData("whoAmI", this.whoAmI); 
+
         // Add a flexible spacer to take up the whole middle
         o = new qx.ui.core.Widget();
         o.setMinWidth(1);
@@ -295,7 +298,11 @@ qx.Class.define("aiagallery.main.Gui",
             // Create a global function accessible via <a href=
             window.editProfile = function()
               {
-                _this._editProfile();
+                // Take us to the user's edit page
+                aiagallery.main.Gui.getInstance().selectModule(
+                  {
+                    page : aiagallery.main.Constant.PageName.User
+                  });
               };
 
             // Set the header to display just-retrieved values
@@ -502,7 +509,7 @@ qx.Class.define("aiagallery.main.Gui",
               // We've instantiated a new module which needs to be added
               bAddModules = true;
             }
-	    
+            
             // Determine whether they have access to the message of
             // the day management page.
             bAllowed = false;
@@ -539,8 +546,8 @@ qx.Class.define("aiagallery.main.Gui",
               // We've instantiated a new module which needs to be added
               bAddModules = true;
             }
-	    
-	    // Determine whether they have access to the comment
+            
+            // Determine whether they have access to the comment
             // management page.
             bAllowed = false;
             [ 
@@ -907,6 +914,12 @@ qx.Class.define("aiagallery.main.Gui",
             page.setUserData("app_uid", 
             moduleList[menuItem][moduleName].getUserData("app_uid"));
           } 
+          else if(numModules === 0 && moduleList[menuItem][moduleName].pageId ==
+              aiagallery.main.Constant.PageName.PublicUser)
+          {
+            page.setUserData("user", 
+              moduleList[menuItem][moduleName].getUserData("user")); 
+          }
 
           // We found a module.  Increment our counter
           numModules++;
@@ -1102,152 +1115,6 @@ qx.Class.define("aiagallery.main.Gui",
       }
     },
     
-    _editProfile : function()
-    {
-      var             win;
-      var             errorWin; 
-      var             errorLabel; 
-      var             grid;
-      var             container;
-      var             displayName;
-      var             hBox;
-      var             ok;
-      var             cancel;
-      var             command;
-
-      // Create a modal window for editing the profile
-      if (! this._win)
-      {
-        win = new qx.ui.window.Window(this.tr("Edit Profile"));
-        win.set(
-          {
-            layout : new qx.ui.layout.VBox(30),
-            modal  : true
-          });
-        this.getApplicationRoot().add(win);
-
-        // We'll use a grid to layout the property editor
-        grid = new qx.ui.layout.Grid();
-        grid.setSpacingX(5);
-        grid.setSpacingY(15);
-        grid.setColumnAlign(0, "right", "middle");
-
-        // Create a container for the grid
-        container = new qx.ui.container.Composite(grid);
-        win.add(container);
-
-        // Add the label
-        container.add(new qx.ui.basic.Label(this.tr("Display Name")), 
-                      { row : 0, column : 0 });
-
-        // Add the text field
-        win._displayName = new qx.ui.form.TextField();
-        win._displayName.set(
-        {
-          width  : 120,
-          filter : /[a-zA-Z0-9 _-]/
-        });
-        container.add(win._displayName, { row : 0, column : 1 });
-
-        // Create a horizontal box to hold the buttons
-        hBox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
-
-        // Add spacer to right-align the buttons
-        hBox.add(new qx.ui.core.Spacer(null, 1), { flex : 1 });
-
-        // Add the Ok button
-        ok = new qx.ui.form.Button(this.tr("Ok"));
-        ok.setWidth(100);
-        ok.setHeight(30);
-        hBox.add(ok);
-
-        // Allow 'Enter' to confirm entry
-        command = new qx.ui.core.Command("Enter");
-        ok.setCommand(command);
-
-        // When the Ok button is pressed, issue an editProfile request
-        ok.addListener(
-        "execute", 
-        function(e)
-        {
-          var             rpc;
-          var             _this = this;
-
-          // Get and configure a new RPC object
-          rpc = new qx.io.remote.Rpc();
-          rpc.setProtocol("2.0");
-          rpc.set(
-          {
-            url         : aiagallery.main.Constant.SERVICES_URL,
-            timeout     : 30000,
-            crossDomain : false,
-            serviceName : "aiagallery.features"
-          });
-
-          // Issue the request. When we get the result...
-          rpc.callAsync(
-          function(result, ex, id)
-          {
-            // Check for an error
-            if (ex != null)
-            {
-              // Error occured, display window
-              dialog.Dialog.warning(ex.message); 
-              
-              return; 
-            
-            }
-            // Set the display name in the application header
-            _this.whoAmI.setDisplayName(win._displayName.getValue().trim());
-            _this.whoAmI.setHasSetDisplayName(true);
-
-            // Close the window
-            win.close();
-          },
-          "editProfile",
-          {
-            displayName : win._displayName.getValue()
-          });
-        },
-        this);
-
-        // Add the Cancel button
-        cancel = new qx.ui.form.Button(this.tr("Cancel"));
-        cancel.setWidth(100);
-        cancel.setHeight(30);
-        hBox.add(cancel);
-
-        // Allow 'Escape' to cancel
-        command = new qx.ui.core.Command("Esc");
-        cancel.setCommand(command);
-
-        // Close the window if the cancel button is pressed
-        cancel.addListener(
-        "execute",
-        function(e)
-        {
-          win.close();
-        },
-        this);
-
-        // Add the button bar to the window
-        win.add(hBox);
-
-        // We only want to create this window once.
-        this._win = win;
-      }
-
-      // Clear out the display name field
-      this._win._displayName.setValue("");
-
-      // Set the focus to the display name field
-      this._win._displayName.focus();
-
-      // Show the window
-      this._win.center();
-      this._win.show();
-    },
-
     /**
     * Initialize Back button and bookmark support. Also look at the fragment
     * of the current URL to see if we need to go to a particular module.
@@ -1276,7 +1143,7 @@ qx.Class.define("aiagallery.main.Gui",
           // if the user stays on the Find Apps page, but does a
           // different search. This issue cannot be fixed simply and
           // is documented on the issue tracker as issue #64. 
-	  
+          
           this.__selectModuleByFragment(state);
 
           
@@ -1372,6 +1239,16 @@ qx.Class.define("aiagallery.main.Gui",
         // We already returned in the case of an author search (an internal
         // search), so if we got here it's because of a user click for direct
         // entry to the FindApps module.)
+      } 
+
+      else if(selectedPage.getUserData("pageId") ==
+              aiagallery.main.Constant.PageName.PublicUser)
+      {
+        // This is a user profile page
+        // add username to fragment
+        fragment +=
+          "&username=" +
+          selectedPage.getUserData("user");   
       }
 
       // Change URL to add language independent constant to it
@@ -1411,20 +1288,41 @@ qx.Class.define("aiagallery.main.Gui",
       var             bPageExists;
       var             pageLocation;
       var             mainTabsLocation; 
+      var             bAppOrUser = false;
       
-      // Is this a request for the App page?
-      if (components.page == aiagallery.main.Constant.PageName.AppInfo)
+      // Is this a request for the App page or user profile?
+      if (components.page == aiagallery.main.Constant.PageName.AppInfo ||
+          components.page == aiagallery.main.Constant.PageName.PublicUser)
       {
-        // Yup. Ensure there's a uid and a label provided
-        if (! components.uid)
+
+        // Set boolean flags so we now which one to do
+        // false for app, true for profile
+        if(components.page == aiagallery.main.Constant.PageName.PublicUser)
         {
-          throw new Error("Got request for AppInfo without UID");
+          bAppOrUser = true; 
         }
-        if (! components.label)
+
+        if(bAppOrUser)
         {
-          throw new Error("Got request for AppInfo without label");
+          // Need to have a username 
+          if (! components.username)
+          {
+            throw new Error("Got request for User Profile without username");
+          }     
+        } 
+        else 
+        {
+          // Yup. Ensure there's a uid and a label provided
+          if (! components.uid)
+          {
+            throw new Error("Got request for AppInfo without UID");
+          }
+          if (! components.label)
+          {
+            throw new Error("Got request for AppInfo without label");
+          }
         }
-        
+
         // Get the page selector bar
         pageSelectorBar =
           aiagallery.main.Gui.getInstance().getUserData("pageSelectorBar");
@@ -1436,7 +1334,8 @@ qx.Class.define("aiagallery.main.Gui",
         // so remove it 
         for (j = 0; j < pageArray.length; j++)
         {
-          if (pageArray[j].getUserData("app"))
+          if (pageArray[j].getUserData("app") || 
+              pageArray[j].getUserData("user"))
           {
           
             // Save the page location to replace later on else
@@ -1460,7 +1359,8 @@ qx.Class.define("aiagallery.main.Gui",
 
           // Is this the one we're looking for?
           if (-1 != pageLabel.indexOf("-") 
-            && pageLabel.substring(1) != components.label)
+            && (pageLabel.substring(1) != components.label &&
+               pageLabel.substring(1) != components.username))
           {
             // Save the page location to replace later on else
             // the preceding tab will be selected incorrectly            
@@ -1479,7 +1379,8 @@ qx.Class.define("aiagallery.main.Gui",
           pageLabel = tabArray[i].getLabel(); 
 
           // is this an ephemeral page
-          if (pageLabel.substring(1) == components.label)
+          if (pageLabel.substring(1) == components.label ||
+              pageLabel.substring(1) == components.username)
           {
             bPageExists = true;
             break;
@@ -1489,14 +1390,29 @@ qx.Class.define("aiagallery.main.Gui",
         // If this is false we need to open the page ourselves
         if (!bPageExists)
         {
-          aiagallery.module.dgallery.appinfo.AppInfo.addAppView(
-            Number(components.uid), components.label);
+          if (bAppOrUser) 
+          {
+             aiagallery.module.dgallery.userinfo.UserInfo.addPublicUserView(
+               components.username); 
+          } 
+          else 
+          {              
+            aiagallery.module.dgallery.appinfo.AppInfo.addAppView(
+              Number(components.uid), components.label);
+          }
         }
           
           
         // All ephemeral pages have been removed at this point via addAppView
         // Create new temporary app radio button page
-        tempRadioButton = new qx.ui.form.RadioButton(components.label);
+        if(bAppOrUser)
+        {
+          tempRadioButton = new qx.ui.form.RadioButton(components.username);  
+        }
+        else
+        {
+          tempRadioButton = new qx.ui.form.RadioButton(components.label);
+        }       
         tempRadioButton.set(
             {
               appearance : "pageselector",
@@ -1527,14 +1443,14 @@ qx.Class.define("aiagallery.main.Gui",
 
         // Page selected. Nothing more to do.
         return;
-      }
+      } 
 
       // Retrieve the previously-created top-level tab view
       mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
       tabArray = mainTabs.getChildren();
 
-      // It's not an AppInfo request. Iterate through the tabs' labels to find
-      // the tab.
+      // It's not an AppInfo or user profile request. 
+      // Iterate through the tabs' labels to find the tab.
       for (i = 0; i < tabArray.length; i++)
       {
         // Get the pageId
@@ -1628,6 +1544,7 @@ qx.Class.define("aiagallery.main.Gui",
       switch(pageId)
       {
       case aiagallery.main.Constant.PageName.AppInfo:
+      case aiagallery.main.Constant.PageName.PublicUser: 
         // This was special-cased above
         break;
 
