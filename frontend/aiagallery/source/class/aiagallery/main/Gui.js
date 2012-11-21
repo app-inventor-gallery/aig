@@ -321,6 +321,72 @@ qx.Class.define("aiagallery.main.Gui",
             moduleList = {};
             bAddModules = false;
 
+            // Add My Apps and Profile modules if a user
+            // has the permissions
+            bAllowed = false;
+            [ 
+              // These permissions allow access to the page
+              "addOrEditApp",
+              "deleteApp", 
+              "getAppList",
+              "appQuery",
+              "intersectKeywordAndQuery",
+              "getAppListByList",
+              "getAppInfo"
+              
+            ].forEach(
+              function(rpcFunc)
+              {
+                if (qx.lang.Array.contains(e.permissions, rpcFunc))
+                {
+                  bAllowed = true;
+                }
+              });
+
+            // If they're allowed access to the page...
+            if (e.isAdmin || bAllowed)
+            {
+              // ... then create it
+              module = new aiagallery.main.Module(
+                "My Apps",
+                "aiagallery/module/emblem-favorite.png",
+                "My Apps",
+                aiagallery.main.Constant.PageName.MyApps,
+                aiagallery.module.dgallery.myapps.MyApps);
+
+              moduleList["My Apps"] = {}; 	
+              moduleList["My Apps"]["My Apps"] = module;
+            }
+
+            // Add Profile page if user has permission
+            bAllowed = false;
+            [ 
+              // These permissions allow access to the page
+              "getUserProfile"
+            ].forEach(
+              function(rpcFunc)
+              {
+                if (qx.lang.Array.contains(e.permissions, rpcFunc))
+                {
+                  bAllowed = true;
+                }
+              });
+
+            // If they're allowed access to the page...
+            if (e.isAdmin || bAllowed)
+            {
+              // ... then create it
+              module = new aiagallery.main.Module(
+                "Profile",
+                "aiagallery/module/emblem-favorite.png",
+                "Profile",
+                aiagallery.main.Constant.PageName.User,
+                aiagallery.module.dgallery.user.User);
+
+              moduleList["Profile"] = {}; 	      
+              moduleList["Profile"]["Profile"] = module;
+            }
+            
             // Determine whether they have access to the database
             // management page.
             bAllowed = false;
