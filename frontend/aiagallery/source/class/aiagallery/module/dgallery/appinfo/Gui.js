@@ -75,7 +75,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       commentsGrid = new qx.ui.container.Composite(grid);
       canvas.add(commentsGrid, { row : 1, column : 0 });
 
-
+/**
 //beta002 start
 
       o = new qx.ui.basic.Label("Clickable Test");
@@ -84,15 +84,15 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       commentsGrid.add(o, { row : 0, column : 0 });
 
 //beta002 end
-
+**/
       o = new qx.ui.basic.Label("Comments");
       o.set(
         {
           font          : font,
           paddingBottom : 6
         });
-      //commentsGrid.add(o, { row : 0, column : 0, colSpan : 3 }); //original
-      commentsGrid.add(o, { row : 0, column : 1 }); //beta002
+      commentsGrid.add(o, { row : 0, column : 0, colSpan : 3 }); //original
+      //commentsGrid.add(o, { row : 0, column : 1 }); //beta002
 
       // Create the scroller to hold all of the comments
       o = new qx.ui.container.Scroll();
@@ -266,7 +266,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       vbox.add(o);
 */
 
-      var byTagsTab = new qx.ui.tabview.Page("By tags 03", "aiagallery/test.png");
+      var byTagsTab = new qx.ui.tabview.Page("By tags 04x", "aiagallery/test.png");
       byTagsTab.setLayout(new qx.ui.layout.VBox());
 
       // Add the list for other apps by the tags
@@ -388,12 +388,18 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         //   byAuthor      : ApppInfo array of other apps by this author
 
         result = response.data.result;
+
+        // Tagging stuff
+        // This line correctly displays the array of arrays of maps.
+	alert(JSON.stringify(result.appTagsLists.getItem(0)));
+        // This line will not display and will block page to load rest of data.
+//	alert(JSON.stringify(result.appTagsLists.getItem(0))); 
         
+
         // Retrieve and save the source file URL... then delete it from the
         // app data. We'll use it for the Download button
         source = result.app.source;
         delete result.app.source;
-	//alert(result.app.tags.toSource()); //beta002
 
         // Add the app detail
         this.searchResult.set(result.app);
@@ -403,19 +409,68 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         model = qx.data.marshal.Json.createModel(result.byAuthor);
         this.byAuthor.setModel(model);
 
-        if (result.testFlag > 1) {
+        // Generate tagging sidebar(s) based on specific tags of this app
+        var tagsHolder = result.appTags;
+        var tlHolder = result.appTagsLists;
 
-          var byTagsTab1 = new qx.ui.tabview.Page("23:25", "aiagallery/test.png");
-          byTagsTab1.setLayout(new qx.ui.layout.VBox());
-          byTagsTab1.setShowCloseButton(true);
-          byTagsTab1.add(new qx.ui.basic.Label(result.appTags.toSource()));
-//          byTagsTab1.add(new qx.ui.basic.Label(result.app.tags.toSource()));
-          byTagsTab1.add(new qx.ui.basic.Label("Hi"));
-          this.tabView.add(byTagsTab1);
+        for (i = 0; i < tagsHolder.length; i++)
+        {
+          var tagTabHolder = new qx.ui.tabview.Page(
+            tagsHolder[i], "aiagallery/test.png");
+          tagTabHolder.setLayout(new qx.ui.layout.VBox());
+          tagTabHolder.setShowCloseButton(true);
+//          tagTabHolder.add(new qx.ui.basic.Label(tlHolder.getItem(i)));
+          tagTabHolder.add(new qx.ui.basic.Label(tagsHolder[i]));
+          this.tabView.add(tagTabHolder);
+/**
+          // Add the list for other apps by the tags
+          var byTagsHolder = new qx.ui.list.List();
+          byTagsHolder.set(
+            {
+              itemHeight : 130,
+              labelPath  : "title",
+              iconPath   : "image1",
+              delegate   :
+              {
+                createItem : function() {
+                  return new aiagallery.widget.SearchResult("byAuthor");
+              },
+            
+              bindItem : function(controller, item, id) {
+                [
+                  "uid",
+                  "image1",
+                  "title",
+                  "numLikes",
+                  "numDownloads",
+                  "numViewed",
+                  "numComments",
+                  "displayName"
+                ].forEach(
+                  function(name) {
+                    controller.bindProperty(name, name, null, item, id);
+                  });
+              },
 
-          model = qx.data.marshal.Json.createModel(result.byTags);
-          this.byTags.setModel(model);
+              configureItem : qx.lang.Function.bind(
+                function(item) 
+                {
+                  // Listen for clicks on the title or image, to view the app
+                  item.addListener("viewApp", fsm.eventListener, fsm);
+                },
+                this)
+            }
+          });
+
+        tagTabHolder.add(byTagsHolder, {flex : 1});
+
+          // Add the other apps by tags. Build a model for the search
+          // results list, then add the model to the list.
+          model = qx.data.marshal.Json.createModel(tlHolder.getItem(i));
+          byTagsHolder.setModel(model);
+**/
         }
+
         // Display each of the comments
         result.comments.forEach(
           function(commentData)
