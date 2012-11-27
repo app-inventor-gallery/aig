@@ -266,7 +266,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       vbox.add(o);
 */
 
-      var byTagsTab = new qx.ui.tabview.Page("By tags 04x", "aiagallery/test.png");
+      var byTagsTab = new qx.ui.tabview.Page("Manual fill", "aiagallery/test.png");
       byTagsTab.setLayout(new qx.ui.layout.VBox());
 
       // Add the list for other apps by the tags
@@ -391,7 +391,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
         // Tagging stuff
         // This line correctly displays the array of arrays of maps.
-	alert(JSON.stringify(result.appTagsLists));
+	alert(JSON.stringify(result.appTagsLists[2]));
         // This line will not display and will block page to load rest of data.
 //	alert(JSON.stringify(result.appTagsLists.getItem(0))); 
         
@@ -409,6 +409,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         model = qx.data.marshal.Json.createModel(result.byAuthor);
         this.byAuthor.setModel(model);
 
+        model = qx.data.marshal.Json.createModel(result.appTagsLists[2]);
+        this.byTags.setModel(model);
+
+
         // Generate tagging sidebar(s) based on specific tags of this app
         var tagsHolder = result.appTags;
         var tlHolder = result.appTagsLists;
@@ -419,10 +423,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
             tagsHolder[i], "aiagallery/test.png");
           tagTabHolder.setLayout(new qx.ui.layout.VBox());
           tagTabHolder.setShowCloseButton(true);
-//          tagTabHolder.add(new qx.ui.basic.Label(tlHolder.getItem(i)));
-          tagTabHolder.add(new qx.ui.basic.Label(tagsHolder[i]));
-          this.tabView.add(tagTabHolder);
-/**
+//          tagTabHolder.add(new qx.ui.basic.Label(tagsHolder[i]));
+//          tagTabHolder.add(new qx.ui.basic.Label(tlHolder[i]));
+
           // Add the list for other apps by the tags
           var byTagsHolder = new qx.ui.list.List();
           byTagsHolder.set(
@@ -462,13 +465,15 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
             }
           });
 
-        tagTabHolder.add(byTagsHolder, {flex : 1});
+          tagTabHolder.add(byTagsHolder, {flex : 1});
 
           // Add the other apps by tags. Build a model for the search
           // results list, then add the model to the list.
-          model = qx.data.marshal.Json.createModel(tlHolder.getItem(i));
+          model = qx.data.marshal.Json.createModel(tlHolder[i]);
           byTagsHolder.setModel(model);
-**/
+
+          this.tabView.add(tagTabHolder);
+
         }
 
         // Display each of the comments

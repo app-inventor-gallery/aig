@@ -3076,7 +3076,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       ret.appTags = ret.app.tags;
 
       // Array for storing multiple lists of tag-related apps for sidebar
-      ret.appTagsLists = new qx.data.Array();
+      ret.appTagsLists = [];
 
       // for each tag in the tag list...
       for (i = 0; i < ret.appTags.length; i++) {
@@ -3108,7 +3108,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             aiagallery.dbif.MApps._requestedFields(app, requestedFields);
         });
 
-        ret.appTagsLists.append([tlist]); // insert it to the front of array
+        ret.appTagsLists.push(tlist); // insert it to the front of array
       }
 
 
