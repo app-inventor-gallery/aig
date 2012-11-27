@@ -3091,14 +3091,14 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         // Query for those apps
         var tlist = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
                                                  criteria, null);
-/**
+
         // Add the author's display name to each app
         tlist.forEach(
           function(app) {
             app.displayName = owners[0].displayName || "<>";
             delete app.owner; // Remove the owner field
         });
-**/
+
         // Do the same for images for each app by this tag, but 100px.
         tlist.forEach( function(app) { app.image1 += "=s100"; });
 

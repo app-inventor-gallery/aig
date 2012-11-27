@@ -266,6 +266,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       vbox.add(o);
 */
 
+/*
       var byTagsTab = new qx.ui.tabview.Page("Manual fill", "aiagallery/test.png");
       byTagsTab.setLayout(new qx.ui.layout.VBox());
 
@@ -315,7 +316,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 //      vbox.add(this.byTags, { flex : 1 });
       byTagsTab.add(this.byTags, {flex : 1});
       this.tabView.add(byTagsTab);
-
+*/
 
 
 
@@ -391,7 +392,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
         // Tagging stuff
         // This line correctly displays the array of arrays of maps.
-	alert(JSON.stringify(result.appTagsLists[2]));
+//	alert(JSON.stringify(result.appTagsLists));
         // This line will not display and will block page to load rest of data.
 //	alert(JSON.stringify(result.appTagsLists.getItem(0))); 
         
