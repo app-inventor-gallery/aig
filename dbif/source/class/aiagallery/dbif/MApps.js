@@ -2338,6 +2338,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             searchResponseLiked;
       var             searchResponseNewest;
       var             requestedData; 
+      var             welcomingText;
 
       // Before we search for apps to display check and see if
       // some past searches have been cached with memcache.
@@ -2558,6 +2559,28 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             aiagallery.dbif.MApps._requestedFields(app, requestedFields);
           }
         });
+
+      welcomingText = 
+        [
+          "<div style='padding:0 30px 0 0;'>",
+          "<div style='text-align:center;'>",
+          "<h2>",
+          "Welcome to the <br/>MIT App Inventor Community Gallery!",
+          "</h2>",
+          "</div>",
+
+          "<div style='font-size:larger; font-weight:bold; padding:6px;'>",
+          "<b>",
+          "<ul><li>Check out mobile apps from all over the world!<br/></li>",
+          "<li>Download App Inventor blocks and learn to program!<br/></li>",
+          "<li>Join the community of App Inventor programmers!<br/></li></ul>",
+          "<div style='padding:12px 10px; background:rgba(255,255,255,0.5);'>",
+          "Join the MIT App Inventor ",
+          "<a href='https://bit.ly/AppInventorContest' target='new'>App Contest</a>, ", 
+          "win a Google Nexus 7 Tablet and other prizes!</div><br/>",
+          "</div>",
+          "</div>"
+        ].join("");
         
       //Construct map of data
       // Grab the motd and put it into the map at the end
@@ -2566,7 +2589,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           "Featured"     :    searchResponseFeatured,   
           "MostLiked"    :    searchResponseLiked,
           "Newest"       :    searchResponseNewest,
-          "Motd"         :    this.getMotd()
+          "Motd"         :    this.getMotd(),
+          "welcomingText":    welcomingText
         };
 
       if (bCache) {
@@ -2836,6 +2860,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       //Set the "lastViewedDate" to the time this function was called
       ret.app.lastViewedTime = aiagallery.dbif.MDbifCommon.currentTimestamp(); 
 
+      //Store the tags' list into a separate variable for sidebar
+      ret.appTags = ret.app.tags;
+
       //Put back on the database
       appObj.put();
  
@@ -3044,6 +3071,53 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           delete app.owner;
         });
 
+//Tagging stuff starts
+
+      // Store the tags' list into a separate variable for sidebar
+      ret.appTags = ret.app.tags;
+
+      // Array for storing multiple lists of tag-related apps for sidebar
+      ret.appTagsLists = [];
+
+      // for each tag in the tag list...
+      for (i = 0; i < ret.appTags.length; i++) {
+
+        // Find all active apps by this tag
+        criteria = {
+              type: "element",
+              field: "tags",
+              value: ret.appTags[i] };
+      
+
+        // Query for those apps
+        var tlist = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                                 criteria, null);
+
+        // Add the author's display name to each app
+        tlist.forEach(
+          function(app) {
+            app.displayName = owners[0].displayName || "<>";
+            delete app.owner; // Remove the owner field
+        });
+
+        // Do the same for images for each app by this tag, but 100px.
+        tlist.forEach( function(app) { app.image1 += "=s100"; });
+
+        // Send each of the apps by this tag to the requestedFields
+        // function for stripping and remapping
+        tlist.forEach( function(app) {
+            aiagallery.dbif.MApps._requestedFields(app, requestedFields);
+        });
+
+        ret.appTagsLists.push(tlist); // insert it to the front of array
+      }
+
+
+
+//Tagging stuff ends
+
+
+
       // If we were asked to stringize the values...
       if (bStringize)
       { 
@@ -3180,6 +3254,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           {
             aiagallery.dbif.MApps._requestedFields(app, requestedFields);
           });
+        // Send each of the apps by this tag to the requestedFields
+        // function for stripping and remapping
       }
       
       // Do special App Engine processing to scale images
@@ -3204,9 +3280,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       
       // Not allowed to return the id of the app owner, remove it
       delete ret.app.owner; 
-
-
-
       
       // Give 'em what they came for
       return ret;

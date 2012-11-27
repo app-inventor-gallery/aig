@@ -416,6 +416,15 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       case "setMotd" :
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
+      //
+      // MWhoAmI
+      //
+      case "getUserProfile":
+        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+
+      case "getPublicUserProfile":
+        return true;  // Anonymous access 
+
       default:
         // Do not allow access to unrecognized method names
         return false;

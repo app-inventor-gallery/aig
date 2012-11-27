@@ -194,23 +194,6 @@ new aiagallery.main.Module(
   aiagallery.main.Constant.PageName.FindApps,
   aiagallery.module.dgallery.findapps.FindApps);
 
-new aiagallery.main.Module(
-  "My Apps",
-  "aiagallery/module/emblem-favorite.png",
-  "My Apps",
-  aiagallery.main.Constant.PageName.MyApps,
-  aiagallery.module.dgallery.myapps.MyApps);
-
-new aiagallery.main.Module(
-  "Profile",
-  "aiagallery/module/emblem-favorite.png",
-  "Profile",
-  aiagallery.main.Constant.PageName.User,
-  aiagallery.module.dgallery.user.User);
-
-
-
-
 if (qx.core.Environment.get("qx.debug"))
 {
   new aiagallery.main.Module(

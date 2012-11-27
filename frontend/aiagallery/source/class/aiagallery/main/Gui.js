@@ -125,6 +125,25 @@ qx.Class.define("aiagallery.main.Gui",
           });
         header.add(o);
 
+        // Create a small spacer after the logo label
+        o = new qx.ui.core.Spacer(20);
+        header.add(o);
+
+        // Add another label to header for release note + forum helper text
+        o = new qx.ui.basic.Label(
+          "<div><br/>" +
+          "Welcome to the gallery! See <a href=\"https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit\" target=\"_blank\" >Release Notes</a><br/>" +
+          "and post feedback / bug reports to the " +
+          "<a href=\"http://groups.google.com/group/app-inventor-gallery/topics\" target=\"_blank\" >Forum</a>." + 
+          "</div>");
+        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+        o.set(
+          {
+            rich : true,
+            font : font
+          });
+        header.add(o);
+
         // Add a flexible spacer to take up the whole middle
         o = new qx.ui.core.Widget();
         o.setMinWidth(1);
@@ -302,6 +321,72 @@ qx.Class.define("aiagallery.main.Gui",
             moduleList = {};
             bAddModules = false;
 
+            // Add My Apps and Profile modules if a user
+            // has the permissions
+            bAllowed = false;
+            [ 
+              // These permissions allow access to the page
+              "addOrEditApp",
+              "deleteApp", 
+              "getAppList",
+              "appQuery",
+              "intersectKeywordAndQuery",
+              "getAppListByList",
+              "getAppInfo"
+              
+            ].forEach(
+              function(rpcFunc)
+              {
+                if (qx.lang.Array.contains(e.permissions, rpcFunc))
+                {
+                  bAllowed = true;
+                }
+              });
+
+            // If they're allowed access to the page...
+            if (e.isAdmin || bAllowed)
+            {
+              // ... then create it
+              module = new aiagallery.main.Module(
+                "My Apps",
+                "aiagallery/module/emblem-favorite.png",
+                "My Apps",
+                aiagallery.main.Constant.PageName.MyApps,
+                aiagallery.module.dgallery.myapps.MyApps);
+
+              moduleList["My Apps"] = {}; 	
+              moduleList["My Apps"]["My Apps"] = module;
+            }
+
+            // Add Profile page if user has permission
+            bAllowed = false;
+            [ 
+              // These permissions allow access to the page
+              "getUserProfile"
+            ].forEach(
+              function(rpcFunc)
+              {
+                if (qx.lang.Array.contains(e.permissions, rpcFunc))
+                {
+                  bAllowed = true;
+                }
+              });
+
+            // If they're allowed access to the page...
+            if (e.isAdmin || bAllowed)
+            {
+              // ... then create it
+              module = new aiagallery.main.Module(
+                "Profile",
+                "aiagallery/module/emblem-favorite.png",
+                "Profile",
+                aiagallery.main.Constant.PageName.User,
+                aiagallery.module.dgallery.user.User);
+
+              moduleList["Profile"] = {}; 	      
+              moduleList["Profile"]["Profile"] = module;
+            }
+            
             // Determine whether they have access to the database
             // management page.
             bAllowed = false;
