@@ -31,7 +31,9 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
           "bio"            : "",
           "url"            : "",
           "organization"   : "",
-          "showEmail"      : 0
+          "showEmail"      : 0,
+          "birthYear"      : 0,
+          "birthMonth"     : "" 
         });
     }
 
