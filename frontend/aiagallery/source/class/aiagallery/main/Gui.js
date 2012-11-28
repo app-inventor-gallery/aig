@@ -321,8 +321,38 @@ qx.Class.define("aiagallery.main.Gui",
             moduleList = {};
             bAddModules = false;
 
-            // Add My Apps and Profile modules if a user
-            // has the permissions
+            // Add Find Apps if a user has the permissions
+            bAllowed = false;
+            [ 
+              // These permissions allow access to the page
+              "appQuery",
+              "intersectKeywordAndQuery"
+              
+            ].forEach(
+              function(rpcFunc)
+              {
+                if (qx.lang.Array.contains(e.permissions, rpcFunc))
+                {
+                  bAllowed = true;
+                }
+              });
+
+            // If they're allowed access to the page...
+            if (e.isAdmin || bAllowed)
+            {
+              // ... then create it
+              module = new aiagallery.main.Module(
+                "Find Apps",
+                "aiagallery/module/system-search.png",
+                "Find Apps",
+                aiagallery.main.Constant.PageName.FindApps,
+                aiagallery.module.dgallery.findapps.FindApps);
+
+              moduleList["Find Apps"] = {}; 	
+              moduleList["Find Apps"]["Find Apps"] = module;
+            }
+
+            // Add My Apps module if the user has permission
             bAllowed = false;
             [ 
               // These permissions allow access to the page
