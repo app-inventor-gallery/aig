@@ -346,7 +346,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MTags
       //
       case "getCategoryTags":
-        return true;            // Anonymous access
+        //return true;            // Anonymous access
 
       //
       // MVisitors
@@ -423,7 +423,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       case "getPublicUserProfile":
-        return true;  // Anonymous access 
+        //return true;  // Anonymous access 
 
       default:
         // Do not allow access to unrecognized method names

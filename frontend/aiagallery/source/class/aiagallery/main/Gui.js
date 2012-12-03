@@ -321,8 +321,38 @@ qx.Class.define("aiagallery.main.Gui",
             moduleList = {};
             bAddModules = false;
 
-            // Add My Apps and Profile modules if a user
-            // has the permissions
+            // Add Find Apps if a user has the permissions
+            bAllowed = false;
+            [ 
+              // These permissions allow access to the page
+              "appQuery",
+              "intersectKeywordAndQuery"
+              
+            ].forEach(
+              function(rpcFunc)
+              {
+                if (qx.lang.Array.contains(e.permissions, rpcFunc))
+                {
+                  bAllowed = true;
+                }
+              });
+
+            // If they're allowed access to the page...
+            if (e.isAdmin || bAllowed)
+            {
+              // ... then create it
+              module = new aiagallery.main.Module(
+                "Find Apps",
+                "aiagallery/module/system-search.png",
+                "Find Apps",
+                aiagallery.main.Constant.PageName.FindApps,
+                aiagallery.module.dgallery.findapps.FindApps);
+
+              moduleList["Find Apps"] = {}; 	
+              moduleList["Find Apps"]["Find Apps"] = module;
+            }
+
+            // Add My Apps module if the user has permission
             bAllowed = false;
             [ 
               // These permissions allow access to the page
@@ -656,6 +686,22 @@ qx.Class.define("aiagallery.main.Gui",
               // ... then add them.
               aiagallery.Application.addModules(moduleList);
             }
+
+            // Init bookmarking after modules loaded 
+            // Have to wait for the rpc to finish since
+            // we may have to switch to a particular module
+            // which may or may not be loaded give a user's permissions
+            var          mainTabs;
+
+            // Init history support
+            _this.__historyInit();
+
+            // Retrieve the previously-created top-level tab view
+            mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
+
+            // Add listener to detect page changes
+            mainTabs.addListener("changeSelection", 
+                                 _this.__onTabSelectionChanged);
           },
           "whoAmI",
           []);
@@ -898,6 +944,7 @@ qx.Class.define("aiagallery.main.Gui",
 
         // Arrange to initialize bookmark support some time after this
         // function completes
+/*
         qx.util.TimerManager.getInstance().start(
           function()
           {
@@ -917,8 +964,9 @@ qx.Class.define("aiagallery.main.Gui",
           this,
           null,
           0);
-        }
+*/
 
+        }
       // Get the page hierarchy
       hierarchy = this.getUserData("hierarchy");
 
