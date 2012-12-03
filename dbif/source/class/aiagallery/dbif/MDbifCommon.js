@@ -343,7 +343,7 @@ else
       // MTags
       //
       case "getCategoryTags":
-        return true;            // Anonymous access
+        //return true;            // Anonymous access
 
       //
       // MVisitors
@@ -419,7 +419,7 @@ else
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       case "getPublicUserProfile":
-        return true;  // Anonymous access 
+        //return true;  // Anonymous access 
 
       default:
         // Do not allow access to unrecognized method names
