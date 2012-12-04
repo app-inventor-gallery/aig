@@ -207,92 +207,77 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       var             mePermissionGroups;
       var             bAnonymous;
 
-      // Have we yet initialized the user object?
-      if (aiagallery.dbif.MDbifCommon.__whoami &&
-          ! aiagallery.dbif.MDbifCommon.__initialized)
-      {
-        // Nope. Retrieve our visitor object
-        me = new aiagallery.dbif.ObjVisitors(
-          aiagallery.dbif.MDbifCommon.__whoami.id);
-
-        // Is it brand new, or does not contain a display name yet?
-        meData = me.getData();
-        if (me.getBrandNew() || meData.displayName === null)
+      // Is this an anon user
+      // Anonymous users have automatic access to certain functionality
+      if (aiagallery.dbif.MDbifCommon.__whoami === null){
+        bAnonymous = true;
+      } else {
+        // Have we yet initialized the user object?
+        if (aiagallery.dbif.MDbifCommon.__whoami &&
+            ! aiagallery.dbif.MDbifCommon.__initialized)
         {
-          // True. Save it.
-          if (! meData.displayName)
+          // Nope. Retrieve our visitor object
+          me = new aiagallery.dbif.ObjVisitors(
+            aiagallery.dbif.MDbifCommon.__whoami.id);
+
+          // Is it brand new, or does not contain a display name yet?
+          meData = me.getData();
+          if (me.getBrandNew() || meData.displayName === null)
           {
-            meData.displayName =
-              aiagallery.dbif.MDbifCommon.__whoami.displayName;
+            // True. Save it.
+            if (! meData.displayName)
+            {
+              meData.displayName =
+                aiagallery.dbif.MDbifCommon.__whoami.displayName;
+            }
           }
+
+          // Update the time of their last connection
+          meData.connectionTimestamp = 
+            aiagallery.dbif.MDbifCommon.currentTimestamp();
+        
+          // Write changed data
+          me.put();
+
+          // We're now initialized
+          aiagallery.dbif.MDbifCommon.__initialized = true;
         }
 
-        // Update the time of their last connection
-        meData.connectionTimestamp = 
-          aiagallery.dbif.MDbifCommon.currentTimestamp();
-        
-        // Write changed data
-        me.put();
+        // Split the fully-qualified method name into its constituent parts
+        methodComponents = fqMethod.split(".");
 
-        // We're now initialized
-        aiagallery.dbif.MDbifCommon.__initialized = true;
+        // The final component is the actual method name
+        methodName = methodComponents.pop();
+
+        // The remainder is the service path. Join it back together.
+        serviceName = methodComponents.join(".");
+
+        // Ensure that the service name is what's expected. (This should never
+        // occur, since the RPC server has already validated that the method
+        // exists.)
+        if (serviceName != "aiagallery.features")
+        {
+          // It's not. Do not allow access.
+          return false;
+        }
+
+        // If the user is an adminstrator, ...
+        if (aiagallery.dbif.MDbifCommon.__whoami &&
+            aiagallery.dbif.MDbifCommon.__whoami.isAdmin)
+        {
+          // ... they implicitly have access.
+          return true;
+        }
       }
-
-      // Split the fully-qualified method name into its constituent parts
-      methodComponents = fqMethod.split(".");
-
-      // The final component is the actual method name
-      methodName = methodComponents.pop();
-
-      // The remainder is the service path. Join it back together.
-      serviceName = methodComponents.join(".");
-
-      // Ensure that the service name is what's expected. (This should never
-      // occur, since the RPC server has already validated that the method
-      // exists.)
-      if (serviceName != "aiagallery.features")
-      {
-        // It's not. Do not allow access.
-        return false;
-      }
-
-      // If the user is an adminstrator, ...
-      if (aiagallery.dbif.MDbifCommon.__whoami &&
-          aiagallery.dbif.MDbifCommon.__whoami.isAdmin)
-      {
-        // ... they implicitly have access.
-        return true;
-      }
-
       // Do per-method authorization.
-
-      // Are they logged in, or anonymous?
-// TEMPORARY:
-//if (false)
-//{
-      // Anonymous users have automatic access to certain functionality
-      bAnonymous = (aiagallery.dbif.MDbifCommon.__whoami === null);
-//}
-//else
-//{
-  // Temporarily disallow anonymous access. Only whitelisted users have access.
-  //bAnonymous = aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
-//}
       switch(methodName)
       {
-// TEMPORARY: whitelist nearly every RPC...
       case "getAppList" :
-      //case "getHomeRibbonData" :
       case "appQuery" :
-      //case "intersectKeywordAndQuery" :
       case "getAppListByList" :
-      //case "getAppInfo" :
       case "getComments" :
       case "keywordSearch" :
-      //case "getCategoryTags" :
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
-// ...TEMPORARY
-
       //
       // MApps
       //
@@ -308,7 +293,6 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       case "setFeaturedApps":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
-/* TEMPORARY... (see above) */
       case "appQuery":
       case "intersectKeywordAndQuery":
       case "getAppInfo":
@@ -325,7 +309,6 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       case "deleteComment":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
-/* TEMPORARY... (see above) */
       case "getComments":
         return true;            // Anonymous access
 
@@ -372,7 +355,6 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       //
       // MSearch
       //
-/* TEMPORARY (see above)... */
       case "keywordSearch":
         return true;          // Anonymous access
 
@@ -431,7 +413,6 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       }
 
     },
-
 
     _deepPermissionCheck : function(methodName)
     {

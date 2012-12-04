@@ -133,7 +133,11 @@ qx.Class.define("aiagallery.main.WhoAmI",
       var control = this.getChildControl("logoutUrl");
       if (control) 
       {
-        control.setValue("<a href='" + value + "'>Logout</a>");
+        // Call to RPC to logout user
+
+        // Reload the page on logouts
+        control.setValue("<a href='javascript:history.go(0)'>Logout</a>");
+        //control.setValue(value); 
       }
     },
 

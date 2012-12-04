@@ -26,6 +26,7 @@ qx.Class.define("aiagallery.dbif.DbifSim",
     this.__rpc = new liberated.sim.Rpc("/rpc");
         
     // Save the logged-in user. The whoAmI property is in MDbifCommon.
+/* Login as an anon user for now
     this.setWhoAmI(
       {
         id                : "1001",
@@ -40,6 +41,24 @@ qx.Class.define("aiagallery.dbif.DbifSim",
         permissions       : [],
         hasSetDisplayName : true
       });
+*/
+
+   this.setWhoAmI(
+      {
+        id                : "",
+        email             : "anonymous",
+        displayName       : "",
+        isAdmin           : false,
+        logoutUrl         : 
+        [
+          "javascript:",
+           "aiagallery.dbif.DbifSim.changeWhoAmI();"
+        ].join(""),
+        permissions : [],
+        hasSetDisplayName : true  
+      });
+
+
   },
   
   members :

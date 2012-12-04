@@ -40,9 +40,11 @@ public class GuiServlet extends HttpServlet
         // Get a user service instance, to determine signed-in user data
         userService = UserServiceFactory.getUserService();
 
+        // If the user is not logged in, ignore for now
+
         // If the user is logged in, get the requested page.
-        if (request.getUserPrincipal() != null)
-        {
+        //if (request.getUserPrincipal() != null)
+        //{
             response.getWriter().println(
                 "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" " +
                 "        \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">" +
@@ -64,11 +66,11 @@ public class GuiServlet extends HttpServlet
                 "  <body>" +
                 "  </body>" +
                 "</html>");
-        }
-        else
-        {
-            response.sendRedirect(
-                userService.createLoginURL(request.getRequestURI()));
-        }
+	    //}
+        //else
+        //{           
+            //response.sendRedirect(
+	    //  userService.createLoginURL(request.getRequestURI()));
+        //}
     }
 }

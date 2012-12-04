@@ -138,6 +138,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
         }, [], this); // End of transaction
 
         // Save the logged-in user. The whoAmI property is in MDbifCommon.
+
         this.setWhoAmI(
           {
             id                : googleUserId,
