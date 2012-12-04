@@ -104,6 +104,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       
       // Create email label
       this.emailField = new qx.ui.basic.Label("");
+      this.emailField.setRich(true); 
 
       // If we allow the user to change email we cannot 
       // show it as HTML for fear of a cross site scripting error 
@@ -299,11 +300,10 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
         {
           this.emailField.set(
             {
-              value  : "<a href=mailto:" 
-                      + user.email + ">" + user.email + "</a>",
-              //value : user.email, 
+              value  : "<a href=mailto:\"" 
+                      + user.email + "\">" + user.email + "</a>",
               width : 300,
-              rich  : true
+              wrap  : true
             });
         }
  
