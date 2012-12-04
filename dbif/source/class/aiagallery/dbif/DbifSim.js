@@ -163,7 +163,7 @@ qx.Class.define("aiagallery.dbif.DbifSim",
             // Anon user
             displayName = "anonymous";
             bHasSetDisplayName = true;
-            //permissions = ""; 
+            permissions = ""; 
             bAnon = true; 
           }
           else
@@ -220,6 +220,9 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           guiWhoAmI.setHasSetDisplayName(bHasSetDisplayName);
           guiWhoAmI.setLogoutUrl(
             "javascript:aiagallery.dbif.DbifSim.changeWhoAmI();");
+
+          // FIXME : If the user went from anonymous to a real user
+          // we need to reload the GUI so that the other modules load
         }
       );
     }

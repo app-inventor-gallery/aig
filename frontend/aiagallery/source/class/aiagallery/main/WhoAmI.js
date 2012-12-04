@@ -130,14 +130,22 @@ qx.Class.define("aiagallery.main.WhoAmI",
     // apply function
     _applyLogoutUrl : function(value, old)
     {
+      var who = qx.core.Init.getApplication().getUserData("whoAmI");
+      var email = who.getEmail(); 
       var control = this.getChildControl("logoutUrl");
-      if (control) 
-      {
-        // Call to RPC to logout user
 
-        // Reload the page on logouts
-        control.setValue("<a href='javascript:history.go(0)'>Logout</a>");
-        //control.setValue(value); 
+      // Check and see if this is an anon user
+      if(email && email == "anonymous")
+      {
+        // if it is the anon user will have a 
+        // logout url set to go to the google login
+        control.setValue("<a href='" + value + "'>Login</a>"); 
+      } else {	  
+        if (control) 
+        {
+          // Reload the page on logouts
+          control.setValue("<a href='javascript:history.go(0)'>Logout</a>");
+        }
       }
     },
 

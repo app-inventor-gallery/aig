@@ -89,7 +89,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
             email             : "anonymous",
             displayName       : "",
             isAdmin           : false,
-            logoutUrl         : userService.createLogoutURL("/"),
+            logoutUrl         : userService.createLoginURL("/"),
             permissions       : [],
             hasSetDisplayName : true
           });
