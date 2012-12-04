@@ -419,7 +419,7 @@ else
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       case "getPublicUserProfile":
-        //return true;  // Anonymous access 
+        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       default:
         // Do not allow access to unrecognized method names
