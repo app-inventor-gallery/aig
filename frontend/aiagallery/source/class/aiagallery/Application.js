@@ -187,6 +187,13 @@ new aiagallery.main.Module(
   aiagallery.main.Constant.PageName.Home,
   aiagallery.module.dgallery.home.Home);
 
+new aiagallery.main.Module(
+  "Find Apps",
+  "aiagallery/module/system-search.png",
+  "Find Apps",
+  aiagallery.main.Constant.PageName.FindApps,
+  aiagallery.module.dgallery.findapps.FindApps);
+
 if (qx.core.Environment.get("qx.debug"))
 {
   new aiagallery.main.Module(

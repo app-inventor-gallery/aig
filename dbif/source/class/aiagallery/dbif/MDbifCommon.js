@@ -43,9 +43,9 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         // If we're on App Engine...
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
-
+          java.lang.System.out.println("Obj is: " +  aiagallery.dbif.MDbifCommon.__whoami.email);
           // ... then log who's trying to do what. First, is someone logged in?
-          if (aiagallery.dbif.MDbifCommon.__whoami)
+          if (aiagallery.dbif.MDbifCommon.__whoami && aiagallery.dbif.MDbifCommon.__whoami.email != "anonymous")
           {
             java.lang.System.out.println("Got name");
             // Yup. Retrieve our visitor object
@@ -209,8 +209,11 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
 
       // Is this an anon user
       // Anonymous users have automatic access to certain functionality
-      if (aiagallery.dbif.MDbifCommon.__whoami === null){
+      if (aiagallery.dbif.MDbifCommon.__whoami === null || aiagallery.dbif.MDbifCommon.__whoami.email == "anonymous"){
         bAnonymous = true;
+
+        // Possible here during startup
+        aiagallery.dbif.MDbifCommon.__initialized = true;
       } else {
         // Have we yet initialized the user object?
         if (aiagallery.dbif.MDbifCommon.__whoami &&
@@ -242,33 +245,34 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
           // We're now initialized
           aiagallery.dbif.MDbifCommon.__initialized = true;
         }
-
-        // Split the fully-qualified method name into its constituent parts
-        methodComponents = fqMethod.split(".");
-
-        // The final component is the actual method name
-        methodName = methodComponents.pop();
-
-        // The remainder is the service path. Join it back together.
-        serviceName = methodComponents.join(".");
-
-        // Ensure that the service name is what's expected. (This should never
-        // occur, since the RPC server has already validated that the method
-        // exists.)
-        if (serviceName != "aiagallery.features")
-        {
-          // It's not. Do not allow access.
-          return false;
-        }
-
-        // If the user is an adminstrator, ...
-        if (aiagallery.dbif.MDbifCommon.__whoami &&
-            aiagallery.dbif.MDbifCommon.__whoami.isAdmin)
-        {
-          // ... they implicitly have access.
-          return true;
-        }
       }
+
+      // Split the fully-qualified method name into its constituent parts
+      methodComponents = fqMethod.split(".");
+
+      // The final component is the actual method name
+      methodName = methodComponents.pop();
+
+      // The remainder is the service path. Join it back together.
+      serviceName = methodComponents.join(".");
+
+      // Ensure that the service name is what's expected. (This should never
+      // occur, since the RPC server has already validated that the method
+      // exists.)
+      if (serviceName != "aiagallery.features")
+      {
+        // It's not. Do not allow access.
+        return false;
+      }
+
+      // If the user is an adminstrator, ...
+      if (aiagallery.dbif.MDbifCommon.__whoami &&
+          aiagallery.dbif.MDbifCommon.__whoami.isAdmin)
+      {
+        // ... they implicitly have access.
+        return true;
+      }
+   
       // Do per-method authorization.
       switch(methodName)
       {
