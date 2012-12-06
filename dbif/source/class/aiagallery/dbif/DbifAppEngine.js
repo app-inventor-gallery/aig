@@ -81,7 +81,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       user = userService.getCurrentUser();
       
       // If no one is logged in...
-      if (! user)
+      if (!user)
       {
         this.setWhoAmI(
           {

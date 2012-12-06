@@ -39,7 +39,7 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
       whoami = this.getWhoAmI();
 
       // Are they logged in?
-      if (! whoami)
+      if (!whoami )
       {
         // Nope.
         return({
