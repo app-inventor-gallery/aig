@@ -91,7 +91,8 @@ qx.Class.define("aiagallery.main.WhoAmI",
     _applyDisplayName : function(value, old)
     {
       var control = this.getChildControl("displayName");
-      if (control) 
+      // Do not set if user is anon 
+      if (control && value != "") 
       {
         control.setValue(
           "<a href='javascript:editProfile();'>" +
@@ -137,9 +138,10 @@ qx.Class.define("aiagallery.main.WhoAmI",
       // Check and see if this is an anon user
       if(email && email == "anonymous")
       {
+        var loginStr = this.tr("Login to create apps and comment"); 
         // if it is the anon user will have a 
         // logout url set to go to the google login
-        control.setValue("<a href='" + value + "'>Login</a>"); 
+        control.setValue("<a href='" + value + "'>" + loginStr +"</a>"); 
       } else {	  
         if (control) 
         {
