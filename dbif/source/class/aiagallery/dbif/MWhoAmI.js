@@ -49,7 +49,8 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
                  isAdmin           : false,
                  logoutUrl         : "",
                  permissions       : [],
-                 hasSetDisplayName : true
+                 hasSetDisplayName : true,
+                 isAnonymous       : true
                });
       }
       
@@ -69,7 +70,8 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
           permissions       : (qx.lang.Type.isArray(whoami.permissions)
                                ? qx.lang.Array.clone(whoami.permissions)
                                : []),
-          hasSetDisplayName : whoami.hasSetDisplayName
+          hasSetDisplayName : whoami.hasSetDisplayName,
+          isAnonymous       : false
         };
 
       return ret;

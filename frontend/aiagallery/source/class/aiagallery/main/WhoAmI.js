@@ -132,11 +132,11 @@ qx.Class.define("aiagallery.main.WhoAmI",
     _applyLogoutUrl : function(value, old)
     {
       var who = qx.core.Init.getApplication().getUserData("whoAmI");
-      var email = who.getEmail(); 
+      var bAnon = who.isAnonymous();
       var control = this.getChildControl("logoutUrl");
 
       // Check and see if this is an anon user
-      if(email && email == "anonymous")
+      if(bAnon)
       {
         var loginStr = this.tr("Login to create apps and comment"); 
         // if it is the anon user will have a 

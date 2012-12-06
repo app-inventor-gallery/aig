@@ -54,8 +54,9 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           "javascript:",
            "aiagallery.dbif.DbifSim.changeWhoAmI();"
         ].join(""),
-        permissions : [],
-        hasSetDisplayName : true  
+        permissions       : [],
+        hasSetDisplayName : true,
+        isAnonymous       : true  
       });
 
 

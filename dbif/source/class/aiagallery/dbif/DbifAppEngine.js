@@ -91,7 +91,8 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
             isAdmin           : false,
             logoutUrl         : userService.createLoginURL("/"),
             permissions       : [],
-            hasSetDisplayName : true
+            hasSetDisplayName : true,
+            isAnonymous       : true
           });
         return;
       }
@@ -147,8 +148,9 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
             isAdmin           : userService.isUserAdmin(),
             logoutUrl         : userService.createLogoutURL("/"),
             permissions       : permissions,
-            hasSetDisplayName : displayName != googleUserId
-            });
+            hasSetDisplayName : displayName != googleUserId,
+            isAnonymous       : false
+          });
     },
          
     /**

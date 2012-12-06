@@ -43,9 +43,8 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         // If we're on App Engine...
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
-          java.lang.System.out.println("Obj is: " +  aiagallery.dbif.MDbifCommon.__whoami.email);
           // ... then log who's trying to do what. First, is someone logged in?
-          if (aiagallery.dbif.MDbifCommon.__whoami && aiagallery.dbif.MDbifCommon.__whoami.email != "anonymous")
+          if (aiagallery.dbif.MDbifCommon.__whoami && !aiagallery.dbif.MDbifCommon.__whoami.isAnonymous)
           {
             java.lang.System.out.println("Got name");
             // Yup. Retrieve our visitor object
@@ -209,7 +208,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
 
       // Is this an anon user
       // Anonymous users have automatic access to certain functionality
-      if (aiagallery.dbif.MDbifCommon.__whoami === null || aiagallery.dbif.MDbifCommon.__whoami.email == "anonymous"){
+      if (aiagallery.dbif.MDbifCommon.__whoami === null || aiagallery.dbif.MDbifCommon.__whoami.isAnonymous){
         bAnonymous = true;
 
         // Possible here during startup
