@@ -350,6 +350,9 @@ qx.Class.define("aiagallery.main.Gui",
 
               moduleList["Find Apps"] = {}; 	
               moduleList["Find Apps"]["Find Apps"] = module;
+            
+              // We've instantiated a new module which needs to be added
+              bAddModules = true;
             }
 
             // Add My Apps module if the user has permission
@@ -386,6 +389,9 @@ qx.Class.define("aiagallery.main.Gui",
 
               moduleList["My Apps"] = {}; 	
               moduleList["My Apps"]["My Apps"] = module;
+
+              // We've instantiated a new module which needs to be added
+              bAddModules = true;
             }
 
             // Add Profile page if user has permission
@@ -415,6 +421,9 @@ qx.Class.define("aiagallery.main.Gui",
 
               moduleList["Profile"] = {}; 	      
               moduleList["Profile"]["Profile"] = module;
+
+              // We've instantiated a new module which needs to be added
+              bAddModules = true;
             }
             
             // Determine whether they have access to the database
