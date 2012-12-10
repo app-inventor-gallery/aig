@@ -323,19 +323,6 @@ qx.Class.define("aiagallery.main.Gui",
 
             // Add Find Apps if a user has the permissions
             bAllowed = false;
-            [ 
-              // These permissions allow access to the page
-              "appQuery",
-              "intersectKeywordAndQuery"
-              
-            ].forEach(
-              function(rpcFunc)
-              {
-                if (qx.lang.Array.contains(e.permissions, rpcFunc))
-                {
-                  bAllowed = true;
-                }
-              });
 
             // Add My Apps module if the user has permission
             bAllowed = false;
@@ -371,6 +358,9 @@ qx.Class.define("aiagallery.main.Gui",
 
               moduleList["My Apps"] = {}; 	
               moduleList["My Apps"]["My Apps"] = module;
+
+              // We've instantiated a new module which needs to be added
+              bAddModules = true;
             }
 
             // Add Profile page if user has permission
@@ -400,6 +390,9 @@ qx.Class.define("aiagallery.main.Gui",
 
               moduleList["Profile"] = {}; 	      
               moduleList["Profile"]["Profile"] = module;
+
+              // We've instantiated a new module which needs to be added
+              bAddModules = true;
             }
             
             // Determine whether they have access to the database
