@@ -312,10 +312,14 @@ qx.Class.define("aiagallery.main.Gui",
             _this.whoAmI.setDisplayName(e.displayName);
             _this.whoAmI.setHasSetDisplayName(e.hasSetDisplayName);
             _this.whoAmI.setLogoutUrl(e.logoutUrl);
+            _this.whoAmI.setAnonymous(e.isAnonymous);
 
             // Save the user's permissions
             application = qx.core.Init.getApplication();
             application.setUserData("permissions", e.permissions);
+
+            // Update the saved whoami
+            qx.core.Init.getApplication().setUserData("whoAmI", _this.whoAmI); 
 
             // Prepare to add management modules if permissions allow it.
             moduleList = {};

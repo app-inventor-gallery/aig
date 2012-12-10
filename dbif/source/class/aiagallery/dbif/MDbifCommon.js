@@ -275,12 +275,6 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // Do per-method authorization.
       switch(methodName)
       {
-      case "getAppList" :
-      case "appQuery" :
-      case "getAppListByList" :
-      case "getComments" :
-      case "keywordSearch" :
-        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
       //
       // MApps
       //
@@ -332,7 +326,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MTags
       //
       case "getCategoryTags":
-        //return true;            // Anonymous access
+        return true;            // Anonymous access
 
       //
       // MVisitors

@@ -71,7 +71,7 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
                                ? qx.lang.Array.clone(whoami.permissions)
                                : []),
           hasSetDisplayName : whoami.hasSetDisplayName,
-          isAnonymous       : false
+          isAnonymous       : whoami.isAnonymous
         };
 
       return ret;
