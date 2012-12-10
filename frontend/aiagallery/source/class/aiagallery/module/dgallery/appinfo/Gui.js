@@ -418,9 +418,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         this.byAuthor.setModel(model);
 
         model = qx.data.marshal.Json.createModel(result.appTagsLists[2]);
-        // FIXME : error running this on local source
-        this.byTags.setModel(model);
-
 
         // Generate tagging sidebar(s) based on specific tags of this app
         var tagsHolder = result.appTags;
