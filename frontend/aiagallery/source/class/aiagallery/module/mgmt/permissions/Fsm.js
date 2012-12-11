@@ -340,12 +340,14 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Fsm",
           // Trim ancillary whitespace and remove entirely blank entries
           for (var i = addresses.length - 1; i >= 0; i--)
           {
-            addresses[i] = qx.lang.String.trim(addresses[i]);
+            // Trim, meanwhile convert string to lower case for ease of mgmt
+            addresses[i] = qx.lang.String.trim(addresses[i].toLowerCase());
             if (addresses[i].length === 0)
             {
               qx.lang.Array.removeAt(addresses, i);
             }
           }
+          alert(addresses);
           
           // Determine which button was pressed, to decide whether to grant or
           // remove whitelist membership. If the target of the event was the

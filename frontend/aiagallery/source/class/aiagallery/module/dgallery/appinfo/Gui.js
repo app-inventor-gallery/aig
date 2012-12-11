@@ -191,6 +191,30 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       vbox.add(o);
 */
 
+
+      // Spacer before the label
+      // vbox.add(new qx.ui.core.Spacer(10, 10));
+
+      this.sidebarLabel = new qx.ui.basic.Label("Check out the apps in sidebar!");
+      this.sidebarLabel.set(
+        {
+          font          : font,
+          rich         : true,
+          width        : 350,
+          paddingBottom : 6
+        });
+      vbox.add(this.sidebarLabel);
+
+      // Android-green line
+      o = new qx.ui.container.Composite();
+      o.set(
+        {
+          height    : 4,
+          backgroundColor : "#a5c43c"
+        });
+      vbox.add(o);
+
+
       var byAuthorTab = new qx.ui.tabview.Page("By this author", "aiagallery/test.png");
       byAuthorTab.setLayout(new qx.ui.layout.VBox());
 
@@ -410,13 +434,20 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         model = qx.data.marshal.Json.createModel(result.byAuthor);
         this.byAuthor.setModel(model);
 
-        model = qx.data.marshal.Json.createModel(result.appTagsLists[2]);
-        this.byTags.setModel(model);
-
 
         // Generate tagging sidebar(s) based on specific tags of this app
         var tagsHolder = result.appTags;
         var tlHolder = result.appTagsLists;
+
+        var sidebarText = 
+        [
+          "This app is tagged with ",
+          tagsHolder,
+          ". Check out the similarly tagged apps in the sidebar below!"
+        ].join("");
+        this.sidebarLabel.setFont(new qx.bom.Font(16));
+        this.sidebarLabel.setValue(sidebarText);
+
 
         for (i = 0; i < tagsHolder.length; i++)
         {
@@ -424,8 +455,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
             tagsHolder[i], "aiagallery/test.png");
           tagTabHolder.setLayout(new qx.ui.layout.VBox());
           tagTabHolder.setShowCloseButton(true);
-//          tagTabHolder.add(new qx.ui.basic.Label(tagsHolder[i]));
-//          tagTabHolder.add(new qx.ui.basic.Label(tlHolder[i]));
 
           // Add the list for other apps by the tags
           var byTagsHolder = new qx.ui.list.List();

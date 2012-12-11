@@ -243,7 +243,7 @@ qx.Class.define("aiagallery.module.mgmt.permissions.Gui",
       this.whitelistAddrs.set(
         {
           width  : 200,
-          height : 200
+          height : 400
         });
       fsm.addObject("whitelistAddrs", 
                     this.whitelistAddrs, 
