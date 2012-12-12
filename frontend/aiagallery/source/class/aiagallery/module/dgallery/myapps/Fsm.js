@@ -213,7 +213,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
 	      syncCache = memcacheServiceFactory.getMemcacheService();	
 
               // Make sure to clear memcache for this app's data of all sorts
-              var testvar = false;
+/**              var testvar = false;
               testvar = syncCache.delete(key_app);
               if (testvar) {
                 alert(key_app);
@@ -221,6 +221,8 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
                 alert("Oops");
                 alert(key_app);
               }
+**/
+              syncCache.delete(key_app);
               syncCache.delete(key_flag);
               syncCache.delete(key_likes);
               syncCache.delete(key_byauthor);

@@ -168,33 +168,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       vbox = new qx.ui.container.Composite(new qx.ui.layout.VBox());
       canvas.add(vbox, { row : 0, column : 1, rowSpan : 2 });
       
-/*
-
-      // Android-green line
-      o = new qx.ui.container.Composite();
-      o.set(
-        {
-          height    : 4,
-          backgroundColor : "#a5c43c"
-        });
-      vbox.add(o);
-
-      // Spacer before the label
-      vbox.add(new qx.ui.core.Spacer(10, 10));
-
-      o = new qx.ui.basic.Label("By this author");
-      o.set(
-        {
-          font          : font,
-          paddingBottom : 6
-        });
-      vbox.add(o);
-*/
-
-
-      // Spacer before the label
-      // vbox.add(new qx.ui.core.Spacer(10, 10));
-
+      // A label for reminding users what to do
       this.sidebarLabel = new qx.ui.basic.Label("Check out the apps in sidebar!");
       this.sidebarLabel.set(
         {
@@ -260,89 +234,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
           }
         });
 
-//      vbox.add(this.byAuthor, { flex : 1 });
       byAuthorTab.add(this.byAuthor, {flex : 1});
       this.tabView.add(byAuthorTab);
-
-
-/*      // Create the by-this-author area
-      vbox = new qx.ui.container.Composite(new qx.ui.layout.VBox());
-      canvas.add(vbox, { row : 0, column : 3, rowSpan : 2 });
-
-      // Android-green line
-      o = new qx.ui.container.Composite();
-      o.set(
-        {
-          height    : 4,
-          backgroundColor : "#a5c43c"
-        });
-      vbox.add(o);
-
-      // Spacer before the label
-      vbox.add(new qx.ui.core.Spacer(10, 10));
-
-      o = new qx.ui.basic.Label("Tag Panel");
-      o.set(
-        {
-          font          : font,
-          paddingBottom : 6
-        });
-      vbox.add(o);
-*/
-
-/*
-      var byTagsTab = new qx.ui.tabview.Page("Manual fill", "aiagallery/test.png");
-      byTagsTab.setLayout(new qx.ui.layout.VBox());
-
-      // Add the list for other apps by the tags
-      this.byTags = new qx.ui.list.List();
-      this.byTags.set(
-        {
-          itemHeight : 130,
-          labelPath  : "title",
-          iconPath   : "image1",
-          delegate   :
-          {
-
-            createItem : function()
-            {
-              return new aiagallery.widget.SearchResult("byAuthor");
-            },
-            
-            bindItem : function(controller, item, id) 
-            {
-              [
-                "uid",
-                "image1",
-                "title",
-                "numLikes",
-                "numDownloads",
-                "numViewed",
-                "numComments",
-                "displayName"
-              ].forEach(
-                function(name)
-                {
-                  controller.bindProperty(name, name, null, item, id);
-                });
-            },
-
-            configureItem : qx.lang.Function.bind(
-              function(item) 
-              {
-                // Listen for clicks on the title or image, to view the app
-                item.addListener("viewApp", fsm.eventListener, fsm);
-              },
-              this)
-          }
-        });
-
-//      vbox.add(this.byTags, { flex : 1 });
-      byTagsTab.add(this.byTags, {flex : 1});
-      this.tabView.add(byTagsTab);
-*/
-
-
 
 
       vbox.add(this.tabView);
