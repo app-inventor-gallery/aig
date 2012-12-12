@@ -2752,7 +2752,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       }
   
 
-      // beta002: Experiment with app engine's Memcache.
+      // Initializing variables for app engine's Memcache.
       var memcacheServiceFactory;
       var syncCache;
       var value;
@@ -2799,9 +2799,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 	      // Setting up the recommended ErrorHandler
 	      //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
 
-	      // Before calling getData(), check if the uid already exists in memcache
+	      // Before calling getData(), check if the appObject already exists in memcache
 	      value = syncCache.get(key_app); 
-	      // If not, we call getData(), and put the stuff in memcache
+	      // If not, we call getData() and put the stuff in memcache later
+              // For now we just mark the flag as true
 	      if (value == null) {
 	        bCache = true; // true: we need to cache this search
 	      } else {
@@ -2904,7 +2905,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 		likesList = JSON.parse(value);
 	      }
 
-        } else { // make the database call normally if we are not running on app engine
+        } else { 
+        // make the database call normally if we are not running on app engine
           
           likesList = liberated.dbif.Entity.query("aiagallery.dbif.ObjLikes",
                                                 criteria, null);
@@ -3028,7 +3030,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                                 criteria, null);
         }
 
-        // beta002: Memcache the byAuthor list here.
+        // Memcache the byAuthor list here.
         if (byAuthorCache) {
           ret.byAuthor = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
                                                 criteria, null);
@@ -3110,7 +3112,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         {
 
 
-        // beta002: Only use memcache if we are on Google App Engine.
+        // Only use memcache if we are on Google App Engine.
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
 	      value = syncCache.get(key_comments);
@@ -3175,7 +3177,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             };
                  
 
-        // beta002: Only use memcache if we are on Google App Engine.
+        // Only use memcache if we are on Google App Engine.
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
 	      value = syncCache.get(key_commentsflag);

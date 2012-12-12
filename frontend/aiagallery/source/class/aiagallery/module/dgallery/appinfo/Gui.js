@@ -413,12 +413,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         //   byAuthor      : ApppInfo array of other apps by this author
 
         result = response.data.result;
-
-        // Tagging stuff
-        // This line correctly displays the array of arrays of maps.
-//	alert(JSON.stringify(result.appTagsLists));
-        // This line will not display and will block page to load rest of data.
-//	alert(JSON.stringify(result.appTagsLists.getItem(0))); 
         
 
         // Retrieve and save the source file URL... then delete it from the
