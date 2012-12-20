@@ -139,7 +139,7 @@ qx.Class.define("aiagallery.main.WhoAmI",
       //if(bAnon)
       // Create header before we know if the user is  
       // a real user or not
-      if(email == "anonymous")
+      if(email == "Guest")
       {
         var loginStr = this.tr("Login to create apps and comment"); 
         // if it is the anon user will have a 

@@ -86,7 +86,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
         this.setWhoAmI(
           {
             id                : "",
-            email             : "anonymous",
+            email             : "Guest",
             displayName       : "",
             isAdmin           : false,
             logoutUrl         : userService.createLoginURL("/"),

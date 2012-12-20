@@ -585,9 +585,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         
         if(who.isAnonymous())
         {
-          // Remove the comment buttons
+          // Remove the comment buttons and field
           this.butAddComment.destroy();
           this.butCancelComment.destroy(); 
+          this.textNewComment.destroy(); 
 
           // Disable flag and likeit buttons
           this.searchResult.getChildControl("likeIt").set(
