@@ -312,7 +312,7 @@ qx.Class.define("aiagallery.main.Gui",
             _this.whoAmI.setDisplayName(e.displayName);
             _this.whoAmI.setHasSetDisplayName(e.hasSetDisplayName);
             _this.whoAmI.setLogoutUrl(e.logoutUrl);
-            _this.whoAmI.setAnonymous(e.isAnonymous);
+            _this.whoAmI.setIsAnonymous(e.isAnonymous);
 
             // Save the user's permissions
             application = qx.core.Init.getApplication();

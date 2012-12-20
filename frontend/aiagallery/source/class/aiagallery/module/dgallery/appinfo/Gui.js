@@ -583,7 +583,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         // Disable the add comment button
         who = qx.core.Init.getApplication().getUserData("whoAmI");
         
-        if(who.isAnonymous())
+        if(who.getIsAnonymous())
         {
           // Remove the comment buttons and field
           this.butAddComment.destroy();

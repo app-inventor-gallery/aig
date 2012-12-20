@@ -26,7 +26,9 @@ qx.Class.define("aiagallery.dbif.DbifSim",
     this.__rpc = new liberated.sim.Rpc("/rpc");
         
     // Save the logged-in user. The whoAmI property is in MDbifCommon.
-/* Login as an anon user for now */ 
+    // If you want to test the anonymous user code use the second setWhoAmI
+    // If you want to test a regular user use the first.
+
     this.setWhoAmI(
       {
         id                : "1001",
@@ -162,7 +164,7 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           else if (result.username == "anonymous")
           {
             // Anon user
-            displayName = "anonymous";
+            displayName = "Guest";
             bHasSetDisplayName = true;
             permissions = ""; 
             bAnon = true; 
@@ -190,7 +192,8 @@ qx.Class.define("aiagallery.dbif.DbifSim",
                   "aiagallery.dbif.DbifSim.changeWhoAmI();"
                 ].join(""),
               permissions       : permissions,
-              hasSetDisplayName : bHasSetDisplayName
+              hasSetDisplayName : bHasSetDisplayName,
+              isAnonymous       : true
             });
           }
           else 
@@ -221,6 +224,7 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           guiWhoAmI.setHasSetDisplayName(bHasSetDisplayName);
           guiWhoAmI.setLogoutUrl(
             "javascript:aiagallery.dbif.DbifSim.changeWhoAmI();");
+          //guiWhoAmI.setIsAnonymous(result.isAnonymous); 
 
           // FIXME : If the user went from anonymous to a real user
           // we need to reload the GUI so that the other modules load

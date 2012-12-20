@@ -102,7 +102,7 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
         // Nope.
         return({
                  id                : "",
-                 email             : "anonymous"
+                 email             : "Guest"
                });
       }
       
