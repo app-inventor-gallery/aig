@@ -121,7 +121,13 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
           birthMonth        : meData.birthMonth,
           org               : meData.organization,
           url               : meData.url,
-          showEmail         : meData.showEmail 
+          showEmail         : meData.showEmail,
+          updateOnAppComment           : meData.updateOnAppComment,
+          updateCommentFrequency       : meData. updateCommentFrequency,
+          updateOnAppLike              : meData.updateOnAppLike,
+          updateOnAppLikeFrequency     : meData.updateOnAppLikeFrequency, 
+          updateOnAppDownload          : meData.updateOnAppDownload,
+          updateOnAppDownloadFrequency : meData.updateOnAppDownloadFrequency
         };
 
       return ret;

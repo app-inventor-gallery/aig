@@ -341,7 +341,13 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
           "location",
           "bio",
           "url",
-          "showEmail"
+          "showEmail",
+          "updateOnAppComment",
+          "updateCommentFrequency",
+          "updateOnAppLike",
+          "updateOnAppLikeFrequency",
+          "updateOnAppDownload",
+          "updateOnAppDownloadFrequency"
         ];
       
       // Find out who we are
@@ -399,7 +405,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                   if (whoami.displayName != profileParams.displayName) 
                   {
                     this.__updateNameInCache(whoami.displayName, profileParams.displayName);   
-		  }
+                  }
                   
                   return true;
                 }

@@ -37,6 +37,10 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       var             hBox; 
       var             vBoxBtn;
       var             hBoxDob; 
+      var             vBoxOptions;
+      var             vBoxOptionLike;
+      var             vBoxOptionDownload;
+      var             vBoxOptionComment; 
 
       // GUI objects 
       var             label;
@@ -150,7 +154,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // Do not let users edit this field for now
       //this.emailField.setReadOnly(true); 
 
-      // Create friendly name to get username field from the FSM
+      // Create friendly name to get this option from the FSM
       fsm.addObject("emailField", 
          this.emailField,"main.fsmUtils.disable_during_rpc");
 
@@ -270,6 +274,115 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // Disable button on startup since no changes will have been made
       //this.submitBtn.setEnabled(false);
 
+      // Create a layout to list options for a user
+      layout = new qx.ui.layout.VBox();
+      layout.setSpacing(10);      
+      vBoxOptions = new qx.ui.container.Composite(layout);     
+
+      // Create a label for describing the options section
+      label = new qx.ui.basic.Label(this.tr("User Options"));
+      label.setFont("bold"); 
+      vBoxOptions.add(label); 
+
+      label = new qx.ui.basic.Label(this.tr("Recieve an email if:"));
+      vBoxOptions.add(label);       
+
+      // Layout to store both the checkbox and frequency dropdown
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(15);      
+      vBoxOptionLike = new qx.ui.container.Composite(layout);
+
+      // Checkbox to get updates if an app of theirs is liked
+      // by deafult this is unchecked 
+      this.likedAppCheck = 
+        new qx.ui.form.CheckBox(this.tr("Authored app is liked"));
+
+      // Create friendly name to get this option from FSM
+      fsm.addObject("likedAppCheck", 
+         this.likedAppCheck,"main.fsmUtils.disable_during_rpc");
+
+      // Set Frequency
+      this.likedAppUpdateFrequency = new qx.ui.form.SelectBox();
+      this.likedAppUpdateFrequency.add(new qx.ui.form.ListItem(this.tr("Every...")));
+      this.likedAppUpdateFrequency.add(new qx.ui.form.ListItem(String(1)));
+      this.likedAppUpdateFrequency.add(new qx.ui.form.ListItem(String(5)));
+      this.likedAppUpdateFrequency.add(new qx.ui.form.ListItem(String(10)));
+      this.likedAppUpdateFrequency.add(new qx.ui.form.ListItem(String(25)));
+      this.likedAppUpdateFrequency.add(new qx.ui.form.ListItem(String(100))); 
+
+      // Create friendly name to get the frequency from FSM
+      fsm.addObject("likedAppUpdateFrequency", 
+         this.likedAppUpdateFrequency,"main.fsmUtils.disable_during_rpc");
+
+      // Add to layout
+      vBoxOptionLike.add(this.likedAppCheck);
+      vBoxOptionLike.add(this.likedAppUpdateFrequency);
+      vBoxOptions.add(vBoxOptionLike); 
+
+      // Layout to store both the checkbox and frequency dropdown
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(15);      
+      vBoxOptionComment = new qx.ui.container.Composite(layout);
+
+      // Checkbox to get updates if an app of theirs is commented on
+      // by deafult this is unchecked 
+      this.commentAppCheck = 
+        new qx.ui.form.CheckBox(this.tr("Comment on authored app"));
+
+      // Create friendly name to get this option from FSM
+      fsm.addObject("commentAppCheck", 
+         this.commentAppCheck,"main.fsmUtils.disable_during_rpc");
+
+      // Set Frequency
+      this.commentAppUpdateFrequency = new qx.ui.form.SelectBox();
+      this.commentAppUpdateFrequency.add(new qx.ui.form.ListItem(this.tr("Every...")));
+      this.commentAppUpdateFrequency.add(new qx.ui.form.ListItem(String(1)));
+      this.commentAppUpdateFrequency.add(new qx.ui.form.ListItem(String(5)));
+      this.commentAppUpdateFrequency.add(new qx.ui.form.ListItem(String(10)));
+      this.commentAppUpdateFrequency.add(new qx.ui.form.ListItem(String(25)));
+      this.commentAppUpdateFrequency.add(new qx.ui.form.ListItem(String(100))); 
+
+      // Create friendly name to get the frequency from FSM
+      fsm.addObject("commentAppUpdateFrequency", 
+         this.commentAppUpdateFrequency,"main.fsmUtils.disable_during_rpc");
+
+      // Add to layout
+      vBoxOptionComment.add(this.commentAppCheck);
+      vBoxOptionComment.add(this.commentAppUpdateFrequency);
+      vBoxOptions.add(vBoxOptionComment); 
+
+      // Layout to store both the checkbox and frequency dropdown
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(15);      
+      vBoxOptionDownload = new qx.ui.container.Composite(layout);
+
+      // Checkbox to get updates if an app of theirs is downloaded on
+      // by deafult this is unchecked 
+      this.downloadAppCheck = 
+        new qx.ui.form.CheckBox(this.tr("Download on authored app"));
+
+      // Create friendly name to get this option from FSM
+      fsm.addObject("downloadAppCheck", 
+         this.downloadAppCheck,"main.fsmUtils.disable_during_rpc");
+
+      // Set Frequency
+      this.downloadAppUpdateFrequency = new qx.ui.form.SelectBox();
+      this.downloadAppUpdateFrequency.add(new qx.ui.form.ListItem(this.tr("Every...")));
+      this.downloadAppUpdateFrequency.add(new qx.ui.form.ListItem(String(1)));
+      this.downloadAppUpdateFrequency.add(new qx.ui.form.ListItem(String(5)));
+      this.downloadAppUpdateFrequency.add(new qx.ui.form.ListItem(String(10)));
+      this.downloadAppUpdateFrequency.add(new qx.ui.form.ListItem(String(25)));
+      this.downloadAppUpdateFrequency.add(new qx.ui.form.ListItem(String(100)));
+
+      // Create friendly name to get the frequency from FSM
+      fsm.addObject("downloadAppUpdateFrequency", 
+         this.downloadAppUpdateFrequency,"main.fsmUtils.disable_during_rpc");
+
+      // Add to layout
+      vBoxOptionDownload.add(this.downloadAppCheck);
+      vBoxOptionDownload.add(this.downloadAppUpdateFrequency);
+      vBoxOptions.add(vBoxOptionDownload); 
+
       // Overall layout
       layout = new qx.ui.layout.HBox();
       layout.setSpacing(10);      
@@ -281,8 +394,14 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // Give some flex space
       hBox.add(new qx.ui.core.Spacer(25)); 
 
-      // Add to hBox bio field
+      // Add hBox bio field to hBox
       hBox.add(vBoxBio);
+
+      // Give some flex space
+      hBox.add(new qx.ui.core.Spacer(25)); 
+
+      // Add options layout to overall layout
+      hBox.add(vBoxOptions); 
 
       // Add to main canvas
       canvas.add(hBox);
@@ -417,6 +536,58 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
           if (userProfile.showEmail == 1)
           {
             this.showEmailCheck.setValue(true); 
+          }
+
+          // Set user options
+          // send email on app likes
+          if(userProfile.updateOnAppLike == 1)
+          {
+            this.likedAppCheck.setValue(true);
+
+            // Set selction on frequency
+            var children = this.likedAppUpdateFrequency.getChildren();
+            for(var i = 0; i < children.length; i++)
+            {
+              if(children[i].getLabel() == userProfile.updateOnAppLikeFrequency)
+              {
+                this.likedAppUpdateFrequency.setSelection([children[i]]);
+                break; 
+              }
+            }
+          }
+
+          // send email on app comments
+          if(userProfile.updateOnAppComment == 1)
+          {
+            this.commentAppCheck.setValue(true);
+
+            // Set selction on frequency
+            var children = this.commentAppUpdateFrequency.getChildren();
+            for(var i = 0; i < children.length; i++)
+            {
+              if(children[i].getLabel() == userProfile.updateCommentFrequency)
+              {
+                this.commentAppUpdateFrequency.setSelection([children[i]]);
+                break; 
+              }
+            }
+          }
+
+          // send email on app downloads
+          if(userProfile.updateOnAppDownload == 1)
+          {
+            this.downloadAppCheck.setValue(true);
+
+            // Set selction on frequency
+            var children = this.downloadAppUpdateFrequency.getChildren();
+            for(var i = 0; i < children.length; i++)
+            {
+              if(children[i].getLabel() == userProfile.updateOnAppDownloadFrequency)
+              {
+                this.downloadAppUpdateFrequency.setSelection([children[i]]);
+                break; 
+              }
+            }
           }
 
           // All done
