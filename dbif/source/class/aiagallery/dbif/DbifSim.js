@@ -28,7 +28,7 @@ qx.Class.define("aiagallery.dbif.DbifSim",
     // Save the logged-in user. The whoAmI property is in MDbifCommon.
     // If you want to test the anonymous user code use the second setWhoAmI
     // If you want to test a regular user use the first.
-
+/**/
     this.setWhoAmI(
       {
         id                : "1001",

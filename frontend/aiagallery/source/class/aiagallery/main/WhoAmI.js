@@ -149,13 +149,13 @@ qx.Class.define("aiagallery.main.WhoAmI",
         var loginStr = this.tr("Login to create apps and comment"); 
         // if it is the anon user will have a 
         // logout url set to go to the google login
-        control.setValue("<a href='" + value + "'>" + loginStr +"</a>"); 
+        control.setValue("<a href='" + who.getLogoutUrl() + "'>" + loginStr +"</a>"); 
       } else {	  
         if (control) 
         {
           // Reload the page on logouts
           //control.setValue("<a href='javascript:history.go(0)'>Logout</a>");
-          control.setValue("<a href='" + value + "'>Logout</a>"); 
+          control.setValue("<a href='" + who.getLogoutUrl() + "'>Logout</a>"); 
         }
       }
     },
