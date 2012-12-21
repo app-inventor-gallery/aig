@@ -237,6 +237,10 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
         delete profile.email;
       }
 
+      // Do not show DOB info for now
+      delete profile.birthYear;
+      delete profile.birthMonth; 
+
       return profile;
     }
 

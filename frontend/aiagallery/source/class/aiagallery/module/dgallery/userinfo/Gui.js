@@ -58,15 +58,6 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       layout.setSpacing(10);      
       vBoxText = new qx.ui.container.Composite(layout);
       
-      // Create a composite to hold all the user data pairs 
-      //layout = new qx.ui.layout.HBox();
-      //layout.setSpacing(10);      
-      //hBoxDataPieceName = new qx.ui.container.Composite(layout);     
-
-      // Create a label for the username  
-      //label = new qx.ui.basic.Label(this.tr("Username:"));
-      //hBoxDataPieceName.add(label);
-      
       // Create username label
       this.userNameField = new qx.ui.basic.Label("");
       this.userNameField.setFont(font); 
@@ -91,7 +82,8 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       hBoxDataPieceDOB.add(this.dobYearField);
 
       // Add data pairs to layout
-      vBoxText.add(hBoxDataPieceDOB); 
+      // Disable DOB info for now
+      //vBoxText.add(hBoxDataPieceDOB); 
 
       layout = new qx.ui.layout.HBox();
       layout.setSpacing(10);      
@@ -164,10 +156,6 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       layout.setSpacing(10);      
       vBoxBio = new qx.ui.container.Composite(layout);
 
-      // Add some space for name
-      //vBoxBio.add(new qx.ui.basic.Label(""));
-      //vBoxBio.add(new qx.ui.core.Spacer(20));
-
       // Create a label for describing the bio text area
       label = new qx.ui.basic.Label(this.tr("About this user:"));
       label.setFont("bold"); 
@@ -185,6 +173,9 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
         }
       );
       vBoxBio.add(this.bioTextArea); 
+
+      // Space between box and app ribbon
+      vBoxBio.add(new qx.ui.core.Spacer(30)); 
 
       // Overall layout
       layout = new qx.ui.layout.HBox();
@@ -294,9 +285,9 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
         
         // Set values from RPC call 
         this.userNameField.setValue(user.displayName);
-
+        
         // 1 means show email 
-        if (user.showEmail == 1)
+        if (user.showEmail)
         {
           this.emailField.set(
             {
@@ -306,7 +297,8 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
               wrap  : true
             });
         }
- 
+
+        /* Disable showing birth information
         if (user.birthYear != null && user.birthYear != 0) 
         {
           this.dobYearField.setValue(String(user.birthYear)); 
@@ -316,6 +308,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
         {
           this.dobMonthField.setValue(user.birthMonth + ","); 
         }
+        */
 
         if (user.location != null)
         {
