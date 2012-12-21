@@ -78,7 +78,7 @@ qx.Mixin.define("aiagallery.dbif.MDownloads",
                   // They do so send an email
                   var props = new java.util.Properties();
                   var session = javax.mail.Session.getDefaultInstance(props, null);
-                  var msgBody = "The application " + appDataObj.title + ", " +
+                  var msgBody = "Your application " + appDataObj.title + ", " +
                                 " has a been downloaded. You are up to " + 
                                 appDataObj.numDownloads + " downloads. Keep up the good work"; 
   

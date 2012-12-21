@@ -220,10 +220,18 @@ qx.Mixin.define("aiagallery.dbif.MComments",
                   var props = new java.util.Properties();
                   var session = 
                     javax.mail.Session.getDefaultInstance(props, null);
-                  var msgBody = "The application " + parentAppData.title + ", "
+                  // Create App Link
+                  var appLink = "http://mit-appinventor-gallery.appspot.com/#page";
+                  var appLinkFrag = "=App&uid=" + parentAppData.uid
+                                    + "&label=" + parentAppData.title; 
+
+                  appLink += encodeURIComponent(appLinkFrag);
+
+                  var msgBody = "Your application " + parentAppData.title + ", "
                                 + " has a new comment by " 
                                 + commentObjData.displayName + ". " 
-                                + "The comment is: " + commentObjData.text; 
+                                + "The comment is: " + commentObjData.text
+                                + ". \n Visit your app here: " + appLink; 
 
                   var msg = new javax.mail.internet.MimeMessage(session);
 
