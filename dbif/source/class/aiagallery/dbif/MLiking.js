@@ -157,7 +157,7 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
 
                   default:
                     // We are not using appengine
-                    console.log("We would have sent an email if we were on appengine."); 
+                    this.debug("We would have sent an email if we were on appengine."); 
                     break; 
                 }
               }

@@ -84,7 +84,8 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       var             myTreeId;
       var             parentList;
       var             parentNumChildren;
-        
+      var             visitorObj;
+      var             visitorDataObj;
         
       // Determine who the logged-in user is
       whoami = this.getWhoAmI();
@@ -183,6 +184,72 @@ qx.Mixin.define("aiagallery.dbif.MComments",
 
           // Add his display name, for return.
           commentObjData.displayName     = whoami.displayName;
+
+          // If the author has requested to be notified on app comments 
+	  // do so now
+          // Get the authors updateOnAppComment flag
+          visitorObj = new aiagallery.dbif.ObjVisitors(parentAppData.owner); 
+
+          // Author must exist
+          if(!visitorObj.getBrandNew())
+          {
+            // Get the application data
+            visitorDataObj = visitorObj.getData();
+
+            // Do they want a notification on likes
+            if(visitorDataObj.updateOnAppComment)
+            {
+              /* FIXME : Frequency not enabled at this time. 
+              // Only send an email if the frequency is reached
+              if(appDataObj.numLikes % 
+                 visitorDataObj.updateCommentFrequency == 0)
+              {
+              }
+              */
+
+              // If we're on App Engine we can use java code 
+              // if not we cannot send the email
+              switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+              {
+                case "appengine":
+                  // They do so send an email
+                  var props = new java.util.Properties();
+                  var session = 
+                    javax.mail.Session.getDefaultInstance(props, null);
+                  var msgBody = "The application " + parentAppData.title + ", "
+                                + " has a new comment by " 
+                                + commentObjData.displayName + ". " 
+                                + "The comment is: " + commentObjData.text; 
+
+                  var msg = new javax.mail.internet.MimeMessage(session);
+
+                  // The sender email must be either the logged in user or 
+                  // an administrator of the project. 
+                  msg.setFrom(new javax.mail.internet.InternetAddress(
+                              "cpuwhiz11@gmail.com",
+                              "App Inventor Gallery Admin"));
+
+                  // Revipient is the owner of the app being liked 
+                  msg.addRecipient(javax.mail.Message.RecipientType.TO,
+                                   new javax.mail.internet.InternetAddress(
+                                     visitorDataObj.email,
+                                     "Author or App"));
+                  msg.setSubject("An app you authored has been commented on");
+                  msg.setText(msgBody);
+
+                  // Send the message
+                  javax.mail.Transport.send(msg);
+
+                  break;
+
+                default:
+                  // We are not using appengine
+                  this.debug("We would have sent an email if "
+			     + "we were on appengine."); 
+                  break; 
+              }
+            }
+          }
 
           // Remove the visitor field
           delete commentObjData.visitor;
