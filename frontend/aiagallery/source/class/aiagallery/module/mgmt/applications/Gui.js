@@ -406,7 +406,7 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
         var viewCountData = 0;
         var dlCountData = 0;
         var likeCountData = 0;
-        for (i = 0; i < response.data.result.apps.length; i++)
+        for (var i = 0; i < response.data.result.apps.length; i++)
         {
           viewCountData += response.data.result.apps[i].numViewed;
           dlCountData += response.data.result.apps[i].numDownloads;

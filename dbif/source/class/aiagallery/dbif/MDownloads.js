@@ -6,6 +6,10 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
+/*
+#ignore(javax.*)
+ */
+
 qx.Mixin.define("aiagallery.dbif.MDownloads",
 {
   members :

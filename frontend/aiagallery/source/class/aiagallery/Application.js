@@ -11,6 +11,7 @@
 /*
 #require(aiagallery.dbif.DbifSim)
 #use(aiagallery.main.AbstractModule)
+#ignore(aiagallery.module.testing.temp)
 */
 
 /**

@@ -336,7 +336,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         this.sidebarLabel.setValue(sidebarText);
 
 
-        for (i = 0; i < tagsHolder.length; i++)
+        for (var i = 0; i < tagsHolder.length; i++)
         {
           var tagTabHolder = new qx.ui.tabview.Page(
             tagsHolder[i], "aiagallery/test.png");

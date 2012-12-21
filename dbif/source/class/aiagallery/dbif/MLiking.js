@@ -6,6 +6,10 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
+/*
+#ignore(javax.*)
+ */
+
 qx.Mixin.define("aiagallery.dbif.MLiking",
 {
   construct : function()
@@ -131,7 +135,7 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
                     // They do so send an email
                     var props = new java.util.Properties();
                     var session = javax.mail.Session.getDefaultInstance(props, null);
-                    var msgBody = "The application " + appDataObj.title + ", " + " was liked by someone. " +
+                    var msgBody = "Your application " + appDataObj.title + ", " + " was liked by someone. " +
                                   "Keep up the good work, you are up to " + appDataObj.numLikes + " likes."; 
 
                     var msg = new javax.mail.internet.MimeMessage(session);

@@ -8,6 +8,10 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
+/*
+#ignore(com.google.*)
+ */
+
 qx.Mixin.define("aiagallery.dbif.MApps",
 {
   construct : function()
@@ -3059,7 +3063,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       ret.appTagsLists = [];
 
       // for each tag in the tag list...
-      for (i = 0; i < ret.appTags.length; i++) {
+      for (var i = 0; i < ret.appTags.length; i++) {
 
         // Find all active apps by this tag
         criteria = {

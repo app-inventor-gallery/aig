@@ -6,6 +6,10 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
+/*
+#ignore(com.google.*)
+ */
+
 qx.Mixin.define("aiagallery.dbif.MVisitors",
 {
   construct : function()
