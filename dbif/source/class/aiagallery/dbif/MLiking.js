@@ -121,7 +121,7 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
                 // Only send an email if the frequency is reached
                 if(appDataObj.numLikes % visitorDataObj.updateOnAppLikeFrequency == 0)
                 {
-		}
+                }
                 */
 
                 // If we're on App Engine we can use java code if not we cannot send the email

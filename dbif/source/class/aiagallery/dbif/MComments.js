@@ -186,7 +186,7 @@ qx.Mixin.define("aiagallery.dbif.MComments",
           commentObjData.displayName     = whoami.displayName;
 
           // If the author has requested to be notified on app comments 
-	  // do so now
+          // do so now
           // Get the authors updateOnAppComment flag
           visitorObj = new aiagallery.dbif.ObjVisitors(parentAppData.owner); 
 
@@ -245,7 +245,7 @@ qx.Mixin.define("aiagallery.dbif.MComments",
                 default:
                   // We are not using appengine
                   this.debug("We would have sent an email if "
-			     + "we were on appengine."); 
+                             + "we were on appengine."); 
                   break; 
               }
             }
