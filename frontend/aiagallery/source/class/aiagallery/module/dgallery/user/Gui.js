@@ -316,7 +316,8 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
 
       // Add to layout
       vBoxOptionLike.add(this.likedAppCheck);
-      vBoxOptionLike.add(this.likedAppUpdateFrequency);
+      // Turn of frequency for now 
+      //vBoxOptionLike.add(this.likedAppUpdateFrequency);
       vBoxOptions.add(vBoxOptionLike); 
 
       // Layout to store both the checkbox and frequency dropdown
@@ -348,7 +349,8 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
 
       // Add to layout
       vBoxOptionComment.add(this.commentAppCheck);
-      vBoxOptionComment.add(this.commentAppUpdateFrequency);
+      // Turn of frequency for now
+      //vBoxOptionComment.add(this.commentAppUpdateFrequency);
       vBoxOptions.add(vBoxOptionComment); 
 
       // Layout to store both the checkbox and frequency dropdown
@@ -380,7 +382,8 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
 
       // Add to layout
       vBoxOptionDownload.add(this.downloadAppCheck);
-      vBoxOptionDownload.add(this.downloadAppUpdateFrequency);
+      // Turn of frequency for now
+      //vBoxOptionDownload.add(this.downloadAppUpdateFrequency);
       vBoxOptions.add(vBoxOptionDownload); 
 
       // Overall layout
