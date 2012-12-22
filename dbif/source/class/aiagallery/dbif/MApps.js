@@ -3072,10 +3072,15 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         var tlist = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
                                                  criteria, null);
 
+
+
         // Add the author's display name to each app
         tlist.forEach(
           function(app) {
-            app.displayName = owners[0].displayName || "<>";
+            // Issue owner query for EACH app (expensive)
+            each_owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                           app.owner);
+            app.displayName = each_owners[0].displayName || "<>";
             delete app.owner; // Remove the owner field
         });
 
