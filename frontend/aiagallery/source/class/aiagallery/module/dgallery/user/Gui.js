@@ -27,7 +27,8 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
     {
       var             o;
       var             fsm = module.fsm;
-      var             canvas = module.canvas;
+      var             canvas;
+      var             outerCanvas = module.canvas;
 
       // Layouts
       var             layout; 
@@ -46,9 +47,17 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       var             label;
       var             submitBtn;
 
+      outerCanvas.setLayout(new qx.ui.layout.VBox());	
+      var scrollContainer = new qx.ui.container.Scroll();	
+      outerCanvas.add(scrollContainer, { flex : 1 });
+
       // Create a layout for this page
+      canvas = new qx.ui.container.Composite(new qx.ui.layout.VBox(30));
       canvas.setLayout(new qx.ui.layout.VBox());   
-   
+
+      // Put layout in a scroller
+      scrollContainer.add(canvas, {flex : 1});       
+
       // Create a vertical layout just for the textfields and labels.
       layout = new qx.ui.layout.VBox();
       layout.setSpacing(15);      
@@ -239,6 +248,18 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
         height       : 400,
         maxLength    : 500
       });
+ 
+      // Update character count as text is entered
+      this.bioTextArea.addListener("input", 
+        function(e) { 
+          var curLen = this.bioTextArea.getValue().length;
+          //var totalLen = parseInt(this.bioWarningLabel.getValue());
+
+          var newLen = Math.abs(curLen - 500); 
+          this.bioWarningLabel.setValue(newLen.toString() 
+            + this.tr(" Characters left")); 
+        }, this); 
+
       vBoxBio.add(this.bioTextArea);
 
       // Set friendly name so we can get the text area value later
@@ -247,8 +268,9 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
                     "main.fsmUtils.disable_during_rpc");
 
       // Warning about character limit
-      label = new qx.ui.basic.Label(this.tr("500 Character Limit"));
-      vBoxBio.add(label);
+      this.bioWarningLabel = 
+        new qx.ui.basic.Label(this.tr("500 Character Limit"));
+      vBoxBio.add(this.bioWarningLabel);
 
       // Button layout
       layout = new qx.ui.layout.VBox();
@@ -412,7 +434,6 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // Add Btn layout
       canvas.add(vBoxBtn); 
 
-
     },
 
     
@@ -496,6 +517,12 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
           if (userProfile.bio != null)
           {
             this.bioTextArea.setValue(userProfile.bio);
+
+            // Set remaining amount of enterable characters if any
+            // Limit is 500.
+            var len = 500 - parseInt(userProfile.bio.length); 
+            this.bioWarningLabel.setValue(len.toString()
+              + this.tr(" Characters left"));
           }
 
           if (userProfile.org != null)
