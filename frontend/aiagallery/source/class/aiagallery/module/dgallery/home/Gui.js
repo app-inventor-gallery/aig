@@ -33,6 +33,10 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var             outerCanvas = module.canvas;
       var             scroller;
       var             motdLabel; 
+      var             searchTextField;
+      var             searchLayout; 
+      var             searchButton; 
+      var             searchLabel; 
       
       outerCanvas.setLayout(new qx.ui.layout.VBox());
       var scrollContainer = new qx.ui.container.Scroll();
@@ -193,6 +197,48 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           decorator    : homepageBG
         });
       vbox.add(this.welcomingLabel);
+      
+      // Create a simple search from the home page
+      searchLabel = new qx.ui.basic.Label(this.tr("Search for an App"));
+      
+      // Create a large bold font
+      var searchFont = 
+        qx.theme.manager.Font.getInstance().resolve("bold").clone();
+      font.setSize(16);
+
+      searchLabel.setFont(font);
+      vbox.add(searchLabel);
+
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(5);      
+      searchLayout = new qx.ui.container.Composite(layout);
+
+      searchTextField = new qx.ui.form.TextField;
+      searchTextField.setWidth(300); 
+
+      searchButton = new qx.ui.form.Button(this.tr("Search"));
+
+      // Excute a search when the user clicks the button
+      searchButton.addListener("execute", function(e) {
+        var query = 
+        {
+          title : [searchTextField.getValue()]
+        }; 
+
+        // Initiate a search
+        aiagallery.main.Gui.getInstance().selectModule(
+        {
+          page  : aiagallery.main.Constant.PageName.FindApps,
+          query : qx.lang.Json.stringify(query)
+        });
+      }, this);
+
+      // Add button and search text field to layout
+      searchLayout.add(searchTextField);
+      searchLayout.add(searchButton);
+
+      // Add search layout to main layout
+      vbox.add(searchLayout);
 /**      
       // Add a top spacer
       vbox.add(new qx.ui.core.Spacer(), { flex : 1 });
