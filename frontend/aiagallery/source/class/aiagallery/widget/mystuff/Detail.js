@@ -98,7 +98,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         maxLength   : aiagallery.dbif.Constants.FieldLength.Description,
         height      : 60,
         required    : true,
-        placeholder : "Enter a brief description"
+        placeholder : this.tr("Enter a brief description (480 Character Limit)")
       });
     o.addListener(
       "input",

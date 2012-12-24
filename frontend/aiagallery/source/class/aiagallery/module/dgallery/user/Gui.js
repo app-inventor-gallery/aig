@@ -246,7 +246,8 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       {
         width        : 300,
         height       : 400,
-        maxLength    : 500
+        maxLength    : aiagallery.dbif.Constants.FieldLength.Bio,
+        placeholder  : this.tr("Tell people about yourself")
       });
  
       // Update character count as text is entered
@@ -255,7 +256,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
           var curLen = this.bioTextArea.getValue().length;
           //var totalLen = parseInt(this.bioWarningLabel.getValue());
 
-          var newLen = Math.abs(curLen - 500); 
+          var newLen = Math.abs(curLen - aiagallery.dbif.Constants.FieldLength.Bio); 
           this.bioWarningLabel.setValue(newLen.toString() 
             + this.tr(" Characters left")); 
         }, this); 
@@ -282,7 +283,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
         new qx.ui.form.Button(this.tr("Save Changes"));
       this.submitBtn.set(
       {
-        maxHeight : 24,
+        maxHeight    : 24,
         maxWidth     : 150
       });
       vBoxBtn.add(new qx.ui.core.Spacer(25)); 
@@ -520,7 +521,8 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
 
             // Set remaining amount of enterable characters if any
             // Limit is 500.
-            var len = 500 - parseInt(userProfile.bio.length); 
+            var len = aiagallery.dbif.Constants.FieldLength.Bio
+                       - parseInt(userProfile.bio.length); 
             this.bioWarningLabel.setValue(len.toString()
               + this.tr(" Characters left"));
           }

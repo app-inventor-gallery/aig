@@ -73,7 +73,8 @@ qx.Class.define("aiagallery.dbif.Constants",
       Title       : 30,
       Description : 480,
       Tags        : 20,
-      Comment     : 480
+      Comment     : 480,
+      Bio         : 480
     },
 
     /** Mapping of FlagType names to values */

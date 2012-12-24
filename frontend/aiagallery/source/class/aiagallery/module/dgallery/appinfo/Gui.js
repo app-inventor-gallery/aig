@@ -42,6 +42,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       var             commentsGrid;
       var             vbox;
       var             font;
+      var             vBoxComments;
+      var             commentBoxAndCountLayout;
 
       //
       // The overall layout if a grid, where the left portion has the
@@ -117,8 +119,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       this.textNewComment = new qx.ui.form.TextArea();
       this.textNewComment.set(
         {
-          height    : 60,
-          maxLength : 1000
+          height        : 60,
+          maxLength     : aiagallery.dbif.Constants.FieldLength.Comment,
+          placeholder   : this.tr("Talk about this app")
         });
       this.textNewComment.addListener("input",
                                       this._onInputOrChange,
@@ -127,7 +130,21 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
                                       this._onInputOrChange, 
                                       this);
       fsm.addObject("textNewComment", this.textNewComment);
-      commentsGrid.add(this.textNewComment,
+
+      // Implement and add updating label to tell a user how many
+      // characters they have left
+      this.commentCountLabel = new qx.ui.basic.Label(this.tr("480 Characters Left"));
+
+      // Layout to hold count and text area
+      this.commentBoxAndCountLayout = new qx.ui.layout.VBox();
+      this.commentBoxAndCountLayout.setSpacing(5);      
+      vBoxComments = new qx.ui.container.Composite(this.commentBoxAndCountLayout);
+
+      // Add both count label and comment text area to this layout
+      vBoxComments.add(this.textNewComment);
+      vBoxComments.add(this.commentCountLabel);   
+
+      commentsGrid.add(vBoxComments,
                        { row : 3, column : 0, colSpan : 3 });
       
       // Add the Add button
@@ -244,10 +261,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 //beta002 ends
 
 
-
-
-
-
     /**
      * Event handler for input or changeValue events. Enables or disables the
      * Add and Cancel buttons depending on whether text has been entered.
@@ -258,10 +271,17 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
     _onInputOrChange : function(e)
     {
       var             value;
+      var             charsLeft;
 
+      // Disable or enable buttons based on how much text is entered
+      // into the text area
       value = qx.lang.String.trim(this.textNewComment.getValue());
       this.butAddComment.setEnabled(!!(value && value.length > 0));
       this.butCancelComment.setEnabled(!!(value && value.length > 0));
+
+      // Update label as text is entered
+      charsLeft = Math.abs(aiagallery.dbif.Constants.FieldLength.Comment - value.length);
+      this.commentCountLabel.setValue(charsLeft.toString() + this.tr(" Characters Left"));
     },
 
     /**
