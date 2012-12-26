@@ -7,10 +7,6 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
-/*
-#ignore(javax.*)
- */
-
 qx.Mixin.define("aiagallery.dbif.MComments",
 {
   construct : function()
@@ -201,68 +197,32 @@ qx.Mixin.define("aiagallery.dbif.MComments",
             visitorDataObj = visitorObj.getData();
 
             // Do they want a notification on likes
-            if(visitorDataObj.updateOnAppComment)
+            // and they did not post the comment
+            if(visitorDataObj.updateOnAppComment )//&& 
+              //commentObjData.displayName != visitorDataObj.displayName)
             {
               /* FIXME : Frequency not enabled at this time. 
               // Only send an email if the frequency is reached
               if(appDataObj.numLikes % 
-                 visitorDataObj.updateCommentFrequency == 0)
+                visitorDataObj.updateCommentFrequency == 0)
               {
               }
               */
 
-              // If we're on App Engine we can use java code 
-              // if not we cannot send the email
-              switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
-              {
-                case "appengine":
-                  // They do so send an email
-                  var props = new java.util.Properties();
-                  var session = 
-                    javax.mail.Session.getDefaultInstance(props, null);
-                  // Create App
-		  var appLink = "http://mit-appinventor-gallery.appspot.com/#page";
+              var msgBody = "Your application " + parentAppData.title + ","
+                            + " has a new comment by " 
+                            + commentObjData.displayName + "." 
+                            + "\nThe comment is: " + commentObjData.text;
 
-                  // Test link 
-                  //var appLink = "http://paulstest02.usf-appinventor-gallery.appspot.com/#page";
-                  var appLinkFrag = "=App&uid=" + parentAppData.uid
-                                    + "&label=" + parentAppData.title; 
+              var subject = "You have a new comment "
+			    + "at the MIT App Inventor Gallery";
 
-                  appLink += encodeURIComponent(appLinkFrag);
+              // Call system function to send mail
+              this.sendEmail(msgBody, subject, 
+                             visitorDataObj.email,
+                             parentAppData);
 
-                  var msgBody = "Your application " + parentAppData.title + ","
-                                + " has a new comment by " 
-                                + commentObjData.displayName + ". " 
-                                + "The comment is: " + commentObjData.text
-                                + ". \n Visit your app here: " + appLink; 
 
-                  var msg = new javax.mail.internet.MimeMessage(session);
-
-                  // The sender email must be either the logged in user or 
-                  // an administrator of the project. 
-                  msg.setFrom(new javax.mail.internet.InternetAddress(
-                              "cpuwhiz11@gmail.com",
-                              "App Inventor Gallery Admin"));
-
-                  // Revipient is the owner of the app being liked 
-                  msg.addRecipient(javax.mail.Message.RecipientType.TO,
-                                   new javax.mail.internet.InternetAddress(
-                                     visitorDataObj.email,
-                                     "Author or App"));
-                  msg.setSubject("An app you authored has been commented on");
-                  msg.setText(msgBody);
-
-                  // Send the message
-                  javax.mail.Transport.send(msg);
-
-                  break;
-
-                default:
-                  // We are not using appengine
-                  this.debug("We would have sent an email if "
-                             + "we were on appengine."); 
-                  break; 
-              }
             }
           }
 
@@ -495,7 +455,7 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       commentObj = new aiagallery.dbif.ObjComments([appId, treeId]);
       
       // Get data
-      commentObjData = commentObj.getBrandNew()
+      commentObjData = commentObj.getBrandNew();
       
       // Does this comment exist?
       if (commentObjData)

@@ -196,7 +196,8 @@ qx.Class.define("aiagallery.dbif.Constants",
       // MSystem
       //
       "getMotd" : "Get the message of the day",
-      "setMotd" : "Set the message of the day"
+      "setMotd" : "Set the message of the day",
+      "sendEmail" : "Send email to a user"
     },
     
     // Log messages. Comments above each are required parameters

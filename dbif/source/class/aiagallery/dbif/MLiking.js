@@ -6,10 +6,6 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
-/*
-#ignore(javax.*)
- */
-
 qx.Mixin.define("aiagallery.dbif.MLiking",
 {
   construct : function()
@@ -123,47 +119,23 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
               {
                 /* FIXME : Frequency not enabled at this time. 
                 // Only send an email if the frequency is reached
-                if(appDataObj.numLikes % visitorDataObj.updateOnAppLikeFrequency == 0)
+                if(appDataObj.numLikes 
+                   % visitorDataObj.updateOnAppLikeFrequency == 0)
                 {
                 }
                 */
 
-                // If we're on App Engine we can use java code if not we cannot send the email
-                switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
-                {
-                  case "appengine":
-                    // They do so send an email
-                    var props = new java.util.Properties();
-                    var session = javax.mail.Session.getDefaultInstance(props, null);
-                    var msgBody = "Your application " + appDataObj.title + ", " + " was liked by someone. " +
-                                  "Keep up the good work, you are up to " + appDataObj.numLikes + " likes."; 
+                var msgBody = "Congratulations, your app " + appDataObj.title 
+                              + " has been liked. "
+                              + "Keep up the good work, you are up to " 
+                              + appDataObj.numLikes + " likes."; 
 
-                    var msg = new javax.mail.internet.MimeMessage(session);
+                var subject = "You app is liked at the MIT App Inventor Gallery";
 
-                    // The sender email must be either the logged in user or 
-                    // an administrator of the project. 
-                    msg.setFrom(new javax.mail.internet.InternetAddress(
-                                "cpuwhiz11@gmail.com",
-                                "App Inventor Gallery Admin"));
+                // Call system function to send mail
+                this.sendEmail(msgBody, subject, 
+                               visitorDataObj.email, appDataObj);
 
-                    // Revipient is the owner of the app being liked 
-                    msg.addRecipient(javax.mail.Message.RecipientType.TO,
-                                     new javax.mail.internet.InternetAddress(
-                                       visitorDataObj.email,
-                                       "Author or App"));
-                    msg.setSubject("An app you made was liked");
-                    msg.setText(msgBody);
-
-                    // Send the message
-                    javax.mail.Transport.send(msg);
-
-                    break;
-
-                  default:
-                    // We are not using appengine
-                    this.debug("We would have sent an email if we were on appengine."); 
-                    break; 
-                }
               }
             }
 

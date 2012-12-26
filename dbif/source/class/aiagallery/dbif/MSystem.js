@@ -9,6 +9,7 @@
 
 /*
 #ignore(com.google.*)
+#ignore(javax.*)
  */
 
 qx.Mixin.define("aiagallery.dbif.MSystem",
@@ -23,6 +24,9 @@ qx.Mixin.define("aiagallery.dbif.MSystem",
                          this.setMotd,
                          [ "motdContent" ]);
 
+    this.registerService("aiagallery.features.sendEmail",
+                         this.sendEmail,
+                         [ "msg", "subject", "userEmail", "appObj" ]);
   },
 
   members :
@@ -128,6 +132,79 @@ qx.Mixin.define("aiagallery.dbif.MSystem",
        // Return the string motd
        return systemObjData.motd || ""; 
      
+     },
+
+    /**
+     * Send an email to notify a user of an event
+     * 
+     * @param msg {String} the string message body to be sent
+     * 
+     * @param subject {String} the email subject line
+     * 
+     * @param userEmail {String} the user email to send mail to
+     * 
+     * @param appObj {ObjAppData} app related to msg. If included
+     *   add link info to msg
+     * 
+     */
+     sendEmail : function(msg, subject, userEmail, appObj)
+     {
+       // If we're on App Engine we can use java code 
+       // if not we cannot send the email, write to console
+       switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+       {
+         case "appengine":
+           // They do so send an email
+           var props = new java.util.Properties();
+           var session = 
+             javax.mail.Session.getDefaultInstance(props, null);
+
+           var msgFinal = new javax.mail.internet.MimeMessage(session);
+
+           // The sender email must be either the logged in user or 
+           // an administrator of the project. 
+           msgFinal.setFrom(new javax.mail.internet.InternetAddress(
+                       "cpuwhiz11@gmail.com",
+                       "App Inventor Gallery Admin"));
+
+           // Revipient is the owner of the app being liked 
+           msgFinal.addRecipient(javax.mail.Message.RecipientType.TO,
+                           new javax.mail.internet.InternetAddress(
+                             userEmail,
+                             "Author or App"));
+
+           msgFinal.setSubject(subject);
+            
+           // If there is an included appObj construct the app link
+           // to include with the msg
+           if(appObj)
+           {
+             var appLink = "http://mit-appinventor-gallery.appspot.com/#page";
+
+             // Test link 
+             //var appLink = 
+             //"http://paulstest02.usf-appinventor-gallery.appspot.com/#page";
+             var appLinkFrag = "=App&uid=" + appObj.uid
+                                + "&label=" + appObj.title; 
+
+             appLink += encodeURIComponent(appLinkFrag);
+
+             msg += "\nVisit your app: " + appLink; 
+           }
+
+           msgFinal.setText(msg);
+
+           // Send the message
+           javax.mail.Transport.send(msgFinal);
+
+           break;
+
+         default:
+           // We are not using appengine
+           this.debug("We would have sent an email if "
+                      + "we were on appengine."); 
+           break; 
+       }
      }
-  }
+  } 
 }); 
