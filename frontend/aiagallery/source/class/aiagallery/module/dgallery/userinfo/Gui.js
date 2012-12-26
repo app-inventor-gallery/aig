@@ -90,9 +90,9 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       hBoxDataPieceEmail = new qx.ui.container.Composite(layout);   
 
       // Create a label for describing the email field
-      label = new qx.ui.basic.Label(this.tr("Email:"));
-      label.setFont("bold"); 
-      hBoxDataPieceEmail.add(label);
+      this.emailLabel = new qx.ui.basic.Label(this.tr("Email:"));
+      this.emailLabel.setFont("bold"); 
+      hBoxDataPieceEmail.add(this.emailLabel);
       
       // Create email label
       this.emailField = new qx.ui.basic.Label("");
@@ -297,6 +297,11 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
               wrap  : true
             });
         }
+        else 
+        {
+          // Remove email label as user does not want to show email
+          this.emailLabel.destroy(); 
+	}
 
         /* Disable showing birth information
         if (user.birthYear != null && user.birthYear != 0) 

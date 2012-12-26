@@ -77,6 +77,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       this.userNameField.set(
       {
         maxWidth     : 200,
+        maxLength    : aiagallery.dbif.Constants.FieldLength.User,
         filter : /[a-zA-Z0-9 _-]/
       });
       vBoxText.add(this.userNameField);      
@@ -188,6 +189,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       this.locationField = new qx.ui.form.TextField;
       this.locationField.set(
       {
+        maxLength    : aiagallery.dbif.Constants.FieldLength.User,
         maxWidth     : 200
       });
       vBoxText.add(this.locationField);      
@@ -205,6 +207,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       this.orgField = new qx.ui.form.TextField;
       this.orgField.set(
       {
+        maxLength    : aiagallery.dbif.Constants.FieldLength.User,
         maxWidth     : 200
       });
       vBoxText.add(this.orgField);      
@@ -222,6 +225,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       this.urlField = new qx.ui.form.TextField;
       this.urlField.set(
       {
+        maxLength    : aiagallery.dbif.Constants.FieldLength.User,
         width     : 300
       });
       vBoxText.add(this.urlField);      
@@ -303,11 +307,11 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       vBoxOptions = new qx.ui.container.Composite(layout);     
 
       // Create a label for describing the options section
-      label = new qx.ui.basic.Label(this.tr("User Options"));
+      label = new qx.ui.basic.Label(this.tr("User Options:"));
       label.setFont("bold"); 
       vBoxOptions.add(label); 
 
-      label = new qx.ui.basic.Label(this.tr("Recieve an email if:"));
+      label = new qx.ui.basic.Label(this.tr("Notify me by email if:"));
       vBoxOptions.add(label);       
 
       // Layout to store both the checkbox and frequency dropdown
@@ -318,7 +322,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // Checkbox to get updates if an app of theirs is liked
       // by deafult this is unchecked 
       this.likedAppCheck = 
-        new qx.ui.form.CheckBox(this.tr("Authored app is liked"));
+        new qx.ui.form.CheckBox(this.tr("My app is liked"));
 
       // Create friendly name to get this option from FSM
       fsm.addObject("likedAppCheck", 
@@ -351,7 +355,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // Checkbox to get updates if an app of theirs is commented on
       // by deafult this is unchecked 
       this.commentAppCheck = 
-        new qx.ui.form.CheckBox(this.tr("Comment on authored app"));
+        new qx.ui.form.CheckBox(this.tr("My app is commented on"));
 
       // Create friendly name to get this option from FSM
       fsm.addObject("commentAppCheck", 
@@ -384,7 +388,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // Checkbox to get updates if an app of theirs is downloaded on
       // by deafult this is unchecked 
       this.downloadAppCheck = 
-        new qx.ui.form.CheckBox(this.tr("Download on authored app"));
+        new qx.ui.form.CheckBox(this.tr("My app is downloaded"));
 
       // Create friendly name to get this option from FSM
       fsm.addObject("downloadAppCheck", 
