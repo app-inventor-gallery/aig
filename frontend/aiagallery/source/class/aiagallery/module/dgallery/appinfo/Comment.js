@@ -260,6 +260,31 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             
           // Add to comment  
           this._add(this.deleteCommentButton, { row : 2, column : 2 });
+
+          // Visit app info page
+          this.visitCommentButton = 
+            new qx.ui.form.Button(this.tr("Visit App"));
+            this.visitCommentButton.set(
+            {
+              maxHeight      : 50,
+              maxWidth       : 200
+            });
+            
+          // Create listener to catch click and send to fsm
+          this.visitCommentButton.addListener(
+            "click",
+            function(e)
+            {
+            
+              // Fire our own event to capture this click
+              this.fsm.fireImmediateEvent(
+                "visitComment", this, commentToFlagData);
+ 
+            }, 
+            this);
+            
+          // Add to comment  
+          this._add(this.visitCommentButton, { row : 2, column : 3 });
             
         } 
         else 
