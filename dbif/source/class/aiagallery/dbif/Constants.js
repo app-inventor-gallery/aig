@@ -92,6 +92,16 @@ qx.Class.define("aiagallery.dbif.Constants",
       "Comment"
     ],
 
+    /** List of dissalowed usernames */
+    unallowedNames : 
+    [
+      "admin", 
+      "administrator", 
+      "guest", 
+      "superuser", 
+      "root"
+    ],
+
     /** Mapping of permission names to descriptions */
     Permissions :
     {

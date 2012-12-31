@@ -37,12 +37,6 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
   
   statics :
   {
-    /*
-     * The following names are not allowed for users
-     */
-    unallowedNames : ["admin", "administrator", "guest", 
-                      "superuser", "root"],
-
     getVisitorPermissions : function(visitorData)
     {
       var             pGroups;
@@ -580,7 +574,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
         error.setCode(2);
         error.setMessage("The displayname you specified: \"" + name +
                        "\" is a restricted username."
-		       + " Please select a different one."); 
+                       + " Please select a different one."); 
         throw error;
       }
 
