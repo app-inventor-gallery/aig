@@ -567,7 +567,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       // Check if name is allowed
       if (qx.lang.Array.contains(
-            aiagallery.dbif.MVisitors.unallowedNames, 
+            aiagallery.dbif.Constants.unallowedNames, 
             name))
       {
         // Name is not valid return error
