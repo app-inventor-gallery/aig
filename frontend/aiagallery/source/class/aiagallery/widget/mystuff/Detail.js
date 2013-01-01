@@ -523,7 +523,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     this.butSaveApp = o;
    
     this.addListener("saveApp", this.__fsm.eventListener, this.__fsm);
-    
+
+    // Add some space between the save button and the reset/discard button
+    form.addButton(new qx.ui.core.Spacer(100));
+
     o = new qx.ui.form.Button("Reset");
     o.set(
       {
