@@ -87,10 +87,10 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
          this.userNameField,"main.fsmUtils.disable_during_rpc");
 
       // DOB label 
-      label = new qx.ui.basic.Label(this.tr("Date of Birth:"));
+      label = new qx.ui.basic.Label(this.tr("Date of Birth (Not Displayed):"));
       label.setFont("bold"); 
       vBoxText.add(label);
-      
+
       // Create a horizantal layout just for the DOB dropdowns
       layout = new qx.ui.layout.HBox();
       layout.setSpacing(5);      
