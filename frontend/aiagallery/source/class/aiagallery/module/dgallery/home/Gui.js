@@ -35,7 +35,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var             motdLabel; 
       var             searchTextField;
       var             searchLayout; 
-      var             searchButton; 
+      var             command; 
       var             searchLabel; 
       
       outerCanvas.setLayout(new qx.ui.layout.VBox());
@@ -216,26 +216,40 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       searchTextField = new qx.ui.form.TextField;
       searchTextField.setWidth(300); 
 
-      searchButton = new qx.ui.form.Button(this.tr("Search"));
+      this.searchButton = new qx.ui.form.Button(this.tr("Search"));
 
       // Excute a search when the user clicks the button
-      searchButton.addListener("execute", function(e) {
-        var query = 
-        {
-          title : [searchTextField.getValue()]
-        }; 
+      this.searchButton.addListener("execute", 
+        function(e) {
+          
+          var searchValue = searchTextField.getValue();
+          // Do not execute an empty search 
+          if (searchValue == null || searchValue.trim() == "")
+          {
+            return;
+	  }
 
-        // Initiate a search
-        aiagallery.main.Gui.getInstance().selectModule(
-        {
-          page  : aiagallery.main.Constant.PageName.FindApps,
-          query : qx.lang.Json.stringify(query)
-        });
-      }, this);
+          var query = 
+          {
+            title : [searchValue]
+          }; 
+
+          // Initiate a search
+          aiagallery.main.Gui.getInstance().selectModule(
+          {
+            page  : aiagallery.main.Constant.PageName.FindApps,
+            query : qx.lang.Json.stringify(query)
+          });
+        }, 
+      this);
+
+      // Allow 'Enter' to fire a search
+      command = new qx.ui.core.Command("Enter");
+      this.searchButton.setCommand(command);
 
       // Add button and search text field to layout
       searchLayout.add(searchTextField);
-      searchLayout.add(searchButton);
+      searchLayout.add(this.searchButton);
 
       // Add search layout to main layout
       vbox.add(searchLayout);
@@ -580,6 +594,14 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       default:
         throw new Error("Unexpected request type: " + requestType);
       }
+    },
+
+    // Retrieve search button.  Used by fsm on appear/disappear
+    // events to enable/disable association with "Enter" key.
+    getSearchButton : function()
+    {
+        return this.searchButton;
     }
+
   }
 });
