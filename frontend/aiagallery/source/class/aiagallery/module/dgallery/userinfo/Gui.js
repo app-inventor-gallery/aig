@@ -17,6 +17,8 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
 
   members :
   {
+    __flagItListener : null,
+
     /**
      * Build the raw graphical user interface.
      *
@@ -234,6 +236,30 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       scroller.add(this.authoredAppsContainer);
 
       canvas.add(authoredApps);
+
+      // Flag a user for having inappropriate content
+      this.flagItLabel = new qx.ui.basic.Label(this.tr("Flag this Profile"));
+      font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+      font.set(
+        {
+          color      : "#75940c",     // android-green-dark
+          decoration : "underline"
+        });
+
+      this.flagItLabel.set(
+        {
+          maxHeight   : 30,
+          textColor   : null, 
+          font        : font, 
+          toolTipText : this.tr("Flag this user profile")
+        });
+
+      this.__flagItListener = 
+        this.flagItLabel.addListener("flagIt", fsm.eventListener, fsm);
+
+      canvas.add(this.flagItLabel); 
+
+
     },
 
     
@@ -382,6 +408,25 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
            }  
          }
 
+        break;
+
+      case "flagIt":
+        // Replace the label
+        this.flagItLabel.set(
+          {
+            value : this.tr("Flagged as inappropriate."),
+            font  : "default"
+          });
+        
+        // Remove the listener.
+        if (this.__flagItListener !== null)
+        {
+          this.flagItLabel.removeListenerById(this.__flagItListener);
+          this.__flagItListener = null;
+        }
+
+        // Reset the cursor
+        this.flagItLabel.setCursor("default");
         break;
 
       default:

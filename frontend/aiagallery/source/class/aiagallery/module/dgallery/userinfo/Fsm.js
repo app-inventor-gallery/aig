@@ -79,6 +79,8 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Fsm",
               qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
           },
 
+          "flagIt" : "Transition_Idle_to_AwaitRpcResult_via_flagUserProfile",  
+
           // When we get a disappear event
           "disappear" :
           {
@@ -192,6 +194,46 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Fsm",
           aiagallery.module.dgallery.appinfo.AppInfo.addAppView(item.uid, 
                                                                item.title);
 
+        }
+      });
+      
+      state.addTransition(trans);
+      
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_flagUserProfile",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var             userString;
+          var             reason;
+          var             map;
+          
+          // Get the data map
+          map = event.getData();
+          
+          // Break out the map
+          userString = map.appId;
+          reason = map.reason; 
+
+          var request =
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "flagIt",
+                         [ 
+                           // flag type: 3 = user
+                           aiagallery.dbif.Constants.FlagType.User,     
+                           reason,  // reason
+                           userName // String of the user's name
+                         ]);
+
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "flagIt");
         }
       });
       
