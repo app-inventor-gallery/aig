@@ -324,7 +324,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
         aiagallery.main.Constant.flagType.Comment, this);
 
       win.show();
-
     },
 
     // Property apply.

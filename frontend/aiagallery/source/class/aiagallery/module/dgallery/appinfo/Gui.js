@@ -567,11 +567,22 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         if (this.__flagItListener !== null)
         {
           this.searchResult.removeListenerById(this.__flagItListener);
+
+          // Remove click listener from label
+          this.searchResult.getChildControl("flagIt")
+            .removeListenerById(this.searchResult.eventList); 
           this.__flagItListener = null;
         }
         
         // Reset the cursor
         this.searchResult.getChildControl("flagIt").setCursor("default");
+
+         // Display message that app has been flagged
+        warningText = this.tr("This app has been flagged.") +
+                      this.tr(" An admin will review it.");
+        
+        dialog.Dialog.warning(warningText); 
+
         break;
 
       case "flagComment" :

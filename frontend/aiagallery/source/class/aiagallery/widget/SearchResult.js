@@ -679,7 +679,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
         this._add(control, this.gridConfig.likeIt);
         break;
         
-      case "flagIt":
+      case "flagIt":      
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.set(
           {
@@ -693,14 +693,18 @@ qx.Class.define("aiagallery.widget.SearchResult",
           });
         
         // Fire a "flagIt" event when this label is clicked
-        control.addListener(
+        this.eventList = control.addListener(
           "click",
           function(e)
           {
-            this.fireEvent("flagIt");
+            var win = new aiagallery.widget.FlagPopUp(
+              aiagallery.main.Constant.flagType.App, this);
+
+            win.show();
           },
           this);
         this._add(control, this.gridConfig.flagIt);
+               
         break;
 
       case "download":

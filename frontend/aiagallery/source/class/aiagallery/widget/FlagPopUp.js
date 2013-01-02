@@ -42,10 +42,10 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
       
       // Based on the type create a message
       instructionText = "Flagging a " + type + " means you think\n the " + type 
-			+ " does not reach the level of\n discourse suitable "
-			+ "for the gallery.\n <br><br>"
+                        + " does not reach the level of\n discourse suitable "
+                        + "for the gallery.\n <br><br>"
                         +"Please enter a reason why you think this "
-			+ type + " should be removed:"; 
+                        + type + " should be removed:"; 
 
       // Add info about flagging
       instructionLabel = new qx.ui.basic.Label().set(
@@ -89,8 +89,7 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
           switch(type)
           {
             // Switch based on type of flag we are sending
-            // Also set the fsm string we are going to fire 
-            // in a second or so
+            // Also work specific to the type of flag
             case aiagallery.main.Constant.flagType.Comment:
               // Package up data for fsm in a map
               flagData = 
@@ -100,19 +99,30 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
                 "reason" : _reasonField.getValue()
               };
 
-              eventToFire = "flagComment";
+              // Fire our own event to capture this click
+              page.fsm.fireImmediateEvent(
+                "flagComment", page, flagData);
+
+              // Change label of flag button to show user has flagged comment
+              page.flagComment.set(
+                {
+                  value       : this.tr("Comment Flagged"), 
+                  font        : "default", 
+                  textColor   : "black", 
+                  toolTipText : null
+                });
+
+              // Remove listener, if needed, so it cannot be clicked
+              if(page.flagCommentListener !== null)
+              {
+                page.flagComment.removeListenerById(page.flagCommentListener); 
+              }
 
               break;
 
             case aiagallery.main.Constant.flagType.App:
-              // Package up data for fsm in a map
-              flagData = 
-              {
-                "appId"  : page.appId,
-                "reason" : _reasonField.getValue()
-              };
-
-              eventToFire = "flagIt";
+              // Fire our own event to capture this click
+              page.fireEvent("flagIt"); 
 
               break;
 
@@ -124,7 +134,9 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
                 "reason"     : _reasonField.getValue()
               };
 
-              eventToFire = "flagProfile";
+              // Fire our own event to capture this click
+              page.fsm.fireImmediateEvent(
+                "flagProfile", page, flagData);
 
               break; 
           }
@@ -132,26 +144,7 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
           this.close();
 
           // Clear out text field
-          _reasonField.setValue(""); 
-      
-          // Fire our own event to capture this click
-          page.fsm.fireImmediateEvent(
-            eventToFire, page, flagData);
-
-          // Change label of flag button to show user has flagged comment
-          page.flagComment.set(
-            {
-              value       : this.tr("Comment Flagged"), 
-              font        : "default", 
-              textColor   : "black", 
-              toolTipText : null
-            });
-          
-          // Remove listener, if needed, so it cannot be clicked
-          if(page.flagCommentListener !== null)
-          {
-            page.flagComment.removeListenerById(page.flagCommentListener); 
-          }
+          _reasonField.setValue("");              
  
         },
         this); 
@@ -184,8 +177,7 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
       // Add the button bar to the window
       this.add(hBox);
 
-      // Center and show the window
+      // Center the window
       this.center(); 
-      //this.show(); 
    }
 });
