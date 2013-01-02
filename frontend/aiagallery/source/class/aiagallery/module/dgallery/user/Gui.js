@@ -30,14 +30,34 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       var             canvas;
       var             outerCanvas = module.canvas;
 
+      // Help Popups
+      var             helpString; 
+      var             emailHelpPopup;
+      var             usernameHelpPopup;
+      var             dobHelpPopup; 
+      var             locationHelpPopup;
+      var             orgHelpPopup;
+      var             locHelpPopup;
+      var             urlHelpPopup; 
+      var             bioHelpPopup;
+      var             userOptionHelpPopup;
+
       // Layouts
-      var             layout; 
+      var             layout;
+      var             hBoxUsername;
       var             vBoxText;
       var             vBoxBio;
       var             vBoxEmail; 
+      var             hBoxEmail;
       var             hBox; 
       var             vBoxBtn;
-      var             hBoxDob; 
+      var             hBoxDobLabel;
+      var             hBoxDob;
+      var             hBoxLocation; 
+      var             hBoxOrganization;
+      var             hBoxUrl; 
+      var             hBoxBio;
+      var             hBoxOptions; 
       var             vBoxOptions;
       var             vBoxOptionLike;
       var             vBoxOptionDownload;
@@ -47,8 +67,8 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       var             label;
       var             submitBtn;
 
-      outerCanvas.setLayout(new qx.ui.layout.VBox());	
-      var scrollContainer = new qx.ui.container.Scroll();	
+      outerCanvas.setLayout(new qx.ui.layout.VBox());   
+      var scrollContainer = new qx.ui.container.Scroll();       
       outerCanvas.add(scrollContainer, { flex : 1 });
 
       // Create a layout for this page
@@ -66,11 +86,52 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // variable to store old username
       this.oldName = ""; 
 
+      // Create a hbox layout for the username label and help icon
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(15);      
+      hBoxUsername = new qx.ui.container.Composite(layout);
+
       // Create a label for the username textfield 
       label = new qx.ui.basic.Label(this.tr("Username:"));
       label.setFont("bold"); 
-      vBoxText.add(label);
-      
+      hBoxUsername.add(label);
+
+      // Add imagebutton
+      o = new qx.ui.basic.Image("aiagallery/question_blue.png");
+      o.set(
+        {
+          focusable : true
+        });
+      this.usernameHelpPrompt = o;
+
+      // define the popup we need
+      usernameHelpPopup = new qx.ui.popup.Popup(
+        new qx.ui.layout.Canvas()).set({
+          backgroundColor: "#FFFAD3",
+          padding: [2, 4],
+          offset : 3,
+          offsetBottom : 20
+      });
+
+      // Add a label widget to the popup
+      // Line overflow to avoid compile warning
+      usernameHelpPopup.add(new qx.ui.basic.Label().set({ 
+        value: this.tr("Valid usernames must be between 2 and 30 characters. It must not be admin, administrator, guest, superuser, or root."),
+        rich : true,
+        width: 300 
+      }));
+
+      // bind onClick event for the popup
+      this.usernameHelpPrompt.addListener("click", function(e)
+      {
+          usernameHelpPopup.placeToMouse(e);
+          usernameHelpPopup.show();
+      }, this);
+
+      // Add to layouts
+      hBoxUsername.add(this.usernameHelpPrompt);
+      vBoxText.add(hBoxUsername);
+
       // Create textfield for entering in a username
       // Only allow certain values 
       this.userNameField = new qx.ui.form.TextField;
@@ -78,7 +139,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       {
         maxWidth     : 200,
         maxLength    : aiagallery.dbif.Constants.FieldLength.User,
-        filter : /[a-zA-Z0-9 _-]/
+        filter       : /[a-zA-Z0-9 _-]/
       });
       vBoxText.add(this.userNameField);      
    
@@ -86,10 +147,50 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       fsm.addObject("userNameField", 
          this.userNameField,"main.fsmUtils.disable_during_rpc");
 
+      // Create a hbox layout for the username label and help icon
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(15);      
+      hBoxDobLabel = new qx.ui.container.Composite(layout);
+
       // DOB label 
       label = new qx.ui.basic.Label(this.tr("Date of Birth (Not Displayed):"));
       label.setFont("bold"); 
-      vBoxText.add(label);
+      hBoxDobLabel.add(label);
+
+      // Add imagebutton
+      o = new qx.ui.basic.Image("aiagallery/question_blue.png");
+      o.set(
+        {
+          focusable : true
+        });
+      this.dobHelpPrompt = o;
+
+      // define the popup we need
+      dobHelpPopup = new qx.ui.popup.Popup(
+        new qx.ui.layout.Canvas()).set({
+          backgroundColor: "#FFFAD3",
+          padding: [2, 4],
+          offset : 3,
+          offsetBottom : 20
+      });
+
+      // add a label widget to the popup
+      dobHelpPopup.add(new qx.ui.basic.Label().set({ 
+        value: this.tr("The date of birth info is for site statistics only and"
+	       + " it not displayed."),
+        rich : true,
+        width: 300 
+      }));
+
+      // bind onClick event for the popup
+      this.dobHelpPrompt.addListener("click", function(e)
+      {
+          dobHelpPopup.placeToMouse(e);
+          dobHelpPopup.show();
+      }, this);
+
+      hBoxDobLabel.add(this.dobHelpPrompt);
+      vBoxText.add(hBoxDobLabel); 
 
       // Create a horizantal layout just for the DOB dropdowns
       layout = new qx.ui.layout.HBox();
@@ -142,10 +243,50 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       hBoxDob.add(this.dobYearSBox);
       vBoxText.add(hBoxDob); 
 
+      // Layout for label and help icon
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(10);      
+      hBoxEmail = new qx.ui.container.Composite(layout);
+
       // Create a label for describing the email field
       label = new qx.ui.basic.Label(this.tr("Email:"));
       label.setFont("bold"); 
-      vBoxText.add(label);
+      hBoxEmail.add(label);
+
+      // Add imagebutton
+      o = new qx.ui.basic.Image("aiagallery/question_blue.png");
+      o.set(
+        {
+          focusable : true
+        });
+      this.emailHelpPrompt = o;
+
+      // define the popup we need
+      emailHelpPopup = new qx.ui.popup.Popup(
+        new qx.ui.layout.Canvas()).set({
+          backgroundColor: "#FFFAD3",
+          padding: [2, 4],
+          offset : 3,
+          offsetBottom : 20
+      });
+
+      // Add a label widget to the popup
+      emailHelpPopup.add(new qx.ui.basic.Label().set({ 
+        value: this.tr("Check this box to show your "
+		       + "email on your public profile."),
+        rich : true,
+        width: 300 
+      }));
+
+      // bind onClick event for the popup
+      this.emailHelpPrompt.addListener("click", function(e)
+      {
+          emailHelpPopup.placeToMouse(e);
+          emailHelpPopup.show();
+      }, this);
+
+      hBoxEmail.add(this.emailHelpPrompt);
+      vBoxText.add(hBoxEmail); 
  
       // Create a vertical layout for the email and checkbox 
       layout = new qx.ui.layout.VBox();
@@ -177,14 +318,54 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       fsm.addObject("showEmailCheck", 
          this.showEmailCheck,"main.fsmUtils.disable_during_rpc");
 
-      vBoxEmail.add(this.showEmailCheck);
+      vBoxEmail.add(this.showEmailCheck); 
       vBoxText.add(vBoxEmail); 
+
+      // Layout for the location bar
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(10);      
+      hBoxLocation = new qx.ui.container.Composite(layout);
 
       // Create a label for describing the location field 
       label = new qx.ui.basic.Label(this.tr("Location:"));
       label.setFont("bold"); 
-      vBoxText.add(label);
-      
+      hBoxLocation.add(label);
+
+      // Add imagebutton
+      o = new qx.ui.basic.Image("aiagallery/question_blue.png");
+      o.set(
+        {
+          focusable : true
+        });
+      this.locationHelpPrompt = o;
+
+      // define the popup we need
+      locationHelpPopup = new qx.ui.popup.Popup(
+        new qx.ui.layout.Canvas()).set({
+          backgroundColor: "#FFFAD3",
+          padding: [2, 4],
+          offset : 3,
+          offsetBottom : 20
+      });
+
+      // add a label widget to the popup
+      locationHelpPopup.add(new qx.ui.basic.Label().set({ 
+        value: this.tr("Enter where you are. It could be a state, "
+		       + "a country, or somewhere else."),
+        rich : true,
+        width: 300 
+      }));
+
+      // bind onClick event for the popup
+      this.locationHelpPrompt.addListener("click", function(e)
+      {
+          locationHelpPopup.placeToMouse(e);
+          locationHelpPopup.show();
+      }, this);
+
+      hBoxLocation.add(this.locationHelpPrompt); 
+      vBoxText.add(hBoxLocation);       
+
       // Create textfield for entering in a location
       this.locationField = new qx.ui.form.TextField;
       this.locationField.set(
@@ -192,16 +373,56 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
         maxLength    : aiagallery.dbif.Constants.FieldLength.User,
         maxWidth     : 200
       });
-      vBoxText.add(this.locationField);      
-   
+      vBoxText.add(this.locationField);  
+            
       // Create friendly name to get location field from the FSM
       fsm.addObject("locationField", 
          this.locationField,"main.fsmUtils.disable_during_rpc");
 
+      // Layout for the organization bar
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(10);      
+      hBoxOrganization = new qx.ui.container.Composite(layout);
+
       // Create a label for describing the organization field 
       label = new qx.ui.basic.Label(this.tr("Organization:"));
-      label.setFont("bold"); 
-      vBoxText.add(label);
+      label.setFont("bold");
+      hBoxOrganization.add(label); 
+
+      // Add imagebutton
+      o = new qx.ui.basic.Image("aiagallery/question_blue.png");
+      o.set(
+        {
+          focusable : true
+        });
+      this.orgHelpPrompt = o;
+
+      // define the popup we need
+      orgHelpPopup = new qx.ui.popup.Popup(
+        new qx.ui.layout.Canvas()).set({
+          backgroundColor: "#FFFAD3",
+          padding: [2, 4],
+          offset : 3,
+          offsetBottom : 20
+      });
+
+      // add a label widget to the popup
+      // line overflow to avoid compile warning
+      orgHelpPopup.add(new qx.ui.basic.Label().set({ 
+        value: this.tr("Enter the organization you are affiliated with if you have one. It could be a school, or a company, or something else."),
+        rich : true,
+        width: 300 
+      }));
+
+      // bind onClick event for the popup
+      this.orgHelpPrompt.addListener("click", function(e)
+      {
+          orgHelpPopup.placeToMouse(e);
+          orgHelpPopup.show();
+      }, this);
+
+      hBoxOrganization.add(this.orgHelpPrompt);
+      vBoxText.add(hBoxOrganization); 
       
       // Create textfield for entering in an organization
       this.orgField = new qx.ui.form.TextField;
@@ -216,11 +437,50 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       fsm.addObject("orgField", 
          this.orgField,"main.fsmUtils.disable_during_rpc");
 
+      // Layout for the url label and help icon
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(10);      
+      hBoxUrl = new qx.ui.container.Composite(layout);
+
       // Create a label for describing the URL field 
       label = new qx.ui.basic.Label(this.tr("URL:"));
       label.setFont("bold"); 
-      vBoxText.add(label);
+      hBoxUrl.add(label);
       
+      // Add imagebutton
+      o = new qx.ui.basic.Image("aiagallery/question_blue.png");
+      o.set(
+        {
+          focusable : true
+        });
+      this.urlHelpPrompt = o;
+
+      // define the popup we need
+      urlHelpPopup = new qx.ui.popup.Popup(
+        new qx.ui.layout.Canvas()).set({
+          backgroundColor: "#FFFAD3",
+          padding: [2, 4],
+          offset : 3,
+          offsetBottom : 20
+      });
+
+      // add a label widget to the popup
+      urlHelpPopup.add(new qx.ui.basic.Label().set({ 
+        value: this.tr("Enter your site url if you have one."),
+        rich : true,
+        width: 300 
+      }));
+
+      // bind onClick event for the popup
+      this.urlHelpPrompt.addListener("click", function(e)
+      {
+          urlHelpPopup.placeToMouse(e);
+          urlHelpPopup.show();
+      }, this);
+
+      hBoxUrl.add(this.urlHelpPrompt);
+      vBoxText.add(hBoxUrl); 
+
       // Create textfield for entering in a url
       this.urlField = new qx.ui.form.TextField;
       this.urlField.set(
@@ -234,15 +494,57 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       fsm.addObject("urlField", 
          this.urlField,"main.fsmUtils.disable_during_rpc");
 
-      // Layout for bio box
+      // Main Layout for bio box
       layout = new qx.ui.layout.VBox();
       layout.setSpacing(10);      
       vBoxBio = new qx.ui.container.Composite(layout);
 
+      // Layout for bio box label and help icon
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(10);      
+      hBoxBio = new qx.ui.container.Composite(layout);
+
       // Create a label for describing the bio text area
       label = new qx.ui.basic.Label(this.tr("Describe Yourself:"));
       label.setFont("bold"); 
-      vBoxBio.add(label); 
+      hBoxBio.add(label); 
+
+      // Add imagebutton
+      o = new qx.ui.basic.Image("aiagallery/question_blue.png");
+      o.set(
+        {
+          focusable : true
+        });
+      this.bioHelpPrompt = o;
+
+      // define the popup we need
+      bioHelpPopup = new qx.ui.popup.Popup(
+        new qx.ui.layout.Canvas()).set({
+          backgroundColor: "#FFFAD3",
+          padding: [2, 4],
+          offset : 3,
+          offsetBottom : 20
+      });
+
+      // Add a label widget to the popup
+      // Line overflow to avoid compile warning
+      bioHelpPopup.add(new qx.ui.basic.Label().set({ 
+        value: this.tr("Tell us about yourself, the kind of apps you make, why you make apps, and anything else that floats your fancy."),
+        rich : true,
+        width: 300 
+      }));
+
+      // bind onClick event for the popup
+      this.bioHelpPrompt.addListener("click", function(e)
+      {
+          bioHelpPopup.placeToMouse(e);
+          bioHelpPopup.show();
+      }, this);
+
+      hBoxBio.add(this.bioHelpPrompt);
+
+      // Add to main bio layout 
+      vBoxBio.add(hBoxBio);
 
       // Create textarea for entering in bio
       this.bioTextArea = new qx.ui.form.TextArea;
@@ -258,9 +560,8 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       this.bioTextArea.addListener("input", 
         function(e) { 
           var curLen = this.bioTextArea.getValue().length;
-          //var totalLen = parseInt(this.bioWarningLabel.getValue());
-
-          var newLen = Math.abs(curLen - aiagallery.dbif.Constants.FieldLength.Bio); 
+          var newLen = 
+            Math.abs(curLen - aiagallery.dbif.Constants.FieldLength.Bio); 
           this.bioWarningLabel.setValue(newLen.toString() 
             + this.tr(" Characters left")); 
         }, this); 
@@ -301,15 +602,57 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // Disable button on startup since no changes will have been made
       //this.submitBtn.setEnabled(false);
 
-      // Create a layout to list options for a user
+      // Create a main layout to list options for a user
       layout = new qx.ui.layout.VBox();
       layout.setSpacing(10);      
-      vBoxOptions = new qx.ui.container.Composite(layout);     
+      vBoxOptions = new qx.ui.container.Composite(layout);    
+
+      // Create a layout to list options for a user
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(10);      
+      hBoxOptions = new qx.ui.container.Composite(layout);    
 
       // Create a label for describing the options section
       label = new qx.ui.basic.Label(this.tr("User Options:"));
       label.setFont("bold"); 
-      vBoxOptions.add(label); 
+      hBoxOptions.add(label); 
+
+      // Add imagebutton
+      o = new qx.ui.basic.Image("aiagallery/question_blue.png");
+      o.set(
+        {
+          focusable : true
+        });
+      this.userOptionHelpPrompt = o;
+
+      // define the popup we need
+      userOptionHelpPopup = new qx.ui.popup.Popup(
+        new qx.ui.layout.Canvas()).set({
+          backgroundColor: "#FFFAD3",
+          padding: [2, 4],
+          offset : 3,
+          offsetBottom : 20
+      });
+
+      // add a label widget to the popup
+      userOptionHelpPopup.add(new qx.ui.basic.Label().set({ 
+        value: this.tr("Options for sending emails to the email address"
+		       + " you logged in with."),
+        rich : true,
+        width: 300 
+      }));
+
+      // bind onClick event for the popup
+      this.userOptionHelpPrompt.addListener("click", function(e)
+      {
+          userOptionHelpPopup.placeToMouse(e);
+          userOptionHelpPopup.show();
+      }, this); 
+
+      hBoxOptions.add(this.userOptionHelpPrompt);
+
+      // Add to main layout
+      vBoxOptions.add(hBoxOptions); 
 
       label = new qx.ui.basic.Label(this.tr("Notify me by email if:"));
       vBoxOptions.add(label);       
