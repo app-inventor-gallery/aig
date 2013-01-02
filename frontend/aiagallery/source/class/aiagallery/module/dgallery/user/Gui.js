@@ -177,7 +177,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // add a label widget to the popup
       dobHelpPopup.add(new qx.ui.basic.Label().set({ 
         value: this.tr("The date of birth info is for site statistics only and"
-	       + " it not displayed."),
+               + " it not displayed."),
         rich : true,
         width: 300 
       }));
@@ -273,7 +273,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // Add a label widget to the popup
       emailHelpPopup.add(new qx.ui.basic.Label().set({ 
         value: this.tr("Check this box to show your "
-		       + "email on your public profile."),
+                       + "email on your public profile."),
         rich : true,
         width: 300 
       }));
@@ -351,7 +351,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // add a label widget to the popup
       locationHelpPopup.add(new qx.ui.basic.Label().set({ 
         value: this.tr("Enter where you are. It could be a state, "
-		       + "a country, or somewhere else."),
+                       + "a country, or somewhere else."),
         rich : true,
         width: 300 
       }));
@@ -637,7 +637,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // add a label widget to the popup
       userOptionHelpPopup.add(new qx.ui.basic.Label().set({ 
         value: this.tr("Options for sending emails to the email address"
-		       + " you logged in with."),
+                       + " you logged in with."),
         rich : true,
         width: 300 
       }));
