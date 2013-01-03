@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2011 Chris Adler
+ *               2013 Paul Geromini 
  * 
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html 
@@ -48,11 +49,16 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
      *   This is the string that is the treeId of the comment. If an app was 
      *   flagged input a null
      * 
+     * @param username{String}
+     *   This is the string that is the username of the user whose profile is
+     *   being flagged
+     * 
      * @return {Integer || Status}
      *   This is the value of the status of the application 
      *   (Banned  : 0, Pending : 1, Active  : 2)
      */
-    flagIt : function(flagType, explanationInput, appId, commentId, error)
+    flagIt : function(flagType, explanationInput, appId, 
+                      commentId, username, error)
     {
 
       var            appObj;
@@ -296,6 +302,95 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
         }
 
         return commentDataObj.status;
+
+      case flagTypeVal.Profile: // A profile was flagged
+        // Check that this user exists
+        // We only recieve the user's string name since
+        // passing the user.id number to the frontend is strictly forbidden.
+        // Thus the chance exists of a user changing their name before we find
+        // their id. The chance is minimal however.
+        criteria = 
+        {
+          type  : "element",
+          field : "displayName",
+          value : username
+        }; 
+        
+        // Check to ensure name is unique
+        var resultList = 
+          liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                      criteria);                             
+
+        // Should return one and only one username     
+        if (resultList.length != 1) 
+        {
+          error.setCode(2);
+          error.setMessage("The display name you are trying to flag: \"" + user +
+                           "\" cannot be found."); 
+
+          return error;
+        } else {
+            var profileId = resultList[0].id; 
+        }
+
+        // Construct query criteria for "flags of this user by current visitor"
+        // now that we have the flagged user id and the visitor id
+        criteria = 
+          {
+            type : "op",
+            method : "and",
+            children : 
+            [
+              {
+                type  : "element",
+                field : "profileId",
+                value : profileId
+              },
+              {
+                type  : "element",
+                field : "visitor",
+                value : visitorId
+              },
+              {
+                type  : "element",
+                field : "type",
+                value : aiagallery.dbif.Constants.FlagType.Profile
+              }              
+            ]
+          };
+
+        // Query for the flags of this app by the current visitor
+        // (an array, which should have length zero or one).
+        flagsList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                criteria,
+                                                null);
+
+        // Only change things if the visitor hasn't already flagged this profile
+        if (flagsList.length === 0)
+        {
+          // initialize the new flag to be put on the database
+          newFlag = new aiagallery.dbif.ObjFlags();
+
+          // store the new flags data
+          var data = newFlag.getData();
+
+          data.type = aiagallery.dbif.Constants.FlagType.Profile;
+          data.app = null;
+          data.comment = null;
+          data.visitor = visitorId;
+          data.profileId = profileId; 
+          data.explanation = explanationInput;
+ 
+          // put the new flag on the database
+          liberated.dbif.Entity.asTransaction(
+            function()
+            {
+              newFlag.put();
+            });
+        }
+
+        return true;
+
 
       default:
         error.setCode(3);

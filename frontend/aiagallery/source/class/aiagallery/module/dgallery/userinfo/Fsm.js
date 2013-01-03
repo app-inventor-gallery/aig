@@ -209,7 +209,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          var             userName;
+          var             username;
           var             reason;
           var             map;
           
@@ -217,7 +217,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Fsm",
           map = event.getData();
           
           // Break out the map
-          userName = map.username;
+          username = map.username;
           reason = map.reason; 
 
           var request =
@@ -228,7 +228,9 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Fsm",
                            // flag type: 3 = user
                            aiagallery.dbif.Constants.FlagType.Profile,     
                            reason,  // reason
-                           userName // String of the user's name
+                           null,
+                           null, 
+                           username // String of the user's name
                          ]);
 
 

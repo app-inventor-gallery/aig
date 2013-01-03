@@ -48,6 +48,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       var             label;
       var             submitBtn;
 
+      // Have the fsm be accessible 
       this.fsm = fsm; 
 
       // Create a layout for this page

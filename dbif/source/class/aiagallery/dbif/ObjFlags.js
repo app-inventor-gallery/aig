@@ -19,6 +19,7 @@ qx.Class.define("aiagallery.dbif.ObjFlags",
         "app"         : null,
         "comment"     : null,
         "visitor"     : null,
+        "profileId"   : null,
         "timestamp"   : aiagallery.dbif.MDbifCommon.currentTimestamp(),
         "explanation" : null
       });
@@ -42,8 +43,11 @@ qx.Class.define("aiagallery.dbif.ObjFlags",
         /** Tree ID of the Comment object which was flagged */
         "comment" : "String",
 
-        /** Id of the Visitor who flagged the application or comment */
+        /** Id of the Visitor who is doing the flagging */
         "visitor" : "String",
+
+        /** Id of the user's profile who is being flagged */
+        "profileId" : "String",
 
         /** Time the like occurred */
         "timestamp" : "Date",

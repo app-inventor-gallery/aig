@@ -158,7 +158,7 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
               // Package up data for fsm in a map
               flagData = 
               {
-                "username" : page.userNameField.getValue(), 
+                "username"   : page.userNameField.getValue(), 
                 "reason"     : _reasonField.getValue()
               };
 
