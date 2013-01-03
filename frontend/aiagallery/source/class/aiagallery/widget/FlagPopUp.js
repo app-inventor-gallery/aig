@@ -60,7 +60,7 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
       // Based on the type create a message
       instructionText = "Flagging this " + typeStr + " means you think\n the " 
                         + typeStr + " does not reach the"
-			+ " level of\n discourse suitable "
+                        + " level of\n discourse suitable "
                         + "for the gallery.\n <br><br>"
                         +"Please enter a reason why you think this "
                         + typeStr + " should be removed:"; 
@@ -149,7 +149,8 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
               page.setUserData("flagData", flagData);
 
               // Fire our own event to capture this click
-              page.fireEvent("flagIt"); 
+              page.fsm.fireImmediateEvent(
+                "flagComment", page, flagData);
 
               break;
 
@@ -157,11 +158,14 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
               // Package up data for fsm in a map
               flagData = 
               {
-                "userString" : page.displayName, 
+                "username" : page.userNameField.getValue(), 
                 "reason"     : _reasonField.getValue()
               };
 
-              // Fire our own event to capture this click
+              // Set as user data to get from fsm later
+              page.setUserData("flagData", flagData);
+
+              // Fire flag event
               page.fsm.fireImmediateEvent(
                 "flagProfile", page, flagData);
 

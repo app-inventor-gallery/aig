@@ -79,7 +79,8 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Fsm",
               qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
           },
 
-          "flagIt" : "Transition_Idle_to_AwaitRpcResult_via_flagUserProfile",  
+          "flagProfile" : 
+             "Transition_Idle_to_AwaitRpcResult_via_flagProfile",  
 
           // When we get a disappear event
           "disappear" :
@@ -200,7 +201,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Fsm",
       state.addTransition(trans);
       
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_flagUserProfile",
+        "Transition_Idle_to_AwaitRpcResult_via_flagProfile",
       {
         "nextState" : "State_AwaitRpcResult",
 
@@ -208,7 +209,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          var             userString;
+          var             userName;
           var             reason;
           var             map;
           
@@ -216,7 +217,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Fsm",
           map = event.getData();
           
           // Break out the map
-          userString = map.appId;
+          userName = map.username;
           reason = map.reason; 
 
           var request =
@@ -225,7 +226,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Fsm",
                          "flagIt",
                          [ 
                            // flag type: 3 = user
-                           aiagallery.dbif.Constants.FlagType.User,     
+                           aiagallery.dbif.Constants.FlagType.Profile,     
                            reason,  // reason
                            userName // String of the user's name
                          ]);
@@ -233,7 +234,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Fsm",
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "flagIt");
+          request.setUserData("requestType", "flagProfile");
         }
       });
       

@@ -48,6 +48,8 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       var             label;
       var             submitBtn;
 
+      this.fsm = fsm; 
+
       // Create a layout for this page
       canvas.setLayout(new qx.ui.layout.VBox());   
 
@@ -254,12 +256,19 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
           toolTipText : this.tr("Flag this user profile")
         });
 
-      this.__flagItListener = 
-        this.flagItLabel.addListener("flagIt", fsm.eventListener, fsm);
+      // Pop a flag window on click
+      this.__flagItListener = this.flagItLabel.addListener(
+        "click",
+        function(e)
+        {
+           var win = new aiagallery.widget.FlagPopUp(
+              aiagallery.dbif.Constants.FlagType.Profile, this);
+
+           win.show();          
+        },
+        this);
 
       canvas.add(this.flagItLabel); 
-
-
     },
 
     
@@ -327,7 +336,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
         {
           // Remove email label as user does not want to show email
           this.emailLabel.destroy(); 
-	}
+        }
 
         /* Disable showing birth information
         if (user.birthYear != null && user.birthYear != 0) 
@@ -410,7 +419,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
 
         break;
 
-      case "flagIt":
+      case "flagProfile":
         // Replace the label
         this.flagItLabel.set(
           {
