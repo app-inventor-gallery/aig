@@ -149,8 +149,7 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
               page.setUserData("flagData", flagData);
 
               // Fire our own event to capture this click
-              page.fsm.fireImmediateEvent(
-                "flagComment", page, flagData);
+              page.fireEvent("flagIt"); 
 
               break;
 

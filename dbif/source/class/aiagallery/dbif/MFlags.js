@@ -325,13 +325,23 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
         if (resultList.length != 1) 
         {
           error.setCode(2);
-          error.setMessage("The display name you are trying to flag: \"" + user +
+          error.setMessage("The display name you are "
+			   + "trying to flag: \"" + user +
                            "\" cannot be found."); 
 
           return error;
         } else {
             var profileId = resultList[0].id; 
         }
+
+        // User cannot flag their own profile 
+        if (profileId == visitorId)
+        {
+          error.setCode(2);
+          error.setMessage("You cannot flag your own profile!"); 
+
+          return error;	
+	}
 
         // Construct query criteria for "flags of this user by current visitor"
         // now that we have the flagged user id and the visitor id
@@ -365,7 +375,8 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
                                                 criteria,
                                                 null);
 
-        // Only change things if the visitor hasn't already flagged this profile
+        // Only change things if the visitor 
+        // has not already flagged this profile
         if (flagsList.length === 0)
         {
           // initialize the new flag to be put on the database

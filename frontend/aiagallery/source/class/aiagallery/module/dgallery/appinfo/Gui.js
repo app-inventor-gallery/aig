@@ -51,7 +51,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // the right (narrow) portion has a list of all apps by this author.
       // beta002: the right portion also has a list of apps by tags.
       //
-
       
       // First, create the grid layout
       grid = new qx.ui.layout.Grid(10, 10);
