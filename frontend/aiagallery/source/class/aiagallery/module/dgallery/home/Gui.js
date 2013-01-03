@@ -227,7 +227,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           if (searchValue == null || searchValue.trim() == "")
           {
             return;
-	  }
+          }
 
           var query = 
           {

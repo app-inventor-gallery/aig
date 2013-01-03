@@ -450,7 +450,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
              textColor : "black"
            });
         
-	 }
+         }
 */ 
         break;
 

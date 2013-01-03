@@ -326,7 +326,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
         {
           error.setCode(2);
           error.setMessage("The display name you are "
-			   + "trying to flag: \"" + user +
+                           + "trying to flag: \"" + user +
                            "\" cannot be found."); 
 
           return error;
@@ -340,8 +340,8 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
           error.setCode(2);
           error.setMessage("You cannot flag your own profile!"); 
 
-          return error;	
-	}
+          return error; 
+        }
 
         // Construct query criteria for "flags of this user by current visitor"
         // now that we have the flagged user id and the visitor id
