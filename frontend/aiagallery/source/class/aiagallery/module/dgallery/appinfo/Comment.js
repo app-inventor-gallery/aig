@@ -321,7 +321,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
     _onFlagClick : function()
     {
       var win = new aiagallery.widget.FlagPopUp(
-        aiagallery.main.Constant.flagType.Comment, this);
+        aiagallery.dbif.Constants.FlagType.Comment, this);
 
       win.show();
     },

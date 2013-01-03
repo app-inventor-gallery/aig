@@ -11,7 +11,7 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
 {
    extend : qx.ui.window.Window,
 
-   construct : function(type, page)
+   construct : function(type, page, cancelFunc)
    {
      // Fields and Labels
      var         instructionText; 
@@ -28,6 +28,7 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
      // System 
      var         flagData; 
      var         eventToFire; 
+     var         typeStr; 
 
      // Call base class constructor
      this.base(arguments);
@@ -40,12 +41,29 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
         modal  : true
       });
       
+      // Set string type based on type of flag we are creating
+      switch (type)
+      {
+        case aiagallery.dbif.Constants.FlagType.App:
+          typeStr = "app"; 
+          break; 
+
+        case aiagallery.dbif.Constants.FlagType.Comment:
+          typeStr = "comment"; 
+          break; 
+
+        case aiagallery.dbif.Constants.FlagType.Profile:
+          typeStr = "profile"; 
+          break; 
+      }
+
       // Based on the type create a message
-      instructionText = "Flagging a " + type + " means you think\n the " + type 
-                        + " does not reach the level of\n discourse suitable "
+      instructionText = "Flagging this " + typeStr + " means you think\n the " 
+                        + typeStr + " does not reach the"
+			+ " level of\n discourse suitable "
                         + "for the gallery.\n <br><br>"
                         +"Please enter a reason why you think this "
-                        + type + " should be removed:"; 
+                        + typeStr + " should be removed:"; 
 
       // Add info about flagging
       instructionLabel = new qx.ui.basic.Label().set(
@@ -90,7 +108,7 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
           {
             // Switch based on type of flag we are sending
             // Also work specific to the type of flag
-            case aiagallery.main.Constant.flagType.Comment:
+            case aiagallery.dbif.Constants.FlagType.Comment:
               // Package up data for fsm in a map
               flagData = 
               {
@@ -120,13 +138,22 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
 
               break;
 
-            case aiagallery.main.Constant.flagType.App:
+            case aiagallery.dbif.Constants.FlagType.App:
+              flagData = 
+              {
+                "reason" : _reasonField.getValue()
+              };
+
+              // Set this flag data to the searchResult obj
+              // this allows us to get it later
+              page.setUserData("flagData", flagData);
+
               // Fire our own event to capture this click
               page.fireEvent("flagIt"); 
 
               break;
 
-            case aiagallery.main.Constant.flagType.User:
+            case aiagallery.dbif.Constants.FlagType.Profile:
               // Package up data for fsm in a map
               flagData = 
               {
@@ -171,6 +198,12 @@ qx.Class.define("aiagallery.widget.FlagPopUp",
 
         // Clear out text field
         _reasonField.setValue(""); 
+
+        // Call cancel function if we have it
+        if(cancelFunc)
+        {
+          cancelFunc(); 
+        } 
       },
       this);
 

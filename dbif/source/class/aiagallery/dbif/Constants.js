@@ -81,8 +81,9 @@ qx.Class.define("aiagallery.dbif.Constants",
     /** Mapping of FlagType names to values */
     FlagType      : 
     {
-      App  : 0,
-      Comment : 1
+      App     : 0,
+      Comment : 1,
+      Profile : 2
     },
 
     /** Reverse mapping of FlagType values to names */

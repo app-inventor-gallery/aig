@@ -309,9 +309,13 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
         "ontransition" : function(fsm, event)
         {
           var             appId;
+          var             reason;
 
-          // Retrieve the UID of the current app, and the new comment
+          // Retrieve the UID of the current app uid
           appId = fsm.getObject("searchResult").getUid();
+
+          // Get the reason for the flagging
+          reason = fsm.getObject("searchResult").getUserData("flagData");
 
           var request =
             this.callRpc(fsm,
@@ -320,7 +324,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
                          [ 
                            // flag type: 0 = app, 1 = comment
                            aiagallery.dbif.Constants.FlagType.App,     
-                           "inappropriate", // reason
+                           reason,          // reason
                            appId,           // ID of application being banned
                            null             // comment ID
                          ]);

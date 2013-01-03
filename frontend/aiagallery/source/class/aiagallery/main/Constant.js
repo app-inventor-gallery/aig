@@ -42,15 +42,6 @@ qx.Class.define("aiagallery.main.Constant",
         AppInfo    : "App",
         User       : "Profile",
         PublicUser : "PublicUser"
-      },
-
-    // Types of flagging 
-    flagType :
-    {
-      Comment : "comment",
-      App     : "app", 
-      User    : "user profile"
-    }
-
+      }
   }
 });

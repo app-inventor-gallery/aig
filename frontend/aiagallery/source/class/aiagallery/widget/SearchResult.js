@@ -698,7 +698,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
           function(e)
           {
             var win = new aiagallery.widget.FlagPopUp(
-              aiagallery.main.Constant.flagType.App, this);
+               aiagallery.dbif.Constants.FlagType.App, this);
 
             win.show();
           },
