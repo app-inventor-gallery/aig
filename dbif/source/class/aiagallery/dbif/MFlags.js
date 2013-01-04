@@ -326,7 +326,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
         {
           error.setCode(2);
           error.setMessage("The display name you are "
-                           + "trying to flag: \"" + user +
+                           + "trying to flag: \"" + username +
                            "\" cannot be found."); 
 
           return error;
