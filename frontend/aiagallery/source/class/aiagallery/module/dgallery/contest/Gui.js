@@ -31,9 +31,13 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
       var             canvas; 
       var             label;
       var             desc;
-      var             vBox;
+      var             col1;
+      var             col2;
+      var             col3;
       var             font; 
       var             authorFont; 
+      var             introLayout;
+      var             introCanvas; 
 
       // Put whole page in a scroller 
       outerCanvas.setLayout(new qx.ui.layout.VBox());
@@ -41,9 +45,21 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
       outerCanvas.add(scrollContainer, { flex : 1 });
 
       // Create a layout for this page
-      canvas = new qx.ui.container.Composite(new qx.ui.layout.VBox(30));
-      canvas.setLayout(new qx.ui.layout.VBox());  
-      scrollContainer.add(canvas, { flex : 1 });     
+      canvas = new qx.ui.container.Composite(new qx.ui.layout.HBox(20));
+
+      // Layout to hold intro and canvas
+      introCanvas = new qx.ui.container.Composite(new qx.ui.layout.VBox(20));
+      scrollContainer.add(introCanvas, { flex : 1 });  
+
+      // Layout for a column
+      col1 = new qx.ui.container.Composite(new qx.ui.layout.VBox(10));
+
+      col2 = new qx.ui.container.Composite(new qx.ui.layout.VBox(10)); 
+
+      col3 = new qx.ui.container.Composite(new qx.ui.layout.VBox(10));     
+
+      // Layout for introduction
+      introLayout = new qx.ui.container.Composite(new qx.ui.layout.VBox(30));  
       
       // Create a large bold font
       font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
@@ -62,7 +78,7 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
       label.setFont(font);
       label.setWidth(500);
 
-      canvas.add(label);
+      introLayout.add(label);
 
       desc = new  qx.ui.form.TextArea("");
       desc.set(
@@ -76,22 +92,24 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
         }
       );
 
-      canvas.add(desc); 
-      canvas.add(new qx.ui.core.Spacer(20)); 
+      introLayout.add(desc); 
+      introLayout.add(new qx.ui.core.Spacer(20)); 
+
+      introCanvas.add(introLayout); 
+      
 
       // First place
       font.setSize(24);
       label = new qx.ui.basic.Label("First Place");
       label.setFont(font);
-
-      canvas.add(label);
-      canvas.add(new qx.ui.core.Spacer(20)); 
+    
+      col1.add(label); 
 
       font.setSize(20);
       label = new qx.ui.basic.Label("First Place High School Division");
       label.setFont(font);
 
-      canvas.add(label);
+      col1.add(label);
 
       // App
       label = new qx.ui.basic.Label("");
@@ -101,13 +119,13 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
           rich  : true
         });
 
-      canvas.add(label); 
+      col1.add(label); 
 
       // Author Label
       label = new qx.ui.basic.Label("Made By PAUL");
       this.addUserLink(label); 
       label.setFont(authorFont); 
-      canvas.add(label); 
+      col1.add(label); 
 
       desc = new  qx.ui.form.TextArea("");
       desc.set(
@@ -121,13 +139,13 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
         }
       );
 
-      canvas.add(desc);
-      canvas.add(new qx.ui.core.Spacer(20)); 
+      col1.add(desc);
+      col1.add(new qx.ui.core.Spacer(20)); 
 
       label = new qx.ui.basic.Label("First Place College Division");
       label.setFont(font);
 
-      canvas.add(label);
+      col1.add(label);
 
       // App
       label = new qx.ui.basic.Label("");
@@ -137,13 +155,13 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
           rich  : true
         });
 
-      canvas.add(label); 
+      col1.add(label); 
 
       // Author Label
       label = new qx.ui.basic.Label("Made By PAUL");
       this.addUserLink(label); 
       label.setFont(authorFont); 
-      canvas.add(label); 
+      col1.add(label); 
 
       desc = new  qx.ui.form.TextArea("");
       desc.set(
@@ -157,13 +175,13 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
         }
       );
 
-      canvas.add(desc);
-      canvas.add(new qx.ui.core.Spacer(20)); 
+      col1.add(desc);
+      col1.add(new qx.ui.core.Spacer(20)); 
 
       label = new qx.ui.basic.Label("First Place Open Division");
       label.setFont(font);
 
-      canvas.add(label);
+      col1.add(label);
 
       // App
       label = new qx.ui.basic.Label("");
@@ -173,13 +191,13 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
           rich  : true
         });
 
-      canvas.add(label); 
+      col1.add(label); 
 
       // Author Label
       label = new qx.ui.basic.Label("Made By PAUL");
       this.addUserLink(label); 
       label.setFont(authorFont); 
-      canvas.add(label); 
+      col1.add(label); 
 
       desc = new  qx.ui.form.TextArea("");
       desc.set(
@@ -193,20 +211,22 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
         }
       );
 
-      canvas.add(desc);
-      canvas.add(new qx.ui.core.Spacer(20)); 
+      col1.add(desc);
+      col1.add(new qx.ui.core.Spacer(20)); 
+
+      canvas.add(col1); 
 
       // Second place    
       label = new qx.ui.basic.Label("Second Place");
       font.setSize(24);
       label.setFont(font);
-      canvas.add(label);
+      col2.add(label);
 
       label = new qx.ui.basic.Label("Second Place K-8 Division");
       font.setSize(20); 
       label.setFont(font);
 
-      canvas.add(label);
+      col2.add(label);
 
       // App
       label = new qx.ui.basic.Label("");
@@ -216,13 +236,13 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
           rich  : true
         });
 
-      canvas.add(label);
+      col2.add(label);
 
       // Author Label
       label = new qx.ui.basic.Label("Made By PAUL");
       this.addUserLink(label); 
       label.setFont(authorFont); 
-      canvas.add(label); 
+      col2.add(label); 
 
       desc = new  qx.ui.form.TextArea("");
       desc.set(
@@ -236,13 +256,13 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
         }
       );
 
-      canvas.add(desc);
-      canvas.add(new qx.ui.core.Spacer(20));  
+      col2.add(desc);
+      col2.add(new qx.ui.core.Spacer(20));  
 
       label = new qx.ui.basic.Label("Second Place High School Division");
       label.setFont(font);
 
-      canvas.add(label);
+      col2.add(label);
 
       // App
       label = new qx.ui.basic.Label("");
@@ -252,13 +272,13 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
           rich  : true
         });
 
-      canvas.add(label);
+      col2.add(label);
 
       // Author Label
       label = new qx.ui.basic.Label("Made By PAUL");
       this.addUserLink(label); 
       label.setFont(authorFont); 
-      canvas.add(label); 
+      col2.add(label); 
 
       desc = new  qx.ui.form.TextArea("");
       desc.set(
@@ -272,8 +292,8 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
         }
       );
 
-      canvas.add(desc);
-      canvas.add(new qx.ui.core.Spacer(20)); 
+      col2.add(desc);
+      col2.add(new qx.ui.core.Spacer(20)); 
 
       // App
       label = new qx.ui.basic.Label("");
@@ -283,12 +303,12 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
           rich  : true
         });
 
-      canvas.add(label); 
+      col2.add(label); 
 
       label = new qx.ui.basic.Label("Second Place College Division");
       label.setFont(font);
 
-      canvas.add(label);
+      col2.add(label);
 
       // App
       label = new qx.ui.basic.Label("");
@@ -298,13 +318,13 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
           rich  : true
         });
 
-      canvas.add(label); 
+      col2.add(label); 
 
       // Author Label
       label = new qx.ui.basic.Label("Made By PAUL");
       this.addUserLink(label); 
       label.setFont(authorFont); 
-      canvas.add(label); 
+      col2.add(label); 
 
       desc = new  qx.ui.form.TextArea("");
       desc.set(
@@ -318,13 +338,13 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
         }
       );
 
-      canvas.add(desc);
-      canvas.add(new qx.ui.core.Spacer(20)); 
+      col2.add(desc);
+      col2.add(new qx.ui.core.Spacer(20)); 
 
       label = new qx.ui.basic.Label("Second Place Open Division");
       label.setFont(font);
 
-      canvas.add(label);
+      col2.add(label);
 
       // App
       label = new qx.ui.basic.Label("");
@@ -334,13 +354,13 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
           rich  : true
         });
 
-      canvas.add(label); 
+      col2.add(label); 
 
       // Author Label
       label = new qx.ui.basic.Label("Made By PAUL");
       this.addUserLink(label); 
       label.setFont(authorFont); 
-      canvas.add(label); 
+      col2.add(label); 
 
       desc = new  qx.ui.form.TextArea("");
       desc.set(
@@ -354,14 +374,16 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
         }
       );
 
-      canvas.add(desc);
-      canvas.add(new qx.ui.core.Spacer(20)); 
+      col2.add(desc);
+      col2.add(new qx.ui.core.Spacer(20)); 
+
+      canvas.add(col2);
 
       label = new qx.ui.basic.Label("Honorable Mention");
       font.setSize(24);
       label.setFont(font);
 
-      canvas.add(label);
+      col3.add(label);
 
       // App
       label = new qx.ui.basic.Label("");
@@ -371,13 +393,13 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
           rich  : true
         });
 
-      canvas.add(label); 
+      col3.add(label); 
 
       // Author Label
       label = new qx.ui.basic.Label("Made By PAUL");
       this.addUserLink(label); 
       label.setFont(authorFont); 
-      canvas.add(label); 
+      col3.add(label); 
 
       desc = new  qx.ui.form.TextArea("");
       desc.set(
@@ -391,9 +413,11 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
         }
       );
 
-      canvas.add(desc);
-      canvas.add(new qx.ui.core.Spacer(20)); 
+      col3.add(desc);
+      col3.add(new qx.ui.core.Spacer(20)); 
 
+      canvas.add(col3); 
+      introCanvas.add(canvas); 
     },
 
     
