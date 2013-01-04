@@ -2338,7 +2338,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             searchResponseLiked;
       var             searchResponseNewest;
       var             requestedData; 
-      var             welcomingText;
 
       // Before we search for apps to display check and see if
       // some past searches have been cached with memcache.
@@ -2560,27 +2559,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           }
         });
 
-      welcomingText = 
-        [
-          "<div style='padding:0 30px 0 0;'>",
-          "<div style='text-align:center;'>",
-          "<h2>",
-          "Welcome to the <br/>MIT App Inventor Community Gallery!",
-          "</h2>",
-          "</div>",
-
-          "<div style='font-size:larger; font-weight:bold; padding:6px;'>",
-          "<b>",
-          "<ul><li>Check out mobile apps from all over the world!<br/></li>",
-          "<li>Download App Inventor blocks and learn to program!<br/></li>",
-          "<li>Join the community of App Inventor programmers!<br/></li></ul>",
-          "<div style='padding:12px 10px; background:rgba(255,255,255,0.5);'>",
-          "Join the MIT App Inventor ",
-          "<a href='https://bit.ly/AppInventorContest' target='new'>App Contest</a>, ", 
-          "win a Google Nexus 7 Tablet and other prizes!</div><br/>",
-          "</div>",
-          "</div>"
-        ].join("");
         
       //Construct map of data
       // Grab the motd and put it into the map at the end
@@ -2589,8 +2567,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           "Featured"     :    searchResponseFeatured,   
           "MostLiked"    :    searchResponseLiked,
           "Newest"       :    searchResponseNewest,
-          "Motd"         :    this.getMotd(),
-          "welcomingText":    welcomingText
+          "Motd"         :    this.getMotd()
         };
 
       if (bCache) {
@@ -2776,7 +2753,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       }
   
 
-      // beta002: Experiment with app engine's Memcache.
+      // Initializing variables for app engine's Memcache.
       var memcacheServiceFactory;
       var syncCache;
       var value;
@@ -2802,6 +2779,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var key_owners = stringowners.concat(uid);
 
       // Bool to know if we need to cache this search or not
+      // true = we need to cache; false = no need to cache
       var bCache = false;
       var ownersCache = false;
       var byAuthorCache = false;
@@ -2822,9 +2800,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 	      // Setting up the recommended ErrorHandler
 	      //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
 
-	      // Before calling getData(), check if the uid already exists in memcache
+	      // Before calling getData(), check if the appObject already exists in memcache
 	      value = syncCache.get(key_app); 
-	      // If not, we call getData(), and put the stuff in memcache
+	      // If not, we call getData() and put the stuff in memcache later
+              // For now we just mark the flag as true
 	      if (value == null) {
 	        bCache = true; // true: we need to cache this search
 	      } else {
@@ -2836,7 +2815,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 	      ret.app = appObj.getData();
       }
 
-      // beta002: Memcache the ret object here.
+      // Memcache the ret.app object here
       if (bCache) {
         ret.app = appObj.getData();
         var serialize = JSON.stringify(ret.app);
@@ -2847,7 +2826,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         var date = calendarClass.getInstance();  
         date.add(calendarClass.DATE, 1); 
 
-        var expirationClass = com.google.appengine.api.memcache.Expiration; //TODO: it complains: unknown global symbol
+        var expirationClass = com.google.appengine.api.memcache.Expiration;
         var expirationDate = expirationClass.onDate(date.getTime());
 
         syncCache.put(key_app, serialize, expirationDate); 
@@ -2917,7 +2896,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           };
 
 
-        // beta002: Only use memcache if we are on Google App Engine.
+        // Only use memcache if we are on Google App Engine.
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
 	      value = syncCache.get(key_likes);
@@ -2927,13 +2906,14 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 		likesList = JSON.parse(value);
 	      }
 
-        } else { // make the database call normally if we are not running on app engine
+        } else { 
+        // make the database call normally if we are not running on app engine
           
           likesList = liberated.dbif.Entity.query("aiagallery.dbif.ObjLikes",
                                                 criteria, null);
         }
 
-        // beta002: Memcache the likesList here.
+        // Memcache the likesList here
         if (likesCache) {
           // Query for the likes of this app by the current visitor
           // (an array, which should have length zero or one).
@@ -2978,7 +2958,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
 
 
-        // beta002: Only use memcache if we are on Google App Engine.
+        // Only use memcache if we are on Google App Engine.
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
 	      value = syncCache.get(key_flag);
@@ -2994,7 +2974,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                                 criteria, null);
         }
 
-        // beta002: Memcache the flagList here.
+        // Memcache the flagList here.
         if (flagCache) {
           flagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
                                                 criteria, null);
@@ -3035,7 +3015,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
 
 
-        // beta002: Only use memcache if we are on Google App Engine.
+        // Only use memcache if we are on Google App Engine.
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
 	      value = syncCache.get(key_byauthor);
@@ -3051,7 +3031,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                                 criteria, null);
         }
 
-        // beta002: Memcache the byAuthor list here.
+        // Memcache the byAuthor list here.
         if (byAuthorCache) {
           ret.byAuthor = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
                                                 criteria, null);
@@ -3093,10 +3073,15 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         var tlist = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
                                                  criteria, null);
 
+
+
         // Add the author's display name to each app
         tlist.forEach(
           function(app) {
-            app.displayName = owners[0].displayName || "<>";
+            // Issue owner query for EACH app (expensive)
+            each_owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                           app.owner);
+            app.displayName = each_owners[0].displayName || "<>";
             delete app.owner; // Remove the owner field
         });
 
@@ -3133,7 +3118,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         {
 
 
-        // beta002: Only use memcache if we are on Google App Engine.
+        // Only use memcache if we are on Google App Engine.
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
 	      value = syncCache.get(key_comments);
@@ -3198,7 +3183,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             };
                  
 
-        // beta002: Only use memcache if we are on Google App Engine.
+        // Only use memcache if we are on Google App Engine.
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
 	      value = syncCache.get(key_commentsflag);

@@ -391,7 +391,29 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         var likedAppsList = response.data.result.MostLiked;
 
         // Grab the welcomingText
-        var welcomingText = response.data.result.welcomingText;
+        var welcomingText = 
+        [
+          "<div style='padding:0 30px 0 0;'>",
+          "<div style='text-align:center;'>",
+          "<h2>",
+          "Welcome to the <br/>MIT App Inventor Community Gallery!",
+          "</h2>",
+          "</div>",
+
+          "<div style='font-size:larger; font-weight:bold; padding:6px;'>",
+          "<b>",
+          "<ul><li>Check out mobile apps from all over the world!<br/></li>",
+          "<li>Download App Inventor blocks and learn to program!<br/></li>",
+          "<li>Join the community of App Inventor programmers!<br/></li></ul>",
+          "<div style='padding:12px 10px; background:rgba(255,255,255,0.5);'>",
+          "Join the MIT App Inventor ",
+          "<a href='https://bit.ly/AppInventorContest' target='new'>App Contest</a>, ", 
+          "win a Google Nexus 7 Tablet and other prizes!<br/><br/>",
+          "New! Please modify your <a href='#page%3DProfile' >profile</a>! ", 
+          "</div><br/>",
+          "</div>",
+          "</div>"
+        ].join("");
         this.welcomingLabel.setValue(welcomingText);
 
 /**        
