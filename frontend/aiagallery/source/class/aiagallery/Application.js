@@ -195,7 +195,7 @@ new aiagallery.main.Module(
   aiagallery.module.dgallery.findapps.FindApps);
 
 new aiagallery.main.Module(
-  "*Contest Winners*",
+  "Contest Winners",
   "aiagallery/module/system-search.png",
   "Contest",
   aiagallery.main.Constant.PageName.Contest,

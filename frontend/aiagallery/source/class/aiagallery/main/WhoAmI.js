@@ -146,7 +146,7 @@ qx.Class.define("aiagallery.main.WhoAmI",
       // Check and see if this is an anon user
       if(bAnon)
       {
-        var loginStr = this.tr("Login to create apps and comment"); 
+        var loginStr = this.tr("Login to submit apps and comment"); 
         // if it is the anon user will have a 
         // logout url set to go to the google login
         control.setValue("<a href='" + who.getLogoutUrl() + "'>" + loginStr +"</a>"); 
