@@ -1126,7 +1126,7 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
       comCol2.add(desc);
       comCol2.add(new qx.ui.core.Spacer(20));
 
-      label = new qx.ui.basic.Label("Sherie Moran (2nd Place University Divisio):");
+      label = new qx.ui.basic.Label("Sherie Moran (2nd Place University Division):");
       font.setSize(20);
 
       namesLayout = new qx.ui.container.Composite(new qx.ui.layout.HBox(20));
