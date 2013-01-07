@@ -406,7 +406,8 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           "<li>Download App Inventor blocks and learn to program!<br/></li>",
           "<li>Join the community of App Inventor programmers!<br/></li></ul>",
           "<div style='padding:12px 10px; background:rgba(255,255,255,0.5);'>",
-          "<br>New! <a href='#page%3DContest' >Contest winners</a> have been announced! ", 
+          "<br> New! Check out the winners of the "
+	  + "<a href='#page%3DContest' >2012 MIT App Inventor App Contest </a> -- you can download the source code for all apps! Congratulations to all the winners and noted apps!", 
           "</div><br/>",
           "</div>",
           "</div>"
