@@ -171,16 +171,14 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           "</div>",
 
           "<div style='font-size:larger; font-weight:bold; padding:6px;'>",
-          "<b><br/>",
-          "The Gallery is in Beta and not yet open to the public ",
-          "(this is why you can't see any apps!). <br/><br/>",
-          "To request access, fill out ",
-          "<a href='https://docs.google.com/spreadsheet/viewform?formkey=dGxHTXAzNURGSTdIVkJpZXcwNG1kRkE6MA#gid=0'",
-          " target='new'>",
-          "this form",
-          ".</a><br/><br/>",
-          "Within a few days, you should receive an email that you have ",
-          "been added to the Gallery.",
+          "<b>",
+          "<ul><li>Check out mobile apps from all over the world!<br/></li>",
+          "<li>Download App Inventor blocks and learn to program!<br/></li>",
+          "<li>Join the community of App Inventor programmers!<br/></li></ul>",
+          "<div style='padding:12px 10px; background:rgba(255,255,255,0.5);'>",
+          "<br> New! Check out the winners of the "
+	  + "<a href='#page%3DContest' >2012 MIT App Inventor App Contest </a> -- you can download the source code for all apps! Congratulations to all the winners and noted apps!", 
+          "</div><br/>",
           "</div>",
           "</div>"
         ].join("");
@@ -253,7 +251,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 
       // Add search layout to main layout
       vbox.add(searchLayout);
-/**      
+/*
       // Add a top spacer
       vbox.add(new qx.ui.core.Spacer(), { flex : 1 });
    
@@ -297,7 +295,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           minWidth     : 20
         });
       hbox.add(o, { flex : 1 });
-**/
+*/
       // Featured Apps section
       var featuredAppsLayout = new qx.ui.layout.VBox();
       featuredAppsLayout.set(
@@ -450,39 +448,13 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         var newestAppsList = response.data.result.Newest;
         var likedAppsList = response.data.result.MostLiked;
 
-        // Grab the welcomingText
-        var welcomingText = 
-        [
-          "<div style='padding:0 30px 0 0;'>",
-          "<div style='text-align:center;'>",
-          "<h2>",
-          "Welcome to the <br/>MIT App Inventor Community Gallery!",
-          "</h2>",
-          "</div>",
-
-          "<div style='font-size:larger; font-weight:bold; padding:6px;'>",
-          "<b>",
-          "<ul><li>Check out mobile apps from all over the world!<br/></li>",
-          "<li>Download App Inventor blocks and learn to program!<br/></li>",
-          "<li>Join the community of App Inventor programmers!<br/></li></ul>",
-          "<div style='padding:12px 10px; background:rgba(255,255,255,0.5);'>",
-          "Join the MIT App Inventor ",
-          "<a href='https://bit.ly/AppInventorContest' target='new'>App Contest</a>, ", 
-          "win a Google Nexus 7 Tablet and other prizes!<br/><br/>",
-          "New! Please modify your <a href='#page%3DProfile' >profile</a>! ", 
-          "</div><br/>",
-          "</div>",
-          "</div>"
-        ].join("");
-        this.welcomingLabel.setValue(welcomingText);
-
-/**        
+/*        
         // Grab the MOTD as well
         var motd = response.data.result.Motd; 
         
         // Set the motd on the front page
         this.motdText.setValue(motd); 
-**/
+*/
 
         // Remove everything from the lists. They're about to be refilled.
         this.featuredAppsContainer.removeAll();

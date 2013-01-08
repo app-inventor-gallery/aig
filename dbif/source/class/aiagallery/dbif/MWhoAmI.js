@@ -37,9 +37,9 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
       
       // Get the object indicating who we're logged in as
       whoami = this.getWhoAmI();
-      
+
       // Are they logged in?
-      if (! whoami)
+      if (!whoami )
       {
         // Nope.
         return({
@@ -49,7 +49,8 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
                  isAdmin           : false,
                  logoutUrl         : "",
                  permissions       : [],
-                 hasSetDisplayName : true
+                 hasSetDisplayName : true,
+                 isAnonymous       : true
                });
       }
       
@@ -69,7 +70,8 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
           permissions       : (qx.lang.Type.isArray(whoami.permissions)
                                ? qx.lang.Array.clone(whoami.permissions)
                                : []),
-          hasSetDisplayName : whoami.hasSetDisplayName
+          hasSetDisplayName : whoami.hasSetDisplayName,
+          isAnonymous       : whoami.isAnonymous
         };
 
       return ret;
@@ -100,7 +102,7 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
         // Nope.
         return({
                  id                : "",
-                 email             : "anonymous"
+                 email             : "Guest"
                });
       }
       
