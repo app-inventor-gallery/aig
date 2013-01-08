@@ -121,8 +121,8 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
           request =
              this.callRpc(fsm,
                           "aiagallery.features",
-                          "getFlaggedComments",
-                          []);
+                          "getFlags",
+                          [aiagallery.dbif.Constants.FlagType.Comment]);
 
           // When we get the result, we'll need to know what type of request
           // we made.

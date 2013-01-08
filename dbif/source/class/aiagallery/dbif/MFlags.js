@@ -26,6 +26,10 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
     this.registerService("aiagallery.features.clearAppFlags",
                          this.clearAppFlags,
                          [ "uid" ]);
+
+    this.registerService("aiagallery.features.getFlags",
+                         this.getFlags,
+                         [ "flagType" ]);
   },
 
   members :
@@ -307,7 +311,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
         // Check that this user exists
         // We only recieve the user's string name since
         // passing the user.id number to the frontend is strictly forbidden.
-        // Thus the chance exists of a user changing their name before we find
+        // Thus a chance exists of a user changing their name before we find
         // their id. The chance is minimal however.
         criteria = 
         {
@@ -486,6 +490,140 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
 
       // We were successful
       return true;
+    },
+
+    /**
+     * Get and return the flags associated with a flag type
+     * 
+     * @param flagType, the type of flags defined in
+     *   aiagallery.dbif.Constants.FlagType
+     * 
+     * @param error, the error object that comes with every rpc call
+     * 
+     * @return a list of objects (comments) or a map (profile / apps)
+     *   that have been flagged. Could be empty if 
+     *   we found no flags for the specified type.
+     */
+    getFlags : function(flagType, error)
+    {
+      var          criteria;
+      var          resultList; 
+      var          returnMap; 
+
+      // Do particular work based on the type of flag we are getting
+      switch (flagType)
+      {
+
+      case aiagallery.dbif.Constants.FlagType.App:
+      case aiagallery.dbif.Constants.FlagType.Profile:
+        // Map of returned flags
+        returnMap = 
+          {
+            Apps    : null,
+            Profile : null
+	  };
+
+        // Do a particular search to retrieve all the active flags
+        // for this flag type
+        criteria =
+          {
+            type: "element",
+            field: "type",
+            value: aiagallery.dbif.Constants.FlagType.Profile
+          };
+
+        // Issue a query for all flagged user profiles
+        resultList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags", 
+                                                 criteria,
+                                                 null);
+        resultList.forEach(function(obj)
+          {
+            // Replace profileId with flagged users name 
+            obj.profileId = 
+              aiagallery.dbif.MVisitors._getDisplayName(obj.profileId, error);
+            
+            // Remove the visitor field
+            delete obj.visitor;
+          });
+
+        returnMap.Profile = resultList; 
+
+        criteria = 
+        {
+          type  : "element",
+          field : "type",
+          value : aiagallery.dbif.Constants.FlagType.App
+        };
+
+        // Issue a query for all flagged apps
+        resultList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags", 
+                                                 criteria,
+                                                 null);
+
+        resultList.forEach(function(obj)
+          {
+            var  titleSearch;
+            // Add in app title
+            criteria = 
+            {
+              type  : "element",
+              field : "uid",
+              value : obj.app
+            };
+
+            // Issue a query for all flagged apps
+            titleSearch = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData", 
+                                                     criteria,
+                                                     null);
+            // Should be one result
+            obj.appTitle = titleSearch[0].title; 
+
+            // Remove the visitor field
+            delete obj.visitor;
+          }, this);
+
+        returnMap.Apps = resultList; 
+        return returnMap; 
+
+      case aiagallery.dbif.Constants.FlagType.Comment:
+        // Retrieve all Active comments for this app
+        criteria = 
+          {
+            type     : "element",
+            field    : "numCurFlags",
+            value    : 0,
+            filterOp : ">"  
+          };
+
+        // Issue a query for all flagged comments
+        resultList = liberated.dbif.Entity.query("aiagallery.dbif.ObjComments", 
+                                                 criteria,
+                                                 null);
+
+        resultList.forEach(function(obj)
+          {
+            // Add this visitor's display name
+            obj.displayName = 
+              aiagallery.dbif.MVisitors._getDisplayName(obj.visitor, error);
+            
+            // Remove the visitor field
+            delete obj.visitor;
+          });
+
+        return resultList; 
+
+      default:
+        // Type unrecognized, this is an error
+        error.setCode(2);
+        error.setMessage("Unrecognized flag type: " + flagType); 
+        throw error;
+      }
+
+      // Unreachable code section
+      error.setCode(2);
+      error.setMessage("Reached unreachable code section in getFlags, impressive."); 
+      throw error;
+      
     }
   }
 });

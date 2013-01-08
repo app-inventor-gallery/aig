@@ -79,7 +79,7 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
           "appear"    :
           {
             "main.canvas" : 
-              qx.util.fsm.FiniteStateMachine.EventHandling.PREDICATE
+              "Transition_Idle_to_AwaitRpcResult_via_appear"
           },
 
           // When we get a disappear event
@@ -112,25 +112,21 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
 
         "context" : this,
 
-        "predicate" : function(fsm, event)
-        {
-          // Have we already been here before?
-          if (fsm.getUserData("noUpdate"))
-          {
-            // Yup. Don't accept this transition and no need to check further.
-            return null;
-          }
-          
-          // Prevent this transition from being taken next time.
-          fsm.setUserData("noUpdate", true);
-          
-          // Accept this transition
-          return true;
-        },
-
         "ontransition" : function(fsm, event)
         {
-         // If we wanted to do something as the page appeared, it would go here.
+          // If we wanted to do something as the page appeared, it would go here.
+          // Pull the app flags from the db 
+          var      request;
+ 
+          request = 
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "getFlags",
+                         [aiagallery.dbif.Constants.FlagType.App]);        
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "getFlags");
         }
       });
 
@@ -176,7 +172,6 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
           // When we get the result, we'll need to know what type of request
           // we made.
           request.setUserData("requestType", "mobileRequest");
-
         }
       });
 

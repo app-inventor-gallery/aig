@@ -29,7 +29,7 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
       var             fsm = module.fsm;
       var             canvas = module.canvas;
 
-      
+      // Show app 
     },
 
     
@@ -67,6 +67,14 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
       // Dispatch to the appropriate handler, depending on the request type
       switch(requestType)
       {
+
+      case "getFlags":
+
+        // Get the list of returned apps
+        result = response.data.result;
+
+        break;
+
       default:
         throw new Error("Unexpected request type: " + requestType);
       }
