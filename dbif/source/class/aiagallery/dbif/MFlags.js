@@ -519,9 +519,9 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
         // Map of returned flags
         returnMap = 
           {
-            Apps    : null,
-            Profile : null
-	  };
+            Apps     : null,
+            Profiles : null
+          };
 
         // Do a particular search to retrieve all the active flags
         // for this flag type
@@ -546,7 +546,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
             delete obj.visitor;
           });
 
-        returnMap.Profile = resultList; 
+        returnMap.Profiles = resultList; 
 
         criteria = 
         {
@@ -583,6 +583,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
           }, this);
 
         returnMap.Apps = resultList; 
+
         return returnMap; 
 
       case aiagallery.dbif.Constants.FlagType.Comment:

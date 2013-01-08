@@ -315,7 +315,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
           appId = fsm.getObject("searchResult").getUid();
 
           // Get the reason for the flagging
-          reason = fsm.getObject("searchResult").getUserData("flagData");
+          reason = fsm.getObject("searchResult").getUserData("flagData").reason;
 
           var request =
             this.callRpc(fsm,
