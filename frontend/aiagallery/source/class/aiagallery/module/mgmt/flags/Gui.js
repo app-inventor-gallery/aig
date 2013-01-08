@@ -33,6 +33,8 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
       var             profileScroller; 
       var             vBox; 
 
+      this.fsm = fsm; 
+
       // Show flagged apps 
       label = new qx.ui.basic.Label("Flagged Apps");
       canvas.add(label);     
@@ -83,6 +85,10 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
       var             response = rpcRequest.getUserData("rpc_response");
       var             requestType = rpcRequest.getUserData("requestType");
       var             result;
+      var             childList; 
+      var             i;
+      var             username;
+      var             uid; 
 
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -115,7 +121,7 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
           // For each app flag add a line to the appScroller
           // Contains the title of the app, reason for flagging on line 1
           // On line 2, 3 buttons keep app, remove app, visit app
-	  result.Apps.forEach(function(obj)
+          result.Apps.forEach(function(obj)
             {
               var    vBoxTotal; 
               var    hBoxData;
@@ -144,23 +150,29 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
               // Add Buttons
               button = new qx.ui.form.Button(this.tr("Keep"));
               button.setUserData("uid", obj.app);
-
-              button.addListener("execute", fsm.eventListener, fsm);
-
-              // Save its friendly name
-              fsm.addObject("keepBtn", 
-                button, "main.fsmUtils.disable_during_rpc");
+              
+              button.addListener(
+                "click",
+                function(e)
+                {
+                  // Fire immediate event
+                  this.fsm.fireImmediateEvent(
+                    "keepApp", this, e.getTarget());
+                }, this); 
 
               hBoxBtns.add(button); 
 
               button = new qx.ui.form.Button(this.tr("Delete"));
               button.setUserData("uid", obj.app);
 
-              button.addListener("execute", fsm.eventListener, fsm);
-
-              // Save its friendly name
-              fsm.addObject("deleteBtn", 
-                button, "main.fsmUtils.disable_during_rpc");
+              button.addListener(
+                "click",
+                function(e)
+                {
+                  // Fire immediate event
+                  this.fsm.fireImmediateEvent(
+                    "deleteApp", this, e.getTarget());
+                }, this); 
 
               hBoxBtns.add(button); 
 
@@ -180,13 +192,16 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
 
                   aiagallery.module.dgallery.appinfo.AppInfo
                     .addAppView(uid, title);                
-		}); 
+                }); 
 
               hBoxBtns.add(button); 
 
               // Add both layouts to main layout
               vBoxTotal.add(hBoxData); 
               vBoxTotal.add(hBoxBtns);
+
+              // Save some identifying info about this layout obj
+              vBoxTotal.setUserData("uid", obj.app);
 
               this.appScrollContainer.add(vBoxTotal); 
                
@@ -195,7 +210,7 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
 
             }
           ,this);
-	}
+        }
 
         // Add profile flags if we need to
         if (result.Profiles.length != 0)
@@ -205,7 +220,7 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
           // For each profile flag add a line to the profileScroller
           // Contains the flagged profile name and reason for flagging on line 1
           // On line 2, 3 buttons keep profile, remove profile, visit profile
-	  result.Profiles.forEach(function(obj)
+          result.Profiles.forEach(function(obj)
             {
               var    vBoxTotal; 
               var    hBoxData;
@@ -232,24 +247,30 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
 
               // Add Buttons
               button = new qx.ui.form.Button(this.tr("Keep"));
-              button.setUserData("uid", obj.uid);
+              button.setUserData("username", obj.profileId);
 
-              button.addListener("execute", fsm.eventListener, fsm);
-
-              // Save its friendly name
-              fsm.addObject("keepBtn", 
-                button, "main.fsmUtils.disable_during_rpc");
+              button.addListener(
+                "click",
+                function(e)
+                {
+                  // Fire immediate event
+                  this.fsm.fireImmediateEvent(
+                    "keepProfile", this, e.getTarget());
+                }, this); 
 
               hBoxBtns.add(button); 
 
               button = new qx.ui.form.Button(this.tr("Delete"));
-              button.setUserData("uid", obj.uid);
+              button.setUserData("uid", obj.profileId);
 
-              button.addListener("execute", fsm.eventListener, fsm);
-
-              // Save its friendly name
-              fsm.addObject("deleteBtn", 
-                button, "main.fsmUtils.disable_during_rpc");
+              button.addListener(
+                "click",
+                function(e)
+                {
+                  // Fire immediate event
+                  this.fsm.fireImmediateEvent(
+                    "deleteProfile", this, e.getTarget());
+                }, this); 
 
               hBoxBtns.add(button); 
 
@@ -266,13 +287,16 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
 
                   aiagallery.module.dgallery.userinfo.UserInfo
                     .addPublicUserView(username);             
-		}); 
+                }); 
 
               hBoxBtns.add(button); 
 
               // Add both layouts to main layout
               vBoxTotal.add(hBoxData); 
               vBoxTotal.add(hBoxBtns);
+
+              // Save some identifying info about this layout obj
+              vBoxTotal.setUserData("username", obj.profileId);
 
               this.profileScrollContainer.add(vBoxTotal); 
                
@@ -281,7 +305,58 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
 
             }
           ,this);
-	}
+        }
+
+        break;
+
+      case "keepApp":
+      case "deleteApp":
+        
+        // Look through the appScroller
+        // remove all apps flags with the same app uid
+        // of the flag we just cleared
+        // result is the uid
+        result = response.data.result;
+
+        childList = this.appScrollContainer.getChildren();
+         
+        for (i = 0; i < childList.length; i++)
+        {
+          uid = childList[i].getUserData("uid");
+
+          // If the object has the same uid as the flags we just cleared
+          // remove it from the layout
+          if (uid == result) 
+          {
+            this.appScrollContainer.remove(childList[i]);
+          }
+        }
+
+        break; 
+
+      case "keepProfile":
+      case "deleteProfile":
+
+        // Look through the profileScroller 
+        // remove all profile flags with the same profile name
+        // of the flag we just cleared
+        result = response.data.result;
+
+        childList = this.profileScrollContainer.getChildren();
+         
+        for (i = 0; i < childList.length; i++)
+        {
+          username = childList[i].getUserData("username");
+
+          // If the object has the same uid as the flags we just cleared
+          // remove it from the layout
+          if (username == result) 
+          {
+            this.profileScrollContainer.remove(childList[i]);
+          }
+        }
+
+        break; 
 
         break;
 

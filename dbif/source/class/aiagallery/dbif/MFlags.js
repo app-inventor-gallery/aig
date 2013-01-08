@@ -27,6 +27,10 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
                          this.clearAppFlags,
                          [ "uid" ]);
 
+    this.registerService("aiagallery.features.clearProfileFlags",
+                         this.clearProfileFlags,
+                         [ "displayName" ]);
+
     this.registerService("aiagallery.features.getFlags",
                          this.getFlags,
                          [ "flagType" ]);
@@ -426,9 +430,8 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
      * @param uid {Integer}
      *   The uid of the app that is being de-flagged
      * 
-     * @return {Boolean}
-     *   Returns true if flags removed succesfully, false if app does not exist
-     *   ( ** WHAT IF THERE'S ANOTHER ERROR, E.G. DB TRANSACTION FAILS? ** )
+     * @return uid {Integer}
+     *   Returns the uid of the app flag it just cleared
      */
     clearAppFlags : function(uid, error)
     // Based on MApps#deleteApp
@@ -489,7 +492,84 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
       this.logMessage(appData.owner, "All flags removed", appData.title);
 
       // We were successful
-      return true;
+      return appData.uid;
+    },
+
+    /**
+     * Remove all flags for a given profile
+     * 
+     * @param displayName {String}
+     *   Given displayName of the user we are removing flags for.
+     *   Cannot use appId so chance exists user could change name before this
+     *   function finishes. 
+     * 
+     * @return displayName {String}
+     *   The displayName we just cleared of all flags
+     */
+    clearProfileFlags : function(displayName, error)
+    {
+      var        criteria; 
+      var        userId; 
+
+      criteria = 
+       {
+         type  : "element",
+         field : "displayName",
+         value : displayName
+       }; 
+        
+       // Check to ensure name is unique
+       var resultList = 
+         liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                     criteria);                             
+  
+       // Should return one and only one username     
+       if (resultList.length != 1) 
+       {
+         error.setCode(2);
+         error.setMessage("The display name you are "
+                          + "trying to clear of flag: \"" 
+                          + username
+                          + "\" cannot be found."); 
+
+         return error;
+       }
+       else
+       {
+         userId = resultList[0].id; 
+       }
+
+       liberated.dbif.Entity.asTransaction(
+         function()
+         {
+           // Remove all Flags objects referencing this profile
+           liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags", 
+                                       {
+                                         type  : "element",
+                                         field : "profileId",
+                                         value : userId
+                                       }).forEach(
+           function(result)
+           {
+             var             obj;
+              
+             // Get this Flags object
+             obj = new aiagallery.dbif.ObjFlags(result.uid);
+              
+             // Assuming it exists (it had better!)...
+             if (! obj.getBrandNew())
+             {
+               // ... then remove this object
+               obj.removeSelf();
+             }
+           });
+      });
+
+      // Let the user know flags removed
+      this.logMessage(displayName, "All flags removed");
+
+      // We were successful
+      return displayName;
     },
 
     /**

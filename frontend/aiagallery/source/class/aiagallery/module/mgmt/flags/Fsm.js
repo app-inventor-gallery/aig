@@ -64,15 +64,20 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
         },
 
         "events" :
-        {
-          // On the clicking of a button, execute is fired
-          "execute" :
-          {
-            
-            "queryBtn" : "Transition_Idle_to_AwaitRpcResult_via_query"
-            
-          },
-          
+        {       
+          // Keep a flagged app
+          "keepApp" : "Transition_Idle_to_AwaitRpcResult_via_keepApp",
+
+          // Keep a flagged profile
+          "keepProfile" : "Transition_Idle_to_AwaitRpcResult_via_keepProfile",
+
+          // Delete a flagged app
+          "deleteApp" : "Transition_Idle_to_AwaitRpcResult_via_deleteApp",
+
+          // Delete a flagged profile
+          "deleteProifle"
+            : "Transition_Idle_to_AwaitRpcResult_via_deleteProfile",
+    
           // When we get an appear event, retrieve the category tags list. We
           // only want to do it the first time, though, so we use a predicate
           // to determine if it's necessary.
@@ -114,7 +119,8 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          // If we wanted to do something as the page appeared, it would go here.
+          // If we wanted to do something as the page appeared,
+	  // it would go here.
           // Pull the app flags from the db 
           var      request;
  
@@ -132,18 +138,16 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
 
       state.addTransition(trans);
 
-
-        /*
-       * Transition: Idle to Awaiting RPC Result
+      /*
+       * Transition: Idle to AwaitRpcResult
        *
-       * Cause: "Search" button pressed
+       * Cause: User clicked on keep button for an app in mgmt page 
        *
        * Action:
-       *  Initiate a request for the list of  matching applications.
+       *  Keep an app that has been flagged
        */
-        
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_query",
+        "Transition_Idle_to_AwaitRpcResult_via_keepApp",
       {
         "nextState" : "State_AwaitRpcResult",
 
@@ -151,32 +155,68 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          var             criteria;
-          var             criterium;
-          var             request;
-          var             selection;
-
-
-
-          // Issue the remote procedure call to execute the query
+          var     request;  
+          var     appId;
+          
+          // Get the uid
+          appId = event.getData().getUserData("uid");          
+          
+          // Change status of selected comment back to viewable
           request =
-            this.callRpc(fsm,
-                         "aiagallery.features",
-                         "mobileRequest",
-                         [
-
-                          fsm.getObject("queryField").getValue()
-                           
-                        ]);
+             this.callRpc(fsm,
+                          "aiagallery.features",
+                          "clearAppFlags",
+                          [appId]);
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "mobileRequest");
+          request.setUserData("requestType", "keepApp");
+
         }
       });
-
+      
       state.addTransition(trans);
 
+
+      /*
+       * Transition: Idle to AwaitRpcResult
+       *
+       * Cause: User clicked on keep button for a profile in mgmt page 
+       *
+       * Action:
+       *  Keep a profile that has been flagged
+       */
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_keepProfile",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var     request;  
+          var     username; 
+          
+          // Get the username
+          username = event.getData().getUserData("username");
+        
+          // Have to send string since userId cannot be passed to frontend.
+          // Possible for user to change name during this time.
+          request =
+             this.callRpc(fsm,
+                          "aiagallery.features",
+                          "clearProfileFlags",
+                          [username]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "keepProfile");
+
+        }
+      });
+      
+      state.addTransition(trans);
 
       /*
        * Transition: Idle to Idle
