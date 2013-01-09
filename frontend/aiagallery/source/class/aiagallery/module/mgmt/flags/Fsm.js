@@ -248,6 +248,7 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
 
           // When we get the result, we'll need to know what type of request
           // we made.
+          request.setUserData("uid", uid); 
           request.setUserData("requestType", "deleteApp");
 
         }

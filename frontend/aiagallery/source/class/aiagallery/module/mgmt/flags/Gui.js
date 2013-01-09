@@ -310,7 +310,6 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
         break;
 
       case "keepApp":
-      case "deleteApp":
         
         // Look through the appScroller
         // remove all apps flags with the same app uid
@@ -333,6 +332,35 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
         }
 
         break; 
+
+      case "deleteApp":
+        // Was the delete successful
+        result = response.data.result;
+
+        if(result)
+        {
+          // Grab uid
+          uid = rpcRequest.getUserData("uid");
+
+          // Look through the appScroller 
+          // remove all profile flags with the same app uid
+          // of the flag we just cleared
+          childList = this.appScrollContainer.getChildren();
+         
+          for (i = 0; i < childList.length; i++)
+          {
+            var compareUid = childList[i].getUserData("uid");
+
+            // If the object has the same uid as the flags we just cleared
+            // remove it from the layout
+            if (compareUid == uid) 
+            {
+              this.appScrollContainer.remove(childList[i]);
+            }
+          }
+	}
+
+        break;
 
       case "keepProfile":
       case "deleteProfile":
