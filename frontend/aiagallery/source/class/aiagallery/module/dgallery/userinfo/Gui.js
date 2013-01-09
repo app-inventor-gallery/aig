@@ -294,7 +294,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       if (response.type == "aborted")
       {
           return;
-      }
+     }
 
       if (response.type == "failed")
       {
@@ -302,6 +302,9 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
         if (response.data.code == 2)
         {
           dialog.Dialog.warning(response.data.message);
+
+          // Turn off the flag profile listener
+          this.flagItLabel.destroy(); 
         }
         else 
         {

@@ -261,7 +261,7 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
               hBoxBtns.add(button); 
 
               button = new qx.ui.form.Button(this.tr("Delete"));
-              button.setUserData("uid", obj.profileId);
+              button.setUserData("username", obj.profileId);
 
               button.addListener(
                 "click",
@@ -357,8 +357,6 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
         }
 
         break; 
-
-        break;
 
       default:
         throw new Error("Unexpected request type: " + requestType);

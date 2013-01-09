@@ -75,7 +75,7 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
           "deleteApp" : "Transition_Idle_to_AwaitRpcResult_via_deleteApp",
 
           // Delete a flagged profile
-          "deleteProifle"
+          "deleteProfile"
             : "Transition_Idle_to_AwaitRpcResult_via_deleteProfile",
     
           // When we get an appear event, retrieve the category tags list. We
@@ -120,7 +120,7 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
         "ontransition" : function(fsm, event)
         {
           // If we wanted to do something as the page appeared,
-	  // it would go here.
+          // it would go here.
           // Pull the app flags from the db 
           var      request;
  
@@ -177,7 +177,6 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
       
       state.addTransition(trans);
 
-
       /*
        * Transition: Idle to AwaitRpcResult
        *
@@ -212,6 +211,84 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
           // When we get the result, we'll need to know what type of request
           // we made.
           request.setUserData("requestType", "keepProfile");
+
+        }
+      });
+      
+      state.addTransition(trans);
+
+      /*
+       * Transition: Idle to AwaitRpcResult
+       *
+       * Cause: User clicked on delete button for an app in mgmt page 
+       *
+       * Action:
+       *  Delete an app that has been flagged
+       */
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_deleteApp",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var     request;  
+          var     uid; 
+          
+          // Get the uid
+          uid = event.getData().getUserData("uid");
+        
+          request =
+             this.callRpc(fsm,
+                          "aiagallery.features",
+                          "mgmtDeleteApp",
+                          [uid]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "deleteApp");
+
+        }
+      });
+
+      state.addTransition(trans);
+
+      /*
+       * Transition: Idle to AwaitRpcResult
+       *
+       * Cause: User clicked on delete button for a profile in mgmt page 
+       *
+       * Action:
+       *  Delete a profile that has been flagged
+       */
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_deleteProfile",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var     request;  
+          var     username; 
+          
+          // Get the username
+          username = event.getData().getUserData("username");
+        
+          // Have to send string since userId cannot be passed to frontend.
+          // Possible for user to change name during this time.
+          request =
+             this.callRpc(fsm,
+                          "aiagallery.features",
+                          "deleteVisitorWithUsername",
+                          [username]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "deleteProfile");
 
         }
       });

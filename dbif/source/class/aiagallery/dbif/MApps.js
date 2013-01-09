@@ -1432,15 +1432,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
                                                   appData.owner);
 
-      // FIXME: should never occur (but does)
-      if (true)
+
+      displayName = null;
+      if (owners.length == 0)
       {
-        displayName = null;
-        if (owners.length == 0)
-        {
-          email = "nobody@nowhere.org";
-          displayName = "<>";
-        }
+        email = "DELETED";
+        displayName = "DELETED";
       }
 
       // Add display name and email
@@ -1797,16 +1794,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
                                                   app["owner"]);
 
-            // FIXME: should never occur (but does)
-            if (true)
+ 
+            displayName = null;
+            if (owners.length == 0)
             {
-              displayName = null;
-              if (owners.length == 0)
-              {
-                email = "nobody@nowhere.org";
-                displayName = "<>";
-              }
-            }
+              email = "DELETED";
+              displayName = "DELETED";
+            }       
 
             // Add the display name
             app["displayName"] = displayName || owners[0].displayName || "<>";
@@ -1991,15 +1985,11 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
                                                app.owner);
 
-          // FIXME: should never occur (but does)
-          if (true)
+          displayName = null;
+          if (owners.length == 0)
           {
-            displayName = null;
-            if (owners.length == 0)
-            {
-              displayName = "<>";
-            }
-          }
+            displayName = "DELETED";
+          }     
 
           // Add the owner's display name
           app.displayName = displayName || owners[0].displayName || "<>";
@@ -2417,7 +2407,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                                  app["owner"]);
 
             // Add his display name
-            app["displayName"] = owners[0].displayName || "<>";
+            if (owners.length == 0)
+            {
+              app["displayname"] = "DELETED";
+            } else {
+              app["displayName"] = owners[0].displayName || "<>";
+            }
+            
           }
 
           // Remove the owner field
@@ -2483,9 +2479,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                                  app["owner"]);
 
             // Add his display name
-            app["displayName"] = owners[0].displayName || "<>";
+            if (owners.length == 0)
+            { 
+              app["displayName"] = "DELETED";
+            } else {	  
+              app["displayName"] = owners[0].displayName || "<>";
+            }
           }
-
           // Remove the owner field
           delete app.owner;
 
@@ -2540,8 +2540,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
                                                  app["owner"]);
 
-            // Add his display name
-            app["displayName"] = owners[0].displayName || "<>";
+           // Add his display name
+            if (owners.length == 0)
+            { 
+              app["displayName"] = "DELETED";
+            } else {	  
+              app["displayName"] = owners[0].displayName || "<>";
+            }
           }
 
           // Remove the owner field
@@ -2648,7 +2653,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                                app.owner);
 
           // Add his display name
-          app.displayName = owners[0].displayName || "<>";
+          if (owners.length == 0)
+          { 
+            app.displayName = "DELETED";
+          } else {	  
+            app.displayName = owners[0].displayName || "<>";
+          }
           
           // Remove the owner field
           delete app.owner;
@@ -2869,9 +2879,15 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       
       if (requestedFields.displayName)
       {
-
-        // Add his display name
-        ret.app.displayName = owners[0].displayName || "<>";
+        // Owner does not exits
+        if (owners.length == 0)
+        {
+          // Probably deleted
+          ret.app.displayName = "DELETED";
+        } else {
+          // Add his display name
+          ret.app.displayName = owners[0].displayName || "<>";
+        }
       }
       
       // If there's a user signed in...
@@ -2902,12 +2918,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         // Only use memcache if we are on Google App Engine.
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
-	      value = syncCache.get(key_likes);
-	      if (value == null) {
-	        likesCache = true; // true: we need to cache this search
-	      } else {
-		likesList = JSON.parse(value);
-	      }
+              value = syncCache.get(key_likes);
+              if (value == null) {
+                likesCache = true; // true: we need to cache this search
+              } else {
+                likesList = JSON.parse(value);
+              }
 
         } else { 
         // make the database call normally if we are not running on app engine
@@ -2926,9 +2942,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 
           syncCache.put(key_likes, serialize, expirationDate);
         }
-
-
-
 
         // If there were any results, this user has already liked it.
         ret.bAlreadyLiked = likesList.length > 0;
@@ -3016,8 +3029,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           ]
         };
 
-
-
         // Only use memcache if we are on Google App Engine.
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
@@ -3048,7 +3059,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       ret.byAuthor.forEach(
         function(app)
         {
-          app.displayName = owners[0].displayName || "<>";
+          if (owners.length == 0)
+          {
+            app.displayName = "DELETED";
+          } else {
+            app.displayName = owners[0].displayName || "<>";
+          }
 
           // Remove the owner field
           delete app.owner;
@@ -3079,7 +3095,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         // Add the author's display name to each app
         tlist.forEach(
           function(app) {
-            app.displayName = owners[0].displayName || "<>";
+            if (owners.length == 0)
+            {
+              app.displaName = "DELETED";
+            } else {
+              app.displayName = owners[0].displayName || "<>";          
+            }
+
             delete app.owner; // Remove the owner field
         });
 
@@ -3390,7 +3412,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                                  appData["owner"]);
 
               // Add his display name
-              appData["displayName"] = owners[0].displayName || "<>";
+              if (owners.length == 0)
+              {
+                // Owner has been deleted
+                appData["displayName"] = "DELETED"; 
+              } else {
+                appData["displayName"] = owners[0].displayName || "<>"; 
+              }
 
               // Delete the owner and strip unneded fields
               delete appData.owner; 
