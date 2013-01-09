@@ -71,12 +71,19 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
           // Keep a flagged profile
           "keepProfile" : "Transition_Idle_to_AwaitRpcResult_via_keepProfile",
 
+           // Event is called directly from a comment
+          "keepComment" : "Transition_Idle_to_AwaitRpcResult_via_keepComment",
+
           // Delete a flagged app
           "deleteApp" : "Transition_Idle_to_AwaitRpcResult_via_deleteApp",
 
           // Delete a flagged profile
           "deleteProfile"
             : "Transition_Idle_to_AwaitRpcResult_via_deleteProfile",
+
+          // Event is called directly from a comment
+          "deleteComment" 
+            : "Transition_Idle_to_AwaitRpcResult_via_deleteComment",
     
           // When we get an appear event, retrieve the category tags list. We
           // only want to do it the first time, though, so we use a predicate
@@ -128,7 +135,7 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
             this.callRpc(fsm,
                          "aiagallery.features",
                          "getFlags",
-                         [aiagallery.dbif.Constants.FlagType.App]);        
+                         []);        
 
           // When we get the result, we'll need to know what type of request
           // we made.
@@ -220,6 +227,53 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
       /*
        * Transition: Idle to AwaitRpcResult
        *
+       * Cause: User clicked on keep button for a comment in mgmt page 
+       *
+       * Action:
+       *  Keep a comment that has been flagged
+       */
+
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_keepComment",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var     request;  
+          var     appId;
+          var     treeId; 
+          var     map; 
+          
+          // Get the data map
+          map = event.getData();
+          
+          // Break out the map
+          appId = map.appId;
+          treeId = map.treeId;  
+          
+          // Change status of selected comment back to viewable
+          request =
+             this.callRpc(fsm,
+                          "aiagallery.features",
+                          "setCommentActive",
+                          [appId, treeId]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "setCommentActive");
+          request.setUserData("commentInfo", map); 
+
+        }
+      });
+      
+      state.addTransition(trans);
+
+      /*
+       * Transition: Idle to AwaitRpcResult
+       *
        * Cause: User clicked on delete button for an app in mgmt page 
        *
        * Action:
@@ -290,6 +344,53 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
           // When we get the result, we'll need to know what type of request
           // we made.
           request.setUserData("requestType", "deleteProfile");
+
+        }
+      });
+      
+      state.addTransition(trans);
+
+      /*
+       * Transition: Idle to AwaitRpcResult
+       *
+       * Cause: User clicked on delete button for a comment in mgmt page 
+       *
+       * Action:
+       *  Delete (set status to unviewable) a comment that has been flagged
+       */
+
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_deleteComment",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var     request;  
+          var     appId;
+          var     treeId; 
+          var     map; 
+          
+          // Get the data map
+          map = event.getData();
+          
+          // Break out the map
+          appId = map.appId;
+          treeId = map.treeId;  
+        
+         // Change the status of the comment to unviewable
+         request =
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "deleteComment",
+                         [appId, treeId]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "deleteComment");
+          request.setUserData("commentInfo", map); 
 
         }
       });

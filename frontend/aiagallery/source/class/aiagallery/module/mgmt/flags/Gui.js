@@ -27,13 +27,38 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
     {
       var             o;
       var             fsm = module.fsm;
-      var             canvas = module.canvas;
+      var             outerCanvas = module.canvas; 
+      var             canvas;
+      var             mainScrollContainer;
       var             label; 
       var             appScroller; 
       var             profileScroller; 
+      var             commentScroller; 
       var             vBox; 
 
       this.fsm = fsm; 
+
+      // Put entire page in scroller
+      outerCanvas.setLayout(new qx.ui.layout.VBox());
+      mainScrollContainer = new qx.ui.container.Scroll();
+      outerCanvas.add(mainScrollContainer, { flex : 1 });
+ 
+      canvas = new qx.ui.container.Composite(new qx.ui.layout.VBox(20));
+      mainScrollContainer.add(canvas, { flex : 1}); 
+
+      // Create title label
+      label = new qx.ui.basic.Label("Flagged Comments");
+      canvas.add(label);        
+
+      // Create the scroller to hold all of the comments
+      commentScroller = new qx.ui.container.Scroll();
+      canvas.add(commentScroller, {flex : 1});  
+      
+      // The Scroller may contain only one container, so create that container.
+      vBox = new qx.ui.layout.VBox();     
+      this.commentsScrollContainer = 
+        new qx.ui.container.Composite(vBox);
+      commentScroller.add(this.commentsScrollContainer);
 
       // Show flagged apps 
       label = new qx.ui.basic.Label("Flagged Apps");
@@ -67,8 +92,7 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
       profileScroller.add(this.profileScrollContainer);
 
     },
-
-    
+   
     /**
      * Handle the response to a remote procedure call
      *
@@ -89,6 +113,13 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
       var             i;
       var             username;
       var             uid; 
+      var             scrollChildren;
+      var             commentDB; 
+      var             vBoxTotal; 
+      var             hBoxData;
+      var             hBoxBtns;
+      var             label; 
+      var              button; 
 
       // We can ignore aborted requests.
       if (response.type == "aborted")
@@ -123,11 +154,6 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
           // On line 2, 3 buttons keep app, remove app, visit app
           result.Apps.forEach(function(obj)
             {
-              var    vBoxTotal; 
-              var    hBoxData;
-              var    hBoxBtns;
-              var    label; 
-              var    button; 
 
               // Flag Layouts         
               vBoxTotal 
@@ -222,11 +248,6 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
           // On line 2, 3 buttons keep profile, remove profile, visit profile
           result.Profiles.forEach(function(obj)
             {
-              var    vBoxTotal; 
-              var    hBoxData;
-              var    hBoxBtns;
-              var    label; 
-              var    button; 
 
               // Flag Layouts         
               vBoxTotal 
@@ -307,6 +328,36 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
           ,this);
         }
 
+        if (result.Comments.length != 0)
+        {
+          // First make sure the commentScrollContainer is clear
+          this.commentsScrollContainer.removeAll(); 
+        
+          // Take the comments that are flagged
+          // create new commentDetailBoxes for each of them
+          // add them all to the vBox
+        
+          //result is a list
+          for(i in result.Comments)
+          {
+             // Create a new commentDetailBox object for this comment
+            commentDB = new aiagallery.module.dgallery.appinfo.Comment
+              (null, fsm, result.Comments[i].treeId, 
+              result.Comments[i].app, true);
+            commentDB.setText(result.Comments[i].text);
+            commentDB.setDisplayName(result.Comments[i].displayName);
+            commentDB.setTimestamp(result.Comments[i].timestamp);
+
+            // Add it to the scroll container
+            this.commentsScrollContainer.add(commentDB);    
+           
+            label = new qx.ui.basic.Label("Reason: " 
+              + result.Comments[i].objFlag.explanation);
+
+            this.commentsScrollContainer.add(label);
+          }
+        }
+
         break;
 
       case "keepApp":
@@ -385,6 +436,59 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
         }
 
         break; 
+
+      // Comment was deemed acceptable so keep it
+      case "setCommentActive":
+      
+        // Pop msg of action
+        dialog.Dialog.warning(this.tr("Message Kept")); 
+        
+        // Get comment info
+        result = rpcRequest.getUserData("commentInfo"); 
+        
+        // Remove from list
+        scrollChildren = this.commentsScrollContainer.getChildren();
+      
+        for(i in scrollChildren)
+        {
+          if(scrollChildren[i].appId == result.appId && 
+             scrollChildren[i].treeId == result.treeId)
+          {
+            // Remove this from the list
+            this.commentsScrollContainer.remove(scrollChildren[i]);
+            
+            // Found the comment so break
+            break;            
+          }
+        }
+      
+        break;
+        
+      case "deleteComment":
+      
+        // Pop msg of action
+        dialog.Dialog.warning(this.tr("Message Deleted")); 
+        
+        // Get comment info
+        result = rpcRequest.getUserData("commentInfo"); 
+        
+        // Remove from list
+        scrollChildren = this.commentsScrollContainer.getChildren();
+      
+        for(i in scrollChildren)
+        {
+          if(scrollChildren[i].appId == result.appId && 
+             scrollChildren[i].treeId == result.treeId)
+          {
+            // Remove this from the list
+            this.commentsScrollContainer.remove(scrollChildren[i]);
+            
+            // Found the comment so break
+            break;            
+          }
+        }
+      
+        break;
 
       default:
         throw new Error("Unexpected request type: " + requestType);
