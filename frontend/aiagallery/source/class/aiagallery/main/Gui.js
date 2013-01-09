@@ -650,52 +650,16 @@ qx.Class.define("aiagallery.main.Gui",
 
               // We've instantiated a new module which needs to be added
               bAddModules = true;
-            }
-            
-            // Determine whether they have access to the comment
-            // management page.
-            bAllowed = false;
-            [ 
-              // These permissions allow access to the page
-              "deleteComment"
-            ].forEach(
-              function(rpcFunc)
-              {
-                if (qx.lang.Array.contains(e.permissions, rpcFunc))
-                {
-                  bAllowed = true;
-                }
-              });
+            }                 
 
-            // If they're allowed access to the page...
-            if (e.isAdmin || bAllowed)
-            {
-              // ... then create it
-              module = new aiagallery.main.Module(
-                "Management",
-                "aiagallery/test.png",
-                "Comments",
-                aiagallery.main.Constant.PageName.Management,
-                aiagallery.module.mgmt.comments.Comments);
-
-              // Start up the new module
-              if (! moduleList["Management"])
-              {
-                moduleList["Management"] = {};
-              }
-              moduleList["Management"]["Comments"] = module;
-
-              // We've instantiated a new module which needs to be added
-              bAddModules = true;
-            }
-
-           // Determine whether they have access to the flag 
+            // Determine whether they have access to the flag 
             // management page.
             bAllowed = false;
             [ 
               // These permissions allow access to the page
               "deleteApp",
-              "deleteVisitor"
+              "deleteVisitor",
+              "deleteComment"
             ].forEach(
               function(rpcFunc)
               {

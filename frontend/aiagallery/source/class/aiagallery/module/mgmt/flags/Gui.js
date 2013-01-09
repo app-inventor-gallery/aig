@@ -195,9 +195,19 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
                 "click",
                 function(e)
                 {
-                  // Fire immediate event
-                  this.fsm.fireImmediateEvent(
-                    "deleteApp", this, e.getTarget());
+                  var uid = e.getTarget().getUserData("uid"); 
+
+                  dialog.Dialog.confirm(
+                    this.tr("Really Delete this App?"),
+                    function(result)
+                    {
+                      if (result)
+                      {                   
+                        // Fire immediate event
+                        this.fsm.fireImmediateEvent(
+                          "deleteApp", this, uid);
+                      }
+                    }, this);
                 }, this); 
 
               hBoxBtns.add(button); 
@@ -288,9 +298,19 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
                 "click",
                 function(e)
                 {
-                  // Fire immediate event
-                  this.fsm.fireImmediateEvent(
-                    "deleteProfile", this, e.getTarget());
+                  var name = e.getTarget().getUserData("username"); 
+
+                  dialog.Dialog.confirm(
+                    this.tr("Really Delete this User?"),
+                    function(result)
+                    {
+                      if (result)
+                      {                   
+                        // Fire immediate event
+                        this.fsm.fireImmediateEvent(
+                          "deleteProfile", this, name);
+                      }
+                    }, this);
                 }, this); 
 
               hBoxBtns.add(button); 
@@ -409,7 +429,7 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
               this.appScrollContainer.remove(childList[i]);
             }
           }
-	}
+        }
 
         break;
 

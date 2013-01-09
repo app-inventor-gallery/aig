@@ -292,7 +292,7 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
           var     uid; 
           
           // Get the uid
-          uid = event.getData().getUserData("uid");
+          uid = event.getData();
         
           request =
              this.callRpc(fsm,
@@ -331,7 +331,7 @@ qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
           var     username; 
           
           // Get the username
-          username = event.getData().getUserData("username");
+          username = event.getData();
         
           // Have to send string since userId cannot be passed to frontend.
           // Possible for user to change name during this time.

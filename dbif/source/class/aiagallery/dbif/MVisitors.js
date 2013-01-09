@@ -368,7 +368,6 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
 
     /**
      * Delete a visitor based on their id number.
-     * Leaves the user's app untouched.
      * 
      * @param id {Integer}
      *   The user id number
@@ -379,6 +378,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     deleteVisitor : function(id)
     {
       var             visitor;
+      var             criteria;
+      var             deleteList; 
 
       // Retrieve this visitor
       visitor = new aiagallery.dbif.ObjVisitors(id);
@@ -389,10 +390,53 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
         // He doesn't. Let 'em know.
         return false;
       }
+
+      // Remove objects associated with a visitor 
+      // All delete calls take place within a transaction
+      // Remove all apps authored by a visitor
+      criteria =
+        {
+          type  : "element",
+          field : "owner",
+          value : id 
+        }; 
+
+      // Get all the apps a user has authored
+      deleteList = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                               criteria,
+                                               null);
+
+      // Delete all those apps 
+      deleteList.forEach(
+        function(app)
+        {
+          this.mgmtDeleteApp(app.uid);
+        }, this);
+
+
+      // Remove all comments authored by a visitor
+      criteria =
+        {
+          type  : "element",
+          field : "visitor",
+          value : id 
+        }; 
+
+      // Get all the comments a user has authored
+      deleteList = liberated.dbif.Entity.query("aiagallery.dbif.ObjComments",
+                                               criteria,
+                                               null);
+
+      // Delete all those apps 
+      deleteList.forEach(
+        function(comment)
+        {
+          this.deleteComment(comment.app, comment.treeId);
+        }, this);
       
       // Delete the visitor
       visitor.removeSelf();
-      
+
       // We were successful
       return true;
     },

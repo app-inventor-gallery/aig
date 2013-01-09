@@ -331,6 +331,10 @@ else
       // MFlags
       //
       case "flagIt":
+      case "clearAppFlags":
+      case "clearProfileFlags":
+      case "clearProfileFlagsWithId":
+      case "getFlags": 
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       //
