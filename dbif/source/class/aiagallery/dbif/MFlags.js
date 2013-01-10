@@ -398,7 +398,7 @@ qx.Mixin.define("aiagallery.dbif.MFlags",
           var data = newFlag.getData();
 
           data.type = aiagallery.dbif.Constants.FlagType.Profile;
-          data.app = null;
+          data.app = 0; // Special key value to indicate a profile flag
           data.comment = null;
           data.visitor = visitorId;
           data.profileId = profileId; 

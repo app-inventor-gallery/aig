@@ -476,6 +476,9 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
           {
             // Remove this from the list
             this.commentsScrollContainer.remove(scrollChildren[i]);
+
+            // The very next item is the reason label, remove that too         
+            this.commentsScrollContainer.remove(scrollChildren[i]); 
             
             // Found the comment so break
             break;            
@@ -502,6 +505,9 @@ qx.Class.define("aiagallery.module.mgmt.flags.Gui",
           {
             // Remove this from the list
             this.commentsScrollContainer.remove(scrollChildren[i]);
+
+            // The very next item is the reason label, remove that too         
+            this.commentsScrollContainer.remove(scrollChildren[i]); 
             
             // Found the comment so break
             break;            
