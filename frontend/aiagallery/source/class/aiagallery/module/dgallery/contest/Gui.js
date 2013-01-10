@@ -400,7 +400,7 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
       label = new qx.ui.basic.Label("");
       label.set(
         {
-          value : "<a href=http://gallery.appinventor.mit.edu/#page%3DApp%26uid%3D158006%26label%3DLearn%20by%20the%20State-Idaho >Learn by the State-Idaho</a>",
+          value : "<a href=http://gallery.appinventor.mit.edu/#page%3DApp%26uid%3D158006%26label%3DLearn%20by%20the%20State-Idaho >Learn by State-Idaho</a>",
           rich  : true
         });
 
@@ -419,7 +419,7 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
       desc = new  qx.ui.form.TextArea("");
       desc.set(
         {
-          value      : "An app about the state of Idaho, it remixes a quiz, potato mash, potato chase game, and map tour with a nice UI and all Idaho style.  Sherie Moran is a 4th grade teacher who moonlights as a grad student in Boise St. EdTech Master's program.", 
+          value      : "An app about the state of Idaho, it remixes a quiz, potato mash, potato chase game, and map tour with a nice UI and all Idaho style.  Sherie Moran created the app for use in fourth grade classrooms. She is a 7th grade teacher who moonlights as a grad student in Boise St. EdTech Master's program.", 
           appearance : "widget",
           readOnly : true,
           wrap     : true,
