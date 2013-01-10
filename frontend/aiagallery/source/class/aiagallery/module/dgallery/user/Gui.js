@@ -176,8 +176,8 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
 
       // add a label widget to the popup
       dobHelpPopup.add(new qx.ui.basic.Label().set({ 
-        value: this.tr("The date of birth info is for site statistics only and"
-               + " it not displayed."),
+        value: this.tr("The date of birth info is for site statistics only."
+               + " It is not displayed."),
         rich : true,
         width: 300 
       }));
@@ -665,7 +665,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // Checkbox to get updates if an app of theirs is liked
       // by deafult this is unchecked 
       this.likedAppCheck = 
-        new qx.ui.form.CheckBox(this.tr("My app is liked"));
+        new qx.ui.form.CheckBox(this.tr("Someone likes one of my apps"));
 
       // Create friendly name to get this option from FSM
       fsm.addObject("likedAppCheck", 
@@ -698,7 +698,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // Checkbox to get updates if an app of theirs is commented on
       // by deafult this is unchecked 
       this.commentAppCheck = 
-        new qx.ui.form.CheckBox(this.tr("My app is commented on"));
+        new qx.ui.form.CheckBox(this.tr("Someone comments on one of my apps"));
 
       // Create friendly name to get this option from FSM
       fsm.addObject("commentAppCheck", 
@@ -731,7 +731,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       // Checkbox to get updates if an app of theirs is downloaded on
       // by deafult this is unchecked 
       this.downloadAppCheck = 
-        new qx.ui.form.CheckBox(this.tr("My app is downloaded"));
+        new qx.ui.form.CheckBox(this.tr("Someone downloads one of my apps"));
 
       // Create friendly name to get this option from FSM
       fsm.addObject("downloadAppCheck", 
