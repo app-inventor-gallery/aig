@@ -321,12 +321,9 @@ qx.Class.define("aiagallery.main.Gui",
             // Update the saved whoami
             qx.core.Init.getApplication().setUserData("whoAmI", _this.whoAmI); 
 
-            // Prepare to add management modules if permissions allow it.
+            // Prepare to add user/management modules if permissions allow it.
             moduleList = {};
             bAddModules = false;
-
-            // Add Find Apps if a user has the permissions
-            bAllowed = false;
 
             // Add My Apps module if the user has permission
             bAllowed = false;
@@ -350,7 +347,7 @@ qx.Class.define("aiagallery.main.Gui",
               });
 
             // If they're allowed access to the page...
-            if (e.isAdmin || bAllowed)
+            if (e.isAdmin || bAllowed || !e.isAnonymous)
             {
               // ... then create it
               module = new aiagallery.main.Module(
@@ -382,7 +379,7 @@ qx.Class.define("aiagallery.main.Gui",
               });
 
             // If they're allowed access to the page...
-            if (e.isAdmin || bAllowed)
+            if (e.isAdmin || bAllowed || !e.isAnonymous)
             {
               // ... then create it
               module = new aiagallery.main.Module(

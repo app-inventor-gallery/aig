@@ -279,10 +279,10 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MApps
       //
       case "getAppList":
-        return ! bAnonymous;    // Access is allowed if they're logged in
-
       case "addOrEditApp":
       case "deleteApp":
+        return ! bAnonymous;    // Access is allowed if they're logged in
+
       case "mgmtDeleteApp":
       case "getAppListAll":
       case "mgmtEditApp":
@@ -298,11 +298,12 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       case "getCategoryTags" :
           return true;            // Anonymous access
 
-
       //
       // MComments
       //
       case "addComment":
+        return ! bAnonymous; // Allowed if logged in 
+
       case "deleteComment":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
@@ -314,7 +315,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MFlags
       //
       case "flagIt":
-        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+        return ! bAnonymous; // Allowed if logged in 
 
       //
       // MMobile
@@ -334,13 +335,11 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       case "addOrEditVisitor":
       case "whitelistVisitors":
       case "deleteVisitor":
+      case "getVisitorListAndPGroups":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       case "editProfile":
-        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
-
-      case "getVisitorListAndPGroups":
-        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+        return ! bAnonymous; // Allowed if logged in 
 
       //
       // MWhoAmI
@@ -360,7 +359,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MLiking
       //
       case "likesPlusOne":
-        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+        return ! bAnonymous; // Allowed if logged in 
 
       //
       // MDbMgmt
@@ -381,7 +380,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MChannel
       //
       case "getChannelToken" :
-        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+        return ! bAnonymous; // Allowed if logged in 
 
       //
       // MSystem
@@ -399,10 +398,10 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MWhoAmI
       //
       case "getUserProfile":
-        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+        return ! bAnonymous; // Allowed if logged in 
 
       case "getPublicUserProfile":
-        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+        return true; 
 
       default:
         // Do not allow access to unrecognized method names
