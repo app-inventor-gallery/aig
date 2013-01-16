@@ -170,7 +170,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             cursor    : "pointer"
           });
 
-        // Visitor clicks initiate a search for apps of that owner
+        // Visitor clicks lead to the user's profile page
         control.addListener(
           "click",
           function(e)
@@ -185,17 +185,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             // Remove "by" from displayName
             displayName = this.getDisplayName().replace("by ", "");
 
-            query  =
-              {
-                authorName : displayName
-              };
-            
-            // Initiate a search
-            aiagallery.main.Gui.getInstance().selectModule(
-              {
-                page  : aiagallery.main.Constant.PageName.FindApps,
-                query : qx.lang.Json.stringify(query)
-              });
+            // Launch user page module
+            aiagallery.module.dgallery.userinfo.UserInfo.addPublicUserView(
+            displayName);
           },
           this);
 

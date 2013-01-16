@@ -41,7 +41,8 @@ qx.Class.define("aiagallery.main.Constant",
         Management : "Management",
         AppInfo    : "App",
         User       : "Profile",
-        PublicUser : "PublicUser"
+        PublicUser : "PublicUser",
+        Contest    : "Contest"
       }
   }
 });

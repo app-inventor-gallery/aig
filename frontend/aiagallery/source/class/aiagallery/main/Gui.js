@@ -312,48 +312,18 @@ qx.Class.define("aiagallery.main.Gui",
             _this.whoAmI.setDisplayName(e.displayName);
             _this.whoAmI.setHasSetDisplayName(e.hasSetDisplayName);
             _this.whoAmI.setLogoutUrl(e.logoutUrl);
+            _this.whoAmI.setIsAnonymous(e.isAnonymous);
 
             // Save the user's permissions
             application = qx.core.Init.getApplication();
             application.setUserData("permissions", e.permissions);
 
-            // Prepare to add management modules if permissions allow it.
+            // Update the saved whoami
+            qx.core.Init.getApplication().setUserData("whoAmI", _this.whoAmI); 
+
+            // Prepare to add user/management modules if permissions allow it.
             moduleList = {};
             bAddModules = false;
-
-            // Add Find Apps if a user has the permissions
-            bAllowed = false;
-            [ 
-              // These permissions allow access to the page
-              "appQuery",
-              "intersectKeywordAndQuery"
-              
-            ].forEach(
-              function(rpcFunc)
-              {
-                if (qx.lang.Array.contains(e.permissions, rpcFunc))
-                {
-                  bAllowed = true;
-                }
-              });
-
-            // If they're allowed access to the page...
-            if (e.isAdmin || bAllowed)
-            {
-              // ... then create it
-              module = new aiagallery.main.Module(
-                "Find Apps",
-                "aiagallery/module/system-search.png",
-                "Find Apps",
-                aiagallery.main.Constant.PageName.FindApps,
-                aiagallery.module.dgallery.findapps.FindApps);
-
-              moduleList["Find Apps"] = {}; 	
-              moduleList["Find Apps"]["Find Apps"] = module;
-            
-              // We've instantiated a new module which needs to be added
-              bAddModules = true;
-            }
 
             // Add My Apps module if the user has permission
             bAllowed = false;
@@ -377,7 +347,7 @@ qx.Class.define("aiagallery.main.Gui",
               });
 
             // If they're allowed access to the page...
-            if (e.isAdmin || bAllowed)
+            if (e.isAdmin || bAllowed || !e.isAnonymous)
             {
               // ... then create it
               module = new aiagallery.main.Module(
@@ -409,7 +379,7 @@ qx.Class.define("aiagallery.main.Gui",
               });
 
             // If they're allowed access to the page...
-            if (e.isAdmin || bAllowed)
+            if (e.isAdmin || bAllowed || !e.isAnonymous)
             {
               // ... then create it
               module = new aiagallery.main.Module(
@@ -714,165 +684,6 @@ qx.Class.define("aiagallery.main.Gui",
           },
           "whoAmI",
           []);
-/*
-          // Load the Channel API. If we're on App Engine, it'll succeed
-          var loader = new qx.bom.request.Script();
-          loader.onload = 
-          function createChannel()
-          {
-            // Did we successfully load the Channel API?
-            switch(loader.status)
-            {
-            case 200:
-              // Found the Channel API. Reqest a server push channel
-              rpc.callAsync(
-                function(e)
-                {
-                  var             channel;
-                  var             socket;
-                  var             channelMessage;
-
-                  // Did we get a channel token?
-                  if (! e)
-                  {
-                    // Nope. Nothing to do.
-                    _this.warn("getChannelToken: " +
-                            "Received no channel token");
-                    return;
-                  }
-
-                  channelMessage = function(type, data)
-                  {
-                    // If this is an "open" message...
-                    if (type == "open")
-                    {
-                      qx.util.TimerManager.getInstance().start(
-                        function()
-                        {
-                          var             socket;
-
-                          // ... then start a timer to close the channel
-                          // in a little less than two hours, to avoid the
-                          // server from closing the channel
-                          socket = application.getUserData("channelSocket");
-                          if (socket)
-                          {
-                            socket.close();
-                          }
-                          application.setUserData("channelSocket", null);
-                          socket = null;
-
-                          // Re-establish the channel
-                          qx.util.TimerManager.getInstance().start(
-                            createChannel,
-                            0,
-                            _this,
-                            null,
-                            5000);
-                        },
-                        (2 * 1000 * 60 * 60) - (5 * 1000 * 60),
-                        _this);
-                    }
-
-                    if (typeof data == "undefined")
-                    {
-                      _this.debug("Channel Message (" + type + ")");
-                    }
-                    else
-                    {
-                      _this.debug(liberated.dbif.Debug.debugObjectToString(
-                                    data,
-                                    "Channel Message (" + type + ")"));
-                    }
-                  };
-
-                  // If there was a prior channel open...
-                  socket = application.getUserData("channelSocket");
-                  if (socket)
-                  {
-                    // ... then close it
-                    socket.close();
-                  }
-
-                  // Open a channel for server push
-                  channel = new goog.appengine.Channel(e);
-                  socket = channel.open();
-
-                  // Save the channel socket
-                  application.setUserData("channelSocket", socket);
-
-                  // When we receive a message on the channel, post a
-                  // message on the message bus.
-                  socket.onmessage = function(data)
-                  {
-                    var             messageBus;
-
-                    // Parse the JSON message
-                    data = qx.lang.Json.parse(data.data);
-                    channelMessage("message", data);
-
-                    // Dispatch a message for any subscribers to
-                    // this type.
-                    messageBus = qx.event.message.Bus.getInstance();
-                    messageBus.dispatchByName(data.type, data);
-                  };
-
-                  // Display a message when the channel is open
-                  socket.onopen = function(data)
-                  {
-                    channelMessage("open", data);
-                  };
-
-                  // Display a message upon error
-                  socket.onerror = function(data)
-                  {
-                    channelMessage("error", data);
-
-                    // There's no longer a channel socket
-                    application.setUserData("channelSocket", null);
-                    socket = null;
-
-                    // Re-establish the channel
-                    qx.util.TimerManager.getInstance().start(
-                      createChannel,
-                      0,
-                      _this,
-                      null,
-                      5000);
-                  };
-
-                  // Display a message when the channel is closed
-                  socket.onclose = function(data)
-                  {
-                    channelMessage("close", data);
-
-                    // There's no longer a channel socket
-                    application.setUserData("channelSocket", null);
-                    socket = null;
-
-                    // Re-establish the channel
-                    qx.util.TimerManager.getInstance().start(
-                      createChannel,
-                      0,
-                      _this,
-                      null,
-                      5000);
-                  };
-                },
-                "getChannelToken",
-                []);
-              break;
-
-            default:
-              // Nope.
-              _this.warn(loader.status + ": Failed to load Channel API");
-              break;
-            }
-          };
-
-          loader.open("GET", "/_ah/channel/jsapi");
-          loader.send();
-*/
         });
 
         // Create the footer, containing links to terms of service,
@@ -950,30 +761,6 @@ qx.Class.define("aiagallery.main.Gui",
 
         // Add the hbox to the application
         application.add(hbox);
-
-        // Arrange to initialize bookmark support some time after this
-        // function completes
-/*
-        qx.util.TimerManager.getInstance().start(
-          function()
-          {
-            var          mainTabs;
-
-            // Init history support
-            this.__historyInit();
-
-            // Retrieve the previously-created top-level tab view
-            mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
-
-            // Add listener to detect page changes
-            mainTabs.addListener("changeSelection", 
-                                 this.__onTabSelectionChanged);
-          },
-          0,
-          this,
-          null,
-          0);
-*/
 
         }
       // Get the page hierarchy
