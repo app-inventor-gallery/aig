@@ -7,7 +7,7 @@
  */
 
 /**
- * The graphical user interface for the temporary testing page
+ * The graphical user interface for the comment management page
  */
 qx.Class.define("aiagallery.module.mgmt.comments.Gui",
 {
@@ -167,6 +167,15 @@ qx.Class.define("aiagallery.module.mgmt.comments.Gui",
         }
       
         break;
+
+      case "visitComment":
+        result = response.data.result;
+
+        // Add a module for the specified app
+        aiagallery.module.dgallery.appinfo.AppInfo.addAppView(result.app.uid, 
+                                                              result.app.title);
+
+        break; 
         
       default:
         throw new Error("Unexpected request type: " + requestType);

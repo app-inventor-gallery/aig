@@ -77,7 +77,10 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
           
           // Event is called directly from a comment
           "deleteComment" : "Transition_Idle_to_AwaitRpcResult_via_deleteComment",
-          
+
+          // Event is called directly from a comment
+          "visitComment" : "Transition_Idle_to_AwaitRpcResult_via_visitComment",
+
           // When we get an appear event, retrieve all pending comments
           "appear"    :
           {
@@ -225,6 +228,54 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
         }
       });
       
+      state.addTransition(trans);
+
+      /*
+       * Transition: Idle to AwaitRpcResult
+       *
+       * Cause: The user wants to visit a flagged comment 
+       *
+       * Action:
+       *  Create (if necessary) and switch to an application-specific tab via
+       *    the comment management page. 
+       */
+      
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_visitComment",
+      {
+        "nextState" : "State_AwaitRpcResult",
+      
+        "context" : this,
+      
+        "ontransition" : function(fsm, event)
+        {
+          // Get the data map
+          var map = event.getData();
+          
+          // Break out the map
+          var appId = map.appId;
+
+          // Need to get the title of the app
+          var request =
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "getAppInfo",
+                         [ 
+                           appId,
+                           true,
+                           {
+                             uid          : "uid",
+                             title        : "title"
+                           }
+                         ]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "visitComment");
+
+        }
+      });
+
       state.addTransition(trans);
 
       /*

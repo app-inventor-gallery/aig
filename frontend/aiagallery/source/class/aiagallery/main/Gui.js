@@ -984,10 +984,8 @@ qx.Class.define("aiagallery.main.Gui",
           // Clone the new hierarchy and re-set it for display
           hierarchy.setHierarchy(qx.lang.Array.clone(hierarchy.getHierarchy()));
 
-          // FIXME: Remove this item from the Module list too. effectively
-          // do this: delete aiagallery.main.Module._list[menuItem] (but
-          // create some function in the Module class to do it.
-          // See also issue #52 for an alternative solution.
+          // Clear out ephemral menu items from the module lists
+          aiagallery.main.Module.removeEphemeralMenuItems(); 
 
           // There can only ever be one ephemeral page. See ya!
           break;
@@ -1436,14 +1434,17 @@ qx.Class.define("aiagallery.main.Gui",
       for (i = 0; i < tabArray.length; i++)
       {
         // Get the pageId
-        var pageLabel = tabArray[i].getLabel(); 
+        var modulePageLabel = tabArray[i].getLabel(); 
 
         // Is this the one we're looking for?
-        if (-1 != pageLabel.indexOf("-"))
+        if (-1 != modulePageLabel.indexOf("-"))
         {
           mainTabs.remove(tabArray[i]); 
         }
       }
+
+      // Clear out ephemeral menu items on the main module 
+      aiagallery.main.Module.removeEphemeralMenuItems(); 
 
       // FIXME On app entry the title of the page is not set
       // We set it here, even though in app when a user selects
