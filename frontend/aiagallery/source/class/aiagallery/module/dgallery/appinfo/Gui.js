@@ -340,6 +340,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         source = result.app.source;
         delete result.app.source;
 
+        result.app.tagsdesc = "This app is tagged with: ";
+        result.app.tagsline = [result.appTags].join("");
+
         // Add the app detail
         this.searchResult.set(result.app);
         
