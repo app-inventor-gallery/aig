@@ -36,7 +36,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
     buildGui : function(module)
     {
       var             fsm = module.fsm;
-      var             canvas = module.canvas;
+      var             outerCanvas = module.canvas;
+      var             canvas; 
       var             o;
       var             grid;
       var             commentsGrid;
@@ -44,6 +45,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       var             font;
       var             vBoxComments;
       var             commentBoxAndCountLayout;
+      var             scrollContainer; 
 
       //
       // The overall layout if a grid, where the left portion has the
@@ -51,7 +53,15 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // the right (narrow) portion has a list of all apps by this author.
       // beta002: the right portion also has a list of apps by tags.
       //
+      
+      // Put entire page into a scroller 
+      outerCanvas.setLayout(new qx.ui.layout.VBox());
+      scrollContainer = new qx.ui.container.Scroll();
+ 
+      // Align to left of module
+      scrollContainer.setAlignX("right"); 
 
+      outerCanvas.add(scrollContainer, { flex : 1 });
       
       // First, create the grid layout
       grid = new qx.ui.layout.Grid(10, 10);
@@ -59,8 +69,13 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       grid.setColumnWidth(1, 310);// Fixed column width for by-author list
       grid.setColumnFlex(0, 1);
       grid.setRowFlex(1, 1);      // Comments take up remaining space
-      canvas.setLayout(grid);
+      //canvas.setLayout(grid);
       
+      // Finish putting things into the scroller
+      canvas = new qx.ui.container.Composite(new qx.ui.layout.VBox(30));
+      canvas.setLayout(grid);
+      scrollContainer.add(canvas, { flex : 1 });
+
       // Put the application detail in the top-left
       this.searchResult = new aiagallery.widget.SearchResult("appInfo");
       fsm.addObject("searchResult", this.searchResult);
