@@ -385,12 +385,11 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       //
       // MSystem
       //
+
+      // This doesn't really take effect at present, because getMotd() is
+      // called directly from gethomePageRibbons() which is separately
+      // whitelisted.
       case "getMotd" :
-        // This doesn't really take effect at present, because getMotd() is
-        // called directly from gethomePageRibbons() which is separately
-        // whitelisted.
-        return true;
- 
       // ALways true because a user may be not logged in and be 
       // technically sending the mail
       case "sendEmail" :
