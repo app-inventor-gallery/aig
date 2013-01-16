@@ -37,6 +37,8 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var             searchLayout; 
       var             command; 
       var             searchLabel; 
+      var             innerCanvas;
+      var             newsLabel; 
       
       outerCanvas.setLayout(new qx.ui.layout.VBox());
       var scrollContainer = new qx.ui.container.Scroll();
@@ -160,6 +162,15 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // Add a top spacer
       vbox.add(new qx.ui.core.Spacer(), { flex : 1 });
 
+      // Inner composite to hold text and search field
+      innerCanvas 
+        = new qx.ui.container.Composite(new qx.ui.layout.VBox(10));
+
+      // Add background
+      var homepageBG = new qx.ui.decoration.Background();
+      homepageBG.setBackgroundImage("aiagallery/hpbg.png");
+      innerCanvas.setDecorator(homepageBG);
+
       // Put in some welcoming text
       text = 
         [
@@ -171,32 +182,23 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           "</div>",
 
           "<div style='font-size:larger; font-weight:bold; padding:6px;'>",
-          "<b><br/>",
-          "The Gallery is in Beta and not yet open to the public ",
-          "(this is why you can't see any apps!). <br/><br/>",
-          "To request access, fill out ",
-          "<a href='https://docs.google.com/spreadsheet/viewform?formkey=dGxHTXAzNURGSTdIVkJpZXcwNG1kRkE6MA#gid=0'",
-          " target='new'>",
-          "this form",
-          ".</a><br/><br/>",
-          "Within a few days, you should receive an email that you have ",
-          "been added to the Gallery.",
+          "<b>",
+          "<ul><li>Check out mobile apps from all over the world!<br/></li>",
+          "<li>Download App Inventor blocks and learn to program!<br/></li>",
+          "<li>Join the community of App Inventor programmers!<br/></li></ul>",
           "</div>",
-          "</div>"
+          "</div>" 
         ].join("");
-      // Add background
-      var homepageBG = new qx.ui.decoration.Background();
-      homepageBG.setBackgroundImage("aiagallery/hpbg.png");
       this.welcomingLabel = new qx.ui.basic.Label();
       this.welcomingLabel.set(
         {
           value        : text,
           rich         : true,
           width        : 434,
-          height       : 512,
-          decorator    : homepageBG
+          height       : 300      
         });
-      vbox.add(this.welcomingLabel);
+
+      innerCanvas.add(this.welcomingLabel);
       
       // Create a simple search from the home page
       searchLabel = new qx.ui.basic.Label(this.tr("Search for an App"));
@@ -207,7 +209,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       font.setSize(16);
 
       searchLabel.setFont(font);
-      vbox.add(searchLabel);
+      innerCanvas.add(searchLabel);
 
       layout = new qx.ui.layout.HBox();
       layout.setSpacing(5);      
@@ -231,7 +233,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 
           var query = 
           {
-            title : [searchValue]
+            text : [searchValue]
           }; 
 
           // Initiate a search
@@ -251,9 +253,35 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       searchLayout.add(searchTextField);
       searchLayout.add(this.searchButton);
 
-      // Add search layout to main layout
-      vbox.add(searchLayout);
-/**      
+      // Add search layout to inner canvas
+      innerCanvas.add(searchLayout);
+
+      // News like text 
+      text = 
+        [
+          "<div style='padding:0 30px 0 0;'>",
+          "<div style='padding:12px 10px; background:rgba(255,255,255,0.5);'>",
+          "<br><b> New! Check out the winners of the ",
+	  "<a href='#page%3DContest' >2012 MIT App Inventor App Contest </a> -- you can download the source code for all apps! Congratulations to all the winners and noted apps!", 
+          "</div><br/>",
+          "</div>",
+          "</div>"
+        ].join(""); 
+
+      newsLabel = new qx.ui.basic.Label();
+      newsLabel.set(
+        {
+          font         : font, 
+          value        : text,
+          rich         : true,
+          width        : 434,
+          height       : 150
+        });
+      innerCanvas.add(newsLabel);
+
+      // Inner canvas contains intro text and search box
+      vbox.add(innerCanvas); 
+/*
       // Add a top spacer
       vbox.add(new qx.ui.core.Spacer(), { flex : 1 });
    
@@ -297,7 +325,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           minWidth     : 20
         });
       hbox.add(o, { flex : 1 });
-**/
+*/
       // Featured Apps section
       var featuredAppsLayout = new qx.ui.layout.VBox();
       featuredAppsLayout.set(
@@ -450,39 +478,13 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         var newestAppsList = response.data.result.Newest;
         var likedAppsList = response.data.result.MostLiked;
 
-        // Grab the welcomingText
-        var welcomingText = 
-        [
-          "<div style='padding:0 30px 0 0;'>",
-          "<div style='text-align:center;'>",
-          "<h2>",
-          "Welcome to the <br/>MIT App Inventor Community Gallery!",
-          "</h2>",
-          "</div>",
-
-          "<div style='font-size:larger; font-weight:bold; padding:6px;'>",
-          "<b>",
-          "<ul><li>Check out mobile apps from all over the world!<br/></li>",
-          "<li>Download App Inventor blocks and learn to program!<br/></li>",
-          "<li>Join the community of App Inventor programmers!<br/></li></ul>",
-          "<div style='padding:12px 10px; background:rgba(255,255,255,0.5);'>",
-          "Join the MIT App Inventor ",
-          "<a href='https://bit.ly/AppInventorContest' target='new'>App Contest</a>, ", 
-          "win a Google Nexus 7 Tablet and other prizes!<br/><br/>",
-          "New! Please modify your <a href='#page%3DProfile' >profile</a>! ", 
-          "</div><br/>",
-          "</div>",
-          "</div>"
-        ].join("");
-        this.welcomingLabel.setValue(welcomingText);
-
-/**        
+/*        
         // Grab the MOTD as well
         var motd = response.data.result.Motd; 
         
         // Set the motd on the front page
         this.motdText.setValue(motd); 
-**/
+*/
 
         // Remove everything from the lists. They're about to be refilled.
         this.featuredAppsContainer.removeAll();

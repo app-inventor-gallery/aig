@@ -171,6 +171,12 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         this);
       commentsGrid.add(this.butCancelComment, { row : 4, column : 2 });
 
+      // Add a label to tell a user to log in
+      // will only be shown if a user is not logged in
+      this.logInToCommentLabel = 
+        new qx.ui.basic.Label(this.tr("Login to comment"));
+
+      commentsGrid.add(this.logInToCommentLabel, { row : 5, column : 0 });
 
       // Initialize a tabview for both byAuthor and byTags
       this.tabView = new qx.ui.tabview.TabView();
@@ -304,6 +310,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       var             model;
       var             comment;
       var             warningText;
+      var             who; 
 
       if (response.type == "failed")
       {
@@ -339,7 +346,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         // results list, then add the model to the list.
         model = qx.data.marshal.Json.createModel(result.byAuthor);
         this.byAuthor.setModel(model);
-
 
         // Generate tagging sidebar(s) based on specific tags of this app
         var tagsHolder = result.appTags;
@@ -510,6 +516,57 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
             }
           },
           this);
+
+        // Based on whether the user is logged in or not
+        // Disable the add comment button
+        who = qx.core.Init.getApplication().getUserData("whoAmI");
+        
+        if(who.getIsAnonymous())
+        {
+          // Remove the comment buttons and field
+          this.butAddComment.destroy();
+          this.butCancelComment.destroy(); 
+          this.textNewComment.destroy(); 
+
+          // Disable flag and likeit buttons
+          this.searchResult.getChildControl("likeIt").set(
+            {
+              value : this.tr("Login to like!"),
+              font  : "default"
+            });
+        
+          // Remove the listener.
+          if (this.__likeItListener !== null)
+          {
+            this.searchResult.removeListenerById(this.__likeItListener);
+            this.__likeItListener = null;
+          }
+
+          // Reset the cursor
+          this.searchResult.getChildControl("likeIt").setCursor("default");
+
+          // Replace the label
+          this.searchResult.getChildControl("flagIt").set(
+            {
+              value : this.tr("Login to flag!"),
+              font  : "default"
+            });
+        
+          // Remove the listener.
+          if (this.__flagItListener !== null)
+          {
+            this.searchResult.removeListenerById(this.__flagItListener);
+            this.__flagItListener = null;
+          }
+
+          // Reset the cursor
+          this.searchResult.getChildControl("flagIt").setCursor("default");
+        } 
+        else 
+        {
+          // Remove the login label (user is logged in)
+          this.logInToCommentLabel.destroy(); 
+        }
 
         break;
 

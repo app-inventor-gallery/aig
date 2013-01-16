@@ -222,6 +222,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
                 alert(key_app);
               }
 **/
+              alert(syncCache.get(key_app));
               syncCache.delete(key_app);
               syncCache.delete(key_flag);
               syncCache.delete(key_likes);

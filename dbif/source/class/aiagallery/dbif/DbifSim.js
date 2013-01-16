@@ -26,6 +26,9 @@ qx.Class.define("aiagallery.dbif.DbifSim",
     this.__rpc = new liberated.sim.Rpc("/rpc");
         
     // Save the logged-in user. The whoAmI property is in MDbifCommon.
+    // If you want to test the anonymous user code use the second setWhoAmI
+    // If you want to test a regular user use the first.
+/**/
     this.setWhoAmI(
       {
         id                : "1001",
@@ -38,8 +41,27 @@ qx.Class.define("aiagallery.dbif.DbifSim",
             "aiagallery.dbif.DbifSim.changeWhoAmI();"
           ].join(""),
         permissions       : [],
-        hasSetDisplayName : true
+        hasSetDisplayName : true,
+        isAnonymous       : false 
       });
+/*
+   this.setWhoAmI(
+      {
+        id                : "",
+        email             : "Guest",
+        displayName       : "",
+        isAdmin           : false,
+        logoutUrl         : 
+        [
+          "javascript:",
+           "aiagallery.dbif.DbifSim.changeWhoAmI();"
+        ].join(""),
+        permissions       : [],
+        hasSetDisplayName : true,
+        isAnonymous       : true  
+      });
+*/
+
   },
   
   members :
@@ -108,6 +130,14 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           userId[visitor.email] = visitor.id;
         });
 
+      // Add in anon user
+      formData.username.options.push(
+        {
+          label : "anonymous"
+        });
+ 
+      userId["anonymous"] = "anonymous";
+
       dialog.Dialog.form(
         "You have been logged out. Please log in.",
         formData,
@@ -118,6 +148,7 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           var             guiWhoAmI;
           var             bHasSetDisplayName;
           var             permissions;
+          var             bAnon = false;
 
           // Try to get this user's display name. Does the visitor exist?
           visitor = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
@@ -130,6 +161,14 @@ qx.Class.define("aiagallery.dbif.DbifSim",
             permissions =
               aiagallery.dbif.MVisitors.getVisitorPermissions(visitor[0]);
           }
+          else if (result.username == "anonymous")
+          {
+            // Anon user
+            displayName = "Guest";
+            bHasSetDisplayName = true;
+            permissions = ""; 
+            bAnon = true; 
+          }
           else
           {
             // He doesn't exist. Just use the unique number.
@@ -139,21 +178,44 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           }
 
           // Save the backend whoAmI information
-          aiagallery.dbif.DbifSim.getInstance().setWhoAmI(
+          if (!bAnon)
           {
-            id                : userId[result.username],
-            email             : result.username,
-            displayName       : displayName,
-            isAdmin           : result.isAdmin,
-            logoutUrl         :
-              [
-                "javascript:",
-                "aiagallery.dbif.DbifSim.changeWhoAmI();"
-              ].join(""),
-            permissions       : permissions,
-            hasSetDisplayName : bHasSetDisplayName
-          });
-          
+           aiagallery.dbif.DbifSim.getInstance().setWhoAmI(
+           {
+              id                : userId[result.username],
+              email             : result.username,
+              displayName       : displayName,
+              isAdmin           : result.isAdmin,
+              logoutUrl         :
+                [
+                  "javascript:",
+                  "aiagallery.dbif.DbifSim.changeWhoAmI();"
+                ].join(""),
+              permissions       : permissions,
+              hasSetDisplayName : bHasSetDisplayName,
+              isAnonymous       : true
+            });
+          }
+          else 
+          {
+            aiagallery.dbif.DbifSim.getInstance().setWhoAmI(null); 
+            /*
+            aiagallery.dbif.DbifSim.getInstance().setWhoAmI(
+            {           
+              id                : "",
+              email             : "anonymous",
+              displayName       : "",
+              isAdmin           : false,
+              logoutUrl         : 
+                [
+                  "javascript:",
+                   "aiagallery.dbif.DbifSim.changeWhoAmI();"
+                ].join(""),
+               permissions : [],
+               hasSetDisplayName : true     
+            });
+            */
+          }
           // Update the gui too
           guiWhoAmI = aiagallery.main.Gui.getInstance().whoAmI;
           guiWhoAmI.setIsAdmin(result.isAdmin);
@@ -162,6 +224,10 @@ qx.Class.define("aiagallery.dbif.DbifSim",
           guiWhoAmI.setHasSetDisplayName(bHasSetDisplayName);
           guiWhoAmI.setLogoutUrl(
             "javascript:aiagallery.dbif.DbifSim.changeWhoAmI();");
+          //guiWhoAmI.setIsAnonymous(result.isAnonymous); 
+
+          // FIXME : If the user went from anonymous to a real user
+          // we need to reload the GUI so that the other modules load
         }
       );
     }

@@ -2805,33 +2805,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
       {
 
-	      // Setting up memcache references
-	      memcacheServiceFactory = 
-                Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
-	      syncCache = memcacheServiceFactory.getMemcacheService();
-
-	      // Setting up the recommended ErrorHandler
-	      //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
-
-	      // Before calling getData(), check if the appObject already exists in memcache
-	      value = syncCache.get(key_app); 
-	      // If not, we call getData() and put the stuff in memcache later
-              // For now we just mark the flag as true
-	      if (value == null) {
-	        bCache = true; // true: we need to cache this search
-	      } else {
-	        // If so, grab the app object and parse it to retrieve ret.app
-		ret.app = JSON.parse(value);
-	      }
-
-      } else { // Call getData() normally if we are not running on app engine
-	      ret.app = appObj.getData();
-      }
-
-      // Memcache the ret.app object here
-      if (bCache) {
-        ret.app = appObj.getData();
-        var serialize = JSON.stringify(ret.app);
+        // Setting up memcache references
+        memcacheServiceFactory = 
+          Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+        syncCache = memcacheServiceFactory.getMemcacheService();
 
         // I know I am in appengine code when this if clause executes.
         // Create a Java date object and add one day to set the expiration time
@@ -2839,8 +2816,32 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         var date = calendarClass.getInstance();  
         date.add(calendarClass.DATE, 1); 
 
+        // Date classes for use in app
         var expirationClass = com.google.appengine.api.memcache.Expiration;
         var expirationDate = expirationClass.onDate(date.getTime());
+
+        // Setting up the recommended ErrorHandler
+        //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+
+        // Before calling getData(), check if the appObject already exists in memcache
+        value = syncCache.get(key_app); 
+        // If not, we call getData() and put the stuff in memcache later
+        // For now we just mark the flag as true
+        if (value == null) {
+          bCache = true; // true: we need to cache this search
+        } else {
+          // If so, grab the app object and parse it to retrieve ret.app
+          ret.app = JSON.parse(value);
+        }
+
+      } else { // Call getData() normally if we are not running on app engine
+        ret.app = appObj.getData();
+      }
+
+      // Memcache the ret.app object here
+      if (bCache) {
+        ret.app = appObj.getData();
+        var serialize = JSON.stringify(ret.app);
 
         syncCache.put(key_app, serialize, expirationDate); 
       }
@@ -3092,9 +3093,16 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         var tlist = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
                                                  criteria, null);
 
+
+
         // Add the author's display name to each app
         tlist.forEach(
           function(app) {
+            // Issue owner query for EACH app (expensive)
+            var owners = liberated.dbif.Entity.query(
+                           "aiagallery.dbif.ObjVisitors", 
+                            app.owner);
+
             if (owners.length == 0)
             {
               app.displaName = "DELETED";
