@@ -136,7 +136,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
                           "aiagallery.features",
                           "deleteVisitor",
                           [
-                            data[1] // the email address is their user id
+                            data[2] // the email address is their user id
                           ]);
 
           // When we get the result, we'll need to know what type of request
