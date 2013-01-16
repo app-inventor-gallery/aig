@@ -6,6 +6,10 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
+/*
+#ignore(com.google.*)
+ */
+
 qx.Mixin.define("aiagallery.dbif.MVisitors",
 {
   construct : function()
@@ -341,7 +345,13 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
           "location",
           "bio",
           "url",
-          "showEmail"
+          "showEmail",
+          "updateOnAppComment",
+          "updateCommentFrequency",
+          "updateOnAppLike",
+          "updateOnAppLikeFrequency",
+          "updateOnAppDownload",
+          "updateOnAppDownloadFrequency"
         ];
       
       // Find out who we are
@@ -398,8 +408,9 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                   // In some cases a user can specify a change to the same name
                   if (whoami.displayName != profileParams.displayName) 
                   {
-                    this.__updateNameInCache(whoami.displayName, profileParams.displayName);   
-		  }
+                    this.__updateNameInCache(whoami.displayName, 
+                                             profileParams.displayName);   
+                  }
                   
                   return true;
                 }
@@ -500,7 +511,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
      * Check to ensure a name is valid. A name must be:
      * 1. Unique
      * 2. Name is between 2 and 30 characters
-     * 3. TBA
+     * 3. Name cannot be 'guest' or 'admin' or 'administrator'
+     *    or variations. 
      *
      * @param myId {String}
      *   The ObjVisitor key field (id)
@@ -518,6 +530,9 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     {
       var              resultList;
       var              criteria;
+
+      // Ensure name is lowercase
+      name = name.toLowerCase(); 
       
       // Ensure name is within length range
       if(name.length <= 2 || name.length > 30)
@@ -550,6 +565,19 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
         throw error;
       }  
       
+      // Check if name is allowed
+      if (qx.lang.Array.contains(
+            aiagallery.dbif.Constants.unallowedNames, 
+            name))
+      {
+        // Name is not valid return error
+        error.setCode(2);
+        error.setMessage("The displayname you specified: \"" + name +
+                       "\" is a restricted username."
+                       + " Please select a different one."); 
+        throw error;
+      }
+
       // Name is valid 
       return; 
     },
@@ -614,7 +642,8 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
             var serialMap = JSON.stringify(homeRibbonMap);
 
             // I know I am in appengine code when this if clause executes.
-            // Create a Java date object and add one day to set the expiration time
+            // Create a Java date object and add one day to set
+            //  the expiration time
             var calendarClass = java.util.Calendar;
             var date = calendarClass.getInstance();  
             date.add(calendarClass.DATE, 1); 

@@ -30,6 +30,8 @@ qx.Mixin.define("aiagallery.dbif.MDownloads",
         {
           var             appObj;
           var             appDataObj;
+          var             visitorObj;
+          var             visitorDataObj;
 
           appObj = new aiagallery.dbif.ObjAppData(appId);
 
@@ -44,6 +46,45 @@ qx.Mixin.define("aiagallery.dbif.MDownloads",
 
           // And increment the download count in the DB
           appDataObj.numDownloads++;
+
+          // If the author has requested to be notified on app downloads do so now
+          // Get the authors updateOnAppDownload flag
+          visitorObj = new aiagallery.dbif.ObjVisitors(appDataObj.owner); 
+
+          // Author must exist
+          if(!visitorObj.getBrandNew())
+          {
+            // Get the application data
+            visitorDataObj = visitorObj.getData();
+
+            // Do they want a notification on likes
+            if(visitorDataObj.updateOnAppDownload)
+            {
+              /* FIXME : Frequency not enabled at this time. 
+              // Only send an email if the frequency is reached
+              if(appDataObj.numDownloads 
+                 % visitorDataObj.updateOnAppDownloadFrequency == 0)
+              {
+              }
+              */
+
+              var msgBody = "Congratulations, your  app " 
+                            + appDataObj.title 
+                            + " has been downloaded. You are up to " 
+                            + appDataObj.numDownloads 
+                            + " downloads. Keep up the good work!"; 
+
+              var subject = "Your app is downloaded at the "
+			    + "MIT App Inventor Gallery"; 
+
+              // Call system function to send mail
+              this.sendEmail(msgBody, subject, 
+                             visitorDataObj.email,
+                             appDataObj);
+                
+            }
+          }
+
 
           // Write it back to the database
           appObj.put();

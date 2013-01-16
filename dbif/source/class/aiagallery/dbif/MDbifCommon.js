@@ -390,6 +390,11 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         // called directly from gethomePageRibbons() which is separately
         // whitelisted.
         return true;
+ 
+      // ALways true because a user may be not logged in and be 
+      // technically sending the mail
+      case "sendEmail" :
+        return true;
 
       case "setMotd" :
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);

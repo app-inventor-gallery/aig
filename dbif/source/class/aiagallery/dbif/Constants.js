@@ -73,7 +73,9 @@ qx.Class.define("aiagallery.dbif.Constants",
       Title       : 30,
       Description : 480,
       Tags        : 20,
-      Comment     : 480
+      Comment     : 480,
+      Bio         : 480,
+      User        : 100 
     },
 
     /** Mapping of FlagType names to values */
@@ -88,6 +90,16 @@ qx.Class.define("aiagallery.dbif.Constants",
     [
       "App", 
       "Comment"
+    ],
+
+    /** List of dissalowed usernames */
+    unallowedNames : 
+    [
+      "admin", 
+      "administrator", 
+      "guest", 
+      "superuser", 
+      "root"
     ],
 
     /** Mapping of permission names to descriptions */
@@ -194,7 +206,8 @@ qx.Class.define("aiagallery.dbif.Constants",
       // MSystem
       //
       "getMotd" : "Get the message of the day",
-      "setMotd" : "Set the message of the day"
+      "setMotd" : "Set the message of the day",
+      "sendEmail" : "Send email to a user"
     },
     
     // Log messages. Comments above each are required parameters

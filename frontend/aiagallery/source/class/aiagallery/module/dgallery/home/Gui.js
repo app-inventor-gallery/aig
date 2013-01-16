@@ -33,6 +33,12 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var             outerCanvas = module.canvas;
       var             scroller;
       var             motdLabel; 
+      var             searchTextField;
+      var             searchLayout; 
+      var             command; 
+      var             searchLabel; 
+      var             innerCanvas;
+      var             newsLabel; 
       
       outerCanvas.setLayout(new qx.ui.layout.VBox());
       var scrollContainer = new qx.ui.container.Scroll();
@@ -156,6 +162,15 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // Add a top spacer
       vbox.add(new qx.ui.core.Spacer(), { flex : 1 });
 
+      // Inner composite to hold text and search field
+      innerCanvas 
+        = new qx.ui.container.Composite(new qx.ui.layout.VBox(10));
+
+      // Add background
+      var homepageBG = new qx.ui.decoration.Background();
+      homepageBG.setBackgroundImage("aiagallery/hpbg.png");
+      innerCanvas.setDecorator(homepageBG);
+
       // Put in some welcoming text
       text = 
         [
@@ -171,27 +186,102 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           "<ul><li>Check out mobile apps from all over the world!<br/></li>",
           "<li>Download App Inventor blocks and learn to program!<br/></li>",
           "<li>Join the community of App Inventor programmers!<br/></li></ul>",
-          "<div style='padding:12px 10px; background:rgba(255,255,255,0.5);'>",
-          "<br> New! Check out the winners of the "
-	  + "<a href='#page%3DContest' >2012 MIT App Inventor App Contest </a> -- you can download the source code for all apps! Congratulations to all the winners and noted apps!", 
-          "</div><br/>",
           "</div>",
-          "</div>"
+          "</div>" 
         ].join("");
-      // Add background
-      var homepageBG = new qx.ui.decoration.Background();
-      homepageBG.setBackgroundImage("aiagallery/hpbg.png");
       this.welcomingLabel = new qx.ui.basic.Label();
       this.welcomingLabel.set(
         {
           value        : text,
           rich         : true,
           width        : 434,
-          height       : 512,
-          decorator    : homepageBG
+          height       : 300      
         });
-      vbox.add(this.welcomingLabel);
-/*      
+
+      innerCanvas.add(this.welcomingLabel);
+      
+      // Create a simple search from the home page
+      searchLabel = new qx.ui.basic.Label(this.tr("Search for an App"));
+      
+      // Create a large bold font
+      var searchFont = 
+        qx.theme.manager.Font.getInstance().resolve("bold").clone();
+      font.setSize(16);
+
+      searchLabel.setFont(font);
+      innerCanvas.add(searchLabel);
+
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(5);      
+      searchLayout = new qx.ui.container.Composite(layout);
+
+      searchTextField = new qx.ui.form.TextField;
+      searchTextField.setWidth(300); 
+
+      this.searchButton = new qx.ui.form.Button(this.tr("Search"));
+
+      // Excute a search when the user clicks the button
+      this.searchButton.addListener("execute", 
+        function(e) {
+          
+          var searchValue = searchTextField.getValue();
+          // Do not execute an empty search 
+          if (searchValue == null || searchValue.trim() == "")
+          {
+            return;
+	  }
+
+          var query = 
+          {
+            text : [searchValue]
+          }; 
+
+          // Initiate a search
+          aiagallery.main.Gui.getInstance().selectModule(
+          {
+            page  : aiagallery.main.Constant.PageName.FindApps,
+            query : qx.lang.Json.stringify(query)
+          });
+        }, 
+      this);
+
+      // Allow 'Enter' to fire a search
+      command = new qx.ui.core.Command("Enter");
+      this.searchButton.setCommand(command);
+
+      // Add button and search text field to layout
+      searchLayout.add(searchTextField);
+      searchLayout.add(this.searchButton);
+
+      // Add search layout to inner canvas
+      innerCanvas.add(searchLayout);
+
+      // News like text 
+      text = 
+        [
+          "<div style='padding:0 30px 0 0;'>",
+          "<div style='padding:12px 10px; background:rgba(255,255,255,0.5);'>",
+          "<br><b> New! Check out the winners of the ",
+	  "<a href='#page%3DContest' >2012 MIT App Inventor App Contest </a> -- you can download the source code for all apps! Congratulations to all the winners and noted apps!", 
+          "</div><br/>",
+          "</div>",
+          "</div>"
+        ].join(""); 
+
+      newsLabel = new qx.ui.basic.Label();
+      newsLabel.set(
+        {
+          font         : font, 
+          value        : text,
+          rich         : true,
+          width        : 434,
+          height       : 150
+        });
+      innerCanvas.add(newsLabel);
+
+      // Inner canvas contains intro text and search box
+      vbox.add(innerCanvas); 
+/*
       // Add a top spacer
       vbox.add(new qx.ui.core.Spacer(), { flex : 1 });
    
@@ -506,6 +596,14 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       default:
         throw new Error("Unexpected request type: " + requestType);
       }
+    },
+
+    // Retrieve search button.  Used by fsm on appear/disappear
+    // events to enable/disable association with "Enter" key.
+    getSearchButton : function()
+    {
+        return this.searchButton;
     }
+
   }
 });

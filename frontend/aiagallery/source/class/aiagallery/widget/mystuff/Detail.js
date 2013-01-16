@@ -76,10 +76,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         tabIndex    : 1,
         maxLength   : aiagallery.dbif.Constants.FieldLength.Title,
-        width       : 200,
-        maxWidth    : 200,
+        width       : 270,
+        maxWidth    : 270,
         required    : true,
-        placeholder : "Enter the application title"
+        placeholder : this.tr("Enter the application title (30 character limit)")
       });
     o.addListener(
       "input",
@@ -101,7 +101,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         maxLength   : aiagallery.dbif.Constants.FieldLength.Description,
         height      : 60,
         required    : true,
-        placeholder : "Enter a brief description"
+        placeholder : this.tr("Enter a brief description (480 Character Limit)")
       });
     o.addListener(
       "input",
@@ -110,7 +110,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         // Save the new description
         this.setDescription(e.getData());
       },
-      this);
+      this); 
+
     form.add(o, "Description", null, "description", null,
              { row : 1, column : 0, colSpan : 6, rowSpan : 2 });
     this.txtDescription = o;
@@ -153,7 +154,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         tabIndex    : 5,
         width       : 150,
-        placeholder : "Enter a new tag"
+        placeholder : this.tr("Enter a new tag")
       });
     form.getValidationManager().add(
       o,
@@ -234,7 +235,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     this.lstTags = o;
     
     // Button to delete selected tag(s)
-    o = new qx.ui.form.Button("Delete Tag");
+    o = new qx.ui.form.Button(this.tr("Delete Tag"));
     o.set(
       {
         tabIndex  : 8,
@@ -276,7 +277,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     this.butDeleteTag = o;
 
     // Source file name
-    o = new aiagallery.widget.mystuff.FormFile("Select source file", "source");
+    o = new aiagallery.widget.mystuff.FormFile(this.tr("Select source file", "source"));
     o.set(
       {
         tabIndex  : 9,

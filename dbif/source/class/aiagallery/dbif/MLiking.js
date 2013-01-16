@@ -39,6 +39,8 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
       var            criteria;
       var            likesObj;
       var            likesDataObj;
+      var            visitorObj; 
+      var            visitorDataObj;
 
       // Return number of likes (which may or may not have changed)
       return liberated.dbif.Entity.asTransaction(
@@ -101,6 +103,41 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
 
             // And increment the like count in the DB
             appDataObj.numLikes++;
+ 
+            // If the the author wants to be notified on likes then do so
+            // Get the authors updateOnAppLike flag
+            visitorObj = new aiagallery.dbif.ObjVisitors(appDataObj.owner); 
+
+            // Author must exist
+            if(!visitorObj.getBrandNew())
+            {
+              // Get the application data
+              visitorDataObj = visitorObj.getData();
+
+              // Do they want a notification on likes
+              if(visitorDataObj.updateOnAppLike)
+              {
+                /* FIXME : Frequency not enabled at this time. 
+                // Only send an email if the frequency is reached
+                if(appDataObj.numLikes 
+                   % visitorDataObj.updateOnAppLikeFrequency == 0)
+                {
+                }
+                */
+
+                var msgBody = "Congratulations, your app " + appDataObj.title 
+                              + " has been liked. "
+                              + "Keep up the good work, you are up to " 
+                              + appDataObj.numLikes + " likes."; 
+
+                var subject = "You app is liked at the MIT App Inventor Gallery";
+
+                // Call system function to send mail
+                this.sendEmail(msgBody, subject, 
+                               visitorDataObj.email, appDataObj);
+
+              }
+            }
 
             // Write it back to the database
             likesObj.put();

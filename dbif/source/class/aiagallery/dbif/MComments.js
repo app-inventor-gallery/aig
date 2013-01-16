@@ -84,7 +84,8 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       var             myTreeId;
       var             parentList;
       var             parentNumChildren;
-        
+      var             visitorObj;
+      var             visitorDataObj;
         
       // Determine who the logged-in user is
       whoami = this.getWhoAmI();
@@ -183,6 +184,47 @@ qx.Mixin.define("aiagallery.dbif.MComments",
 
           // Add his display name, for return.
           commentObjData.displayName     = whoami.displayName;
+
+          // If the author has requested to be notified on app comments 
+          // do so now
+          // Get the authors updateOnAppComment flag
+          visitorObj = new aiagallery.dbif.ObjVisitors(parentAppData.owner); 
+
+          // Author must exist
+          if(!visitorObj.getBrandNew())
+          {
+            // Get the application data
+            visitorDataObj = visitorObj.getData();
+
+            // Do they want a notification on likes
+            // and they did not post the comment
+            if(visitorDataObj.updateOnAppComment )//&& 
+              //commentObjData.displayName != visitorDataObj.displayName)
+            {
+              /* FIXME : Frequency not enabled at this time. 
+              // Only send an email if the frequency is reached
+              if(appDataObj.numLikes % 
+                visitorDataObj.updateCommentFrequency == 0)
+              {
+              }
+              */
+
+              var msgBody = "Your application " + parentAppData.title + ","
+                            + " has a new comment by " 
+                            + commentObjData.displayName + "." 
+                            + "\nThe comment is: " + commentObjData.text;
+
+              var subject = "You have a new comment "
+			    + "at the MIT App Inventor Gallery";
+
+              // Call system function to send mail
+              this.sendEmail(msgBody, subject, 
+                             visitorDataObj.email,
+                             parentAppData);
+
+
+            }
+          }
 
           // Remove the visitor field
           delete commentObjData.visitor;
@@ -413,7 +455,7 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       commentObj = new aiagallery.dbif.ObjComments([appId, treeId]);
       
       // Get data
-      commentObjData = commentObj.getBrandNew()
+      commentObjData = commentObj.getBrandNew();
       
       // Does this comment exist?
       if (commentObjData)

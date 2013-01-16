@@ -236,8 +236,54 @@ qx.Class.define("aiagallery.module.dgallery.user.Fsm",
           {
             newUserInfo["showEmail"] = 0;
           }
-          
 
+          field = fsm.getObject("likedAppCheck");
+          newUserInfo["updateOnAppLike"] = field.getValue() ? 1 : 0; 
+
+          field = fsm.getObject("likedAppUpdateFrequency");
+          if(field.getSelection()[0].getLabel() != "Every...")
+          {
+            var numStr = field.getSelection()[0].getLabel(); 
+            newUserInfo["updateOnAppLikeFrequency"] = parseInt(numStr);
+          }
+          else if(newUserInfo["updateOnAppLike"] == 1)
+          {
+            // The default value if the user does not set it is 1
+            newUserInfo["updateOnAppLikeFrequency"] = 1;
+          }
+
+          field = fsm.getObject("commentAppCheck");
+          newUserInfo["updateOnAppComment"] = field.getValue() ? 1 : 0; 
+
+          field = fsm.getObject("commentAppUpdateFrequency");
+          if(field.getSelection()[0].getLabel() != "Every...")
+          {
+            var numStr = field.getSelection()[0].getLabel(); 
+            newUserInfo["updateCommentFrequency"] = 
+              parseInt(numStr);
+          }
+          else if(newUserInfo["updateOnAppComment"] == 1)
+          {
+            // The default value if the user does not set it is 1
+            newUserInfo["updateCommentFrequency"] = 1;
+          }
+
+          field = fsm.getObject("downloadAppCheck");
+          newUserInfo["updateOnAppDownload"] = field.getValue() ? 1 : 0; 
+
+          field = fsm.getObject("downloadAppUpdateFrequency");
+          if(field.getSelection()[0].getLabel() != "Every...")
+          {
+            var numStr = field.getSelection()[0].getLabel(); 
+            newUserInfo["updateOnAppDownloadFrequency"] = 
+              parseInt(numStr);
+          }
+          else if(newUserInfo["updateOnAppDownload"] == 1)
+          {
+            // The default value if the user does not set it is 1
+            newUserInfo["updateOnAppDownloadFrequency"] = 1;
+          }
+          
           // Issue the remote procedure call to execute the query
           request =
             this.callRpc(fsm,

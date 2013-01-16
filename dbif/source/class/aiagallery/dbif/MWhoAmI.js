@@ -123,7 +123,13 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
           birthMonth        : meData.birthMonth,
           org               : meData.organization,
           url               : meData.url,
-          showEmail         : meData.showEmail 
+          showEmail         : meData.showEmail,
+          updateOnAppComment           : meData.updateOnAppComment,
+          updateCommentFrequency       : meData. updateCommentFrequency,
+          updateOnAppLike              : meData.updateOnAppLike,
+          updateOnAppLikeFrequency     : meData.updateOnAppLikeFrequency, 
+          updateOnAppDownload          : meData.updateOnAppDownload,
+          updateOnAppDownloadFrequency : meData.updateOnAppDownloadFrequency
         };
 
       return ret;
@@ -232,6 +238,10 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
       {
         delete profile.email;
       }
+
+      // Do not show DOB info for now
+      delete profile.birthYear;
+      delete profile.birthMonth; 
 
       return profile;
     }
