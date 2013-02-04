@@ -92,24 +92,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       commentsGrid = new qx.ui.container.Composite(grid);
       canvas.add(commentsGrid, { row : 1, column : 0 });
 
-/**
-//beta002 start
 
-      o = new qx.ui.basic.Label("Clickable Test");
-      o.set({ cursor: "pointer" });
-      // o.addListener("mousedown", this._onViewApp, this);
-      commentsGrid.add(o, { row : 0, column : 0 });
-
-//beta002 end
-**/
       o = new qx.ui.basic.Label("Comments");
       o.set(
         {
           font          : font,
           paddingBottom : 6
         });
-      commentsGrid.add(o, { row : 0, column : 0, colSpan : 3 }); //original
-      //commentsGrid.add(o, { row : 0, column : 1 }); //beta002
+      commentsGrid.add(o, { row : 0, column : 0, colSpan : 3 });
 
       // Create the scroller to hold all of the comments
       o = new qx.ui.container.Scroll();
@@ -217,6 +207,35 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         });
       vbox.add(this.sidebarLabel);
 
+      // A container created specifically for tags
+      var tagContainer = new qx.ui.container.Composite();
+
+      // Create some radio buttons
+      var rbRed = new qx.ui.form.RadioButton("Red");
+      var rbGreen = new qx.ui.form.RadioButton("Green");
+      var rbYellow = new qx.ui.form.RadioButton("Yellow");
+      var rbBlue = new qx.ui.form.RadioButton("Blue");
+
+      // Add them to the container
+      tagContainer.add(rbRed);
+      tagContainer.add(rbGreen);
+      tagContainer.add(rbYellow);
+      tagContainer.add(rbBlue);
+
+/**
+      tagContainer.set(
+        {
+          backgroundColor : "#ce5333"
+        });
+**/
+      vbox.add(tagContainer);
+
+      // Add all radio buttons to the manager
+      var manager = new qx.ui.form.RadioGroup(rbRed, rbGreen, rbYellow, rbBlue);
+      // Add a listener to the "changeSelected" event
+      manager.addListener("changeSelection", this._onChangeSelection, this);
+
+
       // Android-green line
       o = new qx.ui.container.Composite();
       o.set(
@@ -305,6 +324,16 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       this.commentCountLabel.setValue(charsLeft.toString() + this.tr(" Characters Left"));
     },
 
+
+    // Tags related event handler
+    _onChangeSelection : function(e)
+    {
+      var selectedButton = e.getData()[0];
+      var color = selectedButton.getLabel();
+      alert("Your favorite color is: " + color);
+    },
+
+
     /**
      * Handle the response to a remote procedure call
      *
@@ -355,8 +384,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         source = result.app.source;
         delete result.app.source;
 
-        result.app.tagsdesc = "This app is tagged with: ";
-        result.app.tagsline = [result.appTags].join("");
+//        result.app.tagsdesc = "This app is tagged with: ";
+//        result.app.tagsline = [result.appTags].join("");
 
         // Add the app detail
         this.searchResult.set(result.app);
@@ -430,6 +459,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
           // Add the other apps by tags. Build a model for the search
           // results list, then add the model to the list.
+//alert(tlHolder[i]);
           model = qx.data.marshal.Json.createModel(tlHolder[i]);
           byTagsHolder.setModel(model);
 

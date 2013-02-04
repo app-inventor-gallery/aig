@@ -144,8 +144,6 @@ qx.Class.define("aiagallery.widget.SearchResult",
       // Describe the configuration for this widget
       this.gridConfig =
         {
-          /* Original grid configuration
-
           image1       : { row : 0, column : 0, rowSpan : 3, colSpan : 4 },
           title        : { row : 0, column : 4, colSpan : 2 },
           displayName  : { row : 1, column : 4, colSpan : 2 },
@@ -160,27 +158,6 @@ qx.Class.define("aiagallery.widget.SearchResult",
           uploadTime   : { row : 3, column : 6 },
           likeIt       : { row : 4, column : 4 },
           flagIt       : { row : 4, column : 6 }
-
-         */
-
-          image1       : { row : 0, column : 0, rowSpan : 5, colSpan : 4 },
-          title        : { row : 0, column : 4, colSpan : 2 },
-          displayName  : { row : 1, column : 4, colSpan : 2 },
-          download     : { row : 0, column : 6, rowSpan : 2 },
-          description  : { row : 2, column : 4, colSpan : 3 },
-          tagsdesc     : { row : 3, column : 4 },
-          tagsline     : { row : 3, column : 5 },
-          numLikes     : { row : 5, column : 0, rowSpan : 2 },
-          numDownloads : { row : 5, column : 1, rowSpan : 2 },
-          numViewed    : { row : 5, column : 2, rowSpan : 2 },
-          numComments  : { row : 5, column : 3, rowSpan : 2 },
-          creationTime : { row : 5, column : 4 },
-          spacer       : { row : 5, column : 5 },
-          uploadTime   : { row : 5, column : 6 },
-          likeIt       : { row : 6, column : 4 },
-          flagIt       : { row : 6, column : 6 }
-
-
         };
       
       // Only instantiate these controls when needed
@@ -210,8 +187,6 @@ qx.Class.define("aiagallery.widget.SearchResult",
     this.getChildControl("numComments");
     this.getChildControl("displayName");
     this.getChildControl("description");
-    this.getChildControl("tagsdesc");
-    this.getChildControl("tagsline");
     this.getChildControl("creationTime");
     this.getChildControl("uploadTime");
     this.getChildControl("spacer");
@@ -251,13 +226,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
     
     /** Fired when the description property is changed */
     "changeDescription" : "qx.event.type.Data",
-
-    /** Fired when the description property is changed */
-    "changeTagsdesc" : "qx.event.type.Data",
-
-    /** Fired when the description property is changed */
-    "changeTagsline" : "qx.event.type.Data",
-        
+    
     /** Fired when the creationTime property is changed */
     "changeCreationTime" : "qx.event.type.Data",
     
@@ -343,22 +312,6 @@ qx.Class.define("aiagallery.widget.SearchResult",
       check    : "String",
       event    : "changeDescription"
     },
-
-    tagsdesc :
-    {
-      apply    : "_applyTagsdesc",
-      nullable : true,
-      check    : "String",
-      event    : "changeTagsdesc"
-    },
-    
-    tagsline :
-    {
-      apply    : "_applyTagsline",
-      nullable : true,
-      check    : "String",
-      event    : "changeTagsline"
-    },
     
     creationTime :
     {
@@ -384,7 +337,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
     /** Event handler for click on app title or image */
     _onViewApp : function(e)
     {
-      var searchResult = e.getTarget().getLayoutParent();
+      var             searchResult = e.getTarget().getLayoutParent();
 
       this.fireDataEvent(
         "viewApp",
@@ -683,33 +636,6 @@ qx.Class.define("aiagallery.widget.SearchResult",
         this._add(control, this.gridConfig.description);
         break;
 
-
-      case "tagsdesc":
-        control = new qx.ui.basic.Label();
-        control.set({rich : true});
-        this._add(control, this.gridConfig.tagsdesc);
-        break;
-
-      case "tagsline":
-        // The tagsline should be displayed android green
-        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
-        font.set(
-          {
-            color      : "#75940c",     // android-green-dark
-            decoration : "underline"
-          });
-        control = new qx.ui.basic.Label();
-        control.set(
-          {
-            textColor : null,       // don't let it override font's color
-            font      : font,
-            cursor    : "pointer"
-          });
-
-        this._add(control, this.gridConfig.tagsline);
-        break;
-
-
       case "creationTime":
         control = new qx.ui.basic.Label();
         control.set(
@@ -877,18 +803,6 @@ qx.Class.define("aiagallery.widget.SearchResult",
     },
     
     // property apply function
-    _applyTagsdesc : function(value, old)
-    {
-      this.getChildControl("tagsdesc").setValue(value);
-    },
-
-    // property apply function
-    _applyTagsline : function(value, old)
-    {
-      this.getChildControl("tagsline").setValue(value);
-    },
-
-    // property apply function
     _applyCreationTime : function(value, old)
     {
       this.getChildControl("creationTime").setValue(value);
@@ -951,4 +865,5 @@ qx.Class.define("aiagallery.widget.SearchResult",
     this.removeListener("mouseout", this._onMouseOut, this);
   }
 });
+
 
