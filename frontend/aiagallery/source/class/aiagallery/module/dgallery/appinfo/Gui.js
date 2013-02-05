@@ -51,7 +51,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // The overall layout if a grid, where the left portion has the
       // application information at the top, and comments at the bottom; and
       // the right (narrow) portion has a list of all apps by this author.
-      // beta002: the right portion also has a list of apps by tags.
+      // The right portion also has a list of apps by tags.
       //
       
       // Put entire page into a scroller 
@@ -207,9 +207,17 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         });
       vbox.add(this.sidebarLabel);
 
-      // A container created specifically for tags
-      var tagContainer = new qx.ui.container.Composite();
 
+
+      var tagLabel = new qx.ui.basic.Label("What tag would you like to see?");
+
+      // create the main layout
+      var mainLayout = new qx.ui.layout.VBox();
+      mainLayout.setSpacing(10);
+
+      // A container created specifically for tags
+      var tagContainer = new qx.ui.container.Composite(mainLayout);
+      
       // Create some radio buttons
       var rbRed = new qx.ui.form.RadioButton("Red");
       var rbGreen = new qx.ui.form.RadioButton("Green");
@@ -217,17 +225,12 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       var rbBlue = new qx.ui.form.RadioButton("Blue");
 
       // Add them to the container
+      tagContainer.add(tagLabel);
       tagContainer.add(rbRed);
       tagContainer.add(rbGreen);
       tagContainer.add(rbYellow);
       tagContainer.add(rbBlue);
 
-/**
-      tagContainer.set(
-        {
-          backgroundColor : "#ce5333"
-        });
-**/
       vbox.add(tagContainer);
 
       // Add all radio buttons to the manager
@@ -298,7 +301,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       vbox.add(this.tabView);
 
     },
-//beta002 ends
 
 
     /**
