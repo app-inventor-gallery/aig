@@ -1,6 +1,7 @@
 /**
- * Copyright (c) 2012 Derrell Lipman
- *                    Paul Geromini
+ * Copyright (c) 2013 Derrell Lipman
+ *                    Paul Geromini 
+ * 
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html 
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
@@ -11,9 +12,9 @@ require(aiagallery.module.dgallery.appinfo.AppInfo)
  */
 
 /**
- * Temporary testing page Finite State Machine
+ * Flag management Finite State Machine
  */
-qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
+qx.Class.define("aiagallery.module.mgmt.flags.Fsm",
 {
   type : "singleton",
   extend : aiagallery.main.AbstractModuleFsm,
@@ -50,7 +51,7 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
             var rpcRequest = this.popRpcRequest();
 
             // Call the standard result handler
-            var gui = aiagallery.module.mgmt.comments.Gui.getInstance();
+            var gui = aiagallery.module.mgmt.flags.Gui.getInstance();
             gui.handleResponse(module, rpcRequest);
 
             // Dispose of the request
@@ -63,25 +64,33 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
         },
 
         "events" :
-        {
-          // On the clicking of a button, execute is fired
-          "execute" :
-          {
-            
-            "queryBtn" : "Transition_Idle_to_AwaitRpcResult_via_query"
-            
-          },
-          
+        {       
+          // Keep a flagged app
+          "keepApp" : "Transition_Idle_to_AwaitRpcResult_via_keepApp",
+
+          // Keep a flagged profile
+          "keepProfile" : "Transition_Idle_to_AwaitRpcResult_via_keepProfile",
+
            // Event is called directly from a comment
           "keepComment" : "Transition_Idle_to_AwaitRpcResult_via_keepComment",
-          
+
+          // Delete a flagged app
+          "deleteApp" : "Transition_Idle_to_AwaitRpcResult_via_deleteApp",
+
+          // Delete a flagged profile
+          "deleteProfile"
+            : "Transition_Idle_to_AwaitRpcResult_via_deleteProfile",
+
           // Event is called directly from a comment
-          "deleteComment" : "Transition_Idle_to_AwaitRpcResult_via_deleteComment",
+          "deleteComment" 
+            : "Transition_Idle_to_AwaitRpcResult_via_deleteComment",
 
           // Event is called directly from a comment
           "visitComment" : "Transition_Idle_to_AwaitRpcResult_via_visitComment",
-
-          // When we get an appear event, retrieve all pending comments
+    
+          // When we get an appear event, retrieve the category tags list. We
+          // only want to do it the first time, though, so we use a predicate
+          // to determine if it's necessary.
           "appear"    :
           {
             "main.canvas" : 
@@ -91,7 +100,7 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
           // When we get a disappear event
           "disappear" :
           {
-            "main.canvas" : "Transition_Idle_to_Idle_via_disappear"
+            //"main.canvas" : "Transition_Idle_to_Idle_via_disappear"
           }
         }
       });
@@ -99,14 +108,16 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
       // Replace the initial Idle state with this one
       fsm.replaceState(state, true);
 
+
+      // The following transitions have a predicate, so must be listed first
+
       /*
        * Transition: Idle to Idle
        *
        * Cause: "appear" on canvas
        *
        * Action:
-       *  If this is the very first appear, retrieve the 
-       *  list of pending comments.
+       *  If this is the very first appear, retrieve the category list.
        */
 
       trans = new qx.util.fsm.Transition(
@@ -118,24 +129,104 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          var     request;  
-          
-          // Query to get all pending comments return in a list.
-          request =
-             this.callRpc(fsm,
-                          "aiagallery.features",
-                          "getFlaggedComments",
-                          []);
+          // If we wanted to do something as the page appeared,
+          // it would go here.
+          // Pull the app flags from the db 
+          var      request;
+ 
+          request = 
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "getFlags",
+                         []);        
 
           // When we get the result, we'll need to know what type of request
           // we made.
-          request.setUserData("requestType", "getFlaggedComments");
+          request.setUserData("requestType", "getFlags");
+        }
+      });
+
+      state.addTransition(trans);
+
+      /*
+       * Transition: Idle to AwaitRpcResult
+       *
+       * Cause: User clicked on keep button for an app in mgmt page 
+       *
+       * Action:
+       *  Keep an app that has been flagged
+       */
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_keepApp",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var     request;  
+          var     appId;
+          
+          // Get the uid
+          appId = event.getData().getUserData("uid");          
+          
+          // Change status of selected comment back to viewable
+          request =
+             this.callRpc(fsm,
+                          "aiagallery.features",
+                          "clearAppFlags",
+                          [appId]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "keepApp");
 
         }
       });
-            
-      state.addTransition(trans);
       
+      state.addTransition(trans);
+
+      /*
+       * Transition: Idle to AwaitRpcResult
+       *
+       * Cause: User clicked on keep button for a profile in mgmt page 
+       *
+       * Action:
+       *  Keep a profile that has been flagged
+       */
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_keepProfile",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var     request;  
+          var     username; 
+          
+          // Get the username
+          username = event.getData().getUserData("username");
+        
+          // Have to send string since userId cannot be passed to frontend.
+          // Possible for user to change name during this time.
+          request =
+             this.callRpc(fsm,
+                          "aiagallery.features",
+                          "clearProfileFlags",
+                          [username]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "keepProfile");
+
+        }
+      });
+      
+      state.addTransition(trans);
+
       /*
        * Transition: Idle to AwaitRpcResult
        *
@@ -182,7 +273,86 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
       });
       
       state.addTransition(trans);
+
+      /*
+       * Transition: Idle to AwaitRpcResult
+       *
+       * Cause: User clicked on delete button for an app in mgmt page 
+       *
+       * Action:
+       *  Delete an app that has been flagged
+       */
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_deleteApp",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var     request;  
+          var     uid; 
+          
+          // Get the uid
+          uid = event.getData();
+        
+          request =
+             this.callRpc(fsm,
+                          "aiagallery.features",
+                          "mgmtDeleteApp",
+                          [uid]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("uid", uid); 
+          request.setUserData("requestType", "deleteApp");
+
+        }
+      });
+
+      state.addTransition(trans);
+
+      /*
+       * Transition: Idle to AwaitRpcResult
+       *
+       * Cause: User clicked on delete button for a profile in mgmt page 
+       *
+       * Action:
+       *  Delete a profile that has been flagged
+       */
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_deleteProfile",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          var     request;  
+          var     username; 
+          
+          // Get the username
+          username = event.getData();
+        
+          // Have to send string since userId cannot be passed to frontend.
+          // Possible for user to change name during this time.
+          request =
+             this.callRpc(fsm,
+                          "aiagallery.features",
+                          "deleteVisitorWithUsername",
+                          [username]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "deleteProfile");
+
+        }
+      });
       
+      state.addTransition(trans);
+
       /*
        * Transition: Idle to AwaitRpcResult
        *
@@ -300,6 +470,16 @@ qx.Class.define("aiagallery.module.mgmt.comments.Fsm",
       });
 
       state.addTransition(trans);
+
+      
+      // ------------------------------------------------------------ //
+      // State: <some other state>
+      // ------------------------------------------------------------ //
+
+      // put state and transitions here
+
+
+
 
       // ------------------------------------------------------------ //
       // State: AwaitRpcResult

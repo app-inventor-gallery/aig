@@ -315,7 +315,11 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       // MFlags
       //
       case "flagIt":
-        return ! bAnonymous; // Allowed if logged in 
+      case "clearAppFlags":
+      case "clearProfileFlags":
+      case "clearProfileFlagsWithId":
+      case "getFlags": 
+        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       //
       // MMobile

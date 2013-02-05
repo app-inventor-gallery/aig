@@ -17,6 +17,8 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
 
   members :
   {
+    __flagItListener : null,
+
     /**
      * Build the raw graphical user interface.
      *
@@ -45,6 +47,9 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       // GUI objects 
       var             label;
       var             submitBtn;
+
+      // Have the fsm be accessible 
+      this.fsm = fsm; 
 
       // Create a layout for this page
       canvas.setLayout(new qx.ui.layout.VBox());   
@@ -234,6 +239,37 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       scroller.add(this.authoredAppsContainer);
 
       canvas.add(authoredApps);
+
+      // Flag a user for having inappropriate content
+      this.flagItLabel = new qx.ui.basic.Label(this.tr("Flag this Profile"));
+      font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+      font.set(
+        {
+          color      : "#75940c",     // android-green-dark
+          decoration : "underline"
+        });
+
+      this.flagItLabel.set(
+        {
+          maxHeight   : 30,
+          textColor   : null, 
+          font        : font, 
+          toolTipText : this.tr("Flag this user profile")
+        });
+
+      // Pop a flag window on click
+      this.__flagItListener = this.flagItLabel.addListener(
+        "click",
+        function(e)
+        {
+           var win = new aiagallery.widget.FlagPopUp(
+              aiagallery.dbif.Constants.FlagType.Profile, this);
+
+           win.show();          
+        },
+        this);
+
+      hBox.add(this.flagItLabel); 
     },
 
     
@@ -258,7 +294,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
       if (response.type == "aborted")
       {
           return;
-      }
+     }
 
       if (response.type == "failed")
       {
@@ -266,6 +302,9 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
         if (response.data.code == 2)
         {
           dialog.Dialog.warning(response.data.message);
+
+          // Turn off the flag profile listener
+          this.flagItLabel.destroy(); 
         }
         else 
         {
@@ -301,7 +340,7 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
         {
           // Remove email label as user does not want to show email
           this.emailLabel.destroy(); 
-	}
+        }
 
         /* Disable showing birth information
         if (user.birthYear != null && user.birthYear != 0) 
@@ -378,15 +417,80 @@ qx.Class.define("aiagallery.module.dgallery.userinfo.Gui",
                    "authoredAppClick", 
                    this, 
                    e.getCurrentTarget().getUserData("App Data"));
-                 });             
+               });             
            }  
          }
+
+         // If this user has flagged this profile in the past 
+         // change the flagIt label to reflect this
+         if (user.flagged)
+         {
+           this._clearFlagListener(); 
+
+           this.flagItLabel.set(
+           {
+             value     : this.tr("Flagged as inappropriate."),
+             font      : "default",
+             textColor : "black"
+           });
+        
+         }
+/* Turn this on once anon users is integrated
+
+         // Based on whether the user is logged in or not
+         // Disable the add comment button
+         var who = qx.core.Init.getApplication().getUserData("whoAmI");
+        
+         if(who.getIsAnonymous())
+         {
+
+           this._clearFlagListener(); 
+
+           this.flagItLabel.set(
+           {
+             value     : this.tr("Login to flag this profile."),
+             font      : "default",
+             textColor : "black"
+           });
+        
+         }
+*/ 
+        break;
+
+      case "flagProfile":
+        this._clearFlagListener();
+
+        // Replace the label
+        this.flagItLabel.set(
+          {
+            value     : this.tr("Flagged as inappropriate."),
+            font      : "default",
+            textColor : "black"
+          });
+
+        // Reset the cursor
+        this.flagItLabel.setCursor("default");
 
         break;
 
       default:
         throw new Error("Unexpected request type: " + requestType);
       }
+    },
+
+    /** 
+     * Private helper function to clear the flag listener 
+     * from the flagIt label. 
+     * */
+    _clearFlagListener : function() 
+    {
+      // Remove the listener.
+      if (this.__flagItListener !== null)
+      {
+        this.flagItLabel.removeListenerById(this.__flagItListener);
+        this.__flagItListener = null;
+      }
     }
+
   }
 });

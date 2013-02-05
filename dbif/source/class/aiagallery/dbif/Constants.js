@@ -81,8 +81,9 @@ qx.Class.define("aiagallery.dbif.Constants",
     /** Mapping of FlagType names to values */
     FlagType      : 
     {
-      App  : 0,
-      Comment : 1
+      App     : 0,
+      Comment : 1,
+      Profile : 2
     },
 
     /** Reverse mapping of FlagType values to names */
@@ -139,6 +140,9 @@ qx.Class.define("aiagallery.dbif.Constants",
       //
       "flagIt"         : "Flag an app or comment",
       "clearAppFlags"  : "Clear all of an app's flags, and reset count to 0",
+      "clearProfileFlags" : "Clear all of a profile's flags",
+      "clearProfileFlagsWithId" : "Clear all a profile's flags with a user id",
+      "getFlags" : "Get either a specific flag type or all of them",
       
       //
       // MMobile
