@@ -26,6 +26,10 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                          this.deleteVisitor,
                          [ "id" ]);
 
+    this.registerService("aiagallery.features.deleteVisitorWithUsername",
+                         this.deleteVisitorWithUsername,
+                         [ "username" ]);
+
     this.registerService("aiagallery.features.editProfile",
                          this.editProfile,
                          [ "profileParams" ]);
@@ -306,9 +310,76 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       return ret;
     },
 
+    /**
+     * Delete a visitor with only their string username.
+     * Since the frontend is not allowed to have a google id,
+     * the username string must be used.
+     * 
+     * @param username {String}
+     *   The string username
+     * 
+     * @return {String}
+     *   The string username of the visitor we just deleted
+     * 
+     * Can return an error if a name is not found
+     */
+     deleteVisitorWithUsername : function(username, error)
+     {
+       var     id;
+       var     criteria;
+ 
+       // Find the user's id
+       criteria = 
+       {
+         type  : "element",
+         field : "displayName",
+         value : username
+       }; 
+        
+       // Check to ensure name is unique
+       var resultList = 
+         liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                     criteria);                             
+  
+       // Should return one and only one username     
+       if (resultList.length != 1) 
+       {
+         error.setCode(2);
+         error.setMessage("The display name you are "
+                          + "trying to clear of flag: \"" 
+                          + username
+                          + "\" cannot be found."); 
+ 
+         return error;
+       } else {
+         id = resultList[0].id;
+       }
+  
+       // Delete visitor
+       if (this.deleteVisitor(id))
+       {
+         // User succesfully deleted, remove flags
+         this.clearProfileFlagsWithId(id); 
+         return username; 
+       } else {
+         return null; 
+       } 
+     },
+
+    /**
+     * Delete a visitor based on their id number.
+     * 
+     * @param id {Integer}
+     *   The user id number
+     * 
+     * @return {Boolean}
+     *   True if succesful, false otherwise
+     */
     deleteVisitor : function(id)
     {
       var             visitor;
+      var             criteria;
+      var             deleteList; 
 
       // Retrieve this visitor
       visitor = new aiagallery.dbif.ObjVisitors(id);
@@ -319,10 +390,53 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
         // He doesn't. Let 'em know.
         return false;
       }
+
+      // Remove objects associated with a visitor 
+      // All delete calls take place within a transaction
+      // Remove all apps authored by a visitor
+      criteria =
+        {
+          type  : "element",
+          field : "owner",
+          value : id 
+        }; 
+
+      // Get all the apps a user has authored
+      deleteList = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                               criteria,
+                                               null);
+
+      // Delete all those apps 
+      deleteList.forEach(
+        function(app)
+        {
+          this.mgmtDeleteApp(app.uid);
+        }, this);
+
+
+      // Remove all comments authored by a visitor
+      criteria =
+        {
+          type  : "element",
+          field : "visitor",
+          value : id 
+        }; 
+
+      // Get all the comments a user has authored
+      deleteList = liberated.dbif.Entity.query("aiagallery.dbif.ObjComments",
+                                               criteria,
+                                               null);
+
+      // Delete all those apps 
+      deleteList.forEach(
+        function(comment)
+        {
+          this.deleteComment(comment.app, comment.treeId);
+        }, this);
       
       // Delete the visitor
       visitor.removeSelf();
-      
+
       // We were successful
       return true;
     },

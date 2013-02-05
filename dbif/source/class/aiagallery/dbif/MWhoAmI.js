@@ -153,12 +153,13 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
       var              resultList;
       var              requestedFields;
       var              profile;
+      var              bFlag = false; 
 
       requestedFields = {
-        uid :  "uid",
-        owner : "owner",
-        image1 :"image1",
-        title :"title",
+        uid         : "uid",
+        owner       : "owner",
+        image1      : "image1",
+        title       : "title",
         displayName : "displayName"
       }; 
       
@@ -174,7 +175,6 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
         liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
                                     criteria);
                               
-
       // Should return one and only one username     
       if (resultList.length != 1) 
       {
@@ -185,9 +185,10 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
         return error;
       }
       
-
+      // The first result if the user profile we are pulling
       profile = resultList[0];
     
+      // Get all the apps this author has made
       criteria = 
         {
           type : "op",
@@ -209,8 +210,7 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
 
       resultList =
         liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData", 
-                                    criteria);       
-      
+                                    criteria);             
 
       // Add the author's name to each app
       resultList.forEach(
@@ -229,6 +229,46 @@ qx.Mixin.define("aiagallery.dbif.MWhoAmI",
       // Add in a list of user authored apps 
       profile["authoredApps"] = resultList; 
  
+      // Add in if the user pulling the profile has flagged 
+      // this user's profile
+      criteria = 
+        {
+          type : "op",
+          method : "and",
+          children : 
+          [
+            {
+              type  : "element",
+              field : "profileId",
+              value : profile.id
+            },
+            {
+              type  : "element",
+              field : "visitor",
+              value : this.getWhoAmI().id
+            },
+            {
+              type  : "element",
+              field : "type",
+              value : aiagallery.dbif.Constants.FlagType.Profile
+            }              
+          ]
+        };
+
+      resultList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                               criteria,
+                                               null);
+
+      // If we got one, and only one hit, the user pulling this profile
+      // has flagged this profile in the past. 
+      if (resultList.length == 1)
+      {
+        bFlag = true; 
+      }
+
+      // Add to profile map 
+      profile["flagged"] = bFlag; 
+
       // Not allowed to return user id
       delete profile.id; 
 

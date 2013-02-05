@@ -1,15 +1,16 @@
 /**
- * Copyright (c) 2012 Derrell Lipman
+ * Copyright (c) 2013 Derrell Lipman
  *                    Paul Geromini
+ * 
  * License:
  *   LGPL: http://www.gnu.org/licenses/lgpl.html 
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
 /**
- * Temporary tests, by any developer
+ * Flag Management
  */
-qx.Class.define("aiagallery.module.mgmt.comments.Comments",
+qx.Class.define("aiagallery.module.mgmt.flags.Flags",
 {
   type : "singleton",
   extend : aiagallery.main.AbstractModule,
@@ -29,10 +30,10 @@ qx.Class.define("aiagallery.module.mgmt.comments.Comments",
     initialAppear : function(module)
     {
       // Replace existing (temporary) finite state machine with the real one.
-      aiagallery.module.mgmt.comments.Fsm.getInstance().buildFsm(module);
+     aiagallery.module.mgmt.flags.Fsm.getInstance().buildFsm(module);
 
       // Create the real gui.
-      aiagallery.module.mgmt.comments.Gui.getInstance().buildGui(module);
+     aiagallery.module.mgmt.flags.Gui.getInstance().buildGui(module);
     }
   }
 });
