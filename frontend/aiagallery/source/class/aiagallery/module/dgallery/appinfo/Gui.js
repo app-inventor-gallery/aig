@@ -284,7 +284,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
       // Create the "By this tag" tab in tab view
       var byTagTab = new qx.ui.tabview.Page("By this tag", "aiagallery/test.png");
-      byAuthorTab.setLayout(new qx.ui.layout.VBox());
+      byTagTab.setLayout(new qx.ui.layout.VBox());
 
       // Add the list for other apps by this author
       this.byTag = new qx.ui.list.List();
@@ -365,11 +365,52 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
     // Tags related event handler
     _onChangeSelection : function(e)
     {
+      // Parse the tag name of selected item
       var selectedButton = e.getData()[0];
       var tagName = selectedButton.getLabel();
       alert("You choose: " + tagName);
 
+      // Find all active apps by this tag
+      var criteria = {
+          type: "element",
+          field: "tags",
+          value: tagName };
 
+      // Query for those apps
+      var tlist = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                                 criteria, null);
+
+      // Add the author's display name to each app
+      tlist.forEach(
+          function(app) {
+            // Issue owner query for EACH app (expensive)
+            var owners = liberated.dbif.Entity.query(
+                           "aiagallery.dbif.ObjVisitors", 
+                            app.owner);
+
+            if (owners.length == 0)
+            {
+              app.displaName = "DELETED";
+            } else {
+              app.displayName = owners[0].displayName || "<>";          
+            }
+
+            delete app.owner; // Remove the owner field
+      });
+
+      // Do the same for images for each app by this tag, but 100px.
+      tlist.forEach( function(app) { app.image1 += "=s100"; });
+
+      // Send each of the apps by this tag to the requestedFields
+      // function for stripping and remapping
+      tlist.forEach( function(app) {
+        aiagallery.dbif.MApps._requestedFields(app, requestedFields);
+      });
+
+      // Add the other apps by tags. Build a model for the search
+      // results list, then add the model to the list.
+      model = qx.data.marshal.Json.createModel(tlist);
+      this.byTag.setModel(model);
 
     },
 
