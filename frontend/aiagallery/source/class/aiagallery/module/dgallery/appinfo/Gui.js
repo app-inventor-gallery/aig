@@ -371,7 +371,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       alert(tagName);
 
       // Find all active apps by this tag
-      criteria = {
+      var criteria = {
           type: "element",
           field: "tags",
           value: tagName };
@@ -413,7 +413,7 @@ alert(tlist[0]);
 
       // Add the other apps by tags. Build a model for the search
       // results list, then add the model to the list.
-      model = qx.data.marshal.Json.createModel(tlist);
+      var model = qx.data.marshal.Json.createModel(tlist);
       this.byTag.setModel(model);
 
     },
