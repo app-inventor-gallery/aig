@@ -185,11 +185,11 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       commentsGrid.add(this.logInToCommentLabel, { row : 5, column : 0 });
 
       // Initialize a tabview for both byAuthor and byTags
-      this.tabView = new qx.ui.tabview.TabView();
-      this.tabView.setWidth(350);
-      this.tabView.setHeight(500);
-      this.tabView.setMaxHeight(1000);
-      this.tabView.setContentPadding(0, 0, 0, 0);
+      this.tagTabView = new qx.ui.tabview.TabView();
+      this.tagTabView.setWidth(350);
+      this.tagTabView.setHeight(500);
+      this.tagTabView.setMaxHeight(1000);
+      this.tagTabView.setContentPadding(0, 0, 0, 0);
       
 
       // Create the by-this-author area
@@ -210,7 +210,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
 
 
-      // create the main layout
+      // Create the main layout for tag container
       var mainLayout = new qx.ui.layout.VBox();
       mainLayout.setSpacing(10);
 
@@ -232,7 +232,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         });
       vbox.add(o);
 
-
+      // Create the "By this author" tab in tab view
       var byAuthorTab = new qx.ui.tabview.Page("By this author", "aiagallery/test.png");
       byAuthorTab.setLayout(new qx.ui.layout.VBox());
 
@@ -279,10 +279,61 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         });
 
       byAuthorTab.add(this.byAuthor, {flex : 1});
-      this.tabView.add(byAuthorTab);
+      this.tagTabView.add(byAuthorTab);
 
 
-      vbox.add(this.tabView);
+      // Create the "By this tag" tab in tab view
+      var byTagTab = new qx.ui.tabview.Page("By this tag", "aiagallery/test.png");
+      byAuthorTab.setLayout(new qx.ui.layout.VBox());
+
+      // Add the list for other apps by this author
+      this.byTag = new qx.ui.list.List();
+      this.byTag.set(
+        {
+          itemHeight : 130,
+          labelPath  : "title",
+          iconPath   : "image1",
+          delegate   :
+          {
+            createItem : function()
+            {
+              return new aiagallery.widget.SearchResult("byAuthor");
+            },
+            
+            bindItem : function(controller, item, id) 
+            {
+              [
+                "uid",
+                "image1",
+                "title",
+                "numLikes",
+                "numDownloads",
+                "numViewed",
+                "numComments",
+                "displayName"
+              ].forEach(
+                function(name)
+                {
+                  controller.bindProperty(name, name, null, item, id);
+                });
+            },
+
+            configureItem : qx.lang.Function.bind(
+              function(item) 
+              {
+                // Listen for clicks on the title or image, to view the app
+                item.addListener("viewApp", fsm.eventListener, fsm);
+              },
+              this)
+          }
+        });
+
+      byTagTab.add(this.byTag, {flex : 1});
+      this.tagTabView.add(byTagTab);
+
+
+
+      vbox.add(this.tagTabView);
 
     },
 
@@ -315,8 +366,11 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
     _onChangeSelection : function(e)
     {
       var selectedButton = e.getData()[0];
-      var color = selectedButton.getLabel();
-      alert("Your favorite color is: " + color);
+      var tagName = selectedButton.getLabel();
+      alert("You choose: " + tagName);
+
+
+
     },
 
 
@@ -397,16 +451,12 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         manager.addListener("changeSelection", this._onChangeSelection, this);
 
 
-
-
         // Add the other apps by this author. Build a model for the search
         // results list, then add the model to the list.
         model = qx.data.marshal.Json.createModel(result.byAuthor);
         this.byAuthor.setModel(model);
 
-
-
-
+/*
         var sidebarText = 
         [
           "This app is tagged with ",
@@ -467,13 +517,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
           // Add the other apps by tags. Build a model for the search
           // results list, then add the model to the list.
-//alert(tlHolder[i]);
           model = qx.data.marshal.Json.createModel(tlHolder[i]);
           byTagsHolder.setModel(model);
 
-          this.tabView.add(tagTabHolder);
+          this.tagTabView.add(tagTabHolder);
 
         }
+*/
+
 
         // Display each of the comments
         result.comments.forEach(
