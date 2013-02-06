@@ -371,9 +371,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // Parse the tag name of selected item
       var selectedButton = e.getData()[0];
       var tagName = selectedButton.getLabel();
+      console.log(tagName);
+      console.log("Ready to go to FSM!");
       alert(tagName);
-
-      this.fsm.addObject("tagRequest", tagName, "main.fsmUtils.disable_during_rpc");
+      this.fsm.addObject("tagRequest", selectedButton);
     },
 
 

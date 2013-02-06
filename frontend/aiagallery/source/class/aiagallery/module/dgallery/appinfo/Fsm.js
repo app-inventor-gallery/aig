@@ -289,8 +289,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
           var             request;
 
           // Retrieve the tag name we are trying to query
-          tagName = fsm.getObject("tagName");
-
+          tagName = fsm.getObject("tagName").getLabel();
+          console.log("Entered FSM");
+          console.log(tagName);
           // Issue the remote procedure call to execute the query
           request =
             this.callRpc(fsm,
