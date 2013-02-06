@@ -47,6 +47,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       var             commentBoxAndCountLayout;
       var             scrollContainer; 
 
+
+      this.fsm = fsm;
+
       //
       // The overall layout if a grid, where the left portion has the
       // application information at the top, and comments at the bottom; and
@@ -370,14 +373,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       var tagName = selectedButton.getLabel();
       alert(tagName);
 
-      var fsm = module.fsm;
-      fsm.addObject("tagRequest", tagName);
-/*
-      // Add the other apps by tags. Build a model for the search
-      // results list, then add the model to the list.
-      var tagmodel = qx.data.marshal.Json.createModel(tlist);
-      this.byTag.setModel(tagmodel);
-*/
+      this.fsm.addObject("tagRequest", tagName, "main.fsmUtils.disable_during_rpc");
     },
 
 
@@ -687,7 +683,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
       case "tagResponse":
         result = response.data.result;
-
+        this.debug("Returned tagResponse");
+        this.debug(result);
+        this.debug(result[0]);
         // Add the other apps by tags. Build a model for the search
         // results list, then add the model to the list.
         var tagmodel = qx.data.marshal.Json.createModel(result);
