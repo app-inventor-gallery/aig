@@ -209,34 +209,18 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
 
 
-      var tagLabel = new qx.ui.basic.Label("What tag would you like to see?");
 
       // create the main layout
       var mainLayout = new qx.ui.layout.VBox();
       mainLayout.setSpacing(10);
 
       // A container created specifically for tags
-      var tagContainer = new qx.ui.container.Composite(mainLayout);
+      this.tagContainer = new qx.ui.container.Composite(mainLayout);
+
+      var tagLabel = new qx.ui.basic.Label("What tag would you like to see?");
+      this.tagContainer.add(tagLabel);
       
-      // Create some radio buttons
-      var rbRed = new qx.ui.form.RadioButton("Red");
-      var rbGreen = new qx.ui.form.RadioButton("Green");
-      var rbYellow = new qx.ui.form.RadioButton("Yellow");
-      var rbBlue = new qx.ui.form.RadioButton("Blue");
-
-      // Add them to the container
-      tagContainer.add(tagLabel);
-      tagContainer.add(rbRed);
-      tagContainer.add(rbGreen);
-      tagContainer.add(rbYellow);
-      tagContainer.add(rbBlue);
-
-      vbox.add(tagContainer);
-
-      // Add all radio buttons to the manager
-      var manager = new qx.ui.form.RadioGroup(rbRed, rbGreen, rbYellow, rbBlue);
-      // Add a listener to the "changeSelected" event
-      manager.addListener("changeSelection", this._onChangeSelection, this);
+      vbox.add(this.tagContainer);
 
 
       // Android-green line
@@ -392,14 +376,36 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         // Add the app detail
         this.searchResult.set(result.app);
         
+
+
+        // Generate tagging sidebar(s) based on specific tags of this app
+        var tagsHolder = result.appTags;
+        var tlHolder = result.appTagsLists;
+
+
+        // Create a manager for tag radio buttons' event binding
+        var manager = new qx.ui.form.RadioGroup();
+
+        // Create a tag radio button for each of the tags, add to container
+        for (var i = 0; i < tagsHolder.length; i++) {
+          var rbTag = new qx.ui.form.RadioButton(tagsHolder[i]);
+          this.tagContainer.add(rbTag);
+          // Also add the tag radio button to the manager
+          manager.add(rbTag);
+        }
+        // Add a listener to the "changeSelected" event
+        manager.addListener("changeSelection", this._onChangeSelection, this);
+
+
+
+
         // Add the other apps by this author. Build a model for the search
         // results list, then add the model to the list.
         model = qx.data.marshal.Json.createModel(result.byAuthor);
         this.byAuthor.setModel(model);
 
-        // Generate tagging sidebar(s) based on specific tags of this app
-        var tagsHolder = result.appTags;
-        var tlHolder = result.appTagsLists;
+
+
 
         var sidebarText = 
         [
