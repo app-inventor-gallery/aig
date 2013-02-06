@@ -289,25 +289,15 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
           var             request;
 
           // Retrieve the tag name we are trying to query
-          tagName = fsm.getObject("tagName").getValue();
-
-          // Put tag name into an array because RPC call requires
-          tagArray.push(tagName);
-          queryFieldArray.push("tags");
-
-          alert(tagArray);
-          alert(queryFieldArray);
+          tagName = fsm.getObject("tagName");
 
           // Issue the remote procedure call to execute the query
           request =
             this.callRpc(fsm,
                          "aiagallery.features",
-                         "keywordSearch",
-                         [
-                           tagArray,
-                           queryFieldArray,
-                           true 
-                         ]);
+                         "appTagQuery",
+                         [ tagName ]
+                         );
 
           // When we get the result, we'll need to know what type of request
           // we made.
