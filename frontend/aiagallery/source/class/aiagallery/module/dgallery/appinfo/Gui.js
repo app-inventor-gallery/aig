@@ -368,19 +368,21 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // Parse the tag name of selected item
       var selectedButton = e.getData()[0];
       var tagName = selectedButton.getLabel();
-      alert(tagName);
 
+      var fsm = module.fsm;
+      fsm.addObject("tagRequest", tagName);
+/*
       // Find all active apps by this tag
       var criteria = {
           type: "element",
           field: "tags",
-          value: tagName };
+          value: "*Featured*" };
 
       // Query for those apps
       var tlist = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
                                                  criteria, null);
 
-alert(tlist);
+alert(tlist.length);
 
       // Add the author's display name to each app
       tlist.forEach(
@@ -413,9 +415,9 @@ alert(tlist[0]);
 
       // Add the other apps by tags. Build a model for the search
       // results list, then add the model to the list.
-      var model = qx.data.marshal.Json.createModel(tlist);
-      this.byTag.setModel(model);
-
+      var tagmodel = qx.data.marshal.Json.createModel(tlist);
+      this.byTag.setModel(tagmodel);
+*/
     },
 
 
@@ -480,7 +482,7 @@ alert(tlist[0]);
         // Generate tagging sidebar(s) based on specific tags of this app
         var tagsHolder = result.appTags;
         var tlHolder = result.appTagsLists;
-
+        alert(tlHolder[0].length);
 
         // Create a manager for tag radio buttons' event binding
         var manager = new qx.ui.form.RadioGroup();

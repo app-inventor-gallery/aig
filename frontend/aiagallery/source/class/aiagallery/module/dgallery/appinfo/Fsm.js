@@ -79,7 +79,11 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
           "execute" :
           {
             "butAddComment" :
-            "Transition_Idle_to_AwaitRpcResult_via_submit_comment"
+            "Transition_Idle_to_AwaitRpcResult_via_submit_comment",
+
+            "tagRequest" :
+            "Transition_Idle_to_AwaitRpcResult_via_tagRequest"
+
             
           }
 
@@ -259,6 +263,60 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
       });
 
       state.addTransition(trans);
+
+
+      /*
+       * Transition: Idle to AwaitRpcResult
+       *
+       * Cause: tagRequest has been pressed
+       *
+       * Action:
+       *  Search for tag query and return to GUI
+       */
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_tagRequest",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {
+          // Get the event data
+          var             tagName;
+          var             tagArray = [];
+          var             queryFieldArray = [];
+          var             request;
+
+          // Retrieve the tag name we are trying to query
+          tagName = fsm.getObject("tagName").getValue();
+
+          // Put tag name into an array because RPC call requires
+          tagArray.push(tagName);
+          queryFieldArray.push("tags");
+
+          alert(tagArray);
+          alert(queryFieldArray);
+
+          // Issue the remote procedure call to execute the query
+          request =
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "keywordSearch",
+                         [
+                           tagArray,
+                           queryFieldArray,
+                           true 
+                         ]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "tagResponse");
+        }
+      });
+
+      state.addTransition(trans);
+
 
 
       /*
