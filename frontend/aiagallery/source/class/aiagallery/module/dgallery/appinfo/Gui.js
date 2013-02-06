@@ -368,10 +368,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // Parse the tag name of selected item
       var selectedButton = e.getData()[0];
       var tagName = selectedButton.getLabel();
-      alert("You choose: " + tagName);
+      alert(tagName);
 
       // Find all active apps by this tag
-      var criteria = {
+      criteria = {
           type: "element",
           field: "tags",
           value: tagName };
@@ -379,6 +379,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // Query for those apps
       var tlist = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
                                                  criteria, null);
+
+alert(tlist);
 
       // Add the author's display name to each app
       tlist.forEach(
@@ -406,6 +408,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       tlist.forEach( function(app) {
         aiagallery.dbif.MApps._requestedFields(app, requestedFields);
       });
+
+alert(tlist[0]);
 
       // Add the other apps by tags. Build a model for the search
       // results list, then add the model to the list.
