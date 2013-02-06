@@ -482,7 +482,7 @@ alert(tlist[0]);
         // Generate tagging sidebar(s) based on specific tags of this app
         var tagsHolder = result.appTags;
         var tlHolder = result.appTagsLists;
-        alert(tlHolder[0].length);
+        // alert(tlHolder[0].length);
 
         // Create a manager for tag radio buttons' event binding
         var manager = new qx.ui.form.RadioGroup();
@@ -724,6 +724,22 @@ alert(tlist[0]);
         }
 
         break;
+
+      case "tagResponse":
+        // The result contains all of the information about this comment,
+        // including the display name of the comment author (the current
+        // visitor).
+        result = response.data.result;
+
+        // Add the other apps by tags. Build a model for the search
+        // results list, then add the model to the list.
+        var tagmodel = qx.data.marshal.Json.createModel(result);
+        this.byTag.setModel(tagmodel);
+
+        break;
+
+
+
 
       case "addComment":
         // The result contains all of the information about this comment,
