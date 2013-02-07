@@ -207,34 +207,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         });
       vbox.add(this.sidebarLabel);
 
-      // A container created specifically for tags
-      var tagContainer = new qx.ui.container.Composite();
-
-      // Create some radio buttons
-      var rbRed = new qx.ui.form.RadioButton("Red");
-      var rbGreen = new qx.ui.form.RadioButton("Green");
-      var rbYellow = new qx.ui.form.RadioButton("Yellow");
-      var rbBlue = new qx.ui.form.RadioButton("Blue");
-
-      // Add them to the container
-      tagContainer.add(rbRed);
-      tagContainer.add(rbGreen);
-      tagContainer.add(rbYellow);
-      tagContainer.add(rbBlue);
-
-/**
-      tagContainer.set(
-        {
-          backgroundColor : "#ce5333"
-        });
-**/
-      vbox.add(tagContainer);
-
-      // Add all radio buttons to the manager
-      var manager = new qx.ui.form.RadioGroup(rbRed, rbGreen, rbYellow, rbBlue);
-      // Add a listener to the "changeSelected" event
-      manager.addListener("changeSelection", this._onChangeSelection, this);
-
 
       // Android-green line
       o = new qx.ui.container.Composite();
@@ -324,14 +296,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       this.commentCountLabel.setValue(charsLeft.toString() + this.tr(" Characters Left"));
     },
 
-
-    // Tags related event handler
-    _onChangeSelection : function(e)
-    {
-      var selectedButton = e.getData()[0];
-      var color = selectedButton.getLabel();
-      alert("Your favorite color is: " + color);
-    },
 
 
     /**
