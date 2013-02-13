@@ -111,6 +111,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
         "predicate" : function(fsm, event)
         {
+
           // Have we already been here before?
           if (fsm.getUserData("noUpdate"))
           {
@@ -127,6 +128,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
         "ontransition" : function(fsm, event)
         {
+
           // Issue the remote procedure call to get the application
           // data. Request that the tags, previous authors, and status be
           // converted to strings for us.
@@ -282,6 +284,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
         "ontransition" : function(fsm, event)
         {
+          console.log("Entered FSM ontransition!");
           // Get the event data
           var             tagName;
           var             tagArray = [];
@@ -290,7 +293,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
           // Retrieve the tag name we are trying to query
           tagName = fsm.getObject("tagName").getLabel();
-          console.log("Entered FSM");
           console.log(tagName);
           // Issue the remote procedure call to execute the query
           request =

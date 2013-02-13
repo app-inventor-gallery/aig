@@ -372,7 +372,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       var selectedButton = e.getData()[0];
       var tagName = selectedButton.getLabel();
       console.log(tagName);
-      console.log("Ready to go to FSM!");
       alert(tagName);
       this.fsm.addObject("tagRequest", selectedButton);
     },
@@ -442,15 +441,16 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         // alert(tlHolder[0].length);
 
         // Create a manager for tag radio buttons' event binding
-        var manager = new qx.ui.form.RadioGroup();
+        var manager = new qx.ui.form.RadioButtonGroup();
+        manager.setLayout(new qx.ui.layout.HBox(5));
 
         // Create a tag radio button for each of the tags, add to container
         for (var i = 0; i < tagsHolder.length; i++) {
-          var rbTag = new qx.ui.form.RadioButton(tagsHolder[i]);
-          this.tagContainer.add(rbTag);
-          // Also add the tag radio button to the manager
-          manager.add(rbTag);
+          // Add the tag radio button to the manager
+          manager.add(new qx.ui.form.RadioButton(tagsHolder[i]));
         }
+        this.tagContainer.add(manager);
+        
         // Add a listener to the "changeSelected" event
         manager.addListener("changeSelection", this._onChangeSelection, this);
 
@@ -684,7 +684,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
       case "tagResponse":
         result = response.data.result;
-        this.debug("Returned tagResponse");
+        console.log("Returned tagResponse");
         this.debug(result);
         this.debug(result[0]);
         // Add the other apps by tags. Build a model for the search
