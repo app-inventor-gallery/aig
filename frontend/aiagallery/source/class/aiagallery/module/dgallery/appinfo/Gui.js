@@ -286,8 +286,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
 
       // Create the "By this tag" tab in tab view
-      var byTagTab = new qx.ui.tabview.Page("By this tag", "aiagallery/test.png");
-      byTagTab.setLayout(new qx.ui.layout.VBox());
+      this.byTagTab = new qx.ui.tabview.Page("By this tag", "aiagallery/test.png");
+      this.byTagTab.setLayout(new qx.ui.layout.VBox());
 
       // Add the list for other apps by this author
       this.byTag = new qx.ui.list.List();
@@ -331,8 +331,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
           }
         });
 
-      byTagTab.add(this.byTag, {flex : 1});
-      this.tagTabView.add(byTagTab);
+      this.byTagTab.add(this.byTag, {flex : 1});
+      this.tagTabView.add(this.byTagTab);
 
 
 
@@ -372,8 +372,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       var selectedButton = e.getData()[0];
       var tagName = selectedButton.getLabel();
       console.log(tagName);
+      console.log(this.fsm);
       alert(tagName);
-      this.fsm.addObject("tagRequest", selectedButton);
     },
 
 
@@ -453,12 +453,18 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         
         // Add a listener to the "changeSelected" event
         manager.addListener("changeSelection", this._onChangeSelection, this);
+        this.fsm.addObject("tagRequest", manager);
 
 
         // Add the other apps by this author. Build a model for the search
         // results list, then add the model to the list.
         model = qx.data.marshal.Json.createModel(result.byAuthor);
         this.byAuthor.setModel(model);
+
+        // Add the other apps by tags. Build a model for the search
+        // results list, then add the model to the list.
+        model = qx.data.marshal.Json.createModel(result.appTagsLists[0]);
+        this.byTag.setModel(model);
 
 /*
         var sidebarText = 
