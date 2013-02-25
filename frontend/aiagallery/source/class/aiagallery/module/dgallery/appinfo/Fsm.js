@@ -308,9 +308,11 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
           // Parse the tag name of selected item
           console.log("Entered tagSelect event!");
           var selectedButton = event.getData()[0];
-          console.log(selectedButton);
+          // console.log(selectedButton);
           tagName = selectedButton.getLabel();
           console.log(tagName);
+          console.log("Now retrieving data from appTagQuery");
+
           // Issue the remote procedure call to execute the query
           request =
             this.callRpc(fsm,
@@ -318,7 +320,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
                          "appTagQuery",
                          [ tagName ]
                          );
-          console.log(request);
+
           // When we get the result, we'll need to know what type of request
           // we made.
           request.setUserData("requestType", "tagResponse");

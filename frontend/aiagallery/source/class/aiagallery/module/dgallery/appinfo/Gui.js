@@ -220,7 +220,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // A container created specifically for tags
       this.tagContainer = new qx.ui.container.Composite(mainLayout);
 
-      var tagLabel = new qx.ui.basic.Label("What tag would you like to see?");
+      var tagLabel = new qx.ui.basic.Label("Select one of the tags below to find out similar apps:");
       this.tagContainer.add(tagLabel);
       
       vbox.add(this.tagContainer);
@@ -236,7 +236,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       vbox.add(o);
 
       // Create the "By this author" tab in tab view
-      var byAuthorTab = new qx.ui.tabview.Page("By this author", "aiagallery/test.png");
+      var byAuthorTab = new qx.ui.tabview.Page("Apps by this author", "aiagallery/test.png");
       byAuthorTab.setLayout(new qx.ui.layout.VBox());
 
       // Add the list for other apps by this author
@@ -286,7 +286,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
 
       // Create the "By this tag" tab in tab view
-      this.byTagTab = new qx.ui.tabview.Page("By this tag", "aiagallery/test.png");
+      this.byTagTab = new qx.ui.tabview.Page("Apps of tag", "aiagallery/test.png");
       this.byTagTab.setLayout(new qx.ui.layout.VBox());
 
       // Add the list for other apps by this author
@@ -463,10 +463,12 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         model = qx.data.marshal.Json.createModel(result.byAuthor);
         this.byAuthor.setModel(model);
 
-        // Add the other apps by tags. Build a model for the search
-        // results list, then add the model to the list.
+        // By default, load the app list of the first tag into tabview page
         model = qx.data.marshal.Json.createModel(result.appTagsLists[0]);
         this.byTag.setModel(model);
+        // Also change tabview page's label (name) to the tag's name
+        var tagTabLabel = ["Apps by tag ", tagsHolder[0]].join("");
+        this.byTagTab.setLabel(tagTabLabel);
 
 /*
         var sidebarText = 
@@ -690,19 +692,21 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
         break;
 
+
       case "tagResponse":
         result = response.data.result;
-        console.log("Returned tagResponse");
+        console.log("Captured tagResponse");
         console.log(result);
-        console.log(result[0]);
+        console.log("Captured tagName");
+        console.log(result.tagName);
+        // Change the name of the tabview page
+        var tagTabLabel = ["Apps by tag ", result.tagName].join("");
+        this.byTagTab.setLabel(tagTabLabel);
         // Add the other apps by tags. Build a model for the search
         // results list, then add the model to the list.
         var tagmodel = qx.data.marshal.Json.createModel(result);
         this.byTag.setModel(tagmodel);
-
         break;
-
-
 
 
       case "addComment":

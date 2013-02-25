@@ -3311,14 +3311,9 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           field: "tags",
           value: query };
 
-console.log("Entered appTagQuery");
-console.log(query);
-
       // Query for those apps
       var tlist = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
                                                  criteria, null);
-console.log(tlist[0]);
-console.log(tlist.length);
 
       // Add the author's display name to each app
       tlist.forEach(
@@ -3347,6 +3342,10 @@ console.log(tlist.length);
         aiagallery.dbif.MApps._requestedFields(app, requestedFields);
       });
 */
+
+      // Also add the tag name to return data for easy retrieval
+      tlist.tagName = query;
+      
 
       return tlist;
 
