@@ -205,10 +205,10 @@ qx.Mixin.define("aiagallery.dbif.MComments",
               }
               */
 
-              var msgBody = "Your application " + parentAppData.title + ","
+              var msgBody = "Your app \'" + parentAppData.title + "'\,"
                             + " has a new comment by " 
                             + commentObjData.displayName + "." 
-                            + "\nThe comment is: " + commentObjData.text;
+                            + "<br>The comment is: " + commentObjData.text;
 
               var subject = "You have a new comment "
 			    + "at the MIT App Inventor Gallery";

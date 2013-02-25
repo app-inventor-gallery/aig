@@ -125,12 +125,12 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
                 }
                 */
 
-                var msgBody = "Congratulations, your app " + appDataObj.title 
-                              + " has been liked. "
+                var msgBody = "Congratulations, your app \'" + appDataObj.title 
+                              + "\' has been liked. "
                               + "Keep up the good work, you are up to " 
                               + appDataObj.numLikes + " likes."; 
 
-                var subject = "You app is liked at the MIT App Inventor Gallery";
+                var subject = "Your app is liked at the MIT App Inventor Gallery";
 
                 // Call system function to send mail
                 this.sendEmail(msgBody, subject, 
