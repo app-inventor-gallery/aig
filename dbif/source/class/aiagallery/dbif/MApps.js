@@ -3311,7 +3311,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           field: "tags",
           value: query };
 
-      // Query for those apps
+      // Top-level returning variable
+      var result = [];
+
+      // Query for those apps, put 'em into a list
       var tlist = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
                                                  criteria, null);
 
@@ -3343,11 +3346,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       });
 */
 
+      result[0] = tlist;
       // Also add the tag name to return data for easy retrieval
-      tlist.tagName = query;
+      result[1] = query;
       
 
-      return tlist;
+      return result;
 
     },
 
