@@ -256,7 +256,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // Add search layout to inner canvas
       innerCanvas.add(searchLayout);
 
-   
+
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(5);   
       var tagCloudLayout = new qx.ui.container.Composite(layout);
 
       // An array of pre-filled tagcloud texts, before actual mechanism's done
@@ -284,9 +286,6 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
             cursor    : "pointer"
           });
 
-        // Add to the tag cloud canvas
-        tagCloudLayout.add(tagItem);
-
         // TagItem clicks will launch a search of that tag
         tagItem.addListener(
           "click",
@@ -307,6 +306,8 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           },
           this);
 
+        // Add to the tag cloud canvas
+        tagCloudLayout.add(tagItem);
         tagItems.push(tagItem);
       }
       console.log("Printing tagItems");
