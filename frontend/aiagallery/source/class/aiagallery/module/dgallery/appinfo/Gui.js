@@ -695,13 +695,20 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
       case "tagResponse":
         result = response.data.result;
+
+        /*
         console.log("Captured tagResponse");
         console.log(result);
         console.log("Captured tagName");
         console.log(result[1]);
+        */
+
         // Change the name of the tabview page
         var tagTabLabel = ["Apps by tag ", result[1]].join("");
         this.byTagTab.setLabel(tagTabLabel);
+        // Since we cannot do auto-focus, let's change icon to make it obvious
+        this.byTagTab.setIcon("aiagallery/search.png");
+
         // Add the other apps by tags. Build a model for the search
         // results list, then add the model to the list.
         var tagmodel = qx.data.marshal.Json.createModel(result[0]);
