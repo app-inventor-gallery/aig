@@ -270,9 +270,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         // Add the tag cloud items to the innerCanvas
         var tagItem = new qx.ui.basic.Label();
 
-        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
-        font.setSize(16);
-        font.set(
+        var tagfont = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+        tagfont.setSize(16);
+        tagfont.set(
           {
             decoration : "underline",
             color      : "#75940c"
@@ -280,7 +280,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         tagItem.set(
           {
             textColor : null, // don't let it override font's color
-            font         : font, 
+            font         : tagfont, 
             value        : tagTexts[i],
             rich         : true,
             cursor    : "pointer"
@@ -295,7 +295,11 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
             e.preventDefault();
             e.stop();
 
-            var query = tagTexts[i]; //tagItem.getValue(); // tagTexts[i]
+            // var query = tagTexts[i]; //tagItem.getValue(); // tagTexts[i]
+            var query = 
+            {
+              text : [tagTexts[i]]
+            }; 
             console.log(query);
             // Initiate a search
             aiagallery.main.Gui.getInstance().selectModule(
