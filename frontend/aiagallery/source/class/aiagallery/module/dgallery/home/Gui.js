@@ -256,20 +256,31 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // Add search layout to inner canvas
       innerCanvas.add(searchLayout);
 
-      this.tagLabel = new qx.ui.basic.Label("tag1, Comics, Entertainment, *Featured*, dave");
-        var font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+      var tagTexts = ["tag1", "Comics", "Entertainment", "*Featured*", "dave"];
+      var tagItems = [];
+      for (var i = 0; i < tagTexts.length; i++) {
+        // Add the tag cloud items to the innerCanvas
+        var tagItem = new qx.ui.basic.Label();
+        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+        font.setSize(16);
         font.set(
           {
-            color      : "#75940c"    // android-green-dark
+            decoration : "underline",
+            color      : "#75940c"
           });
-      this.tagLabel.set(
+        tagItem.set(
           {
-            textColor : null,       // don't let it override font's color
-            font      : font,
+            textColor : null, // don't let it override font's color
+            font         : font, 
+            value        : tagTexts[i],
+            rich         : true,
             cursor    : "pointer"
           });
-
-      innerCanvas.add(this.tagLabel);
+        innerCanvas.add(tagItem);
+        tagItems.push(tagItem);
+      }
+      console.log("Printing tagItems");
+      console.log(tagItems.length);
 
       // News like text 
       text = 
