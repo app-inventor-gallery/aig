@@ -256,6 +256,8 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // Add search layout to inner canvas
       innerCanvas.add(searchLayout);
 
+   
+      var tagCloudLayout = new qx.ui.container.Composite(layout);
 
       // An array of pre-filled tagcloud texts, before actual mechanism's done
       var tagTexts = ["tag1", "Comics", "Entertainment", "*Featured*", "dave"];
@@ -282,15 +284,20 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
             cursor    : "pointer"
           });
 
-        // Add to the canvas
-        innerCanvas.add(tagItem);
+        // Add to the tag cloud canvas
+        tagCloudLayout.add(tagItem);
 
         // TagItem clicks will launch a search of that tag
         tagItem.addListener(
           "click",
           function(e)
           {
-            var query = tagItem.getValue(); // tagTexts[i]
+            // Prevent the default 'click' behavior
+            e.preventDefault();
+            e.stop();
+
+            var query = tagTexts[i]; //tagItem.getValue(); // tagTexts[i]
+            console.log(query);
             // Initiate a search
             aiagallery.main.Gui.getInstance().selectModule(
             {
@@ -305,6 +312,8 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       console.log("Printing tagItems");
       console.log(tagItems.length);
 
+      // Add search layout to inner canvas
+      innerCanvas.add(tagCloudLayout);
 
       // News like text 
       text = 
