@@ -298,7 +298,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
             // var query = tagTexts[i]; //tagItem.getValue(); // tagTexts[i]
             var query = 
             {
-              text : [tagTexts[i]]
+              text : [tagItem.getValue()]
             }; 
             console.log(query);
             // Initiate a search
