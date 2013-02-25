@@ -71,20 +71,22 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
           "likeIt"  : "Transition_Idle_to_AwaitRpcResult_via_likeIt",
 
-          "flagIt"  : "Transition_Idle_to_AwaitRpcResult_via_flagIt",     
+          "flagIt"  : "Transition_Idle_to_AwaitRpcResult_via_flagIt",
 
           // Event is called directly from a comment
           "flagComment" : "Transition_Idle_to_AwaitRpcResult_via_flagComment",
-          
+
+          // Event is called directly from selecting a tag          
+          "changeSelection" : "Transition_Idle_to_AwaitRpcResult_via_tagSelect",   
+
           "execute" :
           {
-            "butAddComment" :
-            "Transition_Idle_to_AwaitRpcResult_via_submit_comment",
-
-            "tagRequest" :
-            "Transition_Idle_to_AwaitRpcResult_via_tagRequest"
-
+  
             
+
+            "butAddComment" :
+            "Transition_Idle_to_AwaitRpcResult_via_submit_comment"
+
           }
 
         }
@@ -270,29 +272,45 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
       /*
        * Transition: Idle to AwaitRpcResult
        *
-       * Cause: tagRequest has been pressed
+       * Cause: tagSelect has been picked
        *
        * Action:
        *  Search for tag query and return to GUI
        */
       trans = new qx.util.fsm.Transition(
-        "Transition_Idle_to_AwaitRpcResult_via_tagRequest",
+        "Transition_Idle_to_AwaitRpcResult_via_tagSelect",
       {
         "nextState" : "State_AwaitRpcResult",
 
         "context" : this,
+/*
+        "predicate" : function(fsm, event)
+        {
+          if(fsm.getObject("selectedButton").getValue() == null)
+          { 
+            // Ignore, selected tag is empty
+            return null;
+          }
+          else 
+          {
+            // Accept 
+            return true; 
+          }
+        },*/
 
         "ontransition" : function(fsm, event)
         {
           console.log("Entered FSM ontransition!");
           // Get the event data
           var             tagName;
-          var             tagArray = [];
-          var             queryFieldArray = [];
           var             request;
 
           // Retrieve the tag name we are trying to query
-          tagName = fsm.getObject("tagName").getLabel();
+          // Parse the tag name of selected item
+          console.log("Entered tagSelect event!");
+          var selectedButton = event.getData()[0];
+          console.log(selectedButton);
+          tagName = selectedButton.getLabel();
           console.log(tagName);
           // Issue the remote procedure call to execute the query
           request =
@@ -301,7 +319,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
                          "appTagQuery",
                          [ tagName ]
                          );
-
+          console.log(request);
           // When we get the result, we'll need to know what type of request
           // we made.
           request.setUserData("requestType", "tagResponse");

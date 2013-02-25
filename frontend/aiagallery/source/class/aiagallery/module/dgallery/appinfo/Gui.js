@@ -371,9 +371,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // Parse the tag name of selected item
       var selectedButton = e.getData()[0];
       var tagName = selectedButton.getLabel();
+      // Need to access this piece of data on the fsm
+      this.fsm.addObject("selectedButton", selectedButton, "main.fsmUtils.disable_during_rpc");
       console.log(tagName);
       console.log(this.fsm);
-      alert(tagName);
     },
 
 
@@ -441,20 +442,21 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         // alert(tlHolder[0].length);
 
         // Create a manager for tag radio buttons' event binding
-        var manager = new qx.ui.form.RadioButtonGroup();
-        manager.setLayout(new qx.ui.layout.HBox(5));
+        var tagSelect = new qx.ui.form.RadioButtonGroup();
+        tagSelect.setLayout(new qx.ui.layout.HBox(5));
 
         // Create a tag radio button for each of the tags, add to container
         for (var i = 0; i < tagsHolder.length; i++) {
           // Add the tag radio button to the manager
-          manager.add(new qx.ui.form.RadioButton(tagsHolder[i]));
+          tagSelect.add(new qx.ui.form.RadioButton(tagsHolder[i]));
         }
-        this.tagContainer.add(manager);
+        this.tagContainer.add(tagSelect);
         
         // Add a listener to the "changeSelected" event
-        manager.addListener("changeSelection", this._onChangeSelection, this);
-        this.fsm.addObject("tagRequest", manager);
-
+//        tagSelect.addListener("changeSelection", this._onChangeSelection, this);
+        tagSelect.addListener("changeSelection", this.fsm.eventListener, this.fsm);
+        // We'll be receiving events on the object so save its name on fsm
+        this.fsm.addObject("tagSelect", tagSelect, "main.fsmUtils.disable_during_rpc");
 
         // Add the other apps by this author. Build a model for the search
         // results list, then add the model to the list.
@@ -691,8 +693,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       case "tagResponse":
         result = response.data.result;
         console.log("Returned tagResponse");
-        this.debug(result);
-        this.debug(result[0]);
+        console.log(result);
+        console.log(result[0]);
         // Add the other apps by tags. Build a model for the search
         // results list, then add the model to the list.
         var tagmodel = qx.data.marshal.Json.createModel(result);
