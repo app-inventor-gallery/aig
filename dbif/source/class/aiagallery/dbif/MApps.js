@@ -62,6 +62,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     this.registerService("aiagallery.features.setFeaturedApps",
                          this.setFeaturedApps,
                          [ "featuredApps" ]);
+
+    this.registerService("aiagallery.features.appTagQuery",
+                         this.appTagQuery,
+                         [ "query" ]);
   },
 
   statics :
@@ -3297,6 +3301,60 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // Give 'em what they came for
       return ret;
     },
+
+
+    appTagQuery: function (query)
+    {
+      // Find all active apps by this tag
+      var criteria = {
+          type : "element",
+          field: "tags",
+          value: query };
+
+      // Top-level returning variable
+      var result = [];
+
+      // Query for those apps, put 'em into a list
+      var tlist = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                                 criteria, null);
+
+      // Add the author's display name to each app
+      tlist.forEach(
+          function(app) {
+            // Issue owner query for EACH app (expensive)
+            var owners = liberated.dbif.Entity.query(
+                           "aiagallery.dbif.ObjVisitors", 
+                            app.owner);
+
+            if (owners.length == 0)
+            {
+              app.displaName = "DELETED";
+            } else {
+              app.displayName = owners[0].displayName || "<>";          
+            }
+
+            delete app.owner; // Remove the owner field
+      });
+
+      // Do the same for images for each app by this tag, but 100px.
+      tlist.forEach( function(app) { app.image1 += "=s100"; });
+
+      // Send each of the apps by this tag to the requestedFields
+      // function for stripping and remapping
+/*      tlist.forEach( function(app) {
+        aiagallery.dbif.MApps._requestedFields(app, requestedFields);
+      });
+*/
+
+      result[0] = tlist;
+      // Also add the tag name to return data for easy retrieval
+      result[1] = query;
+      
+
+      return result;
+
+    },
+
 
     /**
      * Specify the set of Featured Apps.

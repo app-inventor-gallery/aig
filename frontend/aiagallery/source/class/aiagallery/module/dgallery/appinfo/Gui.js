@@ -47,11 +47,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       var             commentBoxAndCountLayout;
       var             scrollContainer; 
 
+
+      this.fsm = fsm;
+
       //
       // The overall layout if a grid, where the left portion has the
       // application information at the top, and comments at the bottom; and
       // the right (narrow) portion has a list of all apps by this author.
-      // beta002: the right portion also has a list of apps by tags.
+      // The right portion also has a list of apps by tags.
       //
       
       // Put entire page into a scroller 
@@ -185,11 +188,11 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       commentsGrid.add(this.logInToCommentLabel, { row : 5, column : 0 });
 
       // Initialize a tabview for both byAuthor and byTags
-      this.tabView = new qx.ui.tabview.TabView();
-      this.tabView.setWidth(350);
-      this.tabView.setHeight(500);
-      this.tabView.setMaxHeight(1000);
-      this.tabView.setContentPadding(0, 0, 0, 0);
+      this.tagTabView = new qx.ui.tabview.TabView();
+      this.tagTabView.setWidth(350);
+      this.tagTabView.setHeight(500);
+      this.tagTabView.setMaxHeight(1000);
+      this.tagTabView.setContentPadding(0, 0, 0, 0);
       
 
       // Create the by-this-author area
@@ -208,6 +211,19 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       vbox.add(this.sidebarLabel);
 
 
+      // Create the main layout for tag container
+      var mainLayout = new qx.ui.layout.VBox();
+      mainLayout.setSpacing(10);
+
+      // A container created specifically for tags
+      this.tagContainer = new qx.ui.container.Composite(mainLayout);
+
+      var tagLabel = new qx.ui.basic.Label("Select one of the tags below to find out similar apps:");
+      this.tagContainer.add(tagLabel);
+      
+      vbox.add(this.tagContainer);
+
+
       // Android-green line
       o = new qx.ui.container.Composite();
       o.set(
@@ -217,8 +233,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         });
       vbox.add(o);
 
-
-      var byAuthorTab = new qx.ui.tabview.Page("By this author", "aiagallery/test.png");
+      // Create the "By this author" tab in tab view
+      var byAuthorTab = new qx.ui.tabview.Page("Apps by this author", "aiagallery/test.png");
       byAuthorTab.setLayout(new qx.ui.layout.VBox());
 
       // Add the list for other apps by this author
@@ -264,13 +280,63 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         });
 
       byAuthorTab.add(this.byAuthor, {flex : 1});
-      this.tabView.add(byAuthorTab);
+      this.tagTabView.add(byAuthorTab);
 
 
-      vbox.add(this.tabView);
+      // Create the "By this tag" tab in tab view
+      this.byTagTab = new qx.ui.tabview.Page("Apps of tag", "aiagallery/test.png");
+      this.byTagTab.setLayout(new qx.ui.layout.VBox());
+
+      // Add the list for other apps by this author
+      this.byTag = new qx.ui.list.List();
+      this.byTag.set(
+        {
+          itemHeight : 130,
+          labelPath  : "title",
+          iconPath   : "image1",
+          delegate   :
+          {
+            createItem : function()
+            {
+              return new aiagallery.widget.SearchResult("byAuthor");
+            },
+            
+            bindItem : function(controller, item, id) 
+            {
+              [
+                "uid",
+                "image1",
+                "title",
+                "numLikes",
+                "numDownloads",
+                "numViewed",
+                "numComments",
+                "displayName"
+              ].forEach(
+                function(name)
+                {
+                  controller.bindProperty(name, name, null, item, id);
+                });
+            },
+
+            configureItem : qx.lang.Function.bind(
+              function(item) 
+              {
+                // Listen for clicks on the title or image, to view the app
+                item.addListener("viewApp", fsm.eventListener, fsm);
+              },
+              this)
+          }
+        });
+
+      this.byTagTab.add(this.byTag, {flex : 1});
+      this.tagTabView.add(this.byTagTab);
+
+
+
+      vbox.add(this.tagTabView);
 
     },
-//beta002 ends
 
 
     /**
@@ -296,6 +362,18 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       this.commentCountLabel.setValue(charsLeft.toString() + this.tr(" Characters Left"));
     },
 
+
+    // Tags related event handler
+    _onChangeSelection : function(e)
+    {
+      // Parse the tag name of selected item
+      var selectedButton = e.getData()[0];
+      var tagName = selectedButton.getLabel();
+      // Need to access this piece of data on the fsm
+      this.fsm.addObject("selectedButton", selectedButton, "main.fsmUtils.disable_during_rpc");
+      console.log(tagName);
+      console.log(this.fsm);
+    },
 
 
     /**
@@ -354,15 +432,43 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         // Add the app detail
         this.searchResult.set(result.app);
         
+
+
+        // Generate tagging sidebar(s) based on specific tags of this app
+        var tagsHolder = result.appTags;
+        var tlHolder = result.appTagsLists;
+        // alert(tlHolder[0].length);
+
+        // Create a manager for tag radio buttons' event binding
+        var tagSelect = new qx.ui.form.RadioButtonGroup();
+        tagSelect.setLayout(new qx.ui.layout.HBox(5));
+
+        // Create a tag radio button for each of the tags, add to container
+        for (var i = 0; i < tagsHolder.length; i++) {
+          // Add the tag radio button to the manager
+          tagSelect.add(new qx.ui.form.RadioButton(tagsHolder[i]));
+        }
+        this.tagContainer.add(tagSelect);
+        
+        // Add a listener to the "changeSelected" event
+//        tagSelect.addListener("changeSelection", this._onChangeSelection, this);
+        tagSelect.addListener("changeSelection", this.fsm.eventListener, this.fsm);
+        // We'll be receiving events on the object so save its name on fsm
+        this.fsm.addObject("tagSelect", tagSelect, "main.fsmUtils.disable_during_rpc");
+
         // Add the other apps by this author. Build a model for the search
         // results list, then add the model to the list.
         model = qx.data.marshal.Json.createModel(result.byAuthor);
         this.byAuthor.setModel(model);
 
-        // Generate tagging sidebar(s) based on specific tags of this app
-        var tagsHolder = result.appTags;
-        var tlHolder = result.appTagsLists;
+        // By default, load the app list of the first tag into tabview page
+        model = qx.data.marshal.Json.createModel(result.appTagsLists[0]);
+        this.byTag.setModel(model);
+        // Also change tabview page's label (name) to the tag's name
+        var tagTabLabel = ["Apps by tag ", tagsHolder[0]].join("");
+        this.byTagTab.setLabel(tagTabLabel);
 
+/*
         var sidebarText = 
         [
           "This app is tagged with ",
@@ -423,13 +529,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
           // Add the other apps by tags. Build a model for the search
           // results list, then add the model to the list.
-//alert(tlHolder[i]);
           model = qx.data.marshal.Json.createModel(tlHolder[i]);
           byTagsHolder.setModel(model);
 
-          this.tabView.add(tagTabHolder);
+          this.tagTabView.add(tagTabHolder);
 
         }
+*/
+
 
         // Display each of the comments
         result.comments.forEach(
@@ -582,6 +689,30 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         }
 
         break;
+
+
+      case "tagResponse":
+        result = response.data.result;
+
+        /*
+        console.log("Captured tagResponse");
+        console.log(result);
+        console.log("Captured tagName");
+        console.log(result[1]);
+        */
+
+        // Change the name of the tabview page
+        var tagTabLabel = ["Apps by tag ", result[1]].join("");
+        this.byTagTab.setLabel(tagTabLabel);
+        // Since we cannot do auto-focus, let's change icon to make it obvious
+        this.byTagTab.setIcon("aiagallery/search.png");
+
+        // Add the other apps by tags. Build a model for the search
+        // results list, then add the model to the list.
+        var tagmodel = qx.data.marshal.Json.createModel(result[0]);
+        this.byTag.setModel(tagmodel);
+        break;
+
 
       case "addComment":
         // The result contains all of the information about this comment,

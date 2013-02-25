@@ -256,6 +256,70 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // Add search layout to inner canvas
       innerCanvas.add(searchLayout);
 
+
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(5);   
+      var tagCloudLayout = new qx.ui.container.Composite(layout);
+
+      // An array of pre-filled tagcloud texts, before actual mechanism's done
+      var tagTexts = ["tag1", "Comics", "Entertainment", "*Featured*", "dave"];
+      // An array of tag items
+      var tagItems = [];
+
+      for (var i = 0; i < tagTexts.length; i++) {
+        // Add the tag cloud items to the innerCanvas
+        var tagItem = new qx.ui.basic.Label();
+
+        var tagfont = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+        tagfont.setSize(16);
+        tagfont.set(
+          {
+            decoration : "underline",
+            color      : "#75940c"
+          });
+        tagItem.set(
+          {
+            textColor : null, // don't let it override font's color
+            font         : tagfont, 
+            value        : tagTexts[i],
+            rich         : true,
+            cursor    : "pointer"
+          });
+
+        // TagItem clicks will launch a search of that tag
+        tagItem.addListener(
+          "click",
+          function(e)
+          {
+            // Prevent the default 'click' behavior
+            e.preventDefault();
+            e.stop();
+
+            // var query = tagTexts[i]; //tagItem.getValue(); // tagTexts[i]
+            var query = 
+            {
+              text : [tagItem.getValue()]
+            }; 
+            console.log(query);
+            // Initiate a search
+            aiagallery.main.Gui.getInstance().selectModule(
+            {
+              page  : aiagallery.main.Constant.PageName.FindApps,
+              query : qx.lang.Json.stringify(query)
+            });
+          },
+          this);
+
+        // Add to the tag cloud canvas
+        tagCloudLayout.add(tagItem);
+        tagItems.push(tagItem);
+      }
+      console.log("Printing tagItems");
+      console.log(tagItems.length);
+
+      // Add search layout to inner canvas
+      innerCanvas.add(tagCloudLayout);
+
       // News like text 
       text = 
         [

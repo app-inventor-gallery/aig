@@ -71,16 +71,22 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
           "likeIt"  : "Transition_Idle_to_AwaitRpcResult_via_likeIt",
 
-          "flagIt"  : "Transition_Idle_to_AwaitRpcResult_via_flagIt",     
+          "flagIt"  : "Transition_Idle_to_AwaitRpcResult_via_flagIt",
 
           // Event is called directly from a comment
           "flagComment" : "Transition_Idle_to_AwaitRpcResult_via_flagComment",
-          
+
+          // Event is called directly from selecting a tag          
+          "changeSelection" : "Transition_Idle_to_AwaitRpcResult_via_tagSelect",   
+
           "execute" :
           {
+  
+            
+
             "butAddComment" :
             "Transition_Idle_to_AwaitRpcResult_via_submit_comment"
-            
+
           }
 
         }
@@ -107,6 +113,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
         "predicate" : function(fsm, event)
         {
+
           // Have we already been here before?
           if (fsm.getUserData("noUpdate"))
           {
@@ -123,6 +130,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
         "ontransition" : function(fsm, event)
         {
+
           // Issue the remote procedure call to get the application
           // data. Request that the tags, previous authors, and status be
           // converted to strings for us.
@@ -259,6 +267,68 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
       });
 
       state.addTransition(trans);
+
+
+      /*
+       * Transition: Idle to AwaitRpcResult
+       *
+       * Cause: tagSelect has been picked
+       *
+       * Action:
+       *  Search for tag query and return to GUI
+       */
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_tagSelect",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+/*
+        "predicate" : function(fsm, event)
+        {
+          if(fsm.getObject("selectedButton").getValue() == null)
+          { 
+            // Ignore, selected tag is empty
+            return null;
+          }
+          else 
+          {
+            // Accept 
+            return true; 
+          }
+        },*/
+
+        "ontransition" : function(fsm, event)
+        {
+          // Get the event data
+          var             tagName;
+          var             request;
+
+          // Retrieve the tag name we are trying to query
+          // Parse the tag name of selected item
+          console.log("Entered tagSelect event!");
+          var selectedButton = event.getData()[0];
+          // console.log(selectedButton);
+          tagName = selectedButton.getLabel();
+          console.log(tagName);
+          console.log("Now retrieving data from appTagQuery");
+
+          // Issue the remote procedure call to execute the query
+          request =
+            this.callRpc(fsm,
+                         "aiagallery.features",
+                         "appTagQuery",
+                         [ tagName ]
+                         );
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "tagResponse");
+        }
+      });
+
+      state.addTransition(trans);
+
 
 
       /*
