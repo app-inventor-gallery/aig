@@ -3343,9 +3343,10 @@ console.log(tlist.length);
 
       // Send each of the apps by this tag to the requestedFields
       // function for stripping and remapping
-      tlist.forEach( function(app) {
+/*      tlist.forEach( function(app) {
         aiagallery.dbif.MApps._requestedFields(app, requestedFields);
       });
+*/
 
       return tlist;
 

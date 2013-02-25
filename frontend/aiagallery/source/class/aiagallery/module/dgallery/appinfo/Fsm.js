@@ -300,7 +300,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
 
         "ontransition" : function(fsm, event)
         {
-          console.log("Entered FSM ontransition!");
           // Get the event data
           var             tagName;
           var             request;
