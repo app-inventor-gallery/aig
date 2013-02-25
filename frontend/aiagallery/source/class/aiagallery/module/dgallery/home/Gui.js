@@ -256,11 +256,16 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // Add search layout to inner canvas
       innerCanvas.add(searchLayout);
 
+
+      // An array of pre-filled tagcloud texts, before actual mechanism's done
       var tagTexts = ["tag1", "Comics", "Entertainment", "*Featured*", "dave"];
+      // An array of tag items
       var tagItems = [];
+
       for (var i = 0; i < tagTexts.length; i++) {
         // Add the tag cloud items to the innerCanvas
         var tagItem = new qx.ui.basic.Label();
+
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.setSize(16);
         font.set(
@@ -276,11 +281,30 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
             rich         : true,
             cursor    : "pointer"
           });
+
+        // Add to the canvas
         innerCanvas.add(tagItem);
+
+        // TagItem clicks will launch a search of that tag
+        tagItem.addListener(
+          "click",
+          function(e)
+          {
+            var query = tagItem.getValue(); // tagTexts[i]
+            // Initiate a search
+            aiagallery.main.Gui.getInstance().selectModule(
+            {
+              page  : aiagallery.main.Constant.PageName.FindApps,
+              query : qx.lang.Json.stringify(query)
+            });
+          },
+          this);
+
         tagItems.push(tagItem);
       }
       console.log("Printing tagItems");
       console.log(tagItems.length);
+
 
       // News like text 
       text = 
