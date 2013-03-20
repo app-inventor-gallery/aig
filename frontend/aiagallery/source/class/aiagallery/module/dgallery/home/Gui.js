@@ -275,7 +275,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // USF static
       // var tagTexts = ["tag1", "Comics", "Entertainment", "*Featured*", "dave"];
       // MIT static
-      var tagTexts = ["Games", "Education", "Entertainment", "Productivity", "Travel and Local"];
+      var tagTexts = ["Games", "Education", "Entertainment", "Productivity", "Travel & Local"];
       // An array of tag items
       var tagItems = [];
 
@@ -303,8 +303,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         tagItemsLayout.add(tagItem);
         tagItems.push(tagItem);
       }
-      console.log("Printing tagItems");
-      console.log(tagItems.length);
+      // Comment out for build version 
+      //console.log("Printing tagItems");
+      //console.log(tagItems.length);
 
       tagCloudLayout.add(tagItemsLayout);
 
@@ -325,7 +326,8 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
             {
               text : [e.getTarget().getValue()]
             }; 
-            console.log(query.text);
+            // Comment out for build
+            //console.log(query.text);
 
             // Initiate a search
             aiagallery.main.Gui.getInstance().selectModule(
