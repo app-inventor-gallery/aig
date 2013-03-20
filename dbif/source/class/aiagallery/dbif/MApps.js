@@ -3252,7 +3252,17 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       return ret;
     },
 
-
+    /**
+     * Get the apps that have a particular tag 
+     * associated with them.
+     * 
+     * @param query {Array}
+     *   The array containing the search query
+     * 
+     * @return {Array}
+     *   An array containg apps associated with this tag 
+     * 
+     */
     appTagQuery: function (query)
     {
       // Find all active apps by this tag

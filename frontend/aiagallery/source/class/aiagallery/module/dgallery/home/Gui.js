@@ -257,9 +257,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       innerCanvas.add(searchLayout);
 
 
-      hLayout = new qx.ui.layout.HBox();
+      var hLayout = new qx.ui.layout.HBox();
       hLayout.setSpacing(5);   
-      vLayout = new qx.ui.layout.VBox();
+      var vLayout = new qx.ui.layout.VBox();
       vLayout.setSpacing(5);   
       var tagCloudLayout = new qx.ui.container.Composite(vLayout);
       var tagItemsLayout = new qx.ui.container.Composite(hLayout);
