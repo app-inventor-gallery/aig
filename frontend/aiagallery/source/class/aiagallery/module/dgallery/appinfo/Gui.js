@@ -382,7 +382,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
         // Generate tagging sidebar(s) based on specific tags of this app
         var tagsHolder = result.appTags;
-        var tlHolder = result.appTagsLists;
+        // var tlHolder = result.appTagsLists;
         // alert(tlHolder[0].length);
 
         // Create a manager for tag radio buttons' event binding
@@ -421,10 +421,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
 
         // By default, load the app list of the first tag into tabview page
-        model = qx.data.marshal.Json.createModel(result.appTagsLists[0]);
+        // model = qx.data.marshal.Json.createModel(result.appTagsLists[0]);
         // this.byTag.setModel(model);
         // Also change tabview page's label (name) to the tag's name
-        var tagTabLabel = ["Apps by tag ", tagsHolder[0]].join("");
+        // var tagTabLabel = ["Apps by tag ", tagsHolder[0]].join("");
         // this.byTagTab.setLabel(tagTabLabel);
 
 /*
