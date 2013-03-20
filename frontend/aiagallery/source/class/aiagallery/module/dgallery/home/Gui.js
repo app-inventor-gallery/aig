@@ -275,7 +275,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // USF static
       // var tagTexts = ["tag1", "Comics", "Entertainment", "*Featured*", "dave"];
       // MIT static
-      var tagTexts = ["Games", "Education", "Entertainment", "*Productivity*", "Travel & Local"];
+      var tagTexts = ["Games", "Education", "Entertainment", "Productivity", "Travel & Local"];
       // An array of tag items
       var tagItems = [];
 

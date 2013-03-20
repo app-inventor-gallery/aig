@@ -391,14 +391,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
         // Manually add a radio button for "By this author"
         var tagButton = new qx.ui.form.RadioButton("Apps by this author");
-        tagButton.setMarginRight(10);
+        tagButton.setMarginRight(5);
         tagSelect.add(tagButton);
 
         // Create a tag radio button for each of the tags, add to container
         for (var i = 0; i < tagsHolder.length; i++) {
           // Add the tag radio button to the manager
           tagButton = new qx.ui.form.RadioButton(tagsHolder[i]);
-          tagButton.setMarginRight(10);
+          tagButton.setMarginRight(5);
           tagSelect.add(tagButton);
         }
         this.tagContainer.add(tagSelect);
@@ -413,7 +413,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         // Add the other apps by this author. Build a model for the search
         // results list, then add the model to the list.
         model = qx.data.marshal.Json.createModel(result.byAuthor);
-        
+        console.log("PASSING BYAUTHOR"); console.log(result.byAuthor);
         // Save this as global variable for later
         // this.byAuthorModel = result.byAuthor;
         // this.byAuthor.setModel(byAuthorModel);
