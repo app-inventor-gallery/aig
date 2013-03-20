@@ -200,7 +200,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       canvas.add(vbox, { row : 0, column : 1, rowSpan : 2 });
       
       // A label for reminding users what to do
-      this.sidebarLabel = new qx.ui.basic.Label("Check out the apps in sidebar!");
+      this.sidebarLabel = new qx.ui.basic.Label("Check out related apps below!");
       this.sidebarLabel.set(
         {
           font          : font,
@@ -220,7 +220,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // A container created specifically for tags
       this.tagContainer = new qx.ui.container.Composite(mainLayout);
 
-      var tagLabel = new qx.ui.basic.Label("Select one of the tags below to find out similar apps:");
+      var tagLabel = new qx.ui.basic.Label("Select tags below to find out similar apps:");
       this.tagContainer.add(tagLabel);
       
       vbox.add(this.tagContainer);
@@ -235,9 +235,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         });
       vbox.add(o);
 
-      // Create the "By this author" tab in tab view
-      var byAuthorTab = new qx.ui.tabview.Page("Apps by this author", "aiagallery/test.png");
-      byAuthorTab.setLayout(new qx.ui.layout.VBox());
 
       // Add the list for other apps by this author
       this.byAuthor = new qx.ui.list.List();
@@ -281,62 +278,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
           }
         });
 
-      byAuthorTab.add(this.byAuthor, {flex : 1});
-      this.tagTabView.add(byAuthorTab);
 
 
-      // Create the "By this tag" tab in tab view
-      this.byTagTab = new qx.ui.tabview.Page("Apps of tag", "aiagallery/test.png");
-      this.byTagTab.setLayout(new qx.ui.layout.VBox());
-
-      // Add the list for other apps by this author
-      this.byTag = new qx.ui.list.List();
-      this.byTag.set(
-        {
-          itemHeight : 130,
-          labelPath  : "title",
-          iconPath   : "image1",
-          delegate   :
-          {
-            createItem : function()
-            {
-              return new aiagallery.widget.SearchResult("byAuthor");
-            },
-            
-            bindItem : function(controller, item, id) 
-            {
-              [
-                "uid",
-                "image1",
-                "title",
-                "numLikes",
-                "numDownloads",
-                "numViewed",
-                "numComments",
-                "displayName"
-              ].forEach(
-                function(name)
-                {
-                  controller.bindProperty(name, name, null, item, id);
-                });
-            },
-
-            configureItem : qx.lang.Function.bind(
-              function(item) 
-              {
-                // Listen for clicks on the title or image, to view the app
-                item.addListener("viewApp", fsm.eventListener, fsm);
-              },
-              this)
-          }
-        });
-
-      this.byTagTab.add(this.byTag, {flex : 1});
-      this.tagTabView.add(this.byTagTab);
-
-
-
-      vbox.add(this.tagTabView);
+      vbox.add(this.byAuthor, {flex: 1});
 
     },
 
@@ -443,7 +387,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
         // Create a manager for tag radio buttons' event binding
         var tagSelect = new qx.ui.form.RadioButtonGroup();
-        tagSelect.setLayout(new qx.ui.layout.HBox(5));
+        tagSelect.setLayout(new qx.ui.layout.Flow({ spacingX: 5 }));
+
+        // Manually add a radio button for "By this author"
+        tagSelect.add(new qx.ui.form.RadioButton("Apps by this author"));
 
         // Create a tag radio button for each of the tags, add to container
         for (var i = 0; i < tagsHolder.length; i++) {
@@ -455,20 +402,26 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         // Add a listener to the "changeSelected" event
 //        tagSelect.addListener("changeSelection", this._onChangeSelection, this);
         tagSelect.addListener("changeSelection", this.fsm.eventListener, this.fsm);
+
         // We'll be receiving events on the object so save its name on fsm
         this.fsm.addObject("tagSelect", tagSelect, "main.fsmUtils.disable_during_rpc");
 
         // Add the other apps by this author. Build a model for the search
         // results list, then add the model to the list.
         model = qx.data.marshal.Json.createModel(result.byAuthor);
+        
+        // Save this as global variable for later
+        // this.byAuthorModel = result.byAuthor;
+        // this.byAuthor.setModel(byAuthorModel);
         this.byAuthor.setModel(model);
+
 
         // By default, load the app list of the first tag into tabview page
         model = qx.data.marshal.Json.createModel(result.appTagsLists[0]);
-        this.byTag.setModel(model);
+        // this.byTag.setModel(model);
         // Also change tabview page's label (name) to the tag's name
         var tagTabLabel = ["Apps by tag ", tagsHolder[0]].join("");
-        this.byTagTab.setLabel(tagTabLabel);
+        // this.byTagTab.setLabel(tagTabLabel);
 
 /*
         var sidebarText = 
@@ -692,6 +645,11 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
         break;
 
+      case "byAuthorResponse":
+        var bAModel = qx.data.marshal.Json.createModel(this.byAuthorModel);
+        this.byAuthor.setModel(bAModel);
+        break;
+
 
       case "tagResponse":
         result = response.data.result;
@@ -702,17 +660,17 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         console.log("Captured tagName");
         console.log(result[1]);
         */
-
+/*
         // Change the name of the tabview page
         var tagTabLabel = ["Apps by tag ", result[1]].join("");
         this.byTagTab.setLabel(tagTabLabel);
         // Since we cannot do auto-focus, let's change icon to make it obvious
         this.byTagTab.setIcon("aiagallery/search.png");
-
+*/
         // Add the other apps by tags. Build a model for the search
         // results list, then add the model to the list.
         var tagmodel = qx.data.marshal.Json.createModel(result[0]);
-        this.byTag.setModel(tagmodel);
+        this.byAuthor.setModel(tagmodel);
         break;
 
 
