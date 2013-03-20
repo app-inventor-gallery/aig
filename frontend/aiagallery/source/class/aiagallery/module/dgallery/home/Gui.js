@@ -275,7 +275,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // USF static
       // var tagTexts = ["tag1", "Comics", "Entertainment", "*Featured*", "dave"];
       // MIT static
-      var tagTexts = ["Games", "Education", "Entertainment", "Productivity", "Travel & Local"];
+      var tagTexts = ["Games", "Education", "Entertainment", "Productivity", "Travel and Local"];
       // An array of tag items
       var tagItems = [];
 
@@ -296,7 +296,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
             font         : tagfont, 
             value        : tagTexts[i],
             rich         : true,
-            cursor    : "pointer"
+            cursor       : "pointer"
           });
 
         // Add to the tag cloud canvas
@@ -308,14 +308,12 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 
       tagCloudLayout.add(tagItemsLayout);
 
-      for (var i = 0; i < tagItems.length; i++) {
+      for (i = 0; i < tagItems.length; i++) {
         // Add the tag cloud items to the innerCanvas
         var tagItem = tagItems[i];
 
-// Brute force solution, replace later!!! START
-
         // TagItem clicks will launch a search of that tag
-        tagItems[0].addListener(
+        tagItems[i].addListener(
           "click",
           function(e)
           {
@@ -323,12 +321,12 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
             e.preventDefault();
             e.stop();
 
-            // var query = tagTexts[i]; //tagItem.getValue(); // tagTexts[i]
             var query = 
             {
-              text : [tagItems[0].getValue()]
+              text : [e.getTarget().getValue()]
             }; 
-            console.log(query[0]);
+            console.log(query.text);
+
             // Initiate a search
             aiagallery.main.Gui.getInstance().selectModule(
             {
@@ -337,106 +335,6 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
             });
           },
           this);
-
-        // TagItem clicks will launch a search of that tag
-        tagItems[1].addListener(
-          "click",
-          function(e)
-          {
-            // Prevent the default 'click' behavior
-            e.preventDefault();
-            e.stop();
-
-            // var query = tagTexts[i]; //tagItem.getValue(); // tagTexts[i]
-            var query = 
-            {
-              text : [tagItems[1].getValue()]
-            }; 
-            console.log(query[0]);
-            // Initiate a search
-            aiagallery.main.Gui.getInstance().selectModule(
-            {
-              page  : aiagallery.main.Constant.PageName.FindApps,
-              query : qx.lang.Json.stringify(query)
-            });
-          },
-          this);
-
-        // TagItem clicks will launch a search of that tag
-        tagItems[2].addListener(
-          "click",
-          function(e)
-          {
-            // Prevent the default 'click' behavior
-            e.preventDefault();
-            e.stop();
-
-            // var query = tagTexts[i]; //tagItem.getValue(); // tagTexts[i]
-            var query = 
-            {
-              text : [tagItems[2].getValue()]
-            }; 
-            console.log(query[0]);
-            // Initiate a search
-            aiagallery.main.Gui.getInstance().selectModule(
-            {
-              page  : aiagallery.main.Constant.PageName.FindApps,
-              query : qx.lang.Json.stringify(query)
-            });
-          },
-          this);
-
-        // TagItem clicks will launch a search of that tag
-        tagItems[3].addListener(
-          "click",
-          function(e)
-          {
-            // Prevent the default 'click' behavior
-            e.preventDefault();
-            e.stop();
-
-            // var query = tagTexts[i]; //tagItem.getValue(); // tagTexts[i]
-            var query = 
-            {
-              text : [tagItems[3].getValue()]
-            }; 
-            console.log(query[0]);
-            // Initiate a search
-            aiagallery.main.Gui.getInstance().selectModule(
-            {
-              page  : aiagallery.main.Constant.PageName.FindApps,
-              query : qx.lang.Json.stringify(query)
-            });
-          },
-          this);
-
-        // TagItem clicks will launch a search of that tag
-        tagItems[4].addListener(
-          "click",
-          function(e)
-          {
-            // Prevent the default 'click' behavior
-            e.preventDefault();
-            e.stop();
-
-            // var query = tagTexts[i]; //tagItem.getValue(); // tagTexts[i]
-            var query = 
-            {
-              text : [tagItems[4].getValue()]
-            }; 
-            console.log(query[0]);
-            // Initiate a search
-            aiagallery.main.Gui.getInstance().selectModule(
-            {
-              page  : aiagallery.main.Constant.PageName.FindApps,
-              query : qx.lang.Json.stringify(query)
-            });
-          },
-          this);
-
-
-// Brute force solution, replace later!!! END
-
       }
 
 
