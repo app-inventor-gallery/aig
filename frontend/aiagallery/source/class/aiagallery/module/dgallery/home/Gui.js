@@ -272,7 +272,10 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       tagCloudLayout.add(tagCloudLabel);
 
       // An array of pre-filled tagcloud texts, before actual mechanism's done
-      var tagTexts = ["tag1", "Comics", "Entertainment", "*Featured*", "dave"];
+      // USF static
+      // var tagTexts = ["tag1", "Comics", "Entertainment", "*Featured*", "dave"];
+      // MIT static
+      var tagTexts = ["Games", "Education", "Entertainment", "*Productivity*", "Travel & Local"];
       // An array of tag items
       var tagItems = [];
 

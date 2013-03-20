@@ -387,15 +387,19 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
         // Create a manager for tag radio buttons' event binding
         var tagSelect = new qx.ui.form.RadioButtonGroup();
-        tagSelect.setLayout(new qx.ui.layout.Flow({ spacingX: 5 }));
+        tagSelect.setLayout(new qx.ui.layout.Flow());
 
         // Manually add a radio button for "By this author"
-        tagSelect.add(new qx.ui.form.RadioButton("Apps by this author"));
+        var tagButton = new qx.ui.form.RadioButton("Apps by this author");
+        tagButton.setMarginRight(10);
+        tagSelect.add(tagButton);
 
         // Create a tag radio button for each of the tags, add to container
         for (var i = 0; i < tagsHolder.length; i++) {
           // Add the tag radio button to the manager
-          tagSelect.add(new qx.ui.form.RadioButton(tagsHolder[i]));
+          tagButton = new qx.ui.form.RadioButton(tagsHolder[i]);
+          tagButton.setMarginRight(10);
+          tagSelect.add(tagButton);
         }
         this.tagContainer.add(tagSelect);
         
