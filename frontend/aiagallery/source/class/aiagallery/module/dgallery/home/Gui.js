@@ -257,12 +257,25 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       innerCanvas.add(searchLayout);
 
 
-      layout = new qx.ui.layout.HBox();
-      layout.setSpacing(5);   
-      var tagCloudLayout = new qx.ui.container.Composite(layout);
+      var hLayout = new qx.ui.layout.HBox();
+      hLayout.setSpacing(5);   
+      var vLayout = new qx.ui.layout.VBox();
+      vLayout.setSpacing(5);   
+      var tagCloudLayout = new qx.ui.container.Composite(vLayout);
+      var tagItemsLayout = new qx.ui.container.Composite(hLayout);
+
+      var tagCloudLabel = new qx.ui.basic.Label(this.tr("Most popular tags in the gallery"));
+      
+      // Create a large bold font
+
+      tagCloudLabel.setFont(font);
+      tagCloudLayout.add(tagCloudLabel);
 
       // An array of pre-filled tagcloud texts, before actual mechanism's done
-      var tagTexts = ["tag1", "Comics", "Entertainment", "*Featured*", "dave"];
+      // USF static
+      // var tagTexts = ["tag1", "Comics", "Entertainment", "*Featured*", "dave"];
+      // MIT static
+      var tagTexts = ["Games", "Education", "Entertainment", "Productivity", "Travel & Local"];
       // An array of tag items
       var tagItems = [];
 
@@ -283,11 +296,25 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
             font         : tagfont, 
             value        : tagTexts[i],
             rich         : true,
-            cursor    : "pointer"
+            cursor       : "pointer"
           });
 
+        // Add to the tag cloud canvas
+        tagItemsLayout.add(tagItem);
+        tagItems.push(tagItem);
+      }
+      // Comment out for build version 
+      //console.log("Printing tagItems");
+      //console.log(tagItems.length);
+
+      tagCloudLayout.add(tagItemsLayout);
+
+      for (i = 0; i < tagItems.length; i++) {
+        // Add the tag cloud items to the innerCanvas
+        var tagItem = tagItems[i];
+
         // TagItem clicks will launch a search of that tag
-        tagItem.addListener(
+        tagItems[i].addListener(
           "click",
           function(e)
           {
@@ -295,12 +322,13 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
             e.preventDefault();
             e.stop();
 
-            // var query = tagTexts[i]; //tagItem.getValue(); // tagTexts[i]
             var query = 
             {
-              text : [tagItem.getValue()]
+              text : [e.getTarget().getValue()]
             }; 
-            console.log(query);
+            // Comment out for build
+            //console.log(query.text);
+
             // Initiate a search
             aiagallery.main.Gui.getInstance().selectModule(
             {
@@ -309,16 +337,12 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
             });
           },
           this);
-
-        // Add to the tag cloud canvas
-        tagCloudLayout.add(tagItem);
-        tagItems.push(tagItem);
       }
-      console.log("Printing tagItems");
-      console.log(tagItems.length);
+
 
       // Add search layout to inner canvas
       innerCanvas.add(tagCloudLayout);
+
 
       // News like text 
       text = 

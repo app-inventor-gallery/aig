@@ -296,6 +296,7 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       case "getAppListByList":
       case "getHomeRibbonData":
       case "getCategoryTags" :
+      case "appTagQuery": 
           return true;            // Anonymous access
 
       //
@@ -344,6 +345,9 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
 
       case "editProfile":
         return ! bAnonymous; // Allowed if logged in 
+
+      case "managementAllNotifications":
+        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       //
       // MWhoAmI

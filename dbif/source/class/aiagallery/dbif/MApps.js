@@ -3080,56 +3080,6 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       // Store the tags' list into a separate variable for sidebar
       ret.appTags = ret.app.tags;
 
-      // Array for storing multiple lists of tag-related apps for sidebar
-      ret.appTagsLists = [];
-
-      // for each tag in the tag list...
-      for (var i = 0; i < ret.appTags.length; i++) {
-
-        // Find all active apps by this tag
-        criteria = {
-              type: "element",
-              field: "tags",
-              value: ret.appTags[i] };
-      
-
-        // Query for those apps
-        var tlist = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
-                                                 criteria, null);
-
-
-
-        // Add the author's display name to each app
-        tlist.forEach(
-          function(app) {
-            // Issue owner query for EACH app (expensive)
-            var owners = liberated.dbif.Entity.query(
-                           "aiagallery.dbif.ObjVisitors", 
-                            app.owner);
-
-            if (owners.length == 0)
-            {
-              app.displaName = "DELETED";
-            } else {
-              app.displayName = owners[0].displayName || "<>";          
-            }
-
-            delete app.owner; // Remove the owner field
-        });
-
-        // Do the same for images for each app by this tag, but 100px.
-        tlist.forEach( function(app) { app.image1 += "=s100"; });
-
-        // Send each of the apps by this tag to the requestedFields
-        // function for stripping and remapping
-        tlist.forEach( function(app) {
-            aiagallery.dbif.MApps._requestedFields(app, requestedFields);
-        });
-
-        ret.appTagsLists.push(tlist); // insert it to the front of array
-      }
-
-
 
 //Tagging stuff ends
 
@@ -3302,7 +3252,17 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       return ret;
     },
 
-
+    /**
+     * Get the apps that have a particular tag 
+     * associated with them.
+     * 
+     * @param query {Array}
+     *   The array containing the search query
+     * 
+     * @return {Array}
+     *   An array containg apps associated with this tag 
+     * 
+     */
     appTagQuery: function (query)
     {
       // Find all active apps by this tag

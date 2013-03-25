@@ -6,6 +6,9 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
+/*
+#ignore(com.google.*)
+ */
 qx.Mixin.define("aiagallery.dbif.MLiking",
 {
   construct : function()
@@ -125,18 +128,47 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
                 }
                 */
 
-                var msgBody = "Congratulations, your app " + appDataObj.title 
-                              + " has been liked. "
+                var msgBody = "Congratulations, your app \'" + appDataObj.title 
+                              + "\' has been liked. "
                               + "Keep up the good work, you are up to " 
                               + appDataObj.numLikes + " likes."; 
 
-                var subject = "You app is liked at the MIT App Inventor Gallery";
+                var subject = "Your app is liked at the MIT App Inventor Gallery";
 
                 // Call system function to send mail
                 this.sendEmail(msgBody, subject, 
                                visitorDataObj.email, appDataObj);
 
               }
+            }
+
+            // Update the likes in the cache with this new like by the user
+            switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+            {
+            case "appengine":
+              var memcacheServiceFactory =
+              Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+
+              var syncCache = memcacheServiceFactory.getMemcacheService();
+              var serialLike = JSON.stringify([likesDataObj]);
+
+              // Expiration date
+              var calendarClass = java.util.Calendar;
+              var date = calendarClass.getInstance();
+              date.add(calendarClass.DATE, 1);
+
+              var expirationClass 
+                = com.google.appengine.api.memcache.Expiration;  
+              var expirationDate = expirationClass.onDate(date.getTime());
+
+              syncCache.put("retlikes_".concat(appId),
+                serialLike, expirationDate);
+
+              break;
+
+            default:
+              // Not on appengine
+              break;
             }
 
             // Write it back to the database

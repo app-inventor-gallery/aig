@@ -180,7 +180,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
        * Action:
        *  Initiate a request for the list of matching applications.
        */
-        
       trans = new qx.util.fsm.Transition(
         "Transition_Idle_to_AwaitRpcResult_via_queryChanged",
       {
@@ -194,7 +193,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
           var             request;
           var             eventData;
           var             requestData = {};
-          
+
           // Retrieve the event data which provides the query criteria
           eventData = event.getData().data;
 
@@ -276,6 +275,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
                 filterOp : eventData.views[0]
               });
           }
+
           // Issue the remote procedure call to execute the query
           request =
             this.callRpc(fsm,
@@ -290,7 +290,6 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
           request.setUserData("requestType", "intersectKeywordAndQuery");
         }
       });
-
       state.addTransition(trans);
 
       /*
@@ -346,14 +345,17 @@ qx.Class.define("aiagallery.module.dgallery.findapps.Fsm",
       });
 
       state.addTransition(trans);
-
       
       // ------------------------------------------------------------ //
       // State: AwaitRpcResult
       // ------------------------------------------------------------ //
 
       // Add the AwaitRpcResult state and all of its transitions
-      this.addAwaitRpcResultState(module);
+      this.addAwaitRpcResultState(module, 
+        {
+          "queryChanged" : 
+             qx.util.fsm.FiniteStateMachine.EventHandling.BLOCKED 
+        });
 
 
       // ------------------------------------------------------------ //

@@ -173,6 +173,7 @@ qx.Class.define("aiagallery.dbif.Constants",
       "deleteVisitor"              : "Delete visitors",
       "editProfile"                : "Edit user profile",
       "getVisitorListAndPGroups"   : "Retrieve list of visitors",
+      "managementAllNotifications" : "Set all user notification settings",
       
       //
       // MWhoAmI

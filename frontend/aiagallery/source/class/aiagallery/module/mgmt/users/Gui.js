@@ -66,6 +66,36 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
       fsm.addObject("addUser", addUser, "main.fsmUtils.disable_during_rpc");
 */
 
+      // Create a turn on notifications button
+      var turnOnNoti 
+        = new qx.ui.form.Button(this.tr("Turn on All User Notifications"));
+      turnOnNoti.set(
+        {
+          maxHeight : 24,
+          width     : 200
+        });
+      hBox.add(turnOnNoti);
+      turnOnNoti.addListener(
+        "click",
+        function(e)
+        {
+          dialog.Dialog.confirm(
+            this.tr("This will turn all user notifications settings on. Do you really want to do this?"),
+
+            function(result)
+            {
+              if (result)
+              {                   
+                // Fire immediate event
+                fsm.fireImmediateEvent(
+                  "turnOnNoti");
+              }
+            }, this);
+          }, this); 
+      
+      // We'll be receiving events on the object so save its friendly name
+      fsm.addObject("turnOnNoti", turnOnNoti, "main.fsmUtils.disable_during_rpc");
+
       // Now right-justify the Delete button
       hBox.add(new qx.ui.core.Widget(), { flex : 1 });
 
@@ -281,6 +311,10 @@ qx.Class.define("aiagallery.module.mgmt.users.Gui",
         table = fsm.getObject("table");
         row = rpcRequest.getUserData("deletedRow");
         table.getTableModel().removeRows(row, 1, false);
+        break;
+
+      case "turnOnNoti":
+        dialog.Dialog.alert(this.tr("All user notifications turned on.")); 
         break;
         
       default:

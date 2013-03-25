@@ -1078,6 +1078,9 @@ qx.Class.define("aiagallery.main.Gui",
           // Retrieve the currently-selected page
           selectedPage = mainTabs.getSelection()[0];
 
+          // Encode the query again to preserve special characters
+          jsonQuery = encodeURIComponent(jsonQuery);  
+
           // Build the new fragment which identifies this particular query
           fragment =
               "page=" + aiagallery.main.Constant.PageName.FindApps +
@@ -1491,12 +1494,16 @@ qx.Class.define("aiagallery.main.Gui",
     {
       var             parts;
       var             components;
-      
-      // Ensure fragment is properly decoded
-      fragment = decodeURIComponent(fragment); 
+      var             i;      
 
       // Is this an app page or find apps search?
       parts = fragment.split("&"); 
+
+      // Ensure parts are properly decoded
+      for (i = 0; i < parts.length; i++)
+      {
+        parts[i] = decodeURIComponent(parts[i]);
+      }
 
       // Parse it completely
       components = {};

@@ -179,7 +179,7 @@ qx.Mixin.define("aiagallery.dbif.MSystem",
            // to include with the msg
            if(appObj)
            {
-             var appLink = "http://mit-appinventor-gallery.appspot.com/#page";
+             var appLink = "http://gallery.appinventor.mit.edu/#page";
 
              // Test link 
              //var appLink = 
@@ -189,10 +189,21 @@ qx.Mixin.define("aiagallery.dbif.MSystem",
 
              appLink += encodeURIComponent(appLinkFrag);
 
-             msg += "\nVisit your app: " + appLink; 
+             msg += "<br>Visit your app: " + appLink; 
            }
 
-           msgFinal.setText(msg);
+           // Add in unsubscribe info
+           var profileUrl = "http://gallery.appinventor.mit.edu/#page";
+
+           var profileUrlFrag = "%3DProfile"; 
+           profileUrl += encodeURIComponent(profileUrlFrag);
+
+           msg += "<font size =\"1\" >"
+                  +"<br><br>To unsubscribe to gallery notifications,"
+		  + " please visit your profile page at: " 
+                  + profileUrl + "</font>"; 
+
+           msgFinal.setContent(msg, "text/html");
 
            // Send the message
            javax.mail.Transport.send(msgFinal);

@@ -34,11 +34,11 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
           "showEmail"      : 0,
           "birthYear"      : 0,
           "birthMonth"     : "",
-          "updateOnAppComment"           : 0,
+          "updateOnAppComment"           : 1,
           "updateCommentFrequency"       : 0,
-          "updateOnAppLike"              : 0,
+          "updateOnAppLike"              : 1,
           "updateOnAppLikeFrequency"     : 0,
-          "updateOnAppDownload"          : 0, 
+          "updateOnAppDownload"          : 1, 
           "updateOnAppDownloadFrequency" : 0
           
         });
@@ -111,19 +111,22 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
         /** 1 to show email publicly or 0 to not */
         "showEmail" : "Integer",
  
-        /** 1 to send email if an authored app is commented on, 0 0therwise */
+        /** 1 to send email if an authored app is commented on 
+	 * (default to 1), 0 0therwise */
         "updateOnAppComment" : "Integer",
 
         /** Frequency to send emails on app comments */
         "updateCommentFrequency" : "Integer", 
 
-        /** 1 to send email if an authored app is liked, 0 0therwise */
+        /** 1 to send email if an authored app is liked
+	 * (default to 1), 0 0therwise */
         "updateOnAppLike" : "Integer",
 
         /** Frequency to send emails on app likes */
         "updateOnAppLikeFrequency" : "Integer", 
 
-        /** 1 to send email if an authored app is downloaded, 0 0therwise */
+        /** 1 to send email if an authored app is downloaded
+	 * (default to 1), 0 0therwise */
         "updateOnAppDownload" : "Integer",
 
         /** Frequency to send emails on app likes */

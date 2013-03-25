@@ -7,6 +7,10 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
+
+/*
+#ignore(com.google.*)
+ */
 qx.Mixin.define("aiagallery.dbif.MComments",
 {
   construct : function()
@@ -205,10 +209,10 @@ qx.Mixin.define("aiagallery.dbif.MComments",
               }
               */
 
-              var msgBody = "Your application " + parentAppData.title + ","
+              var msgBody = "Your app \'" + parentAppData.title + "'\,"
                             + " has a new comment by " 
                             + commentObjData.displayName + "." 
-                            + "\nThe comment is: " + commentObjData.text;
+                            + "<br>The comment is: " + commentObjData.text;
 
               var subject = "You have a new comment "
 			    + "at the MIT App Inventor Gallery";
@@ -220,6 +224,49 @@ qx.Mixin.define("aiagallery.dbif.MComments",
 
 
             }
+          }
+
+          // Make sure if the app is cached that the new comment be 
+          // placed into the comment cache. 
+          switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+          {
+          case "appengine":
+            var memcacheServiceFactory =
+              Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+            var syncCache = memcacheServiceFactory.getMemcacheService();
+            var appComments = this.getComments(appId,
+              [
+                {
+                  type  : "sort",
+                  field : "timestamp",
+                  order : "desc"
+                }
+             ],
+             error);
+
+            // Add the serialized comment we just made
+            // This will not be in the db query results (appComments)
+            // since this is taking place within a transaction
+            appComments.splice(0, 0, commentObjData);
+
+            var serialComments = JSON.stringify(appComments);
+
+            // Expiration date
+            var calendarClass = java.util.Calendar;
+            var date = calendarClass.getInstance();
+            date.add(calendarClass.DATE, 1);
+
+            var expirationClass = com.google.appengine.api.memcache.Expiration;
+            var expirationDate = expirationClass.onDate(date.getTime());
+
+            syncCache.put("retcomments_".concat(appId),
+              serialComments, expirationDate);
+
+            break;
+
+          default:
+            // Not on appengine
+            break;
           }
 
           // Remove the visitor field

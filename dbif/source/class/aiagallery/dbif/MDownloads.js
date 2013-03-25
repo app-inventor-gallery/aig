@@ -68,8 +68,8 @@ qx.Mixin.define("aiagallery.dbif.MDownloads",
               }
               */
 
-              var msgBody = "Congratulations, your  app " 
-                            + appDataObj.title 
+              var msgBody = "Congratulations, your app " 
+                            + "\'" + appDataObj.title + "\'" 
                             + " has been downloaded. You are up to " 
                             + appDataObj.numDownloads 
                             + " downloads. Keep up the good work!"; 

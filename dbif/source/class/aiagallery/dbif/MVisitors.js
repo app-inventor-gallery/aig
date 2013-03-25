@@ -37,6 +37,10 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     this.registerService("aiagallery.features.getVisitorListAndPGroups",
                          this.getVisitorListAndPGroups,
                          [ "bStringize" ]);
+
+    this.registerService("aiagallery.features.managementAllNotifications",
+                         this.managementAllNotifications,
+                         [ "bNotifications" ]);
   },
   
   statics :
@@ -619,6 +623,71 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       
       // We've built the whole list. Return it.
       return map;
+    },
+
+    /**
+     * Special on off management function to take the
+     * value given by the boolean parameter and convert all
+     * user's notification settings to it.
+     * 
+     * @param bNotifications {Boolean}
+     *   The value to convert all users notification settings to
+     * 
+     * @param error {Error}
+     *   The error object
+     */
+    managementAllNotifications : function(bNotifications, error)
+    {
+
+      var      visitorList;
+      var      intValue;
+
+      // The notifications settings use ints (1 for true, 0 for false)
+      // since the db does not support boolean values.
+      // Convert the boolean value we got in the parameter to either a 
+      // 1 or a 0
+      if(bNotifications)
+      {
+        intValue = 1;
+      } 
+      else 
+      {
+        intValue = 0; 
+      }
+
+      // Get every user id in the db
+      visitorList = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors");
+      
+      // Take each visitor, get their db entry and update 
+      // the notification settings
+      visitorList.forEach(
+        function(visitor)
+        {
+          var   dbEntry;
+          var   dbEntryData;
+
+          dbEntry = new aiagallery.dbif.ObjVisitors(visitor.id);
+
+          // Make sure this user exists 
+          if (dbEntry.getBrandNew())
+          {
+            // User does not exist, bad id
+            return;
+          }
+
+          dbEntryData = dbEntry.getData();
+
+          // Notification settings
+          dbEntryData.updateOnAppComment = intValue;
+          dbEntryData.updateOnAppLike = intValue;
+          dbEntryData.updateOnAppDownload = intValue;
+
+          dbEntry.put();
+        }
+      );
+
+
+      return true; 
     },
     
     /**
