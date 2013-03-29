@@ -312,26 +312,20 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Fsm",
           tagName = selectedButton.getLabel();
           console.log(tagName);
           console.log("Now retrieving data from appTagQuery");
-
-          if (tagName != "Apps by this author") {
-            // Issue the remote procedure call to execute the query
-            request =
-              this.callRpc(fsm,
+          request =
+            this.callRpc(fsm,
                          "aiagallery.features",
                          "appTagQuery",
                          [ tagName ]
                          );
+
+          if (tagName != "Apps by this author") {
             // When we get the result, we'll need to know what type of request
             // we made.          
             request.setUserData("requestType", "tagResponse");
 
           } else {
-            request =
-              this.callRpc(fsm,
-                         "aiagallery.features",
-                         "appTagQuery",
-                         [ tagName ]
-                         );
+            console.log("Entered byAuthorResponse");
             // When we get the result, we'll need to know what type of request
             // we made.          
             request.setUserData("requestType", "byAuthorResponse");

@@ -166,6 +166,8 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       innerCanvas 
         = new qx.ui.container.Composite(new qx.ui.layout.VBox(10));
 
+      innerCanvas.setWidth(450);
+
       // Add background
       var homepageBG = new qx.ui.decoration.Background();
       homepageBG.setBackgroundImage("aiagallery/hpbg.png");
@@ -262,7 +264,8 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var vLayout = new qx.ui.layout.VBox();
       vLayout.setSpacing(5);   
       var tagCloudLayout = new qx.ui.container.Composite(vLayout);
-      var tagItemsLayout = new qx.ui.container.Composite(hLayout);
+      tagCloudLayout.setWidth(450);
+      var tagItemsLayout = new qx.ui.container.Composite(new qx.ui.layout.Flow());
 
       var tagCloudLabel = new qx.ui.basic.Label(this.tr("Most popular tags in the gallery"));
       
@@ -275,14 +278,15 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // USF static
       // var tagTexts = ["tag1", "Comics", "Entertainment", "*Featured*", "dave"];
       // MIT static
-      var tagTexts = ["Games", "Education", "Entertainment", "Productivity", "Travel & Local"];
+      var tagTexts = ["Games", "Education", "Entertainment", "Productivity", "Communication",
+                      "Business", "Social", "Transportation", "Lifestyle", "Finance"];
       // An array of tag items
       var tagItems = [];
 
       for (var i = 0; i < tagTexts.length; i++) {
         // Add the tag cloud items to the innerCanvas
         var tagItem = new qx.ui.basic.Label();
-
+	tagItem.setMarginRight(5);
         var tagfont = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         tagfont.setSize(16);
         tagfont.set(

@@ -279,6 +279,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
 
       vbox.add(this.byAuthor, {flex: 1});
+      this.byAuthorModel = {};
 
     },
 
@@ -413,7 +414,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         model = qx.data.marshal.Json.createModel(result.byAuthor);
         console.log("PASSING BYAUTHOR"); console.log(result.byAuthor);
         // Save this as global variable for later
-        // this.byAuthorModel = result.byAuthor;
+        this.byAuthorModel = result.byAuthor;
         // this.byAuthor.setModel(byAuthorModel);
         this.byAuthor.setModel(model);
 
