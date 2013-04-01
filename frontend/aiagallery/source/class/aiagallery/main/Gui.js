@@ -1499,6 +1499,15 @@ qx.Class.define("aiagallery.main.Gui",
       // Is this an app page or find apps search?
       parts = fragment.split("&"); 
 
+      // On firefox the fragment will come in decoded, but on chrome/ie
+      // the fragment will be decoded. If the fragement is not decoded
+      // then parts will not have been split at all. Thus we need to decode it.
+      // We do not decode in all cases in order to allow searches with an &.
+      if (parts.length == 1)
+      {
+        parts = decodeURIComponent(fragment).split("&"); 
+      }
+
       // Ensure parts are properly decoded
       for (i = 0; i < parts.length; i++)
       {
