@@ -161,8 +161,13 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
                 = com.google.appengine.api.memcache.Expiration;  
               var expirationDate = expirationClass.onDate(date.getTime());
 
+              // Update the like value in the cache
               syncCache.put("retlikes_".concat(appId),
                 serialLike, expirationDate);
+
+              // Update the actual app obj in the cache 
+              var serialize = JSON.stringify(appDataObj);
+              syncCache.put("retapp_".concat(appId), serialize, expirationDate); 
 
               break;
 
