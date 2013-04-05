@@ -2486,7 +2486,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             if (owners.length == 0)
             { 
               app["displayName"] = "DELETED";
-            } else {	  
+            } else {      
               app["displayName"] = owners[0].displayName || "<>";
             }
           }
@@ -2548,7 +2548,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             if (owners.length == 0)
             { 
               app["displayName"] = "DELETED";
-            } else {	  
+            } else {      
               app["displayName"] = owners[0].displayName || "<>";
             }
           }
@@ -2660,7 +2660,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           if (owners.length == 0)
           { 
             app.displayName = "DELETED";
-          } else {	  
+          } else {        
             app.displayName = owners[0].displayName || "<>";
           }
           
@@ -2768,7 +2768,27 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                          "It may have been removed recently.");
         return error;
       }
-  
+
+      // Get the data object for this app
+      ret.app = appObj.getData(); 
+
+      // If the application status is not Active, only the owner can view it.
+      if (ret.app.status != aiagallery.dbif.Constants.Status.Active &&
+          (! whoami || ret.app.owner != whoami.id))
+      {
+        // It doesn't. Let 'em know that the application has just been removed
+        // (or there's a programmer error)
+        error.setCode(2);
+        error.setMessage("Application is not available. " +
+                         "It may have been removed recently.");
+        return error;
+      }
+
+      //Increment the number of views by 1. 
+      ret.app.numViewed++; 
+
+      //Set the "lastViewedDate" to the time this function was called
+      ret.app.lastViewedTime = aiagallery.dbif.MDbifCommon.currentTimestamp(); 
 
       // Initializing variables for app engine's Memcache.
       var memcacheServiceFactory;
@@ -2833,50 +2853,36 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         // For now we just mark the flag as true
         if (value == null) {
           bCache = true; // true: we need to cache this search
+
+          // Save the app modifications
+          appObj.put();
+
+          var serialize = JSON.stringify(ret.app);
+          syncCache.put(key_app, serialize, expirationDate); 
         } else {
-          // If so, grab the app object and parse it to retrieve ret.app
+          // The app we are looking for is in the cache
+          // save the access details to the db object 
+          // and pull the object out the cache
+          appObj.put();
+
+          // Parse it to retrieve ret.app
           ret.app = JSON.parse(value);
+
+          // Since this app was just pulled from the cache it would not
+          // have the last view +1 that was done earlier, so do it here. 
+          ret.app.numViewed++; 
         }
 
-      } else { // Call getData() normally if we are not running on app engine
-        ret.app = appObj.getData();
+      } 
+      else
+      {
+        // Not running on appengine save the app normally
+        appObj.put();
+          
       }
-
-      // Memcache the ret.app object here
-      if (bCache) {
-        ret.app = appObj.getData();
-        var serialize = JSON.stringify(ret.app);
-
-        syncCache.put(key_app, serialize, expirationDate); 
-      }
-
-
-      //Increment the number of views by 1. 
-      ret.app.numViewed++; 
-
-      //Set the "lastViewedDate" to the time this function was called
-      ret.app.lastViewedTime = aiagallery.dbif.MDbifCommon.currentTimestamp(); 
 
       //Store the tags' list into a separate variable for sidebar
       ret.appTags = ret.app.tags;
-
-      //Put back on the database
-      appObj.put();
- 
-      // If the application status is not Active, only the owner can view it.
-      if (ret.app.status != aiagallery.dbif.Constants.Status.Active &&
-          (! whoami || ret.app.owner != whoami.id))
-      {
-        // It doesn't. Let 'em know that the application has just been removed
-        // (or there's a programmer error)
-        error.setCode(2);
-        error.setMessage("Application is not available. " +
-                         "It may have been removed recently.");
-        return error;
-      }
-
-
-
 
       // Issue a query for this visitor
       owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
@@ -2982,12 +2988,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         // Only use memcache if we are on Google App Engine.
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
-	      value = syncCache.get(key_flag);
-	      if (value == null) {
-	        flagCache = true; // true: we need to cache this search
-	      } else {
-		flagList = JSON.parse(value);
-	      }
+              value = syncCache.get(key_flag);
+              if (value == null) {
+                flagCache = true; // true: we need to cache this search
+              } else {
+                flagList = JSON.parse(value);
+              }
 
         } else { // make the database call normally if we are not running on app engine
           
@@ -3037,12 +3043,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         // Only use memcache if we are on Google App Engine.
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
-	      value = syncCache.get(key_byauthor);
-	      if (value == null) {
-	        byAuthorCache = true; // true: we need to cache this search
-	      } else {
-		ret.byAuthor = JSON.parse(value);
-	      }
+              value = syncCache.get(key_byauthor);
+              if (value == null) {
+                byAuthorCache = true; // true: we need to cache this search
+              } else {
+                ret.byAuthor = JSON.parse(value);
+              }
 
         } else { // make the database call normally if we are not running on app engine
           // Query for those apps          
@@ -3103,12 +3109,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         // Only use memcache if we are on Google App Engine.
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
-	      value = syncCache.get(key_comments);
-	      if (value == null) {
-	        commentsCache = true; // true: we need to cache this search
-	      } else {
-		ret.comments = JSON.parse(value);
-	      }
+              value = syncCache.get(key_comments);
+              if (value == null) {
+                commentsCache = true; // true: we need to cache this search
+              } else {
+                ret.comments = JSON.parse(value);
+              }
 
         } else { // make the database call normally if we are not running on app engine
           
@@ -3168,12 +3174,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         // Only use memcache if we are on Google App Engine.
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
-	      value = syncCache.get(key_commentsflag);
-	      if (value == null) {
-	        commentsFlagCache = true; // true: we need to cache this search
-	      } else {
-		commentFlagList = JSON.parse(value);
-	      }
+              value = syncCache.get(key_commentsflag);
+              if (value == null) {
+                commentsFlagCache = true; // true: we need to cache this search
+              } else {
+                commentFlagList = JSON.parse(value);
+              }
 
         } else { // make the database call normally if we are not running on app engine
           // Query for those comments          
