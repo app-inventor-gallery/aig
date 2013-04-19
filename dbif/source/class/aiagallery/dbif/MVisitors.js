@@ -641,6 +641,7 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
 
       var      visitorList;
       var      intValue;
+      var      criteria;
 
       // The notifications settings use ints (1 for true, 0 for false)
       // since the db does not support boolean values.
@@ -655,8 +656,33 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
         intValue = 0; 
       }
 
-      // Get every user id in the db
-      visitorList = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors");
+      criteria = 
+      {
+         type : "op",
+          method : "and",
+          children : 
+          [
+            {
+              type: "element",
+              field: "updateOnAppComment",
+              value: 0
+            },
+            {
+              type: "element",
+              field: "updateOnAppLike",
+              value: 0
+            },
+            {
+              type: "element",
+              field: "updateOnAppDownload",
+              value: 0
+            }
+          ]
+      };
+
+      // Get every user who does not have the notifications turned on
+      visitorList = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
+                                                criteria);
       
       // Take each visitor, get their db entry and update 
       // the notification settings
