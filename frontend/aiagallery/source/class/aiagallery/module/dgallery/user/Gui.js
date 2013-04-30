@@ -756,6 +756,15 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       //vBoxOptionDownload.add(this.downloadAppUpdateFrequency);
       vBoxOptions.add(vBoxOptionDownload); 
 
+      var o = new aiagallery.widget.mystuff.FormImage("Select your profile image", "image1");
+      o.set(
+      {
+        tabIndex : 10,
+        focusable : false,
+        required : true
+      });
+      vBoxOptions.add(o); 
+
       // Overall layout
       layout = new qx.ui.layout.HBox();
       layout.setSpacing(10);      
