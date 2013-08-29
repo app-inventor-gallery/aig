@@ -1037,29 +1037,44 @@ qx.Mixin.define("aiagallery.dbif.MApps",
 	          var memcacheServiceFactory = 
 	            Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
 	          var memcache = memcacheServiceFactory.getMemcacheService();	
+			  
+			  // Forging the keystring for retrieving this app
 			  //console.log(syncCache);	
 			  // console.log("Getting app from cache below!");
               var retapp = "retapp_";
               var key_app = retapp.concat(appData.uid);	
-			  // console.log(key_app);
 			  
 			  // Try to retrieve values from memcache, and delete if exists
 			  var cacheChecker;
 			  cacheChecker = memcache.get(key_app); 
 		      if (cacheChecker == null) {
 				// console.log("This app is not cached yet. Skip cache updating.");
+				// Do nothing if it's not in cache
 		      } else {
 				// console.log("This app is cached. Printing cache value below:");
-				// console.log(cacheChecker);
 				// console.log("Now we update the cache by deleting it. Printing:");
 				cacheChecker = memcache.delete(key_app);
-				// console.log(cacheChecker);
-		            	
+				// console.log(cacheChecker);		            	
 		      }
-  
+       
+	   	   	  // If this app is memcached, is it on homepage?
+			  // If it is on homepage we need to update cache for that
 			  
+	          // read from cache, -1 is magic number to get homeRibbonData,
+	          // the featured app list is stored here
+	          var value = memcache.get(-1); 
+
+	          if (value == null) {
+	            break;
+  	            // If nothing is in the cache, do nothing 
+	          } else {
+				// If homepage is cached let's delete that to force update regardless what we are editing (temporary solution)
+				// Optimal solution: only delete homepage cache after checking and confirming the app being edited is a part of homepage cache (featured, most liked, newest)
+				cacheChecker = memcache.delete(-1);
+				// console.log(cacheChecker);
+	          }
 			  
-			  
+			  // End of App Engine processing			  
               break;
               
             default:
@@ -2382,9 +2397,11 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       case "appengine":
           MemcacheServiceFactory = Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
           syncCache = MemcacheServiceFactory.getMemcacheService();
-          //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
-          value = syncCache.get(-1); // read from cache, -1 is magic number to get homeRibbonData
-          if (value == null) {
+         
+		  // read from cache, -1 is magic number to get homeRibbonData
+          value = syncCache.get(-1); 
+		  
+		  if (value == null) {
             bCache = true;
           } else {
             // This is the map containing the home ribbon data
@@ -3506,8 +3523,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         var  MemcacheServiceFactory =
           Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
         var syncCache = MemcacheServiceFactory.getMemcacheService();
-        //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
-
+       
         // read from cache, -1 is magic number to get homeRibbonData,
         // the featured app list is stored here
         var value = syncCache.get(-1); 
