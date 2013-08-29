@@ -167,7 +167,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
           var             model = data.model;
           var             request;
 
-          // Issue the remote procedure call to execute the query
+          // Issue the remote procedure caxll to execute the query
           request =
             this.callRpc(fsm,
                          "aiagallery.features",
@@ -183,54 +183,6 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
           
           // Save the App object to which this request applies
           request.setUserData("App", data.app);
-
-          // Only use memcache if we are on Google App Engine.
-          if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
-          {
-              // Prepare variables for memcache, just like in getAppInfo()
-              var uid = model.uid;
-	      var memcacheServiceFactory;
-	      var syncCache;
-
-              // Concat a bunch of strings with UID as keys in memcache
-              var retapp = "retapp_";
-              var retflag = "retflag_";
-              var retlikes = "retlikes_";
-              var retbyauthor = "retbyauthor_";
-              var retcomments = "retcomments_";
-              var retcommentsflag = "retcommentsflag_";
-
-              var key_app = retapp.concat(uid);
-              var key_flag = retflag.concat(uid);
-              var key_likes = retlikes.concat(uid);
-              var key_byauthor = retbyauthor.concat(uid);
-              var key_comments = retcomments.concat(uid);
-              var key_commentsflag = retcommentsflag.concat(uid);
-
-	      // Setting up memcache references
-	      memcacheServiceFactory = 
-                Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
-	      syncCache = memcacheServiceFactory.getMemcacheService();	
-
-              // Make sure to clear memcache for this app's data of all sorts
-/**              var testvar = false;
-              testvar = syncCache.delete(key_app);
-              if (testvar) {
-                alert(key_app);
-              } else {
-                alert("Oops");
-                alert(key_app);
-              }
-**/
-              alert(syncCache.get(key_app));
-              syncCache.delete(key_app);
-              syncCache.delete(key_flag);
-              syncCache.delete(key_likes);
-              syncCache.delete(key_byauthor);
-              syncCache.delete(key_comments);
-              syncCache.delete(key_commentsflag);
-          }
-
         }
       });
 
