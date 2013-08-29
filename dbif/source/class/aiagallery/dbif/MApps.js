@@ -1013,6 +1013,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                 type : "postAppUpload",
                 uid  : appData.uid
               };
+			  
 
             // If we're on App Engine...
             switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
@@ -1029,6 +1030,36 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               options = TaskOptions.Builder.withUrl("/task");
               options.payload(jsonRequest);
               hTask = queue.add(options);
+			  
+			  // While we are at it, also clean the memcache for this app
+			  
+	          // Setting up memcache references
+	          var memcacheServiceFactory = 
+	            Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+	          var memcache = memcacheServiceFactory.getMemcacheService();	
+			  //console.log(syncCache);	
+			  // console.log("Getting app from cache below!");
+              var retapp = "retapp_";
+              var key_app = retapp.concat(appData.uid);	
+			  // console.log(key_app);
+			  
+			  // Try to retrieve values from memcache, and delete if exists
+			  var cacheChecker;
+			  cacheChecker = memcache.get(key_app); 
+		      if (cacheChecker == null) {
+				// console.log("This app is not cached yet. Skip cache updating.");
+		      } else {
+				// console.log("This app is cached. Printing cache value below:");
+				// console.log(cacheChecker);
+				// console.log("Now we update the cache by deleting it. Printing:");
+				cacheChecker = memcache.delete(key_app);
+				// console.log(cacheChecker);
+		            	
+		      }
+  
+			  
+			  
+			  
               break;
               
             default:
