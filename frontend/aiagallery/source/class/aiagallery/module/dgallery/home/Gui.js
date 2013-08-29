@@ -347,30 +347,6 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // Add search layout to inner canvas
       innerCanvas.add(tagCloudLayout);
 
-
-      // News like text 
-      text = 
-        [
-          "<div style='padding:0 30px 0 0;'>",
-          "<div style='padding:12px 10px; background:rgba(255,255,255,0.5);'>",
-          "<br><b> New! Check out the winners of the ",
-	  "<a href='#page%3DContest' >2012 MIT App Inventor App Contest </a> -- you can download the source code for all apps! Congratulations to all the winners and noted apps!", 
-          "</div><br/>",
-          "</div>",
-          "</div>"
-        ].join(""); 
-
-      newsLabel = new qx.ui.basic.Label();
-      newsLabel.set(
-        {
-          font         : font, 
-          value        : text,
-          rich         : true,
-          width        : 434,
-          height       : 150
-        });
-      innerCanvas.add(newsLabel);
-
       // Inner canvas contains intro text and search box
       vbox.add(innerCanvas); 
 /*

@@ -167,7 +167,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
           var             model = data.model;
           var             request;
 
-          // Issue the remote procedure caxll to execute the query
+          // Issue the remote procedure call to execute the query
           request =
             this.callRpc(fsm,
                          "aiagallery.features",
