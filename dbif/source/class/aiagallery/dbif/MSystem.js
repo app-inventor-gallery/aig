@@ -164,7 +164,7 @@ qx.Mixin.define("aiagallery.dbif.MSystem",
            // The sender email must be either the logged in user or 
            // an administrator of the project. 
            msgFinal.setFrom(new javax.mail.internet.InternetAddress(
-                       "cpuwhiz11@gmail.com",
+                       "vincentaths@gmail.com",
                        "App Inventor Gallery Admin"));
 
            // Revipient is the owner of the app being liked 
