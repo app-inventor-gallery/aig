@@ -132,7 +132,8 @@ qx.Class.define("aiagallery.main.Gui",
         // Add another label to header for release note + forum helper text
         o = new qx.ui.basic.Label(
           "<div><br/>" +
-          "Welcome to the gallery! See <a href=\"https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit\" target=\"_blank\" >Release Notes</a><br/>" +
+          "Welcome to the <a href=\"gallery.html\" target=\"_blank\" >gallery!</a>" +
+		  " See <a href=\"https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit\" target=\"_blank\" >Release Notes</a><br/>" +
           "and post feedback / bug reports to the " +
           "<a href=\"http://groups.google.com/group/app-inventor-gallery/topics\" target=\"_blank\" >Forum</a>." + 
           "</div>");
@@ -700,6 +701,26 @@ qx.Class.define("aiagallery.main.Gui",
 
         // Spacer
         hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 2 });
+
+        // Add a link to the about us page
+        o = new qx.ui.basic.Label("About the gallery");
+        o.set(
+          {
+            font   : font,
+            height : 20,
+            cursor : "pointer"
+          });
+        o.addListener(
+          "click",
+          function(e)
+          {
+            window.open("gallery.html",
+                        "App Inventor Gallery About Us");
+          });
+        hbox.add(o);
+
+        // Spacer
+        hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
 
         // Add a link to the terms of service
         o = new qx.ui.basic.Label("Terms of Use");
