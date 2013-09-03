@@ -189,7 +189,7 @@ msgstr "这条留言已被检举为不合适内容。"
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:32
 msgid "Search in: "
-msgstr "在此范围内搜索："
+msgstr "选择您的搜索类型："
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:45
 msgid "All text fields"
@@ -248,113 +248,113 @@ msgstr "作者名字："
 
 #: aiagallery/module/dgallery/findapps/Gui.js:112
 msgid "No results found"
-msgstr ""
+msgstr "很抱歉，没有符合您条件的结果。"
 
 #: aiagallery/module/dgallery/home/Gui.js:206
 msgid "Search for an App"
-msgstr ""
+msgstr "在此搜索应用："
 
 #: aiagallery/module/dgallery/home/Gui.js:223
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:135
 msgid "Search"
-msgstr ""
+msgstr "快速搜索"
 
 #: aiagallery/module/dgallery/home/Gui.js:270
 msgid "Most popular tags in the gallery"
-msgstr ""
+msgstr "站内最受用户欢迎的标签："
 
 #: aiagallery/module/dgallery/user/Gui.js:95
 msgid "Username:"
-msgstr ""
+msgstr "您的用户名："
 
 #: aiagallery/module/dgallery/user/Gui.js:119
 msgid "Valid usernames must be between 2 and 30 characters. It must not be admin, administrator, guest, superuser, or root."
-msgstr ""
+msgstr "用户名长度应介于 2 与 30 字之间，不能包含 admin、administrator、guest、superuser、root 等敏感字节。"
 
 #: aiagallery/module/dgallery/user/Gui.js:156
 msgid "Date of Birth (Not Displayed):"
-msgstr ""
+msgstr "您的生日（此信息不公开给其他用户）："
 
 #: aiagallery/module/dgallery/user/Gui.js:179
 msgid "The date of birth info is for site statistics only. It is not displayed."
-msgstr ""
+msgstr "用户的生日信息仅作后台统计之后，并不会公开显示给其他用户。"
 
 #: aiagallery/module/dgallery/user/Gui.js:205
 msgid "Month"
-msgstr ""
+msgstr "月份"
 
 #: aiagallery/module/dgallery/user/Gui.js:231
 msgid "Year"
-msgstr ""
+msgstr "年份"
 
 #: aiagallery/module/dgallery/user/Gui.js:252
 #: aiagallery/module/dgallery/userinfo/Gui.js:98
 msgid "Email:"
-msgstr ""
+msgstr "您的电邮地址："
 
 #: aiagallery/module/dgallery/user/Gui.js:275
 msgid "Check this box to show your email on your public profile."
-msgstr ""
+msgstr "如果您想将自己的电邮公开显示，请勾选下面的选项。"
 
 #: aiagallery/module/dgallery/user/Gui.js:315
 msgid "Display Email on Public Profile"
-msgstr ""
+msgstr "在公开的个人档案中显示您的电邮。"
 
 #: aiagallery/module/dgallery/user/Gui.js:330
 #: aiagallery/module/dgallery/userinfo/Gui.js:118
 msgid "Location:"
-msgstr ""
+msgstr "您的所在地："
 
 #: aiagallery/module/dgallery/user/Gui.js:353
 msgid "Enter where you are. It could be a state, a country, or somewhere else."
-msgstr ""
+msgstr "请在此输入您的所在地。这可以是城市、州省、国家或其他具体的地址。"
 
 #: aiagallery/module/dgallery/user/Gui.js:388
 #: aiagallery/module/dgallery/userinfo/Gui.js:133
 msgid "Organization:"
-msgstr ""
+msgstr "您的所属组织："
 
 #: aiagallery/module/dgallery/user/Gui.js:412
 msgid "Enter the organization you are affiliated with if you have one. It could be a school, or a company, or something else."
-msgstr ""
+msgstr "请在此输入您所属的组织——如果您愿意的话。这可以是学校、公司企业或其他组织名称。"
 
 #: aiagallery/module/dgallery/user/Gui.js:446
 #: aiagallery/module/dgallery/userinfo/Gui.js:148
 msgid "URL:"
-msgstr ""
+msgstr "您的网址："
 
 #: aiagallery/module/dgallery/user/Gui.js:469
 msgid "Enter your site url if you have one."
-msgstr ""
+msgstr "请在此输入您的网站地址，如果您有的话。"
 
 #: aiagallery/module/dgallery/user/Gui.js:508
 msgid "Describe Yourself:"
-msgstr ""
+msgstr "自我介绍几句吧："
 
 #: aiagallery/module/dgallery/user/Gui.js:532
 msgid "Tell us about yourself, the kind of apps you make, why you make apps, and anything else that floats your fancy."
-msgstr ""
+msgstr "请简单介绍一下您自己，比如您开发什么应用，为何开发应用，或是其他的个人兴趣爱好等信息。"
 
 #: aiagallery/module/dgallery/user/Gui.js:556
 msgid "Tell people about yourself"
-msgstr ""
+msgstr "向大伙儿介绍介绍自己吧！"
 
 #: aiagallery/module/dgallery/user/Gui.js:566
 #: aiagallery/module/dgallery/user/Gui.js:883
 msgid " Characters left"
-msgstr ""
+msgstr " 字剩余"
 
 #: aiagallery/module/dgallery/user/Gui.js:578
 msgid "500 Character Limit"
-msgstr ""
+msgstr "字数上限为 500 字。"
 
 #: aiagallery/module/dgallery/user/Gui.js:588
 msgid "Save Changes"
-msgstr ""
+msgstr "保存您的更改"
 
 #: aiagallery/module/dgallery/user/Gui.js:616
 msgid "User Options:"
-msgstr ""
+msgstr "您的个人选项："
 
 #: aiagallery/module/dgallery/user/Gui.js:639
 msgid "Options for sending emails to the email address you logged in with."
