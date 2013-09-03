@@ -26,7 +26,21 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
           "status"         : aiagallery.dbif.Constants.Status.Active,
           "channels"       : [],
           "recentSearches" : [],
-          "recentViews"    : []
+          "recentViews"    : [],
+          "location"       : "",
+          "bio"            : "",
+          "url"            : "",
+          "organization"   : "",
+          "showEmail"      : 0,
+          "birthYear"      : 0,
+          "birthMonth"     : "",
+          "updateOnAppComment"           : 1,
+          "updateCommentFrequency"       : 0,
+          "updateOnAppLike"              : 1,
+          "updateOnAppLikeFrequency"     : 0,
+          "updateOnAppDownload"          : 1, 
+          "updateOnAppDownloadFrequency" : 0
+          
         });
     }
 
@@ -74,7 +88,50 @@ qx.Class.define("aiagallery.dbif.ObjVisitors",
         "recentViews" : "KeyArray",
         
         /** Timestamp of last connection */
-        "connectionTimestamp" : "Date"
+        "connectionTimestamp" : "Date",
+
+        /** Short user made biography */
+        "bio" : "String",
+
+        /** User's Location */
+        "location" : "String",
+
+        /** User's birth year */
+        "birthYear" : "Integer",
+
+        /** User's birth month */
+        "birthMonth" : "String",
+
+        /** Organization user is associated with */
+        "organization" : "String",
+
+        /** User's own website */
+        "url" : "String", 
+
+        /** 1 to show email publicly or 0 to not */
+        "showEmail" : "Integer",
+ 
+        /** 1 to send email if an authored app is commented on 
+	 * (default to 1), 0 0therwise */
+        "updateOnAppComment" : "Integer",
+
+        /** Frequency to send emails on app comments */
+        "updateCommentFrequency" : "Integer", 
+
+        /** 1 to send email if an authored app is liked
+	 * (default to 1), 0 0therwise */
+        "updateOnAppLike" : "Integer",
+
+        /** Frequency to send emails on app likes */
+        "updateOnAppLikeFrequency" : "Integer", 
+
+        /** 1 to send email if an authored app is downloaded
+	 * (default to 1), 0 0therwise */
+        "updateOnAppDownload" : "Integer",
+
+        /** Frequency to send emails on app likes */
+        "updateOnAppDownloadFrequency" : "Integer"
+
       };
       
     var canonicalize = 

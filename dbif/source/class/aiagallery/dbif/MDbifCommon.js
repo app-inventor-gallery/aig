@@ -44,8 +44,9 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
         {
           // ... then log who's trying to do what. First, is someone logged in?
-          if (aiagallery.dbif.MDbifCommon.__whoami)
+          if (aiagallery.dbif.MDbifCommon.__whoami && !aiagallery.dbif.MDbifCommon.__whoami.isAnonymous)
           {
+            java.lang.System.out.println("Got name");
             // Yup. Retrieve our visitor object
             me = new aiagallery.dbif.ObjVisitors(
               aiagallery.dbif.MDbifCommon.__whoami.id);
@@ -205,35 +206,44 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
       var             mePermissionGroups;
       var             bAnonymous;
 
-      // Have we yet initialized the user object?
-      if (aiagallery.dbif.MDbifCommon.__whoami &&
-          ! aiagallery.dbif.MDbifCommon.__initialized)
-      {
-        // Nope. Retrieve our visitor object
-        me = new aiagallery.dbif.ObjVisitors(
-          aiagallery.dbif.MDbifCommon.__whoami.id);
+      // Is this an anon user
+      // Anonymous users have automatic access to certain functionality
+      if (aiagallery.dbif.MDbifCommon.__whoami === null || aiagallery.dbif.MDbifCommon.__whoami.isAnonymous){
+        bAnonymous = true;
 
-        // Is it brand new, or does not contain a display name yet?
-        meData = me.getData();
-        if (me.getBrandNew() || meData.displayName === null)
-        {
-          // True. Save it.
-          if (! meData.displayName)
-          {
-            meData.displayName =
-              aiagallery.dbif.MDbifCommon.__whoami.displayName;
-          }
-        }
-
-        // Update the time of their last connection
-        meData.connectionTimestamp = 
-          aiagallery.dbif.MDbifCommon.currentTimestamp();
-        
-        // Write changed data
-        me.put();
-
-        // We're now initialized
+        // Possible here during startup
         aiagallery.dbif.MDbifCommon.__initialized = true;
+      } else {
+        // Have we yet initialized the user object?
+        if (aiagallery.dbif.MDbifCommon.__whoami &&
+            ! aiagallery.dbif.MDbifCommon.__initialized)
+        {
+          // Nope. Retrieve our visitor object
+          me = new aiagallery.dbif.ObjVisitors(
+            aiagallery.dbif.MDbifCommon.__whoami.id);
+
+          // Is it brand new, or does not contain a display name yet?
+          meData = me.getData();
+          if (me.getBrandNew() || meData.displayName === null)
+          {
+            // True. Save it.
+            if (! meData.displayName)
+            {
+              meData.displayName =
+                aiagallery.dbif.MDbifCommon.__whoami.displayName;
+            }
+          }
+
+          // Update the time of their last connection
+          meData.connectionTimestamp = 
+            aiagallery.dbif.MDbifCommon.currentTimestamp();
+        
+          // Write changed data
+          me.put();
+
+          // We're now initialized
+          aiagallery.dbif.MDbifCommon.__initialized = true;
+        }
       }
 
       // Split the fully-qualified method name into its constituent parts
@@ -261,44 +271,18 @@ qx.Mixin.define("aiagallery.dbif.MDbifCommon",
         // ... they implicitly have access.
         return true;
       }
-
+   
       // Do per-method authorization.
-
-      // Are they logged in, or anonymous?
-// TEMPORARY:
-if (false)
-{
-      // Anonymous users have automatic access to certain functionality
-      bAnonymous = (aiagallery.dbif.MDbifCommon.__whoami === null);
-}
-else
-{
-  // Temporarily disallow anonymous access. Only whitelisted users have access.
-  bAnonymous = aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
-}
       switch(methodName)
       {
-// TEMPORARY: whitelist nearly every RPC...
-      case "getAppList" :
-      case "getHomeRibbonData" :
-      case "appQuery" :
-      case "intersectKeywordAndQuery" :
-      case "getAppListByList" :
-      case "getAppInfo" :
-      case "getComments" :
-      case "keywordSearch" :
-      case "getCategoryTags" :
-        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
-// ...TEMPORARY
-
       //
       // MApps
       //
       case "getAppList":
-        return ! bAnonymous;    // Access is allowed if they're logged in
-
       case "addOrEditApp":
       case "deleteApp":
+        return ! bAnonymous;    // Access is allowed if they're logged in
+
       case "mgmtDeleteApp":
       case "getAppListAll":
       case "mgmtEditApp":
@@ -306,31 +290,36 @@ else
       case "setFeaturedApps":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
-/* TEMPORARY... (see above)
       case "appQuery":
       case "intersectKeywordAndQuery":
       case "getAppInfo":
       case "getAppListByList":
       case "getHomeRibbonData":
+      case "getCategoryTags" :
+      case "appTagQuery": 
           return true;            // Anonymous access
-*/
 
       //
       // MComments
       //
       case "addComment":
+        return ! bAnonymous; // Allowed if logged in 
+
       case "deleteComment":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
-/* TEMPORARY... (see above)
       case "getComments":
         return true;            // Anonymous access
-*/
+
 
       //
       // MFlags
       //
       case "flagIt":
+      case "clearAppFlags":
+      case "clearProfileFlags":
+      case "clearProfileFlagsWithId":
+      case "getFlags": 
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       //
@@ -351,33 +340,34 @@ else
       case "addOrEditVisitor":
       case "whitelistVisitors":
       case "deleteVisitor":
+      case "getVisitorListAndPGroups":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       case "editProfile":
-        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+        return ! bAnonymous; // Allowed if logged in 
 
-      case "getVisitorListAndPGroups":
+      case "managementAllNotifications":
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
 
       //
       // MWhoAmI
       //
       case "whoAmI":
+      case "getPublicUserProfile":
         return true;            // Anonymous access
 
       //
       // MSearch
       //
-/* TEMPORARY (see above)...
       case "keywordSearch":
         return true;          // Anonymous access
-*/
+
 
       //
       // MLiking
       //
       case "likesPlusOne":
-        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+        return ! bAnonymous; // Allowed if logged in 
 
       //
       // MDbMgmt
@@ -398,19 +388,32 @@ else
       // MChannel
       //
       case "getChannelToken" :
-        return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+        return ! bAnonymous; // Allowed if logged in 
 
       //
       // MSystem
       //
+
+      // This doesn't really take effect at present, because getMotd() is
+      // called directly from gethomePageRibbons() which is separately
+      // whitelisted.
       case "getMotd" :
-        // This doesn't really take effect at present, because getMotd() is
-        // called directly from gethomePageRibbons() which is separately
-        // whitelisted.
+      // ALways true because a user may be not logged in and be 
+      // technically sending the mail
+      case "sendEmail" :
         return true;
 
       case "setMotd" :
         return aiagallery.dbif.MDbifCommon._deepPermissionCheck(methodName);
+
+      //
+      // MWhoAmI
+      //
+      case "getUserProfile":
+        return ! bAnonymous; // Allowed if logged in 
+
+      case "getPublicUserProfile":
+        return true; 
 
       default:
         // Do not allow access to unrecognized method names
@@ -418,7 +421,6 @@ else
       }
 
     },
-
 
     _deepPermissionCheck : function(methodName)
     {

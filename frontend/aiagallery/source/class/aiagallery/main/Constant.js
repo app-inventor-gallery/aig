@@ -16,7 +16,9 @@ qx.Class.define("aiagallery.main.Constant",
     SERVICES_URL : "/rpc",
     
     // Maximum upload file sizes
-    MAX_IMAGE_FILE_SIZE  : (1 * 1024 * 1024),
+    // After testing we find out appengine only allow about 350kb upload,
+    // therefore the multiplier is modified from 1024 to keep it constant.
+    MAX_IMAGE_FILE_SIZE  : (1 * 350 * 1024),
     MAX_SOURCE_FILE_SIZE : (8 * 1024 * 1024),
     MAX_APK_FILE_SIZE    : (16 * 1024 * 1024),
     
@@ -37,7 +39,10 @@ qx.Class.define("aiagallery.main.Constant",
         MyApps     : "MyApps",
         Testing    : "Testing",
         Management : "Management",
-        AppInfo    : "App"
+        AppInfo    : "App",
+        User       : "Profile",
+        PublicUser : "PublicUser",
+        Contest    : "Contest"
       }
   }
 });

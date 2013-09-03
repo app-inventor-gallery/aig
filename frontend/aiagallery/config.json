@@ -80,7 +80,7 @@
     "API_EXCLUDE"  : ["qx.test.*", "${APPLICATION}.theme.*", "${APPLICATION}.test.*", "${APPLICATION}.simulation.*"],
     "LOCALES"      : [ "en" ],
     "CACHE"        : "${TMPDIR}/qx${QOOXDOO_VERSION}/cache",
-    "OPTIMIZE"     : [ ],
+   // "OPTIMIZE"     : [ ],
     "ROOT"         : "."
   },
 
@@ -171,6 +171,7 @@
           "rm -rf ../../war/resource",
           "rm -rf ../../war/script",
           "cp ./source/favicon.ico ./build/",
+	  "cp ./source/gallery.html ./build/",
           "cp ./source/TOU.html ./build/",
           "cp ./source/privacy.html ./build/",
           "cp ./source/browsers.html ./build/",

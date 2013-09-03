@@ -5,6 +5,9 @@
  *   LGPL: http://www.gnu.org/licenses/lgpl.html 
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
+/*
+#ignore(goog.appengine*)
+ */
 
 qx.Class.define("aiagallery.widget.mystuff.Detail",
 {
@@ -73,10 +76,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         tabIndex    : 1,
         maxLength   : aiagallery.dbif.Constants.FieldLength.Title,
-        width       : 200,
-        maxWidth    : 200,
+        width       : 270,
+        maxWidth    : 270,
         required    : true,
-        placeholder : "Enter the application title"
+        placeholder : this.tr("Enter the application title (30 character limit)")
       });
     o.addListener(
       "input",
@@ -98,7 +101,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         maxLength   : aiagallery.dbif.Constants.FieldLength.Description,
         height      : 60,
         required    : true,
-        placeholder : "Enter a brief description"
+        placeholder : this.tr("Enter a brief description (480 Character Limit)")
       });
     o.addListener(
       "input",
@@ -107,7 +110,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         // Save the new description
         this.setDescription(e.getData());
       },
-      this);
+      this); 
+
     form.add(o, "Description", null, "description", null,
              { row : 1, column : 0, colSpan : 6, rowSpan : 2 });
     this.txtDescription = o;
@@ -150,7 +154,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         tabIndex    : 5,
         width       : 150,
-        placeholder : "Enter a new tag"
+        placeholder : this.tr("Enter a new tag")
       });
     form.getValidationManager().add(
       o,
@@ -231,7 +235,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     this.lstTags = o;
     
     // Button to delete selected tag(s)
-    o = new qx.ui.form.Button("Delete Tag");
+    o = new qx.ui.form.Button(this.tr("Delete Tag"));
     o.set(
       {
         tabIndex  : 8,
@@ -273,7 +277,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     this.butDeleteTag = o;
 
     // Source file name
-    o = new aiagallery.widget.mystuff.FormFile("Select source file", "source");
+    o = new aiagallery.widget.mystuff.FormFile(this.tr("Select source file", "source"));
     o.set(
       {
         tabIndex  : 9,
@@ -302,6 +306,67 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     this.ffSource = o;
 
 
+    // ********* beta002 start *********
+    // Objective: add app upload instructions.
+
+//    form.add(o, "This is a reminder about file upload", null, "sourceprompt", null,
+//             { row : 1, column : 6, rowSpan : 1 });
+//    o = new qx.ui.basic.Label("This is a reminder about file upload");
+//    form.add(o, "This is a reminder about file upload", null, "sourceprompt", null,
+//             { row : 0, column : 6, rowSpan : 1 });
+
+    // Create a temporary container for a spacer, a label, and a spacer
+    tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+
+    // Add the left spacer
+    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+
+    // Add imagebutton
+    o = new qx.ui.basic.Image("aiagallery/question_blue.png");
+    tempContainer.add(o);
+    o.set(
+      {
+	focusable : true
+      });
+    this.sourceFilePrompt = o;
+
+    // Add the right spacer
+    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+    form.addButton(tempContainer, { row : 0, column : 7, rowSpan : 1 });
+
+    // bind onClick event for the popup
+//    sourceFileMessage = "Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose "Other Actions" and select "Download Source". Do not open the downloaded zip file but upload it here directly.";
+//    this.sourceFilePrompt.addListener("click", function(e){ alert(sourceFileMessage); }, this);
+
+    // define the popup we need
+    var sourceFilePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
+        backgroundColor: "#FFFAD3",
+        padding: [2, 4],
+        offset : 3,
+        offsetBottom : 20
+    });
+
+    // add a label widget to the popup
+    sourceFilePopup.add(new qx.ui.basic.Label().set({ 
+	value: "Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose 'Other Actions' and select 'Download Source'. Do not open the downloaded zip file but upload it here directly.",
+        rich : true,
+	width: 300 
+    }));
+
+    // bind onClick event for the popup
+    this.sourceFilePrompt.addListener("click", function(e)
+    {
+        sourceFilePopup.placeToMouse(e);
+        sourceFilePopup.show();
+    }, this);
+        
+    // ********* beta002 end *********
+
+        
+
+    // ********* beta002 end *********
+
+
     
     // Image1
     o = new aiagallery.widget.mystuff.FormImage("Select Image", "image1");
@@ -324,6 +389,60 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       },
       this);
     this.fiImage1 = o;
+
+
+
+    // ********* beta002 start *********
+    // Objective: add app upload instructions.
+
+    // Create a temporary container for a spacer, a label, and a spacer
+    tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+
+    // Add the left spacer
+    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+
+    // Add imagebutton
+    o = new qx.ui.basic.Image("aiagallery/question_blue.png");
+    tempContainer.add(o);
+    o.set(
+      {
+	focusable : true
+      });
+    this.selectImagePrompt = o;
+
+    // Add the right spacer
+    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+    form.addButton(tempContainer, { row : 3, column : 7, rowSpan : 1 });
+
+    // bind onClick event for the popup
+//    selectImageMessage = "The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one.";
+//    this.selectImagePrompt.addListener("click", function(e){ alert(selectImageMessage); }, this);
+
+    // define the popup we need
+    var selectImagePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
+        backgroundColor: "#FFFAD3",
+        padding: [2, 4],
+        offset : 3,
+        offsetBottom : 20
+    });
+
+    // add a label widget to the popup
+    selectImagePopup.add(new qx.ui.basic.Label().set({ 
+	value: "The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one. The file size limit is " + aiagallery.main.Constant.MAX_IMAGE_FILE_SIZE/1024 + " kb.",
+        rich : true,
+	width: 300 
+    }));
+
+    // bind onClick event for the popup
+    this.selectImagePrompt.addListener("click", function(e)
+    {
+        selectImagePopup.placeToMouse(e);
+        selectImagePopup.show();
+    }, this);
+        
+    // ********* beta002 end *********
+
+
 
     //
     // Add the buttons at the end
@@ -407,7 +526,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     this.butSaveApp = o;
    
     this.addListener("saveApp", this.__fsm.eventListener, this.__fsm);
-    
+
+    // Add some space between the save button and the reset/discard button
+    form.addButton(new qx.ui.core.Spacer(100));
+
     o = new qx.ui.form.Button("Reset");
     o.set(
       {
@@ -491,6 +613,11 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         var             modelJson;
         var             snapshotJson;
+
+        // Issue an async request to create a channel
+        // so the user can receive a response back when
+        // the app has been uploaded. 
+        this._createChannel(); 
 
         // Set the focus to the first field
         this.txtTitle.focus();
@@ -764,6 +891,194 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       this._model.image1 = value;
       this.fiImage1.setValue(value);
     },
+
+     // Create a channel for communication to this client from the server.
+     // If a channel exists already we do not need to do this.
+     _createChannel : function()
+    {
+      var             _this = this; 
+
+      if (null != qx.core.Init.getApplication().getUserData("channelSocket")) {
+          // A channel already exists, just return. 
+          return;
+      }
+
+      // Load the Channel API. If we're on App Engine, it'll succeed
+      qx.util.TimerManager.getInstance().start(
+      function(userData, timerId)
+      {
+        var             rpc;
+        rpc = new qx.io.remote.Rpc();
+        rpc.setProtocol("2.0");
+        rpc.set(
+          {
+            url         : aiagallery.main.Constant.SERVICES_URL,
+            timeout     : 30000,
+            crossDomain : false,
+            serviceName : "aiagallery.features"
+          });
+
+      var loader = new qx.bom.request.Script();
+      loader.onload = 
+      function createChannel()
+      {
+        // Did we successfully load the Channel API?
+        switch(loader.status)
+        {
+        case 200:
+          // Found the Channel API. Reqest a server push channel
+          rpc.callAsync(
+            function(e)
+            {
+              var             channel;
+              var             socket;
+              var             channelMessage;
+
+              // Did we get a channel token?
+              if (! e)
+              {
+                // Nope. Nothing to do.
+                //_this.warn("getChannelToken: " +
+                //      "Received no channel token");
+                return;
+              }
+
+              channelMessage = function(type, data)
+              {
+                // If this is an "open" message...
+                if (type == "open")
+                {
+                  qx.util.TimerManager.getInstance().start(
+                    function()
+                    {
+                      var             socket;
+ 
+                      // ... then start a timer to close the channel
+                      // in a little less than two hours, to avoid the
+                      // server from closing the channel
+                      socket = qx.core.Init.getApplication().getUserData("channelSocket"); 
+                      if (socket)
+                      {
+                        socket.close();
+                      }
+                      qx.core.Init.getApplication().setUserData("channelSocket", null);
+                      socket = null;
+ 
+                      // Re-establish the channel
+                      qx.util.TimerManager.getInstance().start(
+                        createChannel,
+                        0,
+                        _this,
+                        null,
+                        5000);
+                    },
+                    (2 * 1000 * 60 * 60) - (5 * 1000 * 60),
+                    this);
+                }
+ 
+                if (typeof data == "undefined")
+                {
+                  _this.debug("Channel Message (" + type + ")");
+                }
+                else
+                {
+                  _this.debug(liberated.dbif.Debug.debugObjectToString(
+                                data,
+                                "Channel Message (" + type + ")"));
+                }
+              };
+ 
+              // If there was a prior channel open...
+              socket = qx.core.Init.getApplication().getUserData("channelSocket");
+              if (socket)
+              {
+                // ... then close it
+                socket.close();
+              }
+ 
+              // Open a channel for server push
+              channel = new goog.appengine.Channel(e);
+              socket = channel.open();
+ 
+              // Save the channel socket
+              qx.core.Init.getApplication().setUserData("channelSocket", socket);
+ 
+              // When we receive a message on the channel, post a
+              // message on the message bus.
+              socket.onmessage = function(data)
+              {
+                var             messageBus;
+ 
+                // Parse the JSON message
+                data = qx.lang.Json.parse(data.data);
+                channelMessage("message", data);
+ 
+                // Dispatch a message for any subscribers to
+                // this type.
+                messageBus = qx.event.message.Bus.getInstance();
+                messageBus.dispatchByName(data.type, data);
+              };
+ 
+              // Display a message when the channel is open
+              socket.onopen = function(data)
+              {
+                channelMessage("open", data);
+              };
+ 
+              // Display a message upon error
+              socket.onerror = function(data)
+              {
+                channelMessage("error", data);
+ 
+                // There's no longer a channel socket
+                qx.core.Init.getApplication().setUserData("channelSocket", null);
+                socket = null;
+ 
+                // Re-establish the channel
+                qx.util.TimerManager.getInstance().start(
+                  createChannel,
+                  0,
+                  _this,
+                  null,
+                  5000);
+              };
+ 
+              // Display a message when the channel is closed
+              socket.onclose = function(data)
+              {
+                channelMessage("close", data);
+ 
+                // There's no longer a channel socket
+                qx.core.Init.getApplication().setUserData("channelSocket", null);
+                socket = null;
+ 
+                // Re-establish the channel
+                qx.util.TimerManager.getInstance().start(
+                  createChannel,
+                  0,
+                  _this,
+                  null,
+                  5000);
+              };
+            },
+            "getChannelToken",
+            []);
+            break;
+
+          default:
+            // Nope.
+            this.warn(loader.status + ": Failed to load Channel API");
+             break;
+          } 
+        };
+ 
+        loader.open("GET", "/_ah/channel/jsapi");
+        loader.send();
+
+      });
+
+     return; 
+    },
     
     snapshotModel : function()
     {
@@ -827,3 +1142,4 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     }
   }
 });
+

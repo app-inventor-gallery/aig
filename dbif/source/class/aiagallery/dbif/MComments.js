@@ -7,6 +7,10 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
+
+/*
+#ignore(com.google.*)
+ */
 qx.Mixin.define("aiagallery.dbif.MComments",
 {
   construct : function()
@@ -22,10 +26,6 @@ qx.Mixin.define("aiagallery.dbif.MComments",
     this.registerService("aiagallery.features.getComments",
                          this.getComments,
                          [ "appId", "resultCriteria" ]);
-    
-    this.registerService("aiagallery.features.getFlaggedComments",
-                         this.getFlaggedComments,
-                         []);
                         
     this.registerService("aiagallery.features.setCommentActive",
                          this.setCommentActive,
@@ -84,7 +84,8 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       var             myTreeId;
       var             parentList;
       var             parentNumChildren;
-        
+      var             visitorObj;
+      var             visitorDataObj;
         
       // Determine who the logged-in user is
       whoami = this.getWhoAmI();
@@ -183,6 +184,90 @@ qx.Mixin.define("aiagallery.dbif.MComments",
 
           // Add his display name, for return.
           commentObjData.displayName     = whoami.displayName;
+
+          // If the author has requested to be notified on app comments 
+          // do so now
+          // Get the authors updateOnAppComment flag
+          visitorObj = new aiagallery.dbif.ObjVisitors(parentAppData.owner); 
+
+          // Author must exist
+          if(!visitorObj.getBrandNew())
+          {
+            // Get the application data
+            visitorDataObj = visitorObj.getData();
+
+            // Do they want a notification on likes
+            // and they did not post the comment
+            if(visitorDataObj.updateOnAppComment )//&& 
+              //commentObjData.displayName != visitorDataObj.displayName)
+            {
+              /* FIXME : Frequency not enabled at this time. 
+              // Only send an email if the frequency is reached
+              if(appDataObj.numLikes % 
+                visitorDataObj.updateCommentFrequency == 0)
+              {
+              }
+              */
+
+              var msgBody = "Your app \'" + parentAppData.title + "'\,"
+                            + " has a new comment by " 
+                            + commentObjData.displayName + "." 
+                            + "<br>The comment is: " + commentObjData.text;
+
+              var subject = "You have a new comment "
+			    + "at the MIT App Inventor Gallery";
+
+              // Call system function to send mail
+              this.sendEmail(msgBody, subject, 
+                             visitorDataObj.email,
+                             parentAppData);
+
+
+            }
+          }
+
+          // Make sure if the app is cached that the new comment be 
+          // placed into the comment cache. 
+          switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+          {
+          case "appengine":
+            var memcacheServiceFactory =
+              Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+            var syncCache = memcacheServiceFactory.getMemcacheService();
+            var appComments = this.getComments(appId,
+              [
+                {
+                  type  : "sort",
+                  field : "timestamp",
+                  order : "desc"
+                }
+             ],
+             error);
+
+            // Add the serialized comment we just made
+            // This will not be in the db query results (appComments)
+            // since this is taking place within a transaction
+            appComments.splice(0, 0, commentObjData);
+
+            var serialComments = JSON.stringify(appComments);
+
+            // Expiration date
+            var calendarClass = java.util.Calendar;
+            var date = calendarClass.getInstance();
+            date.add(calendarClass.DATE, 1);
+
+            var expirationClass = com.google.appengine.api.memcache.Expiration;
+            var expirationDate = expirationClass.onDate(date.getTime());
+
+            syncCache.put("retcomments_".concat(appId),
+              serialComments, expirationDate);
+
+            break;
+
+          default:
+            // Not on appengine
+            break;
+          }
 
           // Remove the visitor field
           delete commentObjData.visitor;
@@ -334,63 +419,6 @@ qx.Mixin.define("aiagallery.dbif.MComments",
     },
     
     /**
-     * Get the list of flagged comments
-     * 
-     * @return {List}
-     *   A list (possibly empty) containing all flagged comments
-     */
-    getFlaggedComments : function()
-    {
-      var         criteria;
-      var         resultList;
-      var         i;
-      var         error;
-      
-      // Create error for when we get display names
-      error = new liberated.rpc.error.Error();
-      
-      // Retrieve all Active comments for this app
-      criteria = 
-        {
-          type     : "element",
-          field    : "numCurFlags",
-          value    : 0,
-          filterOp : ">"  
-        };
-
-      // Issue a query for all flagged comments
-      resultList = liberated.dbif.Entity.query("aiagallery.dbif.ObjComments", 
-                                               criteria,
-                                               null);
-                                               
-      try
-      {
-        resultList.forEach(function(obj)
-          {
-            // Add this visitor's display name
-            obj.displayName = 
-              aiagallery.dbif.MVisitors._getDisplayName(obj.visitor, error);
-            
-            // Did we fail to find this owner?
-            if (obj.visitor === error)
-            {
-              // Yup. Abort the request.
-              throw error;
-            }
-            
-            // Remove the visitor field
-            delete obj.visitor;
-          });
-      }
-      catch(error)
-      {
-        return error;
-      }
-                                                   
-      return resultList; 
-    },
-    
-    /**
      * Set a comment to active (so it can be viewed)
      *
      * @param appId {Number}
@@ -413,7 +441,7 @@ qx.Mixin.define("aiagallery.dbif.MComments",
       commentObj = new aiagallery.dbif.ObjComments([appId, treeId]);
       
       // Get data
-      commentObjData = commentObj.getBrandNew()
+      commentObjData = commentObj.getBrandNew();
       
       // Does this comment exist?
       if (commentObjData)
