@@ -104,62 +104,86 @@ msgstr ""
 msgid "Flag this comment"
 msgstr ""
 
+#: aiagallery/module/dgallery/appinfo/Gui.js:99
+msgid "Comments"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:117
+msgid "Add a comment"
+msgstr ""
+
 #: aiagallery/module/dgallery/appinfo/Gui.js:132
 msgid "Talk about this app"
 msgstr ""
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:144
+#: aiagallery/module/dgallery/appinfo/Gui.js:145
 msgid "480 Characters Left"
 msgstr ""
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:159
+#: aiagallery/module/dgallery/appinfo/Gui.js:161
 msgid "Add"
 msgstr ""
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:169
+#: aiagallery/module/dgallery/appinfo/Gui.js:171
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:330
 #: aiagallery/widget/FlagPopUp.js:183
 msgid "Cancel"
 msgstr ""
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:186
+#: aiagallery/module/dgallery/appinfo/Gui.js:188
 msgid "Login to comment"
 msgstr ""
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:307
+#: aiagallery/module/dgallery/appinfo/Gui.js:206
+msgid "Check out related apps below!"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:225
+msgid "Select tags below to find out similar apps:"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:313
 msgid " Characters Left"
 msgstr ""
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:525
-#: aiagallery/module/dgallery/appinfo/Gui.js:705
+#: aiagallery/module/dgallery/appinfo/Gui.js:400
+msgid "Apps by this author"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:536
+#: aiagallery/module/dgallery/appinfo/Gui.js:716
 msgid "You liked it!"
 msgstr ""
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:543
-#: aiagallery/module/dgallery/appinfo/Gui.js:727
+#: aiagallery/module/dgallery/appinfo/Gui.js:554
+#: aiagallery/module/dgallery/appinfo/Gui.js:738
 #: aiagallery/module/dgallery/userinfo/Gui.js:432
 #: aiagallery/module/dgallery/userinfo/Gui.js:466
 msgid "Flagged as inappropriate."
 msgstr ""
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:613
+#: aiagallery/module/dgallery/appinfo/Gui.js:604
+msgid "No source data found!"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:624
 msgid "Login to like!"
 msgstr ""
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:630
+#: aiagallery/module/dgallery/appinfo/Gui.js:641
 msgid "Login to flag!"
 msgstr ""
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:746
+#: aiagallery/module/dgallery/appinfo/Gui.js:757
 msgid "This app has been flagged."
 msgstr ""
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:747
-#: aiagallery/module/dgallery/appinfo/Gui.js:756
+#: aiagallery/module/dgallery/appinfo/Gui.js:758
+#: aiagallery/module/dgallery/appinfo/Gui.js:767
 msgid " An admin will review it."
 msgstr ""
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:755
+#: aiagallery/module/dgallery/appinfo/Gui.js:766
 msgid "This comment has been flagged."
 msgstr ""
 

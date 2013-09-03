@@ -85,142 +85,166 @@ msgstr "登录享受更多服务"
 
 #: aiagallery/module/dgallery/appinfo/Comment.js:211
 msgid "Keep Comment"
-msgstr ""
+msgstr "保留留言"
 
 #: aiagallery/module/dgallery/appinfo/Comment.js:234
 msgid "Delete Comment"
-msgstr ""
+msgstr "删除留言"
 
 #: aiagallery/module/dgallery/appinfo/Comment.js:258
 msgid "Visit App"
-msgstr ""
+msgstr "跳转至应用"
 
 #: aiagallery/module/dgallery/appinfo/Comment.js:300
 #: aiagallery/widget/SearchResult.js:688
 msgid "Flag as inappropriate?"
-msgstr ""
+msgstr "检举不合适内容"
 
 #: aiagallery/module/dgallery/appinfo/Comment.js:306
 msgid "Flag this comment"
-msgstr ""
+msgstr "检举此留言"
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:99
+msgid "Comments"
+msgstr "留言"
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:117
+msgid "Add a comment"
+msgstr "添加新留言"
 
 #: aiagallery/module/dgallery/appinfo/Gui.js:132
 msgid "Talk about this app"
-msgstr ""
+msgstr "讨论这个应用"
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:144
+#: aiagallery/module/dgallery/appinfo/Gui.js:145
 msgid "480 Characters Left"
-msgstr ""
+msgstr "剩余 480 字可写"
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:159
+#: aiagallery/module/dgallery/appinfo/Gui.js:161
 msgid "Add"
-msgstr ""
+msgstr "添加"
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:169
+#: aiagallery/module/dgallery/appinfo/Gui.js:171
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:330
 #: aiagallery/widget/FlagPopUp.js:183
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:186
+#: aiagallery/module/dgallery/appinfo/Gui.js:188
 msgid "Login to comment"
-msgstr ""
+msgstr "请登入后留言"
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:307
+#: aiagallery/module/dgallery/appinfo/Gui.js:206
+msgid "Check out related apps below!"
+msgstr "类似应用推荐"
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:225
+msgid "Select tags below to find out similar apps:"
+msgstr "请选择您感兴趣的应用类型："
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:313
 msgid " Characters Left"
-msgstr ""
+msgstr " 字剩余"
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:525
-#: aiagallery/module/dgallery/appinfo/Gui.js:705
+#: aiagallery/module/dgallery/appinfo/Gui.js:400
+msgid "Apps by this author"
+msgstr "来自该作者的应用"
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:536
+#: aiagallery/module/dgallery/appinfo/Gui.js:716
 msgid "You liked it!"
-msgstr ""
+msgstr "您给了本应用一个赞！"
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:543
-#: aiagallery/module/dgallery/appinfo/Gui.js:727
+#: aiagallery/module/dgallery/appinfo/Gui.js:554
+#: aiagallery/module/dgallery/appinfo/Gui.js:738
 #: aiagallery/module/dgallery/userinfo/Gui.js:432
 #: aiagallery/module/dgallery/userinfo/Gui.js:466
 msgid "Flagged as inappropriate."
-msgstr ""
+msgstr "您已将本应用检举为不合适内容。"
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:613
+#: aiagallery/module/dgallery/appinfo/Gui.js:604
+msgid "No source data found!"
+msgstr "很抱歉，找不到本应用的源数据。"
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:624
 msgid "Login to like!"
-msgstr ""
+msgstr "登入后即可点赞！"
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:630
+#: aiagallery/module/dgallery/appinfo/Gui.js:641
 msgid "Login to flag!"
-msgstr ""
+msgstr "登入后即可检举！"
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:746
+#: aiagallery/module/dgallery/appinfo/Gui.js:757
 msgid "This app has been flagged."
-msgstr ""
+msgstr "本应用已被检举为不合适内容。"
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:747
-#: aiagallery/module/dgallery/appinfo/Gui.js:756
+#: aiagallery/module/dgallery/appinfo/Gui.js:758
+#: aiagallery/module/dgallery/appinfo/Gui.js:767
 msgid " An admin will review it."
-msgstr ""
+msgstr "将会有管理员对此进行处理。"
 
-#: aiagallery/module/dgallery/appinfo/Gui.js:755
+#: aiagallery/module/dgallery/appinfo/Gui.js:766
 msgid "This comment has been flagged."
-msgstr ""
+msgstr "这条留言已被检举为不合适内容。"
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:32
 msgid "Search in: "
-msgstr ""
+msgstr "在此范围内搜索："
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:45
 msgid "All text fields"
-msgstr ""
+msgstr "广泛搜索"
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:50
 msgid "Specific fields"
-msgstr ""
+msgstr "精确搜索"
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:158
 #: aiagallery/module/mgmt/motd/Gui.js:73
 msgid "Clear"
-msgstr ""
+msgstr "清空"
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1278
 msgid "Search for words found in apps' title, description, categories, or tags"
-msgstr ""
+msgstr "您可以搜索应用标题、描述、分类以及标签中的关键字："
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1373
 msgid "Find apps in which..."
-msgstr ""
+msgstr "我想寻找符合以下条件的应用……"
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1382
 msgid "Title contains"
-msgstr ""
+msgstr "标题中包含："
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1386
 msgid "Description contains"
-msgstr ""
+msgstr "描述中包含："
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1390
 msgid "Tags include"
-msgstr ""
+msgstr "标签中包含："
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1394
 msgid "Selected categories"
-msgstr ""
+msgstr "所在分类:"
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1398
 #: aiagallery/module/mgmt/applications/Gui.js:145
 msgid "Likes"
-msgstr ""
+msgstr "被赞次数："
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1402
 msgid "Downloads"
-msgstr ""
+msgstr "下载次数："
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1412
 #: aiagallery/module/mgmt/applications/Gui.js:135
 msgid "Views"
-msgstr ""
+msgstr "浏览次数："
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1422
 msgid "Author Name"
-msgstr ""
+msgstr "作者名字："
 
 #: aiagallery/module/dgallery/findapps/Gui.js:112
 msgid "No results found"
