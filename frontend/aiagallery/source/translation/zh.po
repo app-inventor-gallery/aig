@@ -290,7 +290,7 @@ msgstr "年份"
 #: aiagallery/module/dgallery/user/Gui.js:252
 #: aiagallery/module/dgallery/userinfo/Gui.js:98
 msgid "Email:"
-msgstr "您的电邮地址："
+msgstr "电邮地址："
 
 #: aiagallery/module/dgallery/user/Gui.js:275
 msgid "Check this box to show your email on your public profile."
@@ -303,7 +303,7 @@ msgstr "在公开的个人档案中显示您的电邮。"
 #: aiagallery/module/dgallery/user/Gui.js:330
 #: aiagallery/module/dgallery/userinfo/Gui.js:118
 msgid "Location:"
-msgstr "您的所在地："
+msgstr "所在地："
 
 #: aiagallery/module/dgallery/user/Gui.js:353
 msgid "Enter where you are. It could be a state, a country, or somewhere else."
@@ -312,7 +312,7 @@ msgstr "请在此输入您的所在地。这可以是城市、州省、国家或
 #: aiagallery/module/dgallery/user/Gui.js:388
 #: aiagallery/module/dgallery/userinfo/Gui.js:133
 msgid "Organization:"
-msgstr "您的所属组织："
+msgstr "所属组织："
 
 #: aiagallery/module/dgallery/user/Gui.js:412
 msgid "Enter the organization you are affiliated with if you have one. It could be a school, or a company, or something else."
@@ -321,7 +321,7 @@ msgstr "请在此输入您所属的组织——如果您愿意的话。这可以
 #: aiagallery/module/dgallery/user/Gui.js:446
 #: aiagallery/module/dgallery/userinfo/Gui.js:148
 msgid "URL:"
-msgstr "您的网址："
+msgstr "网址："
 
 #: aiagallery/module/dgallery/user/Gui.js:469
 msgid "Enter your site url if you have one."
@@ -354,19 +354,19 @@ msgstr "保存您的更改"
 
 #: aiagallery/module/dgallery/user/Gui.js:616
 msgid "User Options:"
-msgstr "您的个人选项："
+msgstr "您的提醒设置："
 
 #: aiagallery/module/dgallery/user/Gui.js:639
 msgid "Options for sending emails to the email address you logged in with."
-msgstr ""
+msgstr "您可在此定制邮件提醒设置。邮件将发送至您用来登入的地址。"
 
 #: aiagallery/module/dgallery/user/Gui.js:657
 msgid "Notify me by email if:"
-msgstr ""
+msgstr "请勾选您想收到的邮件提醒类型："
 
 #: aiagallery/module/dgallery/user/Gui.js:668
 msgid "Someone likes one of my apps"
-msgstr ""
+msgstr "我的应用收到了别人的赞"
 
 #: aiagallery/module/dgallery/user/Gui.js:676
 #: aiagallery/module/dgallery/user/Gui.js:709
@@ -376,35 +376,35 @@ msgstr ""
 
 #: aiagallery/module/dgallery/user/Gui.js:701
 msgid "Someone comments on one of my apps"
-msgstr ""
+msgstr "我的应用收到了别人的留言"
 
 #: aiagallery/module/dgallery/user/Gui.js:734
 msgid "Someone downloads one of my apps"
-msgstr ""
+msgstr "我的应用被别人下载"
 
 #: aiagallery/module/dgallery/user/Gui.js:856
 msgid "You must log in to edit your profile"
-msgstr ""
+msgstr "请登入后再修改您的个人档案。"
 
 #: aiagallery/module/dgallery/user/Gui.js:998
 msgid "New profile information saved."
-msgstr ""
+msgstr "您的个人档案信息已更新。"
 
 #: aiagallery/module/dgallery/userinfo/Gui.js:77
 msgid "Date of Birth:"
-msgstr ""
+msgstr "出生日期："
 
 #: aiagallery/module/dgallery/userinfo/Gui.js:165
 msgid "About this user:"
-msgstr ""
+msgstr "个人介绍："
 
 #: aiagallery/module/dgallery/userinfo/Gui.js:244
 msgid "Flag this Profile"
-msgstr ""
+msgstr "检举不合适内容"
 
 #: aiagallery/module/dgallery/userinfo/Gui.js:257
 msgid "Flag this user profile"
-msgstr ""
+msgstr "检举此用户的个人档案"
 
 #: aiagallery/module/dgallery/userinfo/Gui.js:390
 msgid "Apps By "
