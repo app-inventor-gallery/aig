@@ -1,0 +1,616 @@
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: you@your.org\n"
+"POT-Creation-Date: 2013-09-03 14:12-0500\n"
+"PO-Revision-Date: 2013-09-03 14:12-0500\n"
+"Last-Translator: you <you@your.org>\n"
+"Language-Team: Team <yourteam@your.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: aiagallery/main/Gui.js:114
+msgid "App Inventor"
+msgstr ""
+
+#: aiagallery/main/Gui.js:116
+msgid "Community Gallery"
+msgstr "社区画廊"
+
+#: aiagallery/main/Gui.js:135
+msgid "Welcome to the "
+msgstr "欢迎来到"
+
+#: aiagallery/main/Gui.js:137
+msgid "gallery!"
+msgstr "画廊！"
+
+#: aiagallery/main/Gui.js:139
+msgid " See "
+msgstr "请参见"
+
+#: aiagallery/main/Gui.js:141
+msgid "Release Notes"
+msgstr "版本注释"
+
+#: aiagallery/main/Gui.js:143
+msgid "and post feedback / bug reports to the "
+msgstr "，欢迎将反馈与意见发布在"
+
+#: aiagallery/main/Gui.js:145
+msgid "Forum"
+msgstr "论坛里面。"
+
+#: aiagallery/main/Gui.js:187
+msgid "Simulate"
+msgstr ""
+
+#: aiagallery/main/Gui.js:715
+msgid "About the gallery"
+msgstr "关于本站"
+
+#: aiagallery/main/Gui.js:727
+msgid "App Inventor Gallery About Us"
+msgstr ""
+
+#: aiagallery/main/Gui.js:735
+msgid "Terms of Use"
+msgstr "使用条款"
+
+#: aiagallery/main/Gui.js:747
+msgid "App Inventor Gallery Terms of Use"
+msgstr ""
+
+#: aiagallery/main/Gui.js:755
+msgid "Privacy Policy"
+msgstr "隐私条约"
+
+#: aiagallery/main/Gui.js:767
+msgid "App Inventor Gallery Privacy Policy"
+msgstr ""
+
+#: aiagallery/main/Gui.js:775
+msgid "Supported Browsers"
+msgstr "支持浏览器"
+
+#: aiagallery/main/Gui.js:787
+msgid "App Inventor Gallery Supported Browsers"
+msgstr ""
+
+#: aiagallery/main/WhoAmI.js:149
+msgid "Login to submit apps and comment"
+msgstr "登录享受更多服务"
+
+#: aiagallery/module/dgallery/appinfo/Comment.js:211
+msgid "Keep Comment"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Comment.js:234
+msgid "Delete Comment"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Comment.js:258
+msgid "Visit App"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Comment.js:300
+#: aiagallery/widget/SearchResult.js:688
+msgid "Flag as inappropriate?"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Comment.js:306
+msgid "Flag this comment"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:132
+msgid "Talk about this app"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:144
+msgid "480 Characters Left"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:159
+msgid "Add"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:169
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:330
+#: aiagallery/widget/FlagPopUp.js:183
+msgid "Cancel"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:186
+msgid "Login to comment"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:307
+msgid " Characters Left"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:525
+#: aiagallery/module/dgallery/appinfo/Gui.js:705
+msgid "You liked it!"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:543
+#: aiagallery/module/dgallery/appinfo/Gui.js:727
+#: aiagallery/module/dgallery/userinfo/Gui.js:432
+#: aiagallery/module/dgallery/userinfo/Gui.js:466
+msgid "Flagged as inappropriate."
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:613
+msgid "Login to like!"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:630
+msgid "Login to flag!"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:746
+msgid "This app has been flagged."
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:747
+#: aiagallery/module/dgallery/appinfo/Gui.js:756
+msgid " An admin will review it."
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:755
+msgid "This comment has been flagged."
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:32
+msgid "Search in: "
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:45
+msgid "All text fields"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:50
+msgid "Specific fields"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:158
+#: aiagallery/module/mgmt/motd/Gui.js:73
+msgid "Clear"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1278
+msgid "Search for words found in apps' title, description, categories, or tags"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1373
+msgid "Find apps in which..."
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1382
+msgid "Title contains"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1386
+msgid "Description contains"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1390
+msgid "Tags include"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1394
+msgid "Selected categories"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1398
+#: aiagallery/module/mgmt/applications/Gui.js:145
+msgid "Likes"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1402
+msgid "Downloads"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1412
+#: aiagallery/module/mgmt/applications/Gui.js:135
+msgid "Views"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1422
+msgid "Author Name"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/Gui.js:112
+msgid "No results found"
+msgstr ""
+
+#: aiagallery/module/dgallery/home/Gui.js:206
+msgid "Search for an App"
+msgstr ""
+
+#: aiagallery/module/dgallery/home/Gui.js:223
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:135
+msgid "Search"
+msgstr ""
+
+#: aiagallery/module/dgallery/home/Gui.js:270
+msgid "Most popular tags in the gallery"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:95
+msgid "Username:"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:119
+msgid "Valid usernames must be between 2 and 30 characters. It must not be admin, administrator, guest, superuser, or root."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:156
+msgid "Date of Birth (Not Displayed):"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:179
+msgid "The date of birth info is for site statistics only. It is not displayed."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:205
+msgid "Month"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:231
+msgid "Year"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:252
+#: aiagallery/module/dgallery/userinfo/Gui.js:98
+msgid "Email:"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:275
+msgid "Check this box to show your email on your public profile."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:315
+msgid "Display Email on Public Profile"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:330
+#: aiagallery/module/dgallery/userinfo/Gui.js:118
+msgid "Location:"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:353
+msgid "Enter where you are. It could be a state, a country, or somewhere else."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:388
+#: aiagallery/module/dgallery/userinfo/Gui.js:133
+msgid "Organization:"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:412
+msgid "Enter the organization you are affiliated with if you have one. It could be a school, or a company, or something else."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:446
+#: aiagallery/module/dgallery/userinfo/Gui.js:148
+msgid "URL:"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:469
+msgid "Enter your site url if you have one."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:508
+msgid "Describe Yourself:"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:532
+msgid "Tell us about yourself, the kind of apps you make, why you make apps, and anything else that floats your fancy."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:556
+msgid "Tell people about yourself"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:566
+#: aiagallery/module/dgallery/user/Gui.js:883
+msgid " Characters left"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:578
+msgid "500 Character Limit"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:588
+msgid "Save Changes"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:616
+msgid "User Options:"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:639
+msgid "Options for sending emails to the email address you logged in with."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:657
+msgid "Notify me by email if:"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:668
+msgid "Someone likes one of my apps"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:676
+#: aiagallery/module/dgallery/user/Gui.js:709
+#: aiagallery/module/dgallery/user/Gui.js:742
+msgid "Every..."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:701
+msgid "Someone comments on one of my apps"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:734
+msgid "Someone downloads one of my apps"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:856
+msgid "You must log in to edit your profile"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:998
+msgid "New profile information saved."
+msgstr ""
+
+#: aiagallery/module/dgallery/userinfo/Gui.js:77
+msgid "Date of Birth:"
+msgstr ""
+
+#: aiagallery/module/dgallery/userinfo/Gui.js:165
+msgid "About this user:"
+msgstr ""
+
+#: aiagallery/module/dgallery/userinfo/Gui.js:244
+msgid "Flag this Profile"
+msgstr ""
+
+#: aiagallery/module/dgallery/userinfo/Gui.js:257
+msgid "Flag this user profile"
+msgstr ""
+
+#: aiagallery/module/dgallery/userinfo/Gui.js:390
+msgid "Apps By "
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:44
+msgid "Edit App: "
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:79
+#: aiagallery/module/mgmt/applications/Gui.js:110
+msgid "Title"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:80
+#: aiagallery/module/mgmt/applications/Gui.js:115
+msgid "Description"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:81
+msgid "Categories"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:209
+#: aiagallery/module/mgmt/permissions/Gui.js:107
+#: aiagallery/module/mgmt/flags/Gui.js:191
+#: aiagallery/module/mgmt/flags/Gui.js:294
+#: aiagallery/module/mgmt/applications/Gui.js:72
+#: aiagallery/module/mgmt/users/Gui.js:103
+msgid "Delete"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:217
+msgid "add tags"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:220
+msgid "Add tag"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:289
+#: aiagallery/module/mgmt/applications/Gui.js:120
+msgid "Flags"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:302
+msgid "Remove all flags"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:324
+#: aiagallery/widget/FlagPopUp.js:90
+msgid "Ok"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/Gui.js:44
+#: aiagallery/module/mgmt/users/Gui.js:44
+msgid "Edit"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/Gui.js:93
+msgid "Owner"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/Gui.js:105
+#: aiagallery/module/mgmt/users/Gui.js:121
+msgid "Display Name"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/Gui.js:130
+msgid "Tags"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/Gui.js:140
+msgid "DLs"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/Gui.js:150
+msgid "Coms"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/Gui.js:155
+msgid "Im"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/Gui.js:300
+msgid "Really delete app "
+msgstr ""
+
+#: aiagallery/module/mgmt/flags/Gui.js:177
+#: aiagallery/module/mgmt/flags/Gui.js:280
+msgid "Keep"
+msgstr ""
+
+#: aiagallery/module/mgmt/flags/Gui.js:201
+msgid "Really Delete this App?"
+msgstr ""
+
+#: aiagallery/module/mgmt/flags/Gui.js:215
+msgid "Go To App"
+msgstr ""
+
+#: aiagallery/module/mgmt/flags/Gui.js:304
+msgid "Really Delete this User?"
+msgstr ""
+
+#: aiagallery/module/mgmt/flags/Gui.js:318
+msgid "Go To User Profile"
+msgstr ""
+
+#: aiagallery/module/mgmt/flags/Gui.js:464
+msgid "Message Kept"
+msgstr ""
+
+#: aiagallery/module/mgmt/flags/Gui.js:493
+msgid "Message Deleted"
+msgstr ""
+
+#: aiagallery/module/mgmt/motd/Gui.js:60
+msgid "Submit"
+msgstr ""
+
+#: aiagallery/module/mgmt/motd/Gui.js:88
+msgid "Enter Message of the day here:"
+msgstr ""
+
+#: aiagallery/module/mgmt/permissions/Gui.js:73
+msgid "Add Permission Group"
+msgstr ""
+
+#: aiagallery/module/mgmt/permissions/Gui.js:90
+msgid "Save"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/CellEditorFactory.js:42
+msgid "Edit User: "
+msgstr ""
+
+#: aiagallery/module/mgmt/users/CellEditorFactory.js:47
+msgid "Add New User"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/CellEditorFactory.js:92
+msgid "DisplayName"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/CellEditorFactory.js:93
+#: aiagallery/module/mgmt/applications/Gui.js:99
+#: aiagallery/module/mgmt/users/Gui.js:122
+msgid "Email"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/CellEditorFactory.js:94
+#: aiagallery/module/mgmt/users/Gui.js:123
+msgid "Id"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/CellEditorFactory.js:95
+#: aiagallery/module/mgmt/users/Gui.js:124
+msgid "Permissions"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/CellEditorFactory.js:96
+#: aiagallery/module/mgmt/users/Gui.js:125
+msgid "Permission Groups"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/CellEditorFactory.js:97
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:82
+#: aiagallery/module/mgmt/applications/Gui.js:125
+#: aiagallery/module/mgmt/users/Gui.js:126
+msgid "Status"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/Gui.js:71
+msgid "Turn on All User Notifications"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/Gui.js:83
+msgid "This will turn all user notifications settings on. Do you really want to do this?"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/Gui.js:227
+msgid "Really delete user "
+msgstr ""
+
+#: aiagallery/module/mgmt/users/Gui.js:317
+msgid "All user notifications turned on."
+msgstr ""
+
+#: aiagallery/widget/FlagPopUp.js:127
+#: aiagallery/module/dgallery/appinfo/Comment.js:290
+msgid "Comment Flagged"
+msgstr ""
+
+#: aiagallery/widget/SearchResult.js:663
+msgid "Like It?"
+msgstr ""
+
+#: aiagallery/widget/SearchResult.js:716
+msgid "Download Source"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:82
+msgid "Enter the application title (30 character limit)"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:104
+msgid "Enter a brief description (480 Character Limit)"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:157
+msgid "Enter a new tag"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:238
+msgid "Delete Tag"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:280
+msgid "Select source file"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:559
+msgid "Discard"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:583
+msgid "Really delete application"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:815
+msgid "Delete Application"
+msgstr ""
