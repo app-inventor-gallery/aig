@@ -201,6 +201,45 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         });
 
       innerCanvas.add(this.welcomingLabel);
+	  
+	  // Add translation / internationalization options
+	  // Add UI components
+	  var i8nRadioGroup = new qx.ui.form.RadioButtonGroup();
+	  
+	  // Access all available locales and the currently set locale
+	  var localeManager = qx.locale.Manager.getInstance();
+	  var locales = localeManager.getAvailableLocales();
+	  var currentLocale = localeManager.getLocale();
+	  console.log("LOCALE TESTING");
+	  console.log(locales);
+	  console.log(currentLocale);
+	  
+	  this.marktr("$$languagename");
+	  
+	  // create a radio button for every available locale
+	  for (var i = 0; i < locales.length; i++) {
+	    var locale = locales[i];
+	    var languageName = localeManager.translate("$$languagename", [], locale);
+	    var localeButton = new qx.ui.form.RadioButton(languageName.toString());
+	    // save the locale as model
+	    localeButton.setModel(locale);
+	    i8nRadioGroup.add(localeButton);
+ 
+	    // preselect the current locale
+	    if (currentLocale == locale) {
+	      localeButton.setValue(true);
+	    }
+	  };
+	  
+	  // get the model selection and listen to its change
+	  i8nRadioGroup.getModelSelection().addListener("change", function(e) {
+	    // selection is the first item of the data array
+	    var newLocale = i8nRadioGroup.getModelSelection().getItem(0);
+	    localeManager.setLocale(newLocale);
+	  }, this);
+	  
+	  innerCanvas.add(i8nRadioGroup);
+	  
       
       // Create a simple search from the home page
       searchLabel = new qx.ui.basic.Label(this.tr("Search for an App"));

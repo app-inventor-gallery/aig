@@ -118,7 +118,7 @@ qx.Class.define("aiagallery.module.dgallery.contest.Gui",
       desc = new qx.ui.basic.Label(""); 
       desc.set(
         {
-          value      : "The 2012 MIT App Inventor App Contest had 125 submissions in four categories: K-8, High School, College/University, and Open. Google Nexus 7 Tablets are being awarded to the 1st place winners, with <a href=http://www.amazon.com/App-Inventor-Create-Your-Android/dp/1449397484>App Inventor</a> books given for second place. Participants included students as young as third grade, college students, hobbyists, professional developers, and even some self-described \"retired old ladies\"! The following are the prize winners and a few of the other notable apps:", 
+          value      : this.tr("The 2012 MIT App Inventor App Contest had 125 submissions in four categories: K-8, High School, College/University, and Open. Google Nexus 7 Tablets are being awarded to the 1st place winners, with <a href=http://www.amazon.com/App-Inventor-Create-Your-Android/dp/1449397484>App Inventor</a> books given for second place. Participants included students as young as third grade, college students, hobbyists, professional developers, and even some self-described \"retired old ladies\"! The following are the prize winners and a few of the other notable apps:"), 
           rich        : true,
           maxWidth    : 900,
           height      : 50   

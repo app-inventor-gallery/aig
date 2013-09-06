@@ -187,6 +187,10 @@ msgstr ""
 msgid "This comment has been flagged."
 msgstr ""
 
+#: aiagallery/module/dgallery/contest/Gui.js:121
+msgid "The 2012 MIT App Inventor App Contest had 125 submissions in four categories: K-8, High School, College/University, and Open. Google Nexus 7 Tablets are being awarded to the 1st place winners, with <a href=http://www.amazon.com/App-Inventor-Create-Your-Android/dp/1449397484>App Inventor</a> books given for second place. Participants included students as young as third grade, college students, hobbyists, professional developers, and even some self-described \"retired old ladies\"! The following are the prize winners and a few of the other notable apps:"
+msgstr ""
+
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:32
 msgid "Search in: "
 msgstr ""
@@ -250,16 +254,20 @@ msgstr ""
 msgid "No results found"
 msgstr ""
 
-#: aiagallery/module/dgallery/home/Gui.js:206
+#: aiagallery/module/dgallery/home/Gui.js:217
+msgid "$$languagename"
+msgstr "English"
+
+#: aiagallery/module/dgallery/home/Gui.js:245
 msgid "Search for an App"
 msgstr ""
 
-#: aiagallery/module/dgallery/home/Gui.js:223
+#: aiagallery/module/dgallery/home/Gui.js:262
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:135
 msgid "Search"
 msgstr ""
 
-#: aiagallery/module/dgallery/home/Gui.js:270
+#: aiagallery/module/dgallery/home/Gui.js:309
 msgid "Most popular tags in the gallery"
 msgstr ""
 
@@ -638,3 +646,12 @@ msgstr ""
 #: aiagallery/widget/mystuff/Detail.js:815
 msgid "Delete Application"
 msgstr ""
+
+#~ msgid "Contest Winners"
+#~ msgstr ""
+
+#~ msgid "Find Apps"
+#~ msgstr ""
+
+#~ msgid "Home"
+#~ msgstr ""
