@@ -101,6 +101,8 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       //     "</div>",
       //     "</div>" 
       //   ].join("");
+	  
+	  // Add the main tagline first
       var welcomingLabel = new qx.ui.basic.Label(
 		  this.tr("Welcome to the MIT App Inventor Community Gallery!"));
 	  font.setSize(26);
@@ -109,10 +111,23 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         {
           rich         : true,
           width        : 434,
-          height       : 300      
+          height       : 100      
+        });
+		
+      innerCanvas.add(welcomingLabel);
+	  
+	  // Add the remaining lines
+      var introLabel = new qx.ui.basic.Label(
+		  this.tr("  Check out mobile apps from all over the world! <br/>  Download App Inventor blocks and learn to program! <br/>  Join the community of App Inventor programmers!"));
+	  font.setSize(16);
+      introLabel.setFont(font);
+      introLabel.set(
+        {
+          rich         : true,
+          width        : 434  
         });
 
-      innerCanvas.add(welcomingLabel);
+      innerCanvas.add(introLabel);
 
 
 
