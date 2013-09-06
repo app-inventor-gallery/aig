@@ -254,25 +254,45 @@ msgstr ""
 msgid "No results found"
 msgstr ""
 
-#: aiagallery/module/dgallery/home/Gui.js:105
+#: aiagallery/module/dgallery/home/Gui.js:107
 msgid "Welcome to the MIT App Inventor Community Gallery!"
 msgstr ""
 
-#: aiagallery/module/dgallery/home/Gui.js:129
+#: aiagallery/module/dgallery/home/Gui.js:121
+msgid "Check out mobile apps from all over the world! <br/>Download App Inventor blocks and learn to program! <br/>Join the community of App Inventor programmers!<br/><br/>"
+msgstr ""
+
+#: aiagallery/module/dgallery/home/Gui.js:143
+msgid "Browse Gallery in the language you like"
+msgstr ""
+
+#: aiagallery/module/dgallery/home/Gui.js:162
 msgid "$$languagename"
 msgstr "English"
 
-#: aiagallery/module/dgallery/home/Gui.js:157
+#: aiagallery/module/dgallery/home/Gui.js:191
 msgid "Search for an App"
 msgstr ""
 
-#: aiagallery/module/dgallery/home/Gui.js:174
+#: aiagallery/module/dgallery/home/Gui.js:206
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:135
 msgid "Search"
 msgstr ""
 
-#: aiagallery/module/dgallery/home/Gui.js:221
+#: aiagallery/module/dgallery/home/Gui.js:253
 msgid "Most popular tags in the gallery"
+msgstr ""
+
+#: aiagallery/module/dgallery/home/Gui.js:395
+msgid "Featured Apps"
+msgstr ""
+
+#: aiagallery/module/dgallery/home/Gui.js:432
+msgid "Newest Apps"
+msgstr ""
+
+#: aiagallery/module/dgallery/home/Gui.js:470
+msgid "Most Popular Apps"
 msgstr ""
 
 #: aiagallery/module/dgallery/user/Gui.js:95

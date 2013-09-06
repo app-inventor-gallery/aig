@@ -254,26 +254,46 @@ msgstr "作者名字："
 msgid "No results found"
 msgstr "很抱歉，没有符合您条件的结果。"
 
-#: aiagallery/module/dgallery/home/Gui.js:105
+#: aiagallery/module/dgallery/home/Gui.js:107
 msgid "Welcome to the MIT App Inventor Community Gallery!"
 msgstr "欢迎来到 App Inventor 的社区画廊！"
 
-#: aiagallery/module/dgallery/home/Gui.js:129
-msgid "$$languagename"
-msgstr "中文"
+#: aiagallery/module/dgallery/home/Gui.js:121
+msgid "Check out mobile apps from all over the world! <br/>Download App Inventor blocks and learn to program! <br/>Join the community of App Inventor programmers!<br/><br/>"
+msgstr "欣赏全球各地的优秀应用！ <br/>下载 App Inventor 源代码学习、体验编程乐趣！ <br/>参与到 App Inventor 的爱好者社区中来！"
 
-#: aiagallery/module/dgallery/home/Gui.js:157
+#: aiagallery/module/dgallery/home/Gui.js:143
+msgid "Browse Gallery in the language you like"
+msgstr "选择您浏览本站的语言"
+
+#: aiagallery/module/dgallery/home/Gui.js:162
+msgid "$$languagename"
+msgstr "简体中文"
+
+#: aiagallery/module/dgallery/home/Gui.js:191
 msgid "Search for an App"
 msgstr "在此搜索应用："
 
-#: aiagallery/module/dgallery/home/Gui.js:174
+#: aiagallery/module/dgallery/home/Gui.js:206
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:135
 msgid "Search"
 msgstr "快速搜索"
 
-#: aiagallery/module/dgallery/home/Gui.js:221
+#: aiagallery/module/dgallery/home/Gui.js:253
 msgid "Most popular tags in the gallery"
 msgstr "站内最受用户欢迎的标签："
+
+#: aiagallery/module/dgallery/home/Gui.js:395
+msgid "Featured Apps"
+msgstr "推荐应用"
+
+#: aiagallery/module/dgallery/home/Gui.js:432
+msgid "Newest Apps"
+msgstr "最新上榜应用"
+
+#: aiagallery/module/dgallery/home/Gui.js:470
+msgid "Most Popular Apps"
+msgstr "人气最高应用"
 
 #: aiagallery/module/dgallery/user/Gui.js:95
 msgid "Username:"

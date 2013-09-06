@@ -392,10 +392,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         });
 
       // Featured Apps heading
-      var featuredAppsHeader = new qx.ui.basic.Label();
+      var featuredAppsHeader = new qx.ui.basic.Label(this.tr("Featured Apps"));
       featuredAppsHeader.set(
         {
-          value : "Featured Apps",
           font  : font,
           decorator : "home-page-header"
         });
@@ -430,10 +429,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         });
 
       // Newest Apps heading
-      var newestAppsHeader = new qx.ui.basic.Label();
+      var newestAppsHeader = new qx.ui.basic.Label(this.tr("Newest Apps"));
       newestAppsHeader.set(
         {
-          value : "Newest Apps",
           font  : font,
           decorator : "home-page-header"
         });
@@ -469,10 +467,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         });
 
       // Liked Apps heading
-      var likedAppsHeader = new qx.ui.basic.Label();
+      var likedAppsHeader = new qx.ui.basic.Label(this.tr("Most Popular Apps"));
       likedAppsHeader.set(
         {
-          value : "Most Liked Apps",
           font  : font,
           decorator : "home-page-header"
         });
