@@ -1702,6 +1702,34 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           }
         });
 
+      // If we're on App Engine...
+      switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+      {
+	      case "appengine":  
+	        // Setting up memcache references
+	        var memcacheServiceFactory = 
+	          Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+	        var memcache = memcacheServiceFactory.getMemcacheService();	
+	  
+	     	// If this app is memcached, is it on homepage?
+	  	    // If it is on homepage we need to update cache for that
+	  
+	        // read from cache, -1 is magic number to get homeRibbonData
+	        var value = memcache.get(-1); 
+
+	        if (value == null) {
+	          break;
+	          // If nothing is in the cache, do nothing 
+	        } else {
+	  		// If homepage is cached let's delete that to force update regardless what we are editing (temporary solution)
+	  		// Optimal solution: only delete homepage cache after checking and confirming the app being edited is a part of homepage cache (featured, most liked, newest)
+	  		  cacheChecker = memcache.delete(-1);
+	  		}
+	  
+	  	  // End of App Engine processing			  
+	        break;	
+	  }
+
       // Let the user know the app was removed
       this.logMessage(appData.owner, "App removed", appData.title);
 
