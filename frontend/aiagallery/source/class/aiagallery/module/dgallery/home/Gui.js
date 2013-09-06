@@ -118,7 +118,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 	  
 	  // Add the remaining lines
       var introLabel = new qx.ui.basic.Label(
-		  this.tr("  Check out mobile apps from all over the world! <br/>  Download App Inventor blocks and learn to program! <br/>  Join the community of App Inventor programmers!"));
+		  this.tr("Check out mobile apps from all over the world! <br/>Download App Inventor blocks and learn to program! <br/>Join the community of App Inventor programmers!<br/><br/>"));
 	  font.setSize(16);
       introLabel.setFont(font);
       introLabel.set(
@@ -129,12 +129,26 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 
       innerCanvas.add(introLabel);
 
+      // Add a vertical spacer
+      o = new qx.ui.core.Spacer();
+      o.set(
+        {
+          minWidth     : 20
+        });
+      innerCanvas.add(o, { flex : 1 });
 
-
+      
+      // Create a simple international header
+      var i8nLabel = new qx.ui.basic.Label(
+		  this.tr("Browse Gallery in the language you like"));
+      font.setSize(16);
+      i8nLabel.setFont(font);
+      innerCanvas.add(i8nLabel);
 	  
 	  // Add translation / internationalization options
-	  // Add UI components
+	  // Add UI components, set it to be horizontal
 	  var i8nRadioGroup = new qx.ui.form.RadioButtonGroup();
+	  i8nRadioGroup.setLayout(new qx.ui.layout.Flow());
 	  
 	  // Access all available locales and the currently set locale
 	  var localeManager = qx.locale.Manager.getInstance();
@@ -144,13 +158,15 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 	  console.log(locales);
 	  console.log(currentLocale);
 	  
+	  // Register auto-generated string in *.po translation files
 	  this.marktr("$$languagename");
 	  
-	  // create a radio button for every available locale
+	  // Create a radio button for every available locale
 	  for (var i = 0; i < locales.length; i++) {
 	    var locale = locales[i];
 	    var languageName = localeManager.translate("$$languagename", [], locale);
 	    var localeButton = new qx.ui.form.RadioButton(languageName.toString());
+        localeButton.setMarginRight(5);
 	    // save the locale as model
 	    localeButton.setModel(locale);
 	    i8nRadioGroup.add(localeButton);
