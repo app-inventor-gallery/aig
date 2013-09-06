@@ -408,25 +408,25 @@ msgstr "检举此用户的个人档案"
 
 #: aiagallery/module/dgallery/userinfo/Gui.js:390
 msgid "Apps By "
-msgstr ""
+msgstr "以下应用属于 "
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:44
 msgid "Edit App: "
-msgstr ""
+msgstr "修改应用："
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:79
 #: aiagallery/module/mgmt/applications/Gui.js:110
 msgid "Title"
-msgstr ""
+msgstr "标题"
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:80
 #: aiagallery/module/mgmt/applications/Gui.js:115
 msgid "Description"
-msgstr ""
+msgstr "描述"
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:81
 msgid "Categories"
-msgstr ""
+msgstr "分类"
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:209
 #: aiagallery/module/mgmt/permissions/Gui.js:107
@@ -435,55 +435,55 @@ msgstr ""
 #: aiagallery/module/mgmt/applications/Gui.js:72
 #: aiagallery/module/mgmt/users/Gui.js:103
 msgid "Delete"
-msgstr ""
+msgstr "删除"
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:217
 msgid "add tags"
-msgstr ""
+msgstr "添加标签"
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:220
 msgid "Add tag"
-msgstr ""
+msgstr "添加标签"
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:289
 #: aiagallery/module/mgmt/applications/Gui.js:120
 msgid "Flags"
-msgstr ""
+msgstr "检举"
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:302
 msgid "Remove all flags"
-msgstr ""
+msgstr "清除所有检举记录"
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:324
 #: aiagallery/widget/FlagPopUp.js:90
 msgid "Ok"
-msgstr ""
+msgstr "确定"
 
 #: aiagallery/module/mgmt/applications/Gui.js:44
 #: aiagallery/module/mgmt/users/Gui.js:44
 msgid "Edit"
-msgstr ""
+msgstr "修改"
 
 #: aiagallery/module/mgmt/applications/Gui.js:93
 msgid "Owner"
-msgstr ""
+msgstr "作者"
 
 #: aiagallery/module/mgmt/applications/Gui.js:105
 #: aiagallery/module/mgmt/users/Gui.js:121
 msgid "Display Name"
-msgstr ""
+msgstr "作者名字"
 
 #: aiagallery/module/mgmt/applications/Gui.js:130
 msgid "Tags"
-msgstr ""
+msgstr "标签"
 
 #: aiagallery/module/mgmt/applications/Gui.js:140
 msgid "DLs"
-msgstr ""
+msgstr "下载数"
 
 #: aiagallery/module/mgmt/applications/Gui.js:150
 msgid "Coms"
-msgstr ""
+msgstr "留言数"
 
 #: aiagallery/module/mgmt/applications/Gui.js:155
 msgid "Im"
@@ -601,11 +601,11 @@ msgstr ""
 
 #: aiagallery/widget/SearchResult.js:663
 msgid "Like It?"
-msgstr ""
+msgstr "给这个应用一个赞"
 
 #: aiagallery/widget/SearchResult.js:716
 msgid "Download Source"
-msgstr ""
+msgstr "下载源文件"
 
 #: aiagallery/widget/mystuff/Detail.js:82
 msgid "Enter the application title (30 character limit)"
