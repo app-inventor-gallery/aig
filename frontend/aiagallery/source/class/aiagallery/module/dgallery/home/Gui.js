@@ -84,33 +84,38 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       innerCanvas.setDecorator(homepageBG);
 
       // Put in some welcoming text
-      text = 
-        [
-          "<div style='padding:0 30px 0 0;'>",
-          "<div style='text-align:center;'>",
-          "<h2>",
-          "Welcome to the <br/>MIT App Inventor Community Gallery!",
-          "</h2>",
-          "</div>",
-
-          "<div style='font-size:larger; font-weight:bold; padding:6px;'>",
-          "<b>",
-          "<ul><li>Check out mobile apps from all over the world!<br/></li>",
-          "<li>Download App Inventor blocks and learn to program!<br/></li>",
-          "<li>Join the community of App Inventor programmers!<br/></li></ul>",
-          "</div>",
-          "</div>" 
-        ].join("");
-      this.welcomingLabel = new qx.ui.basic.Label();
-      this.welcomingLabel.set(
+      // text = 
+      //   [
+      //     "<div style='padding:0 30px 0 0;'>",
+      //     "<div style='text-align:center;'>",
+      //     "<h2>",
+      //     "Welcome to the <br/>MIT App Inventor Community Gallery!",
+      //     "</h2>",
+      //     "</div>",
+      // 
+      //     "<div style='font-size:larger; font-weight:bold; padding:6px;'>",
+      //     "<b>",
+      //     "<ul><li>Check out mobile apps from all over the world!<br/></li>",
+      //     "<li>Download App Inventor blocks and learn to program!<br/></li>",
+      //     "<li>Join the community of App Inventor programmers!<br/></li></ul>",
+      //     "</div>",
+      //     "</div>" 
+      //   ].join("");
+      var welcomingLabel = new qx.ui.basic.Label(
+		  this.tr("Welcome to the MIT App Inventor Community Gallery!"));
+	  font.setSize(26);
+      welcomingLabel.setFont(font);
+      welcomingLabel.set(
         {
-          value        : text,
           rich         : true,
           width        : 434,
           height       : 300      
         });
 
-      innerCanvas.add(this.welcomingLabel);
+      innerCanvas.add(welcomingLabel);
+
+
+
 	  
 	  // Add translation / internationalization options
 	  // Add UI components
@@ -155,8 +160,6 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       searchLabel = new qx.ui.basic.Label(this.tr("Search for an App"));
       
       // Create a large bold font
-      var searchFont = 
-        qx.theme.manager.Font.getInstance().resolve("bold").clone();
       font.setSize(16);
 
       searchLabel.setFont(font);

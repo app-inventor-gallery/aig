@@ -254,20 +254,24 @@ msgstr "作者名字："
 msgid "No results found"
 msgstr "很抱歉，没有符合您条件的结果。"
 
-#: aiagallery/module/dgallery/home/Gui.js:217
+#: aiagallery/module/dgallery/home/Gui.js:105
+msgid "Welcome to the MIT App Inventor Community Gallery!"
+msgstr "欢迎来到 App Inventor 的社区画廊！"
+
+#: aiagallery/module/dgallery/home/Gui.js:129
 msgid "$$languagename"
 msgstr "中文"
 
-#: aiagallery/module/dgallery/home/Gui.js:245
+#: aiagallery/module/dgallery/home/Gui.js:157
 msgid "Search for an App"
 msgstr "在此搜索应用："
 
-#: aiagallery/module/dgallery/home/Gui.js:262
+#: aiagallery/module/dgallery/home/Gui.js:174
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:135
 msgid "Search"
 msgstr "快速搜索"
 
-#: aiagallery/module/dgallery/home/Gui.js:309
+#: aiagallery/module/dgallery/home/Gui.js:221
 msgid "Most popular tags in the gallery"
 msgstr "站内最受用户欢迎的标签："
 

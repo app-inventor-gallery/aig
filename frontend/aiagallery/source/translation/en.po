@@ -254,20 +254,24 @@ msgstr ""
 msgid "No results found"
 msgstr ""
 
-#: aiagallery/module/dgallery/home/Gui.js:217
+#: aiagallery/module/dgallery/home/Gui.js:105
+msgid "Welcome to the MIT App Inventor Community Gallery!"
+msgstr ""
+
+#: aiagallery/module/dgallery/home/Gui.js:129
 msgid "$$languagename"
 msgstr "English"
 
-#: aiagallery/module/dgallery/home/Gui.js:245
+#: aiagallery/module/dgallery/home/Gui.js:157
 msgid "Search for an App"
 msgstr ""
 
-#: aiagallery/module/dgallery/home/Gui.js:262
+#: aiagallery/module/dgallery/home/Gui.js:174
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:135
 msgid "Search"
 msgstr ""
 
-#: aiagallery/module/dgallery/home/Gui.js:309
+#: aiagallery/module/dgallery/home/Gui.js:221
 msgid "Most popular tags in the gallery"
 msgstr ""
 
