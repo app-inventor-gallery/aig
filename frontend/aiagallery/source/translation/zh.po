@@ -98,7 +98,7 @@ msgid "480 Characters Left"
 msgstr "剩余 480 字可写"
 
 #: aiagallery/module/dgallery/appinfo/Gui.js:161
-#: aiagallery/widget/mystuff/Detail.js:175
+#: aiagallery/widget/mystuff/Detail.js:185
 msgid "Add"
 msgstr "添加"
 
@@ -661,43 +661,47 @@ msgstr "标签："
 msgid "Enter a new tag"
 msgstr "输入一个新标签名"
 
-#: aiagallery/widget/mystuff/Detail.js:238
+#: aiagallery/widget/mystuff/Detail.js:175
+msgid "For example, if you are from unX, you may want to tag your app with 'Spanish' or 'Portuguese.'"
+msgstr "比如说，如果您来自 unX，欢迎您使用标签标明您应用内沿用的语言。"
+
+#: aiagallery/widget/mystuff/Detail.js:249
 msgid "Delete Tag"
 msgstr "删除标签"
 
-#: aiagallery/widget/mystuff/Detail.js:280
+#: aiagallery/widget/mystuff/Detail.js:291
 msgid "Select source file"
 msgstr "选择源文件上传"
 
-#: aiagallery/widget/mystuff/Detail.js:351
+#: aiagallery/widget/mystuff/Detail.js:362
 msgid "Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose 'Other Actions' and select 'Download Source'. Do not open the downloaded zip file but upload it here directly."
 msgstr "请上传一个 App Inventor 生成的源文件的 zip 压缩包。"
 
-#: aiagallery/widget/mystuff/Detail.js:372
+#: aiagallery/widget/mystuff/Detail.js:383
 msgid "Select Image"
 msgstr "选择题图或标志上传"
 
-#: aiagallery/widget/mystuff/Detail.js:431
+#: aiagallery/widget/mystuff/Detail.js:442
 msgid "The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one. The file size limit is "
 msgstr "您上传的图片将会被压缩成 180*230 尺寸，在应用详情页面和所有搜索结果页面中显示。图片上传的文件大小限制是 "
 
-#: aiagallery/widget/mystuff/Detail.js:452
+#: aiagallery/widget/mystuff/Detail.js:463
 msgid "Save Application"
 msgstr "保存此应用"
 
-#: aiagallery/widget/mystuff/Detail.js:533
+#: aiagallery/widget/mystuff/Detail.js:544
 msgid "Reset"
 msgstr "清空表单"
 
-#: aiagallery/widget/mystuff/Detail.js:559
+#: aiagallery/widget/mystuff/Detail.js:570
 msgid "Discard"
 msgstr "撤销"
 
-#: aiagallery/widget/mystuff/Detail.js:583
+#: aiagallery/widget/mystuff/Detail.js:594
 msgid "Really delete application"
 msgstr "确认删除应用"
 
-#: aiagallery/widget/mystuff/Detail.js:815
+#: aiagallery/widget/mystuff/Detail.js:826
 msgid "Delete Application"
 msgstr "删除应用"
 

@@ -152,7 +152,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o = new qx.ui.form.TextField();
     o.set(
       {
-        tabIndex    : 5,
+        tabIndex    : 4,
         width       : 150,
         placeholder : this.tr("Enter a new tag")
       });
@@ -169,6 +169,16 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     form.add(o, "", null, "newTag", null,
              { row : 4, column : 2 });
     this.txtNewTag = o;
+
+
+    // Button to add a tag
+    o = new qx.ui.basic.Label(this.tr("For example, if you are from unX, you may want to tag your app with 'Spanish' or 'Portuguese.'"));
+    o.set(
+      {
+        tabIndex  : 5,
+        width	  : 150
+      });
+    form.add(o, { row : 5, column : 2 });
 
 
     // Button to add a tag
@@ -217,8 +227,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         this.txtNewTag.setValue(null);
       },
       this);
-    form.addButton(o, { row : 5, column : 3 });
+    form.addButton(o, { row : 6, column : 3 });
     this.butAddTag = o;
+
 
     // Application-specific tags
     o = new qx.ui.form.List();
@@ -334,10 +345,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
     form.addButton(tempContainer, { row : 0, column : 7, rowSpan : 1 });
 
-    // bind onClick event for the popup
-//    sourceFileMessage = "Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose "Other Actions" and select "Download Source". Do not open the downloaded zip file but upload it here directly.";
-//    this.sourceFilePrompt.addListener("click", function(e){ alert(sourceFileMessage); }, this);
-
     // define the popup we need
     var sourceFilePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
         backgroundColor: "#FFFAD3",
@@ -359,14 +366,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         sourceFilePopup.placeToMouse(e);
         sourceFilePopup.show();
     }, this);
-        
-    // ********* beta002 end *********
-
-        
-
-    // ********* beta002 end *********
-
-
     
     // Image1
     o = new aiagallery.widget.mystuff.FormImage(this.tr("Select Image"), "image1");
