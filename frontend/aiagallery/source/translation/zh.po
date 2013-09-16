@@ -11,51 +11,47 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: aiagallery/main/Gui.js:114
-msgid "App Inventor"
-msgstr ""
+#: aiagallery/main/Gui.js:111
+msgid "App Inventor<br/>Community Gallery"
+msgstr "App Inventor<br/>社区画廊"
 
-#: aiagallery/main/Gui.js:116
-msgid "Community Gallery"
-msgstr "社区画廊"
-
-#: aiagallery/main/Gui.js:133
+#: aiagallery/main/Gui.js:126
 msgid "<div><br/>Welcome to the <a href='gallery.html'>gallery!</a> See <a href='https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit'>Release Notes</a><br/>and post feedback / bug reports to the <a href='http://groups.google.com/group/app-inventor-gallery/topics' >Forum</a></div>"
 msgstr "<div><br/>欢迎来到 <a href='gallery.html'>社区画廊</a>！更新请参见<a href='https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit'>版本注释。</a><br/>如有意见建议欢迎在<a href='http://groups.google.com/group/app-inventor-gallery/topics' >论坛</a>发布。</div>"
 
-#: aiagallery/main/Gui.js:172
+#: aiagallery/main/Gui.js:165
 msgid "Simulate"
 msgstr ""
 
-#: aiagallery/main/Gui.js:700
+#: aiagallery/main/Gui.js:693
 msgid "About the gallery"
 msgstr "关于本站"
 
-#: aiagallery/main/Gui.js:712
+#: aiagallery/main/Gui.js:705
 msgid "App Inventor Gallery About Us"
 msgstr ""
 
-#: aiagallery/main/Gui.js:720
+#: aiagallery/main/Gui.js:713
 msgid "Terms of Use"
 msgstr "使用条款"
 
-#: aiagallery/main/Gui.js:732
+#: aiagallery/main/Gui.js:725
 msgid "App Inventor Gallery Terms of Use"
 msgstr ""
 
-#: aiagallery/main/Gui.js:740
+#: aiagallery/main/Gui.js:733
 msgid "Privacy Policy"
 msgstr "隐私条约"
 
-#: aiagallery/main/Gui.js:752
+#: aiagallery/main/Gui.js:745
 msgid "App Inventor Gallery Privacy Policy"
 msgstr ""
 
-#: aiagallery/main/Gui.js:760
+#: aiagallery/main/Gui.js:753
 msgid "Supported Browsers"
 msgstr "支持浏览器"
 
-#: aiagallery/main/Gui.js:772
+#: aiagallery/main/Gui.js:765
 msgid "App Inventor Gallery Supported Browsers"
 msgstr ""
 
@@ -189,6 +185,10 @@ msgstr "精确搜索"
 #: aiagallery/module/mgmt/motd/Gui.js:73
 msgid "Clear"
 msgstr "清空"
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:175
+msgid "Search Results"
+msgstr "搜索结果："
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1278
 msgid "Search for words found in apps' title, description, categories, or tags"
@@ -402,6 +402,10 @@ msgstr "我的应用收到了别人的留言"
 #: aiagallery/module/dgallery/user/Gui.js:734
 msgid "Someone downloads one of my apps"
 msgstr "我的应用被别人下载"
+
+#: aiagallery/module/dgallery/user/Gui.js:759
+msgid "Select your profile image"
+msgstr "上传您的个人档案头像"
 
 #: aiagallery/module/dgallery/user/Gui.js:856
 msgid "You must log in to edit your profile"
@@ -633,6 +637,14 @@ msgstr "给这个应用一个赞"
 msgid "Download Source"
 msgstr "下载源文件"
 
+#: aiagallery/widget/SearchResult.js:818
+msgid "Created: "
+msgstr "创建时间："
+
+#: aiagallery/widget/SearchResult.js:831
+msgid "Last updated: "
+msgstr "最近更新："
+
 #: aiagallery/widget/mystuff/Detail.js:82
 msgid "Enter the application title (30 character limit)"
 msgstr "输入应用名称（字数上限 30 字）"
@@ -694,6 +706,12 @@ msgstr "删除应用"
 
 #~ msgid "<div><br/>Welcome to the <a href=\"gallery.html\">gallery!</a> See <a href=\"https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit\" target=\"_blank\" >Release Notes</a><br/>and post feedback / bug reports to the <a href=\"http://groups.google.com/group/app-inventor-gallery/topics\" target=\"_blank\" >Forum</a></div>"
 #~ msgstr "<div><br/>欢迎来到<a href=\"gallery.html\">社区画廊</a>！更新请参见<a href=\"https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit\" target=\"_blank\" >版本注释</a><br/>，如有意见建议欢迎在<a href=\"http://groups.google.com/group/app-inventor-gallery/topics\" target=\"_blank\" >论坛</a>中发布。</div>"
+
+#~ msgid "App Inventor"
+#~ msgstr ""
+
+#~ msgid "Community Gallery"
+#~ msgstr "社区画廊"
 
 #~ msgid "Contest Winners"
 #~ msgstr "竞赛结果"

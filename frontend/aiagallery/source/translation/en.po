@@ -11,51 +11,47 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: aiagallery/main/Gui.js:114
-msgid "App Inventor"
+#: aiagallery/main/Gui.js:111
+msgid "App Inventor<br/>Community Gallery"
 msgstr ""
 
-#: aiagallery/main/Gui.js:116
-msgid "Community Gallery"
-msgstr ""
-
-#: aiagallery/main/Gui.js:133
+#: aiagallery/main/Gui.js:126
 msgid "<div><br/>Welcome to the <a href='gallery.html'>gallery!</a> See <a href='https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit'>Release Notes</a><br/>and post feedback / bug reports to the <a href='http://groups.google.com/group/app-inventor-gallery/topics' >Forum</a></div>"
 msgstr ""
 
-#: aiagallery/main/Gui.js:172
+#: aiagallery/main/Gui.js:165
 msgid "Simulate"
 msgstr ""
 
-#: aiagallery/main/Gui.js:700
+#: aiagallery/main/Gui.js:693
 msgid "About the gallery"
 msgstr ""
 
-#: aiagallery/main/Gui.js:712
+#: aiagallery/main/Gui.js:705
 msgid "App Inventor Gallery About Us"
 msgstr ""
 
-#: aiagallery/main/Gui.js:720
+#: aiagallery/main/Gui.js:713
 msgid "Terms of Use"
 msgstr ""
 
-#: aiagallery/main/Gui.js:732
+#: aiagallery/main/Gui.js:725
 msgid "App Inventor Gallery Terms of Use"
 msgstr ""
 
-#: aiagallery/main/Gui.js:740
+#: aiagallery/main/Gui.js:733
 msgid "Privacy Policy"
 msgstr ""
 
-#: aiagallery/main/Gui.js:752
+#: aiagallery/main/Gui.js:745
 msgid "App Inventor Gallery Privacy Policy"
 msgstr ""
 
-#: aiagallery/main/Gui.js:760
+#: aiagallery/main/Gui.js:753
 msgid "Supported Browsers"
 msgstr ""
 
-#: aiagallery/main/Gui.js:772
+#: aiagallery/main/Gui.js:765
 msgid "App Inventor Gallery Supported Browsers"
 msgstr ""
 
@@ -188,6 +184,10 @@ msgstr ""
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:158
 #: aiagallery/module/mgmt/motd/Gui.js:73
 msgid "Clear"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:175
+msgid "Search Results"
 msgstr ""
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1278
@@ -401,6 +401,10 @@ msgstr ""
 
 #: aiagallery/module/dgallery/user/Gui.js:734
 msgid "Someone downloads one of my apps"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:759
+msgid "Select your profile image"
 msgstr ""
 
 #: aiagallery/module/dgallery/user/Gui.js:856
@@ -633,6 +637,14 @@ msgstr ""
 msgid "Download Source"
 msgstr ""
 
+#: aiagallery/widget/SearchResult.js:818
+msgid "Created: "
+msgstr ""
+
+#: aiagallery/widget/SearchResult.js:831
+msgid "Last updated: "
+msgstr ""
+
 #: aiagallery/widget/mystuff/Detail.js:82
 msgid "Enter the application title (30 character limit)"
 msgstr ""
@@ -693,6 +705,12 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "<div><br/>Welcome to the <a href=\"gallery.html\">gallery!</a> See <a href=\"https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit\" target=\"_blank\" >Release Notes</a><br/>and post feedback / bug reports to the <a href=\"http://groups.google.com/group/app-inventor-gallery/topics\" target=\"_blank\" >Forum</a></div>"
+#~ msgstr ""
+
+#~ msgid "App Inventor"
+#~ msgstr ""
+
+#~ msgid "Community Gallery"
 #~ msgstr ""
 
 #~ msgid "Contest Winners"
