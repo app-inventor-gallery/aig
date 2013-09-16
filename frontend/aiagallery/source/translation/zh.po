@@ -85,6 +85,7 @@ msgid "Flag this comment"
 msgstr "检举此留言"
 
 #: aiagallery/module/dgallery/appinfo/Gui.js:99
+#: aiagallery/module/dgallery/myapps/Gui.js:197
 msgid "Comments"
 msgstr "留言"
 
@@ -101,6 +102,7 @@ msgid "480 Characters Left"
 msgstr "剩余 480 字可写"
 
 #: aiagallery/module/dgallery/appinfo/Gui.js:161
+#: aiagallery/widget/mystuff/Detail.js:175
 msgid "Add"
 msgstr "添加"
 
@@ -212,20 +214,6 @@ msgstr "标签中包含："
 msgid "Selected categories"
 msgstr "所在分类:"
 
-#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1398
-#: aiagallery/module/mgmt/applications/Gui.js:145
-msgid "Likes"
-msgstr "被赞次数："
-
-#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1402
-msgid "Downloads"
-msgstr "下载次数："
-
-#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1412
-#: aiagallery/module/mgmt/applications/Gui.js:135
-msgid "Views"
-msgstr "浏览次数："
-
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1422
 msgid "Author Name"
 msgstr "作者名字："
@@ -274,6 +262,27 @@ msgstr "最新上榜应用"
 #: aiagallery/module/dgallery/home/Gui.js:470
 msgid "Most Popular Apps"
 msgstr "人气最高应用"
+
+#: aiagallery/module/dgallery/myapps/Gui.js:66
+msgid "Add New Application"
+msgstr "添加新应用"
+
+#: aiagallery/module/dgallery/myapps/Gui.js:179
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1398
+#: aiagallery/module/mgmt/applications/Gui.js:145
+msgid "Likes"
+msgstr "被赞次数："
+
+#: aiagallery/module/dgallery/myapps/Gui.js:185
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1402
+msgid "Downloads"
+msgstr "下载次数："
+
+#: aiagallery/module/dgallery/myapps/Gui.js:191
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1412
+#: aiagallery/module/mgmt/applications/Gui.js:135
+msgid "Views"
+msgstr "浏览次数："
 
 #: aiagallery/module/dgallery/user/Gui.js:95
 msgid "Username:"
@@ -384,7 +393,7 @@ msgstr "我的应用收到了别人的赞"
 #: aiagallery/module/dgallery/user/Gui.js:709
 #: aiagallery/module/dgallery/user/Gui.js:742
 msgid "Every..."
-msgstr ""
+msgstr "每个……"
 
 #: aiagallery/module/dgallery/user/Gui.js:701
 msgid "Someone comments on one of my apps"
@@ -427,16 +436,20 @@ msgid "Edit App: "
 msgstr "修改应用："
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:79
+#: aiagallery/module/dgallery/myapps/Gui.js:169
 #: aiagallery/module/mgmt/applications/Gui.js:110
+#: aiagallery/widget/mystuff/Detail.js:92
 msgid "Title"
 msgstr "标题"
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:80
 #: aiagallery/module/mgmt/applications/Gui.js:115
+#: aiagallery/widget/mystuff/Detail.js:115
 msgid "Description"
 msgstr "描述"
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:81
+#: aiagallery/widget/mystuff/Detail.js:145
 msgid "Categories"
 msgstr "分类"
 
@@ -499,11 +512,11 @@ msgstr "留言数"
 
 #: aiagallery/module/mgmt/applications/Gui.js:155
 msgid "Im"
-msgstr ""
+msgstr "我是"
 
 #: aiagallery/module/mgmt/applications/Gui.js:300
 msgid "Really delete app "
-msgstr ""
+msgstr "真的删除应用"
 
 #: aiagallery/module/mgmt/flags/Gui.js:177
 #: aiagallery/module/mgmt/flags/Gui.js:280
@@ -512,11 +525,11 @@ msgstr ""
 
 #: aiagallery/module/mgmt/flags/Gui.js:201
 msgid "Really Delete this App?"
-msgstr ""
+msgstr "真的删除此应用吗？"
 
 #: aiagallery/module/mgmt/flags/Gui.js:215
 msgid "Go To App"
-msgstr ""
+msgstr "跳转至应用"
 
 #: aiagallery/module/mgmt/flags/Gui.js:304
 msgid "Really Delete this User?"
@@ -556,17 +569,17 @@ msgstr ""
 
 #: aiagallery/module/mgmt/users/CellEditorFactory.js:47
 msgid "Add New User"
-msgstr ""
+msgstr "添加新用户"
 
 #: aiagallery/module/mgmt/users/CellEditorFactory.js:92
 msgid "DisplayName"
-msgstr ""
+msgstr "显示名称"
 
 #: aiagallery/module/mgmt/users/CellEditorFactory.js:93
 #: aiagallery/module/mgmt/applications/Gui.js:99
 #: aiagallery/module/mgmt/users/Gui.js:122
 msgid "Email"
-msgstr ""
+msgstr "邮件地址"
 
 #: aiagallery/module/mgmt/users/CellEditorFactory.js:94
 #: aiagallery/module/mgmt/users/Gui.js:123
@@ -576,19 +589,20 @@ msgstr ""
 #: aiagallery/module/mgmt/users/CellEditorFactory.js:95
 #: aiagallery/module/mgmt/users/Gui.js:124
 msgid "Permissions"
-msgstr ""
+msgstr "权限"
 
 #: aiagallery/module/mgmt/users/CellEditorFactory.js:96
 #: aiagallery/module/mgmt/users/Gui.js:125
 msgid "Permission Groups"
-msgstr ""
+msgstr "权限组"
 
 #: aiagallery/module/mgmt/users/CellEditorFactory.js:97
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:82
+#: aiagallery/module/dgallery/myapps/Gui.js:173
 #: aiagallery/module/mgmt/applications/Gui.js:125
 #: aiagallery/module/mgmt/users/Gui.js:126
 msgid "Status"
-msgstr ""
+msgstr "状态"
 
 #: aiagallery/module/mgmt/users/Gui.js:71
 msgid "Turn on All User Notifications"
@@ -627,6 +641,10 @@ msgstr "输入应用名称（字数上限 30 字）"
 msgid "Enter a brief description (480 Character Limit)"
 msgstr "输入一段简短介绍（字数上限 480 字）"
 
+#: aiagallery/widget/mystuff/Detail.js:126
+msgid "Tags :"
+msgstr "标签："
+
 #: aiagallery/widget/mystuff/Detail.js:157
 msgid "Enter a new tag"
 msgstr "输入一个新标签名"
@@ -643,9 +661,21 @@ msgstr "选择源文件上传"
 msgid "Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose 'Other Actions' and select 'Download Source'. Do not open the downloaded zip file but upload it here directly."
 msgstr "请上传一个 App Inventor 生成的源文件的 zip 压缩包。"
 
+#: aiagallery/widget/mystuff/Detail.js:372
+msgid "Select Image"
+msgstr "选择题图或标志上传"
+
 #: aiagallery/widget/mystuff/Detail.js:431
 msgid "The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one. The file size limit is "
 msgstr "您上传的图片将会被压缩成 180*230 尺寸，在应用详情页面和所有搜索结果页面中显示。图片上传的文件大小限制是 "
+
+#: aiagallery/widget/mystuff/Detail.js:452
+msgid "Save Application"
+msgstr "保存此应用"
+
+#: aiagallery/widget/mystuff/Detail.js:533
+msgid "Reset"
+msgstr "清空表单"
 
 #: aiagallery/widget/mystuff/Detail.js:559
 msgid "Discard"

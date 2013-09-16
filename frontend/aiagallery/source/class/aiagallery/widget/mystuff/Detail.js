@@ -89,7 +89,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         this.setTitle(e.getData());
       },
       this);
-    form.add(o, "Title", null, "title", null,
+    form.add(o, this.tr("Title"), null, "title", null,
              { row : 0, column : 0, colSpan : 6 });
     this.txtTitle = o;
 
@@ -112,7 +112,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       },
       this); 
 
-    form.add(o, "Description", null, "description", null,
+    form.add(o, this.tr("Description"), null, "description", null,
              { row : 1, column : 0, colSpan : 6, rowSpan : 2 });
     this.txtDescription = o;
 
@@ -123,7 +123,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
 
     // Button to add a tag
-    o = new qx.ui.basic.Label("Tags :");
+    o = new qx.ui.basic.Label(this.tr("Tags :"));
     tempContainer.add(o);
 
     // Add the right spacer
@@ -142,7 +142,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         required      : true
       });
     o.addListener("changeSelection", this._changeCategories, this);
-    form.add(o, "Categories", null, "categories", null,
+    form.add(o, this.tr("Categories"), null, "categories", null,
              { row : 3, column : 0, rowSpan : 5 });
     this.categoryController = new qx.data.controller.List(
       new qx.data.Array(categoryList), o);
@@ -172,7 +172,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
 
     // Button to add a tag
-    o = new qx.ui.form.Button("Add");
+    o = new qx.ui.form.Button(this.tr("Add"));
     o.set(
       {
         tabIndex  : 6,
@@ -277,7 +277,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     this.butDeleteTag = o;
 
     // Source file name
-    o = new aiagallery.widget.mystuff.FormFile(this.tr("Select source file", "source"));
+    o = new aiagallery.widget.mystuff.FormFile(this.tr("Select source file"), "source");
     o.set(
       {
         tabIndex  : 9,
@@ -369,7 +369,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     
     // Image1
-    o = new aiagallery.widget.mystuff.FormImage("Select Image", "image1");
+    o = new aiagallery.widget.mystuff.FormImage(this.tr("Select Image"), "image1");
     o.set(
       {
         tabIndex  : 10,
@@ -449,7 +449,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     //
     
     // Save
-    o = new qx.ui.form.Button("Save Application");
+    o = new qx.ui.form.Button(this.tr("Save Application"));
     o.set(
       {
         tabIndex : 11,
@@ -530,7 +530,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     // Add some space between the save button and the reset/discard button
     form.addButton(new qx.ui.core.Spacer(100));
 
-    o = new qx.ui.form.Button("Reset");
+    o = new qx.ui.form.Button(this.tr("Reset"));
     o.set(
       {
         tabIndex : 12,

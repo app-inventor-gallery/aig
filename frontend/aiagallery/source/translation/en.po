@@ -85,6 +85,7 @@ msgid "Flag this comment"
 msgstr ""
 
 #: aiagallery/module/dgallery/appinfo/Gui.js:99
+#: aiagallery/module/dgallery/myapps/Gui.js:197
 msgid "Comments"
 msgstr ""
 
@@ -101,6 +102,7 @@ msgid "480 Characters Left"
 msgstr ""
 
 #: aiagallery/module/dgallery/appinfo/Gui.js:161
+#: aiagallery/widget/mystuff/Detail.js:175
 msgid "Add"
 msgstr ""
 
@@ -212,20 +214,6 @@ msgstr ""
 msgid "Selected categories"
 msgstr ""
 
-#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1398
-#: aiagallery/module/mgmt/applications/Gui.js:145
-msgid "Likes"
-msgstr ""
-
-#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1402
-msgid "Downloads"
-msgstr ""
-
-#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1412
-#: aiagallery/module/mgmt/applications/Gui.js:135
-msgid "Views"
-msgstr ""
-
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1422
 msgid "Author Name"
 msgstr ""
@@ -273,6 +261,27 @@ msgstr ""
 
 #: aiagallery/module/dgallery/home/Gui.js:470
 msgid "Most Popular Apps"
+msgstr ""
+
+#: aiagallery/module/dgallery/myapps/Gui.js:66
+msgid "Add New Application"
+msgstr ""
+
+#: aiagallery/module/dgallery/myapps/Gui.js:179
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1398
+#: aiagallery/module/mgmt/applications/Gui.js:145
+msgid "Likes"
+msgstr ""
+
+#: aiagallery/module/dgallery/myapps/Gui.js:185
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1402
+msgid "Downloads"
+msgstr ""
+
+#: aiagallery/module/dgallery/myapps/Gui.js:191
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1412
+#: aiagallery/module/mgmt/applications/Gui.js:135
+msgid "Views"
 msgstr ""
 
 #: aiagallery/module/dgallery/user/Gui.js:95
@@ -427,16 +436,20 @@ msgid "Edit App: "
 msgstr ""
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:79
+#: aiagallery/module/dgallery/myapps/Gui.js:169
 #: aiagallery/module/mgmt/applications/Gui.js:110
+#: aiagallery/widget/mystuff/Detail.js:92
 msgid "Title"
 msgstr ""
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:80
 #: aiagallery/module/mgmt/applications/Gui.js:115
+#: aiagallery/widget/mystuff/Detail.js:115
 msgid "Description"
 msgstr ""
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:81
+#: aiagallery/widget/mystuff/Detail.js:145
 msgid "Categories"
 msgstr ""
 
@@ -585,6 +598,7 @@ msgstr ""
 
 #: aiagallery/module/mgmt/users/CellEditorFactory.js:97
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:82
+#: aiagallery/module/dgallery/myapps/Gui.js:173
 #: aiagallery/module/mgmt/applications/Gui.js:125
 #: aiagallery/module/mgmt/users/Gui.js:126
 msgid "Status"
@@ -627,6 +641,10 @@ msgstr ""
 msgid "Enter a brief description (480 Character Limit)"
 msgstr ""
 
+#: aiagallery/widget/mystuff/Detail.js:126
+msgid "Tags :"
+msgstr ""
+
 #: aiagallery/widget/mystuff/Detail.js:157
 msgid "Enter a new tag"
 msgstr ""
@@ -643,8 +661,20 @@ msgstr ""
 msgid "Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose 'Other Actions' and select 'Download Source'. Do not open the downloaded zip file but upload it here directly."
 msgstr ""
 
+#: aiagallery/widget/mystuff/Detail.js:372
+msgid "Select Image"
+msgstr ""
+
 #: aiagallery/widget/mystuff/Detail.js:431
 msgid "The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one. The file size limit is "
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:452
+msgid "Save Application"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:533
+msgid "Reset"
 msgstr ""
 
 #: aiagallery/widget/mystuff/Detail.js:559
