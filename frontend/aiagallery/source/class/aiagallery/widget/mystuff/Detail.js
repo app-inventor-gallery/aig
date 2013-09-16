@@ -171,21 +171,25 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     this.txtNewTag = o;
 
 
-    // Button to add a tag
-    o = new qx.ui.basic.Label(this.tr("For example, if you are from unX, you may want to tag your app with 'Spanish' or 'Portuguese.'"));
-    o.set(
-      {
-        tabIndex  : 5,
-        width	  : 150
-      });
-    form.add(o, { row : 5, column : 2 });
 
+    // Create a temporary container for a spacer, a label, and a spacer
+    tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+	
+    // Label to remind users what tags are for
+    o = new qx.ui.basic.Label(this.tr("For example, if you are from unX, you may want to tag your app with 'Spanish' or 'Portuguese.'"));
+	o.set({ maxWidth : 150, rich : true, wrap : true });
+    tempContainer.add(o);
+
+    // Add the right spacer
+    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+	// Add the container to form
+    form.addButton(tempContainer, { row : 5, column : 2, colSpan : 2 });
 
     // Button to add a tag
     o = new qx.ui.form.Button(this.tr("Add"));
     o.set(
       {
-        tabIndex  : 6,
+        tabIndex  : 5,
         height    : 24,
         maxHeight : 24
       });
