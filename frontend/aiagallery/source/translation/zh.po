@@ -19,63 +19,43 @@ msgstr ""
 msgid "Community Gallery"
 msgstr "社区画廊"
 
-#: aiagallery/main/Gui.js:135
-msgid "Welcome to the "
-msgstr "欢迎来到"
+#: aiagallery/main/Gui.js:134
+msgid "<div><br/>Welcome to the <a href=\"gallery.html\">gallery!</a> See <a href=\"https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit\" target=\"_blank\" >Release Notes</a><br/>and post feedback / bug reports to the <a href=\"http://groups.google.com/group/app-inventor-gallery/topics\" target=\"_blank\" >Forum</a></div>"
+msgstr "<div><br/>欢迎来到<a href=\"gallery.html\">社区画廊</a>！更新请参见<a href=\"https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit\" target=\"_blank\" >版本注释</a><br/>，如有意见建议欢迎在<a href=\"http://groups.google.com/group/app-inventor-gallery/topics\" target=\"_blank\" >论坛</a>中发布。</div>"
 
-#: aiagallery/main/Gui.js:137
-msgid "gallery!"
-msgstr "画廊！"
-
-#: aiagallery/main/Gui.js:139
-msgid " See "
-msgstr "请参见"
-
-#: aiagallery/main/Gui.js:141
-msgid "Release Notes"
-msgstr "版本注释"
-
-#: aiagallery/main/Gui.js:143
-msgid "and post feedback / bug reports to the "
-msgstr "，欢迎将反馈与意见发布在"
-
-#: aiagallery/main/Gui.js:145
-msgid "Forum"
-msgstr "论坛里面。"
-
-#: aiagallery/main/Gui.js:187
+#: aiagallery/main/Gui.js:173
 msgid "Simulate"
 msgstr ""
 
-#: aiagallery/main/Gui.js:715
+#: aiagallery/main/Gui.js:701
 msgid "About the gallery"
 msgstr "关于本站"
 
-#: aiagallery/main/Gui.js:727
+#: aiagallery/main/Gui.js:713
 msgid "App Inventor Gallery About Us"
 msgstr ""
 
-#: aiagallery/main/Gui.js:735
+#: aiagallery/main/Gui.js:721
 msgid "Terms of Use"
 msgstr "使用条款"
 
-#: aiagallery/main/Gui.js:747
+#: aiagallery/main/Gui.js:733
 msgid "App Inventor Gallery Terms of Use"
 msgstr ""
 
-#: aiagallery/main/Gui.js:755
+#: aiagallery/main/Gui.js:741
 msgid "Privacy Policy"
 msgstr "隐私条约"
 
-#: aiagallery/main/Gui.js:767
+#: aiagallery/main/Gui.js:753
 msgid "App Inventor Gallery Privacy Policy"
 msgstr ""
 
-#: aiagallery/main/Gui.js:775
+#: aiagallery/main/Gui.js:761
 msgid "Supported Browsers"
 msgstr "支持浏览器"
 
-#: aiagallery/main/Gui.js:787
+#: aiagallery/main/Gui.js:773
 msgid "App Inventor Gallery Supported Browsers"
 msgstr ""
 
@@ -629,7 +609,7 @@ msgstr ""
 #: aiagallery/widget/FlagPopUp.js:127
 #: aiagallery/module/dgallery/appinfo/Comment.js:290
 msgid "Comment Flagged"
-msgstr ""
+msgstr "此评论已被检举"
 
 #: aiagallery/widget/SearchResult.js:663
 msgid "Like It?"
@@ -641,35 +621,46 @@ msgstr "下载源文件"
 
 #: aiagallery/widget/mystuff/Detail.js:82
 msgid "Enter the application title (30 character limit)"
-msgstr ""
+msgstr "输入应用名称（字数上限 30 字）"
 
 #: aiagallery/widget/mystuff/Detail.js:104
 msgid "Enter a brief description (480 Character Limit)"
-msgstr ""
+msgstr "输入一段简短介绍（字数上限 480 字）"
 
 #: aiagallery/widget/mystuff/Detail.js:157
 msgid "Enter a new tag"
-msgstr ""
+msgstr "输入一个新标签名"
 
 #: aiagallery/widget/mystuff/Detail.js:238
 msgid "Delete Tag"
-msgstr ""
+msgstr "删除标签"
 
 #: aiagallery/widget/mystuff/Detail.js:280
 msgid "Select source file"
-msgstr ""
+msgstr "选择源文件上传"
+
+#: aiagallery/widget/mystuff/Detail.js:351
+msgid "Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose 'Other Actions' and select 'Download Source'. Do not open the downloaded zip file but upload it here directly."
+msgstr "请上传一个 App Inventor 生成的源文件的 zip 压缩包。"
+
+#: aiagallery/widget/mystuff/Detail.js:431
+msgid "The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one. The file size limit is "
+msgstr "您上传的图片将会被压缩成 180*230 尺寸，在应用详情页面和所有搜索结果页面中显示。图片上传的文件大小限制是 "
 
 #: aiagallery/widget/mystuff/Detail.js:559
 msgid "Discard"
-msgstr ""
+msgstr "撤销"
 
 #: aiagallery/widget/mystuff/Detail.js:583
 msgid "Really delete application"
-msgstr ""
+msgstr "确认删除应用"
 
 #: aiagallery/widget/mystuff/Detail.js:815
 msgid "Delete Application"
-msgstr ""
+msgstr "删除应用"
+
+#~ msgid " See "
+#~ msgstr "请参见"
 
 #~ msgid "Contest Winners"
 #~ msgstr "竞赛结果"
@@ -677,5 +668,20 @@ msgstr ""
 #~ msgid "Find Apps"
 #~ msgstr "搜索应用"
 
+#~ msgid "Forum"
+#~ msgstr "论坛里面。"
+
 #~ msgid "Home"
 #~ msgstr "主页"
+
+#~ msgid "Release Notes"
+#~ msgstr "版本注释"
+
+#~ msgid "Welcome to the "
+#~ msgstr "欢迎来到"
+
+#~ msgid "and post feedback / bug reports to the "
+#~ msgstr "，欢迎将反馈与意见发布在"
+
+#~ msgid "gallery!"
+#~ msgstr "画廊！"

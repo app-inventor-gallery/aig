@@ -19,63 +19,43 @@ msgstr ""
 msgid "Community Gallery"
 msgstr ""
 
-#: aiagallery/main/Gui.js:135
-msgid "Welcome to the "
+#: aiagallery/main/Gui.js:134
+msgid "<div><br/>Welcome to the <a href=\"gallery.html\">gallery!</a> See <a href=\"https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit\" target=\"_blank\" >Release Notes</a><br/>and post feedback / bug reports to the <a href=\"http://groups.google.com/group/app-inventor-gallery/topics\" target=\"_blank\" >Forum</a></div>"
 msgstr ""
 
-#: aiagallery/main/Gui.js:137
-msgid "gallery!"
-msgstr ""
-
-#: aiagallery/main/Gui.js:139
-msgid " See "
-msgstr ""
-
-#: aiagallery/main/Gui.js:141
-msgid "Release Notes"
-msgstr ""
-
-#: aiagallery/main/Gui.js:143
-msgid "and post feedback / bug reports to the "
-msgstr ""
-
-#: aiagallery/main/Gui.js:145
-msgid "Forum"
-msgstr ""
-
-#: aiagallery/main/Gui.js:187
+#: aiagallery/main/Gui.js:173
 msgid "Simulate"
 msgstr ""
 
-#: aiagallery/main/Gui.js:715
+#: aiagallery/main/Gui.js:701
 msgid "About the gallery"
 msgstr ""
 
-#: aiagallery/main/Gui.js:727
+#: aiagallery/main/Gui.js:713
 msgid "App Inventor Gallery About Us"
 msgstr ""
 
-#: aiagallery/main/Gui.js:735
+#: aiagallery/main/Gui.js:721
 msgid "Terms of Use"
 msgstr ""
 
-#: aiagallery/main/Gui.js:747
+#: aiagallery/main/Gui.js:733
 msgid "App Inventor Gallery Terms of Use"
 msgstr ""
 
-#: aiagallery/main/Gui.js:755
+#: aiagallery/main/Gui.js:741
 msgid "Privacy Policy"
 msgstr ""
 
-#: aiagallery/main/Gui.js:767
+#: aiagallery/main/Gui.js:753
 msgid "App Inventor Gallery Privacy Policy"
 msgstr ""
 
-#: aiagallery/main/Gui.js:775
+#: aiagallery/main/Gui.js:761
 msgid "Supported Browsers"
 msgstr ""
 
-#: aiagallery/main/Gui.js:787
+#: aiagallery/main/Gui.js:773
 msgid "App Inventor Gallery Supported Browsers"
 msgstr ""
 
@@ -659,6 +639,14 @@ msgstr ""
 msgid "Select source file"
 msgstr ""
 
+#: aiagallery/widget/mystuff/Detail.js:351
+msgid "Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose 'Other Actions' and select 'Download Source'. Do not open the downloaded zip file but upload it here directly."
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:431
+msgid "The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one. The file size limit is "
+msgstr ""
+
 #: aiagallery/widget/mystuff/Detail.js:559
 msgid "Discard"
 msgstr ""
@@ -671,11 +659,29 @@ msgstr ""
 msgid "Delete Application"
 msgstr ""
 
+#~ msgid " See "
+#~ msgstr ""
+
 #~ msgid "Contest Winners"
 #~ msgstr ""
 
 #~ msgid "Find Apps"
 #~ msgstr ""
 
+#~ msgid "Forum"
+#~ msgstr ""
+
 #~ msgid "Home"
+#~ msgstr ""
+
+#~ msgid "Release Notes"
+#~ msgstr ""
+
+#~ msgid "Welcome to the "
+#~ msgstr ""
+
+#~ msgid "and post feedback / bug reports to the "
+#~ msgstr ""
+
+#~ msgid "gallery!"
 #~ msgstr ""

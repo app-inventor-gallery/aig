@@ -348,9 +348,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     // add a label widget to the popup
     sourceFilePopup.add(new qx.ui.basic.Label().set({ 
-	value: "Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose 'Other Actions' and select 'Download Source'. Do not open the downloaded zip file but upload it here directly.",
+	    value: this.tr("Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose 'Other Actions' and select 'Download Source'. Do not open the downloaded zip file but upload it here directly."),
         rich : true,
-	width: 300 
+		width: 300 
     }));
 
     // bind onClick event for the popup
@@ -428,9 +428,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     // add a label widget to the popup
     selectImagePopup.add(new qx.ui.basic.Label().set({ 
-	value: "The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one. The file size limit is " + aiagallery.main.Constant.MAX_IMAGE_FILE_SIZE/1024 + " kb.",
+		value: this.tr("The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one. The file size limit is ") + aiagallery.main.Constant.MAX_IMAGE_FILE_SIZE/1024 + " kb.",
         rich : true,
-	width: 300 
+		width: 300 
     }));
 
     // bind onClick event for the popup
