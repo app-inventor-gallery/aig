@@ -19,43 +19,43 @@ msgstr ""
 msgid "Community Gallery"
 msgstr ""
 
-#: aiagallery/main/Gui.js:134
-msgid "<div><br/>Welcome to the <a href=\"gallery.html\">gallery!</a> See <a href=\"https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit\" target=\"_blank\" >Release Notes</a><br/>and post feedback / bug reports to the <a href=\"http://groups.google.com/group/app-inventor-gallery/topics\" target=\"_blank\" >Forum</a></div>"
+#: aiagallery/main/Gui.js:133
+msgid "<div><br/>Welcome to the <a href='gallery.html'>gallery!</a> See <a href='https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit'>Release Notes</a><br/>and post feedback / bug reports to the <a href='http://groups.google.com/group/app-inventor-gallery/topics' >Forum</a></div>"
 msgstr ""
 
-#: aiagallery/main/Gui.js:173
+#: aiagallery/main/Gui.js:172
 msgid "Simulate"
 msgstr ""
 
-#: aiagallery/main/Gui.js:701
+#: aiagallery/main/Gui.js:700
 msgid "About the gallery"
 msgstr ""
 
-#: aiagallery/main/Gui.js:713
+#: aiagallery/main/Gui.js:712
 msgid "App Inventor Gallery About Us"
 msgstr ""
 
-#: aiagallery/main/Gui.js:721
+#: aiagallery/main/Gui.js:720
 msgid "Terms of Use"
 msgstr ""
 
-#: aiagallery/main/Gui.js:733
+#: aiagallery/main/Gui.js:732
 msgid "App Inventor Gallery Terms of Use"
 msgstr ""
 
-#: aiagallery/main/Gui.js:741
+#: aiagallery/main/Gui.js:740
 msgid "Privacy Policy"
 msgstr ""
 
-#: aiagallery/main/Gui.js:753
+#: aiagallery/main/Gui.js:752
 msgid "App Inventor Gallery Privacy Policy"
 msgstr ""
 
-#: aiagallery/main/Gui.js:761
+#: aiagallery/main/Gui.js:760
 msgid "Supported Browsers"
 msgstr ""
 
-#: aiagallery/main/Gui.js:773
+#: aiagallery/main/Gui.js:772
 msgid "App Inventor Gallery Supported Browsers"
 msgstr ""
 
@@ -692,6 +692,9 @@ msgstr ""
 #~ msgid " See "
 #~ msgstr ""
 
+#~ msgid "<div><br/>Welcome to the <a href=\"gallery.html\">gallery!</a> See <a href=\"https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit\" target=\"_blank\" >Release Notes</a><br/>and post feedback / bug reports to the <a href=\"http://groups.google.com/group/app-inventor-gallery/topics\" target=\"_blank\" >Forum</a></div>"
+#~ msgstr ""
+
 #~ msgid "Contest Winners"
 #~ msgstr ""
 
@@ -710,7 +713,16 @@ msgstr ""
 #~ msgid "Welcome to the "
 #~ msgstr ""
 
+#~ msgid "Welcome to the <a href=‘google.com’>gallery!</a>"
+#~ msgstr ""
+
+#~ msgid "Welcome to the gallery!"
+#~ msgstr ""
+
 #~ msgid "and post feedback / bug reports to the "
+#~ msgstr ""
+
+#~ msgid "gallery"
 #~ msgstr ""
 
 #~ msgid "gallery!"
