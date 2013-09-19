@@ -98,7 +98,7 @@ msgid "480 Characters Left"
 msgstr ""
 
 #: aiagallery/module/dgallery/appinfo/Gui.js:161
-#: aiagallery/widget/mystuff/Detail.js:185
+#: aiagallery/widget/mystuff/Detail.js:189
 msgid "Add"
 msgstr ""
 
@@ -661,15 +661,15 @@ msgstr ""
 msgid "Enter a new tag"
 msgstr ""
 
-#: aiagallery/widget/mystuff/Detail.js:175
+#: aiagallery/widget/mystuff/Detail.js:179
 msgid "For example, if you are from unX, you may want to tag your app with 'Spanish' or 'Portuguese.'"
 msgstr ""
 
-#: aiagallery/widget/mystuff/Detail.js:249
+#: aiagallery/widget/mystuff/Detail.js:253
 msgid "Delete Tag"
 msgstr ""
 
-#: aiagallery/widget/mystuff/Detail.js:291
+#: aiagallery/widget/mystuff/Detail.js:295
 msgid "Select source file"
 msgstr ""
 
@@ -677,31 +677,31 @@ msgstr ""
 msgid "Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose 'Other Actions' and select 'Download Source'. Do not open the downloaded zip file but upload it here directly."
 msgstr ""
 
-#: aiagallery/widget/mystuff/Detail.js:383
+#: aiagallery/widget/mystuff/Detail.js:375
 msgid "Select Image"
 msgstr ""
 
-#: aiagallery/widget/mystuff/Detail.js:442
+#: aiagallery/widget/mystuff/Detail.js:434
 msgid "The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one. The file size limit is "
 msgstr ""
 
-#: aiagallery/widget/mystuff/Detail.js:463
+#: aiagallery/widget/mystuff/Detail.js:455
 msgid "Save Application"
 msgstr ""
 
-#: aiagallery/widget/mystuff/Detail.js:544
+#: aiagallery/widget/mystuff/Detail.js:536
 msgid "Reset"
 msgstr ""
 
-#: aiagallery/widget/mystuff/Detail.js:570
+#: aiagallery/widget/mystuff/Detail.js:562
 msgid "Discard"
 msgstr ""
 
-#: aiagallery/widget/mystuff/Detail.js:594
+#: aiagallery/widget/mystuff/Detail.js:586
 msgid "Really delete application"
 msgstr ""
 
-#: aiagallery/widget/mystuff/Detail.js:826
+#: aiagallery/widget/mystuff/Detail.js:818
 msgid "Delete Application"
 msgstr ""
 
