@@ -236,7 +236,7 @@ msgstr ""
 
 #: aiagallery/module/dgallery/home/Gui.js:162
 msgid "$$languagename"
-msgstr ""
+msgstr "Español"
 
 #: aiagallery/module/dgallery/home/Gui.js:191
 msgid "Search for an App"
