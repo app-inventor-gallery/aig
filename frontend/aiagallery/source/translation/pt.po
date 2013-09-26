@@ -13,7 +13,7 @@ msgstr ""
 
 #: aiagallery/main/Gui.js:111
 msgid "App Inventor<br/>Community Gallery"
-msgstr "Galeria Comunitária do App Inventor"
+msgstr "Galeria Comunitária<br/>do App Inventor"
 
 #: aiagallery/main/Gui.js:126
 msgid "<div><br/>Welcome to the <a href='gallery.html'>gallery!</a> See <a href='https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit'>Release Notes</a><br/>and post feedback / bug reports to the <a href='http://groups.google.com/group/app-inventor-gallery/topics' >Forum</a></div>"
