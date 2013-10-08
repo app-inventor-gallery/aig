@@ -54,6 +54,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     // Specify the message to display for required fields
     form.getValidationManager().setRequiredFieldMessage(
       "This field is required");
+
+    // Create a temporary container for a spacer, a label, and a spacer    
+	tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+    
     
     //
     // Add the fields
@@ -116,11 +120,21 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
              { row : 1, column : 0, colSpan : 6, rowSpan : 2 });
     this.txtDescription = o;
 
-    // Create a temporary container for a spacer, a label, and a spacer
-    tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
-    
     // Add the left spacer
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+
+    // Label to remind users what tags are for
+    o = new qx.ui.basic.Label("I'm testing insertion. I'm testing insertion. I'm testing insertion. 03");
+	o.set({ rich : true, wrap : true });
+    tempContainer.add(o);
+
+    // Add the right spacer
+    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+	// Add the container to form
+    form.addButton(tempContainer, { row : 2, column : 0, rowSpan: 1, colSpan : 6 });
+
+
+
 
     // Button to add a tag
     o = new qx.ui.basic.Label(this.tr("Tags :"));
@@ -129,7 +143,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     // Add the right spacer
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
 
-    form.addButton(tempContainer, { row : 3, column : 2, colSpan : 4 });
+    form.addButton(tempContainer, { row : 4, column : 2, colSpan : 4 });
 
     // Create a multi-selection list and add the categories to it.
     o = new qx.ui.form.List();
@@ -143,7 +157,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       });
     o.addListener("changeSelection", this._changeCategories, this);
     form.add(o, this.tr("Categories"), null, "categories", null,
-             { row : 3, column : 0, rowSpan : 5 });
+             { row : 4, column : 0, rowSpan : 5 });
     this.categoryController = new qx.data.controller.List(
       new qx.data.Array(categoryList), o);
     this.lstCategories = o;
@@ -167,7 +181,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         return true;
       });
     form.add(o, "", null, "newTag", null,
-             { row : 4, column : 2 });
+             { row : 5, column : 2 });
     this.txtNewTag = o;
 
 
@@ -183,7 +197,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     // Add the right spacer
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
 	// Add the container to form
-    form.addButton(tempContainer, { row : 5, column : 2, colSpan : 2 });
+    form.addButton(tempContainer, { row : 6, column : 2, colSpan : 2 });
 
     // Button to add a tag
     o = new qx.ui.form.Button(this.tr("Add"));
@@ -231,7 +245,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         this.txtNewTag.setValue(null);
       },
       this);
-    form.addButton(o, { row : 6, column : 3 });
+    form.addButton(o, { row : 7, column : 3 });
     this.butAddTag = o;
 
 
@@ -246,7 +260,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         required      : false
       });
     form.add(o, "", null, "tags", null,
-             { row : 4, column : 4, rowSpan : 3 });
+             { row : 5, column : 4, rowSpan : 3 });
     this.lstTags = o;
     
     // Button to delete selected tag(s)
@@ -288,7 +302,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         this.setTags(newTags);
       },
       this);
-    form.addButton(o, { row : 7, column : 5 });
+    form.addButton(o, { row : 8, column : 5 });
     this.butDeleteTag = o;
 
     // Source file name
@@ -380,7 +394,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         required  : true
       });
     form.add(o, null, null, "image1", null,
-             { row : 3, column : 6, rowSpan : 5 });
+             { row : 4, column : 6, rowSpan : 5 });
 
     // When the image changes, display it
     o.addListener(
@@ -393,10 +407,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       this);
     this.fiImage1 = o;
 
-
-
-    // ********* beta002 start *********
-    // Objective: add app upload instructions.
 
     // Create a temporary container for a spacer, a label, and a spacer
     tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
@@ -415,7 +425,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     // Add the right spacer
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-    form.addButton(tempContainer, { row : 3, column : 7, rowSpan : 1 });
+    form.addButton(tempContainer, { row : 4, column : 7, rowSpan : 1 });
 
     // bind onClick event for the popup
 //    selectImageMessage = "The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one.";
@@ -443,9 +453,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         selectImagePopup.show();
     }, this);
         
-    // ********* beta002 end *********
-
-
 
     //
     // Add the buttons at the end
