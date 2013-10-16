@@ -144,42 +144,67 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       font.setSize(16);
       i8nLabel.setFont(font);
       innerCanvas.add(i8nLabel);
-	  
+
 	  // Add translation / internationalization options
-	  // Add UI components, set it to be horizontal
-	  var i8nRadioGroup = new qx.ui.form.RadioButtonGroup();
-	  i8nRadioGroup.setLayout(new qx.ui.layout.Flow());
-	  
 	  // Access all available locales and the currently set locale
 	  var localeManager = qx.locale.Manager.getInstance();
 	  var locales = localeManager.getAvailableLocales();
 	  var currentLocale = localeManager.getLocale();
-	  console.log("LOCALE TESTING");
-	  console.log(locales);
-	  console.log(currentLocale);
+	  // console.log("LOCALE TESTING");
+	  // console.log(locales);
+	  // console.log(currentLocale);
 	  
 	  // Register auto-generated string in *.po translation files
 	  this.marktr("$$languagename");
 	  
+	  
+	  
+	  // Add UI components, set it to be horizontal
+	  // i8n UI option #1: Dropdown menu (ComboBox)
+
+      // Create a combo box (AKA dropdown menu)
+      var i8nComboBox = new qx.ui.form.ComboBox();
+
+      // Fill the combo box with available locales
+      for (var i = 0; i < locales.length; i++) {
+	    var locale = locales[i];
+	    var languageName = localeManager.translate("$$languagename", [], locale);
+        var localeItem = new qx.ui.form.ListItem(languageName.toString());
+        i8nComboBox.add(localeItem);
+      }
+	  // Event handler for combo box, set locale if selection changed
+      i8nComboBox.addListener("changeValue", function(e) {
+        console.log("ChangeValue of locale: " + e.getData());
+	    var newLocale = e.getData();
+	    localeManager.setLocale(newLocale);
+      });
+	  
+	  innerCanvas.add(i8nComboBox);
+
+
+	  // i8n UI option #2: Radio buttons (RadioButtonGroup)
+	  var i8nRadioGroup = new qx.ui.form.RadioButtonGroup();
+	  i8nRadioGroup.setLayout(new qx.ui.layout.Flow());
+	  	  
 	  // Create a radio button for every available locale
 	  for (var i = 0; i < locales.length; i++) {
 	    var locale = locales[i];
 	    var languageName = localeManager.translate("$$languagename", [], locale);
 	    var localeButton = new qx.ui.form.RadioButton(languageName.toString());
         localeButton.setMarginRight(5);
-	    // save the locale as model
+	    // Save the locale as model
 	    localeButton.setModel(locale);
 	    i8nRadioGroup.add(localeButton);
  
-	    // preselect the current locale
+	    // Preselect the current locale
 	    if (currentLocale == locale) {
 	      localeButton.setValue(true);
 	    }
 	  };
 	  
-	  // get the model selection and listen to its change
+	  // Get the model selection and listen to its change
 	  i8nRadioGroup.getModelSelection().addListener("change", function(e) {
-	    // selection is the first item of the data array
+	    // Selection is the first item of the data array
 	    var newLocale = i8nRadioGroup.getModelSelection().getItem(0);
 	    localeManager.setLocale(newLocale);
 	  }, this);
