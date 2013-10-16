@@ -156,13 +156,9 @@ qx.Class.define("aiagallery.main.Gui",
         // Save a copy for global access
         qx.core.Init.getApplication().setUserData("whoAmI", this.whoAmI); 
 
-		/*
-        // Add a flexible spacer to take up the whole middle
-        o = new qx.ui.core.Widget();
-        o.setMinWidth(1);
-        header.add(o, { flex : 1 });
-		*/
-
+        // Create a small spacer at the rightmost area
+        o = new qx.ui.core.Spacer(10);
+        header.add(o);
 
         // Add a checkbox to enable/disable RPC simulation.
         var simulate = new qx.ui.form.CheckBox(this.tr("Simulate"));
