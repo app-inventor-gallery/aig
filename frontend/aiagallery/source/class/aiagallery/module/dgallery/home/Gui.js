@@ -160,26 +160,32 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 	  
 	  
 	  // Add UI components, set it to be horizontal
-	  // i8n UI option #1: Dropdown menu (ComboBox)
+	  // i8n UI option #1: Dropdown menu (SelectBox)
 
-      // Create a combo box (AKA dropdown menu)
-      var i8nComboBox = new qx.ui.form.ComboBox();
+      // Create a select box (AKA dropdown menu)
+      var i8nSelectBox = new qx.ui.form.SelectBox();
 
-      // Fill the combo box with available locales
+      // Fill the select box with available locales
       for (var i = 0; i < locales.length; i++) {
 	    var locale = locales[i];
 	    var languageName = localeManager.translate("$$languagename", [], locale);
         var localeItem = new qx.ui.form.ListItem(languageName.toString());
-        i8nComboBox.add(localeItem);
-      }
-	  // Event handler for combo box, set locale if selection changed
-      i8nComboBox.addListener("changeValue", function(e) {
-        console.log("ChangeValue of locale: " + e.getData());
-	    var newLocale = e.getData();
+        i8nSelectBox.add(localeItem);
+	  	// Set default value to be the first one in the list
+		if (i == 0) {
+		  i8nSelectBox.setSelection([localeItem]);			
+		}
+      } 
+	  
+	  // Event handler for select box, set locale if selection changed
+      i8nSelectBox.addListener("changeSelection", function(e) {
+        console.log("ChangeValue of locale: " + e.getData()[0]);
+	    var newLocale = e.getData()[0];
 	    localeManager.setLocale(newLocale);
       });
+    
 	  
-	  innerCanvas.add(i8nComboBox);
+	  innerCanvas.add(i8nSelectBox);
 
 
 	  // i8n UI option #2: Radio buttons (RadioButtonGroup)
