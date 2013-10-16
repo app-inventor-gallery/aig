@@ -108,14 +108,7 @@ qx.Class.define("aiagallery.main.Gui",
         header.add(o);
 
         // Add a label to the header
-        o = new qx.ui.basic.Label(
-          "<div>" +
-          "<center>" +
-          "App Inventor" +
-          "<br />" +
-          "Community Gallery" +
-          "</center>" +
-          "</div>");
+        o = new qx.ui.basic.Label(this.tr("App Inventor<br/>Community Gallery"));
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.setSize(22);
         o.set(
@@ -130,13 +123,7 @@ qx.Class.define("aiagallery.main.Gui",
         header.add(o);
 
         // Add another label to header for release note + forum helper text
-        o = new qx.ui.basic.Label(
-          "<div><br/>" +
-          "Welcome to the <a href=\"gallery.html\" target=\"_blank\" >gallery!</a>" +
-		  " See <a href=\"https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit\" target=\"_blank\" >Release Notes</a><br/>" +
-          "and post feedback / bug reports to the " +
-          "<a href=\"http://groups.google.com/group/app-inventor-gallery/topics\" target=\"_blank\" >Forum</a>." + 
-          "</div>");
+		o = new qx.ui.basic.Label(this.tr("<div><br/>Welcome to the <a href='gallery.html'>gallery!</a> See <a href='https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit'>Release Notes</a><br/>and post feedback / bug reports to the <a href='http://groups.google.com/group/app-inventor-gallery/topics' >Forum</a></div>"));
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         o.set(
           {
@@ -703,7 +690,7 @@ qx.Class.define("aiagallery.main.Gui",
         hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 2 });
 
         // Add a link to the about us page
-        o = new qx.ui.basic.Label("About the gallery");
+        o = new qx.ui.basic.Label(this.tr("About the gallery"));
         o.set(
           {
             font   : font,
@@ -715,7 +702,7 @@ qx.Class.define("aiagallery.main.Gui",
           function(e)
           {
             window.open("gallery.html",
-                        "App Inventor Gallery About Us");
+                        this.tr("App Inventor Gallery About Us"));
           });
         hbox.add(o);
 
@@ -723,7 +710,7 @@ qx.Class.define("aiagallery.main.Gui",
         hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
 
         // Add a link to the terms of service
-        o = new qx.ui.basic.Label("Terms of Use");
+        o = new qx.ui.basic.Label(this.tr("Terms of Use"));
         o.set(
           {
             font   : font,
@@ -735,7 +722,7 @@ qx.Class.define("aiagallery.main.Gui",
           function(e)
           {
             window.open("TOU.html",
-                        "App Inventor Gallery Terms of Use");
+                        this.tr("App Inventor Gallery Terms of Use"));
           });
         hbox.add(o);
 
@@ -743,7 +730,7 @@ qx.Class.define("aiagallery.main.Gui",
         hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
 
         // Add a link to the privacy policy
-        o = new qx.ui.basic.Label("Privacy Policy");
+        o = new qx.ui.basic.Label(this.tr("Privacy Policy"));
         o.set(
           {
             font   : font,
@@ -755,7 +742,7 @@ qx.Class.define("aiagallery.main.Gui",
           function(e)
           {
             window.open("privacy.html",
-                        "App Inventor Gallery Privacy Policy");
+                        this.tr("App Inventor Gallery Privacy Policy"));
           });
         hbox.add(o);
 
@@ -763,7 +750,7 @@ qx.Class.define("aiagallery.main.Gui",
         hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
 
         // Add a link to the supported browser page
-        o = new qx.ui.basic.Label("Supported Browsers");
+        o = new qx.ui.basic.Label(this.tr("Supported Browsers"));
         o.set(
           {
             font   : font,
@@ -775,7 +762,7 @@ qx.Class.define("aiagallery.main.Gui",
           function(e)
           {
             window.open("browsers.html",
-                        "App Inventor Gallery Supported Browsers");
+                        this.tr("App Inventor Gallery Supported Browsers"));
           });
         hbox.add(o);
 

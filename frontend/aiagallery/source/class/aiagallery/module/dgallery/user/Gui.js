@@ -756,7 +756,7 @@ qx.Class.define("aiagallery.module.dgallery.user.Gui",
       //vBoxOptionDownload.add(this.downloadAppUpdateFrequency);
       vBoxOptions.add(vBoxOptionDownload); 
 
-      var o = new aiagallery.widget.mystuff.FormImage("Select your profile image", "image1");
+      var o = new aiagallery.widget.mystuff.FormImage(this.tr("Select your profile image"), "image1");
       o.set(
       {
         tabIndex : 10,

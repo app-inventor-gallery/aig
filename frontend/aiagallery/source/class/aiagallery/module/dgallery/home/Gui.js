@@ -50,96 +50,6 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       canvas.setPadding(20);
       scrollContainer.add(canvas, { flex : 1 });
       
-/*
-      // Create the top row (welcome and general info about AIA/Gallery)
-      var welcomeLayout = new qx.ui.layout.HBox();
-      welcomeLayout.setSpacing(20);
-      var welcomeRow = new qx.ui.container.Composite(welcomeLayout);
-      
-      // Create an image (temporary one for now)
-      var homeImage = new qx.ui.basic.Image("aiagallery/homepage2.png");
-      welcomeRow.add(homeImage);
-
-      // Create a welcome message      
-      var message = new qx.ui.basic.Label();
-      text = 
-        [
-          "<h2>Welcome to the App Inventor Community Gallery!</h2>",
-
-          "You can:",
-          "<ul>",
-          "<p><li>Browse and download App Inventor projects",
-
-          "<p><li>Contribute your App Inventor project to share it with others",
-
-          "<p><li>Discuss projects you like and encourage new ideas!",
-
-          "</ul>",
-
-          "<p>Get started by clicking on <b>Find Apps</b>, and go ahead ",
-          "and add your own projects by clicking on <b>My Apps</b>.",
-
-          "<p>Also, you can browse projects from your ",
-          "Android phone by using our companion ",
-          '<a href="http://www.appinventor.org/mobile-gallery" target="new">',
-          "Mobile Community Gallery</a> ",
-          "app!"
-        ].join("");
-      message.set(
-        {
-          value         : text,
-          rich          : true,
-          minWidth      : 150,
-          allowStretchX : true
-        });
-      welcomeRow.add(message, { flex : 1 });
-      
-      // Add the welcome row to the page
-      canvas.add(welcomeRow);
-      
-      // Create a row of links to the other main tabs
-      var linkRowLayout = new qx.ui.layout.HBox();
-      linkRowLayout.setSpacing(20);
-      var linkRow = new qx.ui.container.Composite(linkRowLayout);
-
-      // Add spacer
-      linkRow.add(new qx.ui.core.Widget(), { flex : 1 });
-      
-      // Add "Find Apps" box to link row
-      text =
-        [
-          "Use <b>Find Apps</b> to browse apps by tag, or search for them ",
-          "using a variety of parameters."
-        ].join("");
-      var findApps = new aiagallery.module.dgallery.home.LinkBox(
-        "<b>Find Apps</b><br>" + text,
-        "aiagallery/findApps.png");
-      findApps.addListener("click", fsm.eventListener, fsm);
-      linkRow.add(findApps);
-      fsm.addObject("Find Apps", findApps);
-      
-      // Add spacer
-      linkRow.add(new qx.ui.core.Widget(), { flex : 1 });
-
-      // Add "My Apps" box to link row
-      text =
-        [
-         "Go to <b>My Apps</b> to review and change your uploaded projects."
-        ].join("");
-      var myApps = new aiagallery.module.dgallery.home.LinkBox(
-        "<b>My Apps</b><br>" + text,
-        "aiagallery/myStuff.png");
-      myApps.addListener("click", fsm.eventListener, fsm);
-      linkRow.add(myApps);
-      fsm.addObject("My Apps", myApps);
-
-      // Add spacer
-      linkRow.add(new qx.ui.core.Widget(), { flex : 1 });
-
-      // Add the link row to the page
-      canvas.add(linkRow);
-*/
-      
       // Create a large bold font
       font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
       font.setSize(26);
@@ -174,40 +84,113 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       innerCanvas.setDecorator(homepageBG);
 
       // Put in some welcoming text
-      text = 
-        [
-          "<div style='padding:0 30px 0 0;'>",
-          "<div style='text-align:center;'>",
-          "<h2>",
-          "Welcome to the <br/>MIT App Inventor Community Gallery!",
-          "</h2>",
-          "</div>",
-
-          "<div style='font-size:larger; font-weight:bold; padding:6px;'>",
-          "<b>",
-          "<ul><li>Check out mobile apps from all over the world!<br/></li>",
-          "<li>Download App Inventor blocks and learn to program!<br/></li>",
-          "<li>Join the community of App Inventor programmers!<br/></li></ul>",
-          "</div>",
-          "</div>" 
-        ].join("");
-      this.welcomingLabel = new qx.ui.basic.Label();
-      this.welcomingLabel.set(
+      // text = 
+      //   [
+      //     "<div style='padding:0 30px 0 0;'>",
+      //     "<div style='text-align:center;'>",
+      //     "<h2>",
+      //     "Welcome to the <br/>MIT App Inventor Community Gallery!",
+      //     "</h2>",
+      //     "</div>",
+      // 
+      //     "<div style='font-size:larger; font-weight:bold; padding:6px;'>",
+      //     "<b>",
+      //     "<ul><li>Check out mobile apps from all over the world!<br/></li>",
+      //     "<li>Download App Inventor blocks and learn to program!<br/></li>",
+      //     "<li>Join the community of App Inventor programmers!<br/></li></ul>",
+      //     "</div>",
+      //     "</div>" 
+      //   ].join("");
+	  
+	  // Add the main tagline first
+      var welcomingLabel = new qx.ui.basic.Label(
+		  this.tr("Welcome to the MIT App Inventor Community Gallery!"));
+	  font.setSize(26);
+      welcomingLabel.setFont(font);
+      welcomingLabel.set(
         {
-          value        : text,
           rich         : true,
           width        : 434,
-          height       : 300      
+          height       : 100      
+        });
+		
+      innerCanvas.add(welcomingLabel);
+	  
+	  // Add the remaining lines
+      var introLabel = new qx.ui.basic.Label(
+		  this.tr("Check out mobile apps from all over the world! <br/>Download App Inventor blocks and learn to program! <br/>Join the community of App Inventor programmers!<br/><br/>"));
+	  font.setSize(16);
+      introLabel.setFont(font);
+      introLabel.set(
+        {
+          rich         : true,
+          width        : 434  
         });
 
-      innerCanvas.add(this.welcomingLabel);
+      innerCanvas.add(introLabel);
+
+      // Add a vertical spacer
+      o = new qx.ui.core.Spacer();
+      o.set(
+        {
+          minWidth     : 20
+        });
+      innerCanvas.add(o, { flex : 1 });
+
+      
+      // Create a simple international header
+      var i8nLabel = new qx.ui.basic.Label(
+		  this.tr("Browse Gallery in the language you like"));
+      font.setSize(16);
+      i8nLabel.setFont(font);
+      innerCanvas.add(i8nLabel);
+	  
+	  // Add translation / internationalization options
+	  // Add UI components, set it to be horizontal
+	  var i8nRadioGroup = new qx.ui.form.RadioButtonGroup();
+	  i8nRadioGroup.setLayout(new qx.ui.layout.Flow());
+	  
+	  // Access all available locales and the currently set locale
+	  var localeManager = qx.locale.Manager.getInstance();
+	  var locales = localeManager.getAvailableLocales();
+	  var currentLocale = localeManager.getLocale();
+	  console.log("LOCALE TESTING");
+	  console.log(locales);
+	  console.log(currentLocale);
+	  
+	  // Register auto-generated string in *.po translation files
+	  this.marktr("$$languagename");
+	  
+	  // Create a radio button for every available locale
+	  for (var i = 0; i < locales.length; i++) {
+	    var locale = locales[i];
+	    var languageName = localeManager.translate("$$languagename", [], locale);
+	    var localeButton = new qx.ui.form.RadioButton(languageName.toString());
+        localeButton.setMarginRight(5);
+	    // save the locale as model
+	    localeButton.setModel(locale);
+	    i8nRadioGroup.add(localeButton);
+ 
+	    // preselect the current locale
+	    if (currentLocale == locale) {
+	      localeButton.setValue(true);
+	    }
+	  };
+	  
+	  // get the model selection and listen to its change
+	  i8nRadioGroup.getModelSelection().addListener("change", function(e) {
+	    // selection is the first item of the data array
+	    var newLocale = i8nRadioGroup.getModelSelection().getItem(0);
+	    localeManager.setLocale(newLocale);
+	  }, this);
+	  
+	  innerCanvas.add(i8nRadioGroup);
+	  
       
       // Create a simple search from the home page
       searchLabel = new qx.ui.basic.Label(this.tr("Search for an App"));
       
       // Create a large bold font
-      var searchFont = 
-        qx.theme.manager.Font.getInstance().resolve("bold").clone();
       font.setSize(16);
 
       searchLabel.setFont(font);
@@ -409,10 +392,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         });
 
       // Featured Apps heading
-      var featuredAppsHeader = new qx.ui.basic.Label();
+      var featuredAppsHeader = new qx.ui.basic.Label(this.tr("Featured Apps"));
       featuredAppsHeader.set(
         {
-          value : "Featured Apps",
           font  : font,
           decorator : "home-page-header"
         });
@@ -447,10 +429,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         });
 
       // Newest Apps heading
-      var newestAppsHeader = new qx.ui.basic.Label();
+      var newestAppsHeader = new qx.ui.basic.Label(this.tr("Newest Apps"));
       newestAppsHeader.set(
         {
-          value : "Newest Apps",
           font  : font,
           decorator : "home-page-header"
         });
@@ -486,10 +467,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         });
 
       // Liked Apps heading
-      var likedAppsHeader = new qx.ui.basic.Label();
+      var likedAppsHeader = new qx.ui.basic.Label(this.tr("Most Popular Apps"));
       likedAppsHeader.set(
         {
-          value : "Most Liked Apps",
           font  : font,
           decorator : "home-page-header"
         });

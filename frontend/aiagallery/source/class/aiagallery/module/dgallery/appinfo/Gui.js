@@ -96,7 +96,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       canvas.add(commentsGrid, { row : 1, column : 0 });
 
 
-      o = new qx.ui.basic.Label("Comments");
+      o = new qx.ui.basic.Label(this.tr("Comments"));
       o.set(
         {
           font          : font,
@@ -114,7 +114,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       o.add(this.commentsScrollContainer);
 
       // Add a label for adding a new comment
-      o = new qx.ui.basic.Atom("Add a comment");
+      o = new qx.ui.basic.Atom(this.tr("Add a comment"));
       o.set(
         {
           font          : font,
@@ -141,12 +141,14 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
 
       // Implement and add updating label to tell a user how many
       // characters they have left
-      this.commentCountLabel = new qx.ui.basic.Label(this.tr("480 Characters Left"));
+      this.commentCountLabel = new qx.ui.basic.Label(
+		  this.tr("480 Characters Left"));
 
       // Layout to hold count and text area
       this.commentBoxAndCountLayout = new qx.ui.layout.VBox();
       this.commentBoxAndCountLayout.setSpacing(5);      
-      vBoxComments = new qx.ui.container.Composite(this.commentBoxAndCountLayout);
+      vBoxComments = new qx.ui.container.Composite(
+		  this.commentBoxAndCountLayout);
 
       // Add both count label and comment text area to this layout
       vBoxComments.add(this.textNewComment);
@@ -200,7 +202,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       canvas.add(vbox, { row : 0, column : 1, rowSpan : 2 });
       
       // A label for reminding users what to do
-      this.sidebarLabel = new qx.ui.basic.Label("Check out related apps below!");
+      this.sidebarLabel = new qx.ui.basic.Label(
+		  this.tr("Check out related apps below!"));
       this.sidebarLabel.set(
         {
           font          : font,
@@ -218,7 +221,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // A container created specifically for tags
       this.tagContainer = new qx.ui.container.Composite(mainLayout);
 
-      var tagLabel = new qx.ui.basic.Label("Select tags below to find out similar apps:");
+      var tagLabel = new qx.ui.basic.Label(
+		  this.tr("Select tags below to find out similar apps:"));
       this.tagContainer.add(tagLabel);
       
       vbox.add(this.tagContainer);
@@ -303,8 +307,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       this.butCancelComment.setEnabled(!!(value && value.length > 0));
 
       // Update label as text is entered
-      charsLeft = Math.abs(aiagallery.dbif.Constants.FieldLength.Comment - value.length);
-      this.commentCountLabel.setValue(charsLeft.toString() + this.tr(" Characters Left"));
+      charsLeft = Math.abs(aiagallery.dbif.Constants.FieldLength.Comment - 
+		  value.length);
+      this.commentCountLabel.setValue(charsLeft.toString() + 
+	  this.tr(" Characters Left"));
     },
 
 
@@ -315,7 +321,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       var selectedButton = e.getData()[0];
       var tagName = selectedButton.getLabel();
       // Need to access this piece of data on the fsm
-      this.fsm.addObject("selectedButton", selectedButton, "main.fsmUtils.disable_during_rpc");
+      this.fsm.addObject("selectedButton", selectedButton, 
+	  "main.fsmUtils.disable_during_rpc");
       console.log(tagName);
       console.log(this.fsm);
     },
@@ -389,7 +396,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         tagSelect.setLayout(new qx.ui.layout.Flow());
 
         // Manually add a radio button for "By this author"
-        var tagButton = new qx.ui.form.RadioButton("Apps by this author");
+        var tagButton = new qx.ui.form.RadioButton(
+			this.tr("Apps by this author"));
         tagButton.setMarginRight(5);
         tagSelect.add(tagButton);
 
@@ -404,15 +412,18 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         
         // Add a listener to the "changeSelected" event
 //        tagSelect.addListener("changeSelection", this._onChangeSelection, this);
-        tagSelect.addListener("changeSelection", this.fsm.eventListener, this.fsm);
+        tagSelect.addListener("changeSelection", 
+		this.fsm.eventListener, this.fsm);
 
         // We'll be receiving events on the object so save its name on fsm
-        this.fsm.addObject("tagSelect", tagSelect, "main.fsmUtils.disable_during_rpc");
+        this.fsm.addObject("tagSelect", tagSelect, 
+		"main.fsmUtils.disable_during_rpc");
 
         // Add the other apps by this author. Build a model for the search
         // results list, then add the model to the list.
         model = qx.data.marshal.Json.createModel(result.byAuthor);
-        console.log("PASSING BYAUTHOR"); console.log(result.byAuthor);
+        // console.log("PASSING BYAUTHOR"); 
+		// console.log(result.byAuthor);
         // Save this as global variable for later
         this.byAuthorModel = result.byAuthor;
         // this.byAuthor.setModel(byAuthorModel);
@@ -590,7 +601,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
             }
             else
             {
-              alert("No source data found!");
+              alert(this.tr("No source data found!"));
             }
           },
           this);
