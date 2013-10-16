@@ -163,6 +163,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 	  // i8n UI option #1: Dropdown menu (SelectBox)
 
       // Create a select box (AKA dropdown menu)
+      var i8nBox = new qx.ui.container.Composite(new qx.ui.layout.VBox(50));
       var i8nSelectBox = new qx.ui.form.SelectBox();
 
       // Fill the select box with available locales
@@ -170,6 +171,8 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 	    var locale = locales[i];
 	    var languageName = localeManager.translate("$$languagename", [], locale);
         var localeItem = new qx.ui.form.ListItem(languageName.toString());
+	    // Save the locale as model
+		localeItem.setModel(locale);
         i8nSelectBox.add(localeItem);
 	  	// Set default value to be the first one in the list
 		if (i == 0) {
@@ -179,13 +182,16 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 	  
 	  // Event handler for select box, set locale if selection changed
       i8nSelectBox.addListener("changeSelection", function(e) {
-        console.log("ChangeValue of locale: " + e.getData()[0]);
-	    var newLocale = e.getData()[0];
+		// Capture the returned ListItem
+		// Courtersy of qooxdoo playground code http://goo.gl/Gqdr04
+		var listItem = e.getData()[0].getLabel();
+        console.log("ChangeValue of locale: " + listItem + " | ");
+	    var newLocale = i8nSelectBox.getModelSelection().getItem(0);
 	    localeManager.setLocale(newLocale);
       });
-    
 	  
-	  innerCanvas.add(i8nSelectBox);
+	  i8nBox.add(i8nSelectBox);
+	  innerCanvas.add(i8nBox);
 
 
 	  // i8n UI option #2: Radio buttons (RadioButtonGroup)
