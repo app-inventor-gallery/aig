@@ -190,7 +190,6 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       
       // Create a large bold font
       font.setSize(16);
-
       searchLabel.setFont(font);
       innerCanvas.add(searchLabel);
 
