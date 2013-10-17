@@ -72,6 +72,14 @@ qx.Class.define("aiagallery.main.WhoAmI",
     {
       check : "String",
       apply : "_applyLogoutUrl"
+    },
+
+    /** Whether this user is an anonymous user or not */
+    isAnonymous : 
+    {
+      check : "Boolean",
+      init  : true,     
+      apply : "_applyLogoutUrl"
     }
   },
 
@@ -91,11 +99,11 @@ qx.Class.define("aiagallery.main.WhoAmI",
     _applyDisplayName : function(value, old)
     {
       var control = this.getChildControl("displayName");
-      if (control) 
+      // Do not set if user is anon 
+      if (control && value != "") 
       {
         control.setValue(
-          "<a href='javascript:editProfile();'>" +
-          "(" + value + ")" +
+          "<a href='javascript:editProfile();'>" + value +
           "</a>");
       }
     },
@@ -130,10 +138,24 @@ qx.Class.define("aiagallery.main.WhoAmI",
     // apply function
     _applyLogoutUrl : function(value, old)
     {
+      var who = qx.core.Init.getApplication().getUserData("whoAmI");
+      var bAnon = who.getIsAnonymous();
       var control = this.getChildControl("logoutUrl");
-      if (control) 
+ 
+      // Check and see if this is an anon user
+      if(bAnon)
       {
-        control.setValue("<a href='" + value + "'>Logout</a>");
+        var loginStr = this.tr("Login"); 
+        // if it is the anon user will have a 
+        // logout url set to go to the google login
+        control.setValue("<a href='" + who.getLogoutUrl() + "'>" + loginStr +"</a>"); 
+      } else {	  
+        if (control) 
+        {
+          // Reload the page on logouts
+          //control.setValue("<a href='javascript:history.go(0)'>Logout</a>");
+          control.setValue("<a href='" + who.getLogoutUrl() + "'>Logout</a>"); 
+        }
       }
     },
 
@@ -153,7 +175,7 @@ qx.Class.define("aiagallery.main.WhoAmI",
       case "email":
         control = new qx.ui.basic.Label(this.getEmail());
         control.setAnonymous(true);
-        this._add(control, { row : 0, column : 1 });
+        //this._add(control, { row : 0, column : 1 });
         break;
 
       case "displayName":
@@ -163,7 +185,7 @@ qx.Class.define("aiagallery.main.WhoAmI",
           "</a>");
         control.setAnonymous(true);
         control.setRich(true);
-        this._add(control, { row : 0, column : 2 });
+        this._add(control, { row : 0, column : 1 });
         break;
         
       case "hasSetDisplayName":

@@ -6,6 +6,9 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
+/*
+#ignore(com.google.*)
+ */
 qx.Mixin.define("aiagallery.dbif.MLiking",
 {
   construct : function()
@@ -39,6 +42,8 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
       var            criteria;
       var            likesObj;
       var            likesDataObj;
+      var            visitorObj; 
+      var            visitorDataObj;
 
       // Return number of likes (which may or may not have changed)
       return liberated.dbif.Entity.asTransaction(
@@ -101,6 +106,75 @@ qx.Mixin.define("aiagallery.dbif.MLiking",
 
             // And increment the like count in the DB
             appDataObj.numLikes++;
+ 
+            // If the the author wants to be notified on likes then do so
+            // Get the authors updateOnAppLike flag
+            visitorObj = new aiagallery.dbif.ObjVisitors(appDataObj.owner); 
+
+            // Author must exist
+            if(!visitorObj.getBrandNew())
+            {
+              // Get the application data
+              visitorDataObj = visitorObj.getData();
+
+              // Do they want a notification on likes
+              if(visitorDataObj.updateOnAppLike)
+              {
+                /* FIXME : Frequency not enabled at this time. 
+                // Only send an email if the frequency is reached
+                if(appDataObj.numLikes 
+                   % visitorDataObj.updateOnAppLikeFrequency == 0)
+                {
+                }
+                */
+
+                var msgBody = "Congratulations, your app \'" + appDataObj.title 
+                              + "\' has been liked. "
+                              + "Keep up the good work, you are up to " 
+                              + appDataObj.numLikes + " likes."; 
+
+                var subject = "Your app is liked at the MIT App Inventor Gallery";
+
+                // Call system function to send mail
+                this.sendEmail(msgBody, subject, 
+                               visitorDataObj.email, appDataObj);
+
+              }
+            }
+
+            // Update the likes in the cache with this new like by the user
+            switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+            {
+            case "appengine":
+              var memcacheServiceFactory =
+              Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+
+              var syncCache = memcacheServiceFactory.getMemcacheService();
+              var serialLike = JSON.stringify([likesDataObj]);
+
+              // Expiration date
+              var calendarClass = java.util.Calendar;
+              var date = calendarClass.getInstance();
+              date.add(calendarClass.DATE, 1);
+
+              var expirationClass 
+                = com.google.appengine.api.memcache.Expiration;  
+              var expirationDate = expirationClass.onDate(date.getTime());
+
+              // Update the like value in the cache
+              syncCache.put("retlikes_".concat(appId),
+                serialLike, expirationDate);
+
+              // Update the actual app obj in the cache 
+              var serialize = JSON.stringify(appDataObj);
+              syncCache.put("retapp_".concat(appId), serialize, expirationDate); 
+
+              break;
+
+            default:
+              // Not on appengine
+              break;
+            }
 
             // Write it back to the database
             likesObj.put();

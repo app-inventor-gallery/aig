@@ -170,7 +170,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             cursor    : "pointer"
           });
 
-        // Visitor clicks initiate a search for apps of that owner
+        // Visitor clicks lead to the user's profile page
         control.addListener(
           "click",
           function(e)
@@ -185,17 +185,9 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             // Remove "by" from displayName
             displayName = this.getDisplayName().replace("by ", "");
 
-            query  =
-              {
-                authorName : displayName
-              };
-            
-            // Initiate a search
-            aiagallery.main.Gui.getInstance().selectModule(
-              {
-                page  : aiagallery.main.Constant.PageName.FindApps,
-                query : qx.lang.Json.stringify(query)
-              });
+            // Launch user page module
+            aiagallery.module.dgallery.userinfo.UserInfo.addPublicUserView(
+            displayName);
           },
           this);
 
@@ -260,6 +252,31 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
             
           // Add to comment  
           this._add(this.deleteCommentButton, { row : 2, column : 2 });
+
+          // Visit app info page
+          this.visitCommentButton = 
+            new qx.ui.form.Button(this.tr("Visit App"));
+            this.visitCommentButton.set(
+            {
+              maxHeight      : 50,
+              maxWidth       : 200
+            });
+            
+          // Create listener to catch click and send to fsm
+          this.visitCommentButton.addListener(
+            "click",
+            function(e)
+            {
+            
+              // Fire our own event to capture this click
+              this.fsm.fireImmediateEvent(
+                "visitComment", this, commentToFlagData);
+ 
+            }, 
+            this);
+            
+          // Add to comment  
+          this._add(this.visitCommentButton, { row : 2, column : 3 });
             
         } 
         else 
@@ -320,135 +337,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
 
     _onFlagClick : function()
     {
-      var             commentToFlagData;
-      var             win;
-      var             instructionLabel;
-      var             instructionText; 
-      var             ok; 
-      var             cancel;
-      var             hBox;
+      var win = new aiagallery.widget.FlagPopUp(
+        aiagallery.dbif.Constants.FlagType.Comment, this);
 
-      // Pop a window, ask the user to give a reason or cancel
-      win = new qx.ui.window.Window(this.tr("Flag A Comment"));
-      win.set(
-      {
-        maxWidth : 500,
-        layout : new qx.ui.layout.VBox(30),
-        modal  : true
-      });
-      this.getApplicationRoot().add(win);
-
-      // Concatonate this instruction string
-      instructionText = 
-        this.tr("Flagging a comment means you think\n the comment does not reach the level of\n discourse suitable for the gallery.\n <br><br>") +
-        this.tr("Please enter a reason why you think this comment should be removed:");  
-
-      // Add info about flagging
-      instructionLabel = new qx.ui.basic.Label().set(
-      {
-         value : instructionText,                  
-         rich  : true                                   
-      });
-      win.add(instructionLabel);
-
-      // Add the Text Area
-      win._reasonField = new qx.ui.form.TextArea();
-      win._reasonField.set(
-      {
-        width  : 120,
-        filter : /[a-zA-Z0-9 _-]/
-      });
-
-      win.add(win._reasonField);
-
-      // Create a horizontal box to hold the buttons
-      hBox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
-
-      // Add the Ok button
-      ok = new qx.ui.form.Button(this.tr("Ok"));
-      ok.set(
-      {
-        width  : 100,
-        height : 30
-      });
-      hBox.add(ok);
-
-      // Allow 'Enter' to confirm entry
-      var command = new qx.ui.core.Command("Enter");
-      ok.setCommand(command);
-
-      // add listener to ok
-      ok.addListener(
-        "execute", 
-        function(e)
-        {
-          // Package up data for fsm in a map
-          commentToFlagData = 
-          {
-            "appId"  : this.appId,
-            "treeId" : this.treeId,
-            "reason" : win._reasonField.getValue()
-          };
-
-          // Close the window 
-          win.close();
-
-          // Clear out text field
-          win._reasonField.setValue(""); 
-
-          // Fire our own event to capture this click
-          this.fsm.fireImmediateEvent(
-            "flagComment", this, commentToFlagData);
-
-          // Change label of flag button to show user has flagged comment
-          this.flagComment.set(
-            {
-              value       : this.tr("Comment Flagged"), 
-              font        : "default", 
-              textColor   : "black", 
-              toolTipText : null
-            });
-          
-          // Remove listener, if needed, so it cannot be clicked
-          if(this.flagCommentListener !== null)
-          {
-            this.flagComment.removeListenerById(this.flagCommentListener); 
-          }
-        },
-        this); 
-
-      // Add the Cancel button
-      cancel = new qx.ui.form.Button(this.tr("Cancel"));
-      cancel.set(
-      {
-        width  : 100,
-        height : 30
-      });
-      hBox.add(cancel);
-
-
-      // Allow 'Escape' to cancel
-      command = new qx.ui.core.Command("Esc");
-      cancel.setCommand(command);
-
-      // Close the window if the cancel button is pressed
-      cancel.addListener(
-      "execute",
-      function(e)
-      {
-        win.close();
-
-        // Clear out text field
-        win._reasonField.setValue(""); 
-      },
-      this);
-
-      // Add the button bar to the window
-      win.add(hBox);
-
-      // Center and show the window
-      win.center(); 
-      win.show(); 
+      win.show();
     },
 
     // Property apply.

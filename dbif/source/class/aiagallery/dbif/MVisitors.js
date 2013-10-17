@@ -6,6 +6,10 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
+/*
+#ignore(com.google.*)
+ */
+
 qx.Mixin.define("aiagallery.dbif.MVisitors",
 {
   construct : function()
@@ -22,6 +26,10 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
                          this.deleteVisitor,
                          [ "id" ]);
 
+    this.registerService("aiagallery.features.deleteVisitorWithUsername",
+                         this.deleteVisitorWithUsername,
+                         [ "username" ]);
+
     this.registerService("aiagallery.features.editProfile",
                          this.editProfile,
                          [ "profileParams" ]);
@@ -29,6 +37,10 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     this.registerService("aiagallery.features.getVisitorListAndPGroups",
                          this.getVisitorListAndPGroups,
                          [ "bStringize" ]);
+
+    this.registerService("aiagallery.features.managementAllNotifications",
+                         this.managementAllNotifications,
+                         [ "bNotifications" ]);
   },
   
   statics :
@@ -302,9 +314,76 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       return ret;
     },
 
+    /**
+     * Delete a visitor with only their string username.
+     * Since the frontend is not allowed to have a google id,
+     * the username string must be used.
+     * 
+     * @param username {String}
+     *   The string username
+     * 
+     * @return {String}
+     *   The string username of the visitor we just deleted
+     * 
+     * Can return an error if a name is not found
+     */
+     deleteVisitorWithUsername : function(username, error)
+     {
+       var     id;
+       var     criteria;
+ 
+       // Find the user's id
+       criteria = 
+       {
+         type  : "element",
+         field : "displayName",
+         value : username
+       }; 
+        
+       // Check to ensure name is unique
+       var resultList = 
+         liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
+                                     criteria);                             
+  
+       // Should return one and only one username     
+       if (resultList.length != 1) 
+       {
+         error.setCode(2);
+         error.setMessage("The display name you are "
+                          + "trying to clear of flag: \"" 
+                          + username
+                          + "\" cannot be found."); 
+ 
+         return error;
+       } else {
+         id = resultList[0].id;
+       }
+  
+       // Delete visitor
+       if (this.deleteVisitor(id))
+       {
+         // User succesfully deleted, remove flags
+         this.clearProfileFlagsWithId(id); 
+         return username; 
+       } else {
+         return null; 
+       } 
+     },
+
+    /**
+     * Delete a visitor based on their id number.
+     * 
+     * @param id {Integer}
+     *   The user id number
+     * 
+     * @return {Boolean}
+     *   True if succesful, false otherwise
+     */
     deleteVisitor : function(id)
     {
       var             visitor;
+      var             criteria;
+      var             deleteList; 
 
       // Retrieve this visitor
       visitor = new aiagallery.dbif.ObjVisitors(id);
@@ -315,10 +394,53 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
         // He doesn't. Let 'em know.
         return false;
       }
+
+      // Remove objects associated with a visitor 
+      // All delete calls take place within a transaction
+      // Remove all apps authored by a visitor
+      criteria =
+        {
+          type  : "element",
+          field : "owner",
+          value : id 
+        }; 
+
+      // Get all the apps a user has authored
+      deleteList = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                               criteria,
+                                               null);
+
+      // Delete all those apps 
+      deleteList.forEach(
+        function(app)
+        {
+          this.mgmtDeleteApp(app.uid);
+        }, this);
+
+
+      // Remove all comments authored by a visitor
+      criteria =
+        {
+          type  : "element",
+          field : "visitor",
+          value : id 
+        }; 
+
+      // Get all the comments a user has authored
+      deleteList = liberated.dbif.Entity.query("aiagallery.dbif.ObjComments",
+                                               criteria,
+                                               null);
+
+      // Delete all those apps 
+      deleteList.forEach(
+        function(comment)
+        {
+          this.deleteComment(comment.app, comment.treeId);
+        }, this);
       
       // Delete the visitor
       visitor.removeSelf();
-      
+
       // We were successful
       return true;
     },
@@ -333,7 +455,21 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       var             bValid = true;
       var             validFields = 
         [
-          "displayName"
+          "displayName",
+          "organization",
+          "email",
+          "birthMonth",
+          "birthYear",
+          "location",
+          "bio",
+          "url",
+          "showEmail",
+          "updateOnAppComment",
+          "updateCommentFrequency",
+          "updateOnAppLike",
+          "updateOnAppLikeFrequency",
+          "updateOnAppDownload",
+          "updateOnAppDownloadFrequency"
         ];
       
       // Find out who we are
@@ -384,6 +520,16 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
 
                   // Store back into me
                   meData[fieldName] = profileParams.displayName; 
+
+                  // Update the cache with the new name
+                  // Only do this if the name actually changes
+                  // In some cases a user can specify a change to the same name
+                  if (whoami.displayName != profileParams.displayName) 
+                  {
+                    this.__updateNameInCache(whoami.displayName, 
+                                             profileParams.displayName);   
+                  }
+                  
                   return true;
                 }
             
@@ -478,12 +624,104 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
       // We've built the whole list. Return it.
       return map;
     },
+
+    /**
+     * Special on off management function to take the
+     * value given by the boolean parameter and convert all
+     * user's notification settings to it.
+     * 
+     * @param bNotifications {Boolean}
+     *   The value to convert all users notification settings to
+     * 
+     * @param error {Error}
+     *   The error object
+     */
+    managementAllNotifications : function(bNotifications, error)
+    {
+
+      var      visitorList;
+      var      intValue;
+      var      criteria;
+
+      // The notifications settings use ints (1 for true, 0 for false)
+      // since the db does not support boolean values.
+      // Convert the boolean value we got in the parameter to either a 
+      // 1 or a 0
+      if(bNotifications)
+      {
+        intValue = 1;
+      } 
+      else 
+      {
+        intValue = 0; 
+      }
+
+      criteria = 
+      {
+         type : "op",
+          method : "and",
+          children : 
+          [
+            {
+              type: "element",
+              field: "updateOnAppComment",
+              value: 0
+            },
+            {
+              type: "element",
+              field: "updateOnAppLike",
+              value: 0
+            },
+            {
+              type: "element",
+              field: "updateOnAppDownload",
+              value: 0
+            }
+          ]
+      };
+
+      // Get every user who does not have the notifications turned on
+      visitorList = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
+                                                criteria);
+      
+      // Take each visitor, get their db entry and update 
+      // the notification settings
+      visitorList.forEach(
+        function(visitor)
+        {
+          var   dbEntry;
+          var   dbEntryData;
+
+          dbEntry = new aiagallery.dbif.ObjVisitors(visitor.id);
+
+          // Make sure this user exists 
+          if (dbEntry.getBrandNew())
+          {
+            // User does not exist, bad id
+            return;
+          }
+
+          dbEntryData = dbEntry.getData();
+
+          // Notification settings
+          dbEntryData.updateOnAppComment = intValue;
+          dbEntryData.updateOnAppLike = intValue;
+          dbEntryData.updateOnAppDownload = intValue;
+
+          dbEntry.put();
+        }
+      );
+
+
+      return true; 
+    },
     
     /**
      * Check to ensure a name is valid. A name must be:
      * 1. Unique
      * 2. Name is between 2 and 30 characters
-     * 3. TBA
+     * 3. Name cannot be 'guest' or 'admin' or 'administrator'
+     *    or variations. 
      *
      * @param myId {String}
      *   The ObjVisitor key field (id)
@@ -501,6 +739,9 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
     {
       var              resultList;
       var              criteria;
+
+      // Ensure name is lowercase
+      name = name.toLowerCase(); 
       
       // Ensure name is within length range
       if(name.length <= 2 || name.length > 30)
@@ -533,8 +774,102 @@ qx.Mixin.define("aiagallery.dbif.MVisitors",
         throw error;
       }  
       
+      // Check if name is allowed
+      if (qx.lang.Array.contains(
+            aiagallery.dbif.Constants.unallowedNames, 
+            name))
+      {
+        // Name is not valid return error
+        error.setCode(2);
+        error.setMessage("The displayname you specified: \"" + name +
+                       "\" is a restricted username."
+                       + " Please select a different one."); 
+        throw error;
+      }
+
       // Name is valid 
       return; 
+    },
+
+    /**
+     * Update apps in the cache that use a now defunct user name
+     *
+     * @param oldName {String}
+     *   The Old name of the user 
+     *
+     * @param newName {String} 
+     *   The user's new name
+     */
+    __updateNameInCache : function(oldName, newName)
+    {
+      var    MemcacheServiceFactory;
+      var    syncCache;
+      var    homeRibbonMap;
+      var    i; 
+
+      // If we're on App Engine we can use java code if not do not cache
+      switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+      {
+      case "appengine":
+          MemcacheServiceFactory = Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+          syncCache = MemcacheServiceFactory.getMemcacheService();
+          //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+          homeRibbonMap = syncCache.get(-1); // read from cache, -1 is magic number to get homeRibbonData
+          if (homeRibbonMap == null) {
+            // Nothing to do
+            return; 
+          } else {
+            // This is the map containing the home ribbon data
+            // The map is stored as a JSON string so convert it and then send it back
+            homeRibbonMap = JSON.parse(homeRibbonMap);
+               
+            // Look at every app in the map and switch to new name if we need to
+            for (i = 0; i < homeRibbonMap.Featured.length; i++)
+            {
+              if(homeRibbonMap.Featured[i].displayName == oldName)
+              {
+                homeRibbonMap.Featured[i].displayName = newName; 
+              }
+            }
+            for (i = 0; i < homeRibbonMap.Newest.length; i++)
+            {
+              if(homeRibbonMap.Newest[i].displayName == oldName)
+              {
+                homeRibbonMap.Newest[i].displayName = newName; 
+              }
+            }
+            for (i = 0; i < homeRibbonMap.MostLiked.length; i++)
+            {
+              if(homeRibbonMap.MostLiked[i].displayName == oldName)
+              {
+                homeRibbonMap.MostLiked[i].displayName = newName; 
+              }
+            }
+
+            // All done place it back in the cache 
+            // Convert map to a JSON string and save that
+            var serialMap = JSON.stringify(homeRibbonMap);
+
+            // I know I am in appengine code when this if clause executes.
+            // Create a Java date object and add one day to set
+            //  the expiration time
+            var calendarClass = java.util.Calendar;
+            var date = calendarClass.getInstance();  
+            date.add(calendarClass.DATE, 1); 
+
+            var expirationClass = com.google.appengine.api.memcache.Expiration;
+            var expirationDate = expirationClass.onDate(date.getTime());
+            syncCache.put(-1, serialMap, expirationDate);
+
+          }
+
+          break;
+
+      default:
+        // We are not using appengine
+        break; 
+      }
+
     }
   }
 });

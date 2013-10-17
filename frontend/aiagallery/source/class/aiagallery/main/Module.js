@@ -109,7 +109,6 @@ qx.Class.define("aiagallery.main.Module",
       return aiagallery.main.Module._icon;
     },
 
-
     /**
      * Return the list of functions to be called (once) for each module
      */
@@ -133,6 +132,21 @@ qx.Class.define("aiagallery.main.Module",
       return aiagallery.main.Module._icon[menuItem];
     },
 
+    /** 
+     * Remover ephemeral page items from the _list and
+     * the _functionList
+     */
+    removeEphemeralMenuItems : function()
+    {
+      for (var menuItem in aiagallery.main.Module._list)
+      {
+        if (menuItem.charAt(0) == "-")
+        {
+          delete aiagallery.main.Module._list[menuItem]; 
+          delete aiagallery.main.Module._functionList[menuItem];
+        } 
+      }
+    },
 
     /** The list of modules which have been registered. */
     _list : {},

@@ -8,6 +8,10 @@
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
 
+/*
+#ignore(com.google.*)
+ */
+
 qx.Mixin.define("aiagallery.dbif.MApps",
 {
   construct : function()
@@ -58,6 +62,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     this.registerService("aiagallery.features.setFeaturedApps",
                          this.setFeaturedApps,
                          [ "featuredApps" ]);
+
+    this.registerService("aiagallery.features.appTagQuery",
+                         this.appTagQuery,
+                         [ "query" ]);
   },
 
   statics :
@@ -684,7 +692,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             return error;
           }
           
-	  // Delete all data in the search db, we only want the newest stuff
+          // Delete all data in the search db, we only want the newest stuff
           // Set a flag here so that we know to do it later
           // avoid race condition
           bRemoveAppFromSearchFlag = true; 
@@ -923,7 +931,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             // Delete all data in the search db, we only want the newest stuff
             if (bRemoveAppFromSearchFlag)
             {          
-              aiagallery.dbif.MApps._removeAppFromSearch(uid);	 
+              aiagallery.dbif.MApps._removeAppFromSearch(uid);   
             }
             
             // If tags were provided...
@@ -1005,6 +1013,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                 type : "postAppUpload",
                 uid  : appData.uid
               };
+			  
 
             // If we're on App Engine...
             switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
@@ -1021,6 +1030,51 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               options = TaskOptions.Builder.withUrl("/task");
               options.payload(jsonRequest);
               hTask = queue.add(options);
+			  
+			  // While we are at it, also clean the memcache for this app
+			  
+	          // Setting up memcache references
+	          var memcacheServiceFactory = 
+	            Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+	          var memcache = memcacheServiceFactory.getMemcacheService();	
+			  
+			  // Forging the keystring for retrieving this app
+			  //console.log(syncCache);	
+			  // console.log("Getting app from cache below!");
+              var retapp = "retapp_";
+              var key_app = retapp.concat(appData.uid);	
+			  
+			  // Try to retrieve values from memcache, and delete if exists
+			  var cacheChecker;
+			  cacheChecker = memcache.get(key_app); 
+		      if (cacheChecker == null) {
+				// console.log("This app is not cached yet. Skip cache updating.");
+				// Do nothing if it's not in cache
+		      } else {
+				// console.log("This app is cached. Printing cache value below:");
+				// console.log("Now we update the cache by deleting it. Printing:");
+				cacheChecker = memcache.delete(key_app);
+				// console.log(cacheChecker);		            	
+		      }
+       
+	   	   	  // If this app is memcached, is it on homepage?
+			  // If it is on homepage we need to update cache for that
+			  
+	          // read from cache, -1 is magic number to get homeRibbonData,
+	          // the featured app list is stored here
+	          var value = memcache.get(-1); 
+
+	          if (value == null) {
+	            break;
+  	            // If nothing is in the cache, do nothing 
+	          } else {
+				// If homepage is cached let's delete that to force update regardless what we are editing (temporary solution)
+				// Optimal solution: only delete homepage cache after checking and confirming the app being edited is a part of homepage cache (featured, most liked, newest)
+				cacheChecker = memcache.delete(-1);
+				// console.log(cacheChecker);
+	          }
+			  
+			  // End of App Engine processing			  
               break;
               
             default:
@@ -1351,7 +1405,7 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         function()
         {
           // Delete all data in the search db, we only want the newest stuff
-          aiagallery.dbif.MApps._removeAppFromSearch(uid);	 
+          aiagallery.dbif.MApps._removeAppFromSearch(uid);       
 
           // If tags were provided...
           if (attributes.tags)
@@ -1428,15 +1482,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
                                                   appData.owner);
 
-      // FIXME: should never occur (but does)
-      if (true)
+
+      displayName = null;
+      if (owners.length == 0)
       {
-        displayName = null;
-        if (owners.length == 0)
-        {
-          email = "nobody@nowhere.org";
-          displayName = "<>";
-        }
+        email = "DELETED";
+        displayName = "DELETED";
       }
 
       // Add display name and email
@@ -1651,6 +1702,34 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           }
         });
 
+      // If we're on App Engine...
+      switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+      {
+	      case "appengine":  
+	        // Setting up memcache references
+	        var memcacheServiceFactory = 
+	          Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+	        var memcache = memcacheServiceFactory.getMemcacheService();	
+	  
+	     	// If this app is memcached, is it on homepage?
+	  	    // If it is on homepage we need to update cache for that
+	  
+	        // read from cache, -1 is magic number to get homeRibbonData
+	        var value = memcache.get(-1); 
+
+	        if (value == null) {
+	          break;
+	          // If nothing is in the cache, do nothing 
+	        } else {
+	  		// If homepage is cached let's delete that to force update regardless what we are editing (temporary solution)
+	  		// Optimal solution: only delete homepage cache after checking and confirming the app being edited is a part of homepage cache (featured, most liked, newest)
+	  		  cacheChecker = memcache.delete(-1);
+	  		}
+	  
+	  	  // End of App Engine processing			  
+	        break;	
+	  }
+
       // Let the user know the app was removed
       this.logMessage(appData.owner, "App removed", appData.title);
 
@@ -1793,16 +1872,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
                                                   app["owner"]);
 
-            // FIXME: should never occur (but does)
-            if (true)
+ 
+            displayName = null;
+            if (owners.length == 0)
             {
-              displayName = null;
-              if (owners.length == 0)
-              {
-                email = "nobody@nowhere.org";
-                displayName = "<>";
-              }
-            }
+              email = "DELETED";
+              displayName = "DELETED";
+            }       
 
             // Add the display name
             app["displayName"] = displayName || owners[0].displayName || "<>";
@@ -1987,15 +2063,11 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
                                                app.owner);
 
-          // FIXME: should never occur (but does)
-          if (true)
+          displayName = null;
+          if (owners.length == 0)
           {
-            displayName = null;
-            if (owners.length == 0)
-            {
-              displayName = "<>";
-            }
-          }
+            displayName = "DELETED";
+          }     
 
           // Add the owner's display name
           app.displayName = displayName || owners[0].displayName || "<>";
@@ -2338,6 +2410,42 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             searchResponseNewest;
       var             requestedData; 
 
+      // Before we search for apps to display check and see if
+      // some past searches have been cached with memcache.
+      var             MemcacheServiceFactory;
+      var             syncCache;
+      var             value;
+
+      // Bool to know if we need to cache this search or not
+      var             bCache = false;
+ 
+      // If we're on App Engine we can use java code if not do not cache
+      switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+      {
+      case "appengine":
+          MemcacheServiceFactory = Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+          syncCache = MemcacheServiceFactory.getMemcacheService();
+         
+		  // read from cache, -1 is magic number to get homeRibbonData
+          value = syncCache.get(-1); 
+		  
+		  if (value == null) {
+            bCache = true;
+          } else {
+            // This is the map containing the home ribbon data
+            // The map is stored as a JSON string so convert it and then send it back
+            value = JSON.parse(value);
+               
+            return value; 
+          }
+
+          break;
+
+      default:
+        // We are not using appengine
+        break; 
+      }
+
       // Create and execute query for "Featured" apps.
       // Limit results to only active apps
       criteria =
@@ -2379,7 +2487,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                                  app["owner"]);
 
             // Add his display name
-            app["displayName"] = owners[0].displayName || "<>";
+            if (owners.length == 0)
+            {
+              app["displayname"] = "DELETED";
+            } else {
+              app["displayName"] = owners[0].displayName || "<>";
+            }
+            
           }
 
           // Remove the owner field
@@ -2445,9 +2559,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                                  app["owner"]);
 
             // Add his display name
-            app["displayName"] = owners[0].displayName || "<>";
+            if (owners.length == 0)
+            { 
+              app["displayName"] = "DELETED";
+            } else {      
+              app["displayName"] = owners[0].displayName || "<>";
+            }
           }
-
           // Remove the owner field
           delete app.owner;
 
@@ -2502,8 +2620,13 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
                                                  app["owner"]);
 
-            // Add his display name
-            app["displayName"] = owners[0].displayName || "<>";
+           // Add his display name
+            if (owners.length == 0)
+            { 
+              app["displayName"] = "DELETED";
+            } else {      
+              app["displayName"] = owners[0].displayName || "<>";
+            }
           }
 
           // Remove the owner field
@@ -2523,10 +2646,11 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             aiagallery.dbif.MApps._requestedFields(app, requestedFields);
           }
         });
+
         
       //Construct map of data
       // Grab the motd and put it into the map at the end
-      var data = 
+      var homeRibbonData = 
         {
           "Featured"     :    searchResponseFeatured,   
           "MostLiked"    :    searchResponseLiked,
@@ -2534,8 +2658,24 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           "Motd"         :    this.getMotd()
         };
 
+      if (bCache) {
+          // If this is true these queries were not in the cache, put them in the cache
+          // Convert map to a JSON string and save that
+          var serialMap = JSON.stringify(homeRibbonData);
+
+          // I know I am in appengine code when this if clause executes.
+          // Create a Java date object and add one day to set the expiration time
+          var calendarClass = java.util.Calendar;
+          var date = calendarClass.getInstance();  
+          date.add(calendarClass.DATE, 1); 
+
+          var expirationClass = com.google.appengine.api.memcache.Expiration;
+          var expirationDate = expirationClass.onDate(date.getTime());
+          syncCache.put(-1, serialMap, expirationDate);
+      }
+
       //Return the map containing the arrays containing the apps. 
-      return data;
+      return homeRibbonData;
     },
       
     /**
@@ -2593,7 +2733,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                                app.owner);
 
           // Add his display name
-          app.displayName = owners[0].displayName || "<>";
+          if (owners.length == 0)
+          { 
+            app.displayName = "DELETED";
+          } else {        
+            app.displayName = owners[0].displayName || "<>";
+          }
           
           // Remove the owner field
           delete app.owner;
@@ -2683,11 +2828,11 @@ qx.Mixin.define("aiagallery.dbif.MApps",
       var             flagged = {};
 
       whoami = this.getWhoAmI();
-
       //Update the views and last viewed date
 
       //Get the actual object
       appObj = new aiagallery.dbif.ObjAppData(uid);    
+
 
       // See if this app exists.  
       if (appObj.getBrandNew())
@@ -2699,18 +2844,10 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                          "It may have been removed recently.");
         return error;
       }
-  
-      ret.app = appObj.getData();
 
-      //Increment the number of views by 1. 
-      ret.app.numViewed++; 
+      // Get the data object for this app
+      ret.app = appObj.getData(); 
 
-      //Set the "lastViewedDate" to the time this function was called
-      ret.app.lastViewedTime = aiagallery.dbif.MDbifCommon.currentTimestamp(); 
-
-      //Put back on the database
-      appObj.put();
- 
       // If the application status is not Active, only the owner can view it.
       if (ret.app.status != aiagallery.dbif.Constants.Status.Active &&
           (! whoami || ret.app.owner != whoami.id))
@@ -2723,15 +2860,121 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         return error;
       }
 
+      //Increment the number of views by 1. 
+      ret.app.numViewed++; 
+
+      //Set the "lastViewedDate" to the time this function was called
+      ret.app.lastViewedTime = aiagallery.dbif.MDbifCommon.currentTimestamp(); 
+
+      // Initializing variables for app engine's Memcache.
+      var memcacheServiceFactory;
+      var syncCache;
+      var value;
+
+      // Concat a bunch of strings with UID as keys in memcache.
+      var retapp = "retapp_";
+      var retflag = "retflag_";
+      var retlikes = "retlikes_";
+      var retbyauthor = "retbyauthor_";
+      var retcomments = "retcomments_";
+      var retcommentsflag = "retcommentsflag_";
+      // "Owners" is a special case that it doesn't belong to ret.
+      var stringowners = "owners_";
+
+
+      var key_app = retapp.concat(uid);
+      var key_flag = retflag.concat(uid);
+      var key_likes = retlikes.concat(uid);
+      var key_byauthor = retbyauthor.concat(uid);
+      var key_comments = retcomments.concat(uid);
+      var key_commentsflag = retcommentsflag.concat(uid);
+
+      var key_owners = stringowners.concat(uid);
+
+      // Bool to know if we need to cache this search or not
+      // true = we need to cache; false = no need to cache
+      var bCache = false;
+      var ownersCache = false;
+      var byAuthorCache = false;
+      var flagCache = false;
+      var likesCache = false;
+      var commentsCache = false;
+      var commentsFlagCache = false;
+
+      // Only use memcache if we are on Google App Engine.
+      if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+      {
+
+        // Setting up memcache references
+        memcacheServiceFactory = 
+          Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+        syncCache = memcacheServiceFactory.getMemcacheService();
+
+        // I know I am in appengine code when this if clause executes.
+        // Create a Java date object and add one day to set the expiration time
+        var calendarClass = java.util.Calendar;
+        var date = calendarClass.getInstance();  
+        date.add(calendarClass.DATE, 1); 
+
+        // Date classes for use in app
+        var expirationClass = com.google.appengine.api.memcache.Expiration;
+        var expirationDate = expirationClass.onDate(date.getTime());
+
+        // Setting up the recommended ErrorHandler
+        //syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+
+        // Before calling getData(), check if the appObject already exists in memcache
+        value = syncCache.get(key_app); 
+        // If not, we call getData() and put the stuff in memcache later
+        // For now we just mark the flag as true
+        if (value == null) {
+          bCache = true; // true: we need to cache this search
+
+          // Save the app modifications
+          appObj.put();
+
+          var serialize = JSON.stringify(ret.app);
+          syncCache.put(key_app, serialize, expirationDate); 
+        } else {
+          // The app we are looking for is in the cache
+          // save the access details to the db object 
+          // and pull the object out the cache
+          appObj.put();
+
+          // Parse it to retrieve ret.app
+          ret.app = JSON.parse(value);
+
+          // Since this app was just pulled from the cache it would not
+          // have the last view +1 that was done earlier, so do it here. 
+          ret.app.numViewed++; 
+        }
+
+      } 
+      else
+      {
+        // Not running on appengine save the app normally
+        appObj.put();
+          
+      }
+
+      //Store the tags' list into a separate variable for sidebar
+      ret.appTags = ret.app.tags;
+
       // Issue a query for this visitor
       owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors", 
                                            ret.app.owner);
       
       if (requestedFields.displayName)
       {
-
-        // Add his display name
-        ret.app.displayName = owners[0].displayName || "<>";
+        // Owner does not exits
+        if (owners.length == 0)
+        {
+          // Probably deleted
+          ret.app.displayName = "DELETED";
+        } else {
+          // Add his display name
+          ret.app.displayName = owners[0].displayName || "<>";
+        }
       }
       
       // If there's a user signed in...
@@ -2758,11 +3001,34 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             ]
           };
 
-        // Query for the likes of this app by the current visitor
-        // (an array, which should have length zero or one).
-        likesList = liberated.dbif.Entity.query("aiagallery.dbif.ObjLikes",
-                                                criteria,
-                                                null);
+
+        // Only use memcache if we are on Google App Engine.
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+              value = syncCache.get(key_likes);
+              if (value == null) {
+                likesCache = true; // true: we need to cache this search
+              } else {
+                likesList = JSON.parse(value);
+              }
+
+        } else { 
+        // make the database call normally if we are not running on app engine
+          
+          likesList = liberated.dbif.Entity.query("aiagallery.dbif.ObjLikes",
+                                                criteria, null);
+        }
+
+        // Memcache the likesList here
+        if (likesCache) {
+          // Query for the likes of this app by the current visitor
+          // (an array, which should have length zero or one).
+          likesList = liberated.dbif.Entity.query("aiagallery.dbif.ObjLikes",
+                                                criteria, null);
+          var serialize = JSON.stringify(likesList);
+
+          syncCache.put(key_likes, serialize, expirationDate);
+        }
 
         // If there were any results, this user has already liked it.
         ret.bAlreadyLiked = likesList.length > 0;
@@ -2792,11 +3058,34 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               }              
             ]
           };
-        
-        flagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
-                                                criteria,
-                                                null);
-                                                
+
+
+
+        // Only use memcache if we are on Google App Engine.
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+              value = syncCache.get(key_flag);
+              if (value == null) {
+                flagCache = true; // true: we need to cache this search
+              } else {
+                flagList = JSON.parse(value);
+              }
+
+        } else { // make the database call normally if we are not running on app engine
+          
+          flagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                criteria, null);
+        }
+
+        // Memcache the flagList here.
+        if (flagCache) {
+          flagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                criteria, null);
+          var serialize = JSON.stringify(flagList);
+
+          syncCache.put(key_flag, serialize, expirationDate);
+        }
+                                                        
         // If there were any results, this user has already flaged it.
         ret.bAlreadyFlagged = flagList.length > 0;  
       }      
@@ -2826,21 +3115,57 @@ qx.Mixin.define("aiagallery.dbif.MApps",
             }
           ]
         };
-      
-      // Query for those apps
-      ret.byAuthor = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
-                                                 criteria,
-                                                 null);
+
+        // Only use memcache if we are on Google App Engine.
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+              value = syncCache.get(key_byauthor);
+              if (value == null) {
+                byAuthorCache = true; // true: we need to cache this search
+              } else {
+                ret.byAuthor = JSON.parse(value);
+              }
+
+        } else { // make the database call normally if we are not running on app engine
+          // Query for those apps          
+          ret.byAuthor = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                                criteria, null);
+        }
+
+        // Memcache the byAuthor list here.
+        if (byAuthorCache) {
+          ret.byAuthor = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                                criteria, null);
+          var serialize = JSON.stringify(ret.byAuthor);
+
+          syncCache.put(key_byauthor, serialize, expirationDate);
+        }
+        
 
       // Add the author's display name to each app
       ret.byAuthor.forEach(
         function(app)
         {
-          app.displayName = owners[0].displayName || "<>";
+          if (owners.length == 0)
+          {
+            app.displayName = "DELETED";
+          } else {
+            app.displayName = owners[0].displayName || "<>";
+          }
 
           // Remove the owner field
           delete app.owner;
         });
+
+//Tagging stuff starts
+
+      // Store the tags' list into a separate variable for sidebar
+      ret.appTags = ret.app.tags;
+
+
+//Tagging stuff ends
+
+
 
       // If we were asked to stringize the values...
       if (bStringize)
@@ -2855,7 +3180,30 @@ qx.Mixin.define("aiagallery.dbif.MApps",
         // If the "comments" field was requested
         if (requestedFields["comments"])
         {
+
+
+        // Only use memcache if we are on Google App Engine.
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+              value = syncCache.get(key_comments);
+              if (value == null) {
+                commentsCache = true; // true: we need to cache this search
+              } else {
+                ret.comments = JSON.parse(value);
+              }
+
+        } else { // make the database call normally if we are not running on app engine
           
+          // Use function from Mixin MComments to retrieve comments
+          ret.comments = this.getComments(uid, [{
+                                              type  : "sort",
+                                              field : "timestamp",
+                                              order : "desc"
+                                            }], error);
+        }
+
+        // beta002: Memcache the comments here.
+        if (commentsCache) {
           // Use function from Mixin MComments to retrieve comments
           ret.comments = this.getComments(uid, 
                                           [
@@ -2866,6 +3214,12 @@ qx.Mixin.define("aiagallery.dbif.MApps",
                                             }
                                           ],
                                           error);
+          var serialize = JSON.stringify(ret.comments);
+
+          syncCache.put(key_comments, serialize, expirationDate);
+        }
+          
+
                                           
           // Determine if any of the comments have been flagged by the user  
           criteria = 
@@ -2892,9 +3246,34 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               ]
             };
                  
+
+        // Only use memcache if we are on Google App Engine.
+        if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+        {
+              value = syncCache.get(key_commentsflag);
+              if (value == null) {
+                commentsFlagCache = true; // true: we need to cache this search
+              } else {
+                commentFlagList = JSON.parse(value);
+              }
+
+        } else { // make the database call normally if we are not running on app engine
+          // Query for those comments          
           commentFlagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
-                                                 criteria,
-                                                 null);
+                                                 criteria, null);
+        }
+
+        // beta002: Memcache the commentsFlagList here.
+        if (commentsFlagCache) {
+          commentFlagList = liberated.dbif.Entity.query("aiagallery.dbif.ObjFlags",
+                                                 criteria, null);
+          var serialize = JSON.stringify(commentFlagList);
+
+          syncCache.put(key_commentsflag, serialize, expirationDate);
+        }
+
+
+
                                                  
           // Create map of flagged comment ids
           commentFlagList.forEach(
@@ -2924,6 +3303,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
           {
             aiagallery.dbif.MApps._requestedFields(app, requestedFields);
           });
+        // Send each of the apps by this tag to the requestedFields
+        // function for stripping and remapping
       }
       
       // Do special App Engine processing to scale images
@@ -2954,6 +3335,70 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     },
 
     /**
+     * Get the apps that have a particular tag 
+     * associated with them.
+     * 
+     * @param query {Array}
+     *   The array containing the search query
+     * 
+     * @return {Array}
+     *   An array containg apps associated with this tag 
+     * 
+     */
+    appTagQuery: function (query)
+    {
+      // Find all active apps by this tag
+      var criteria = {
+          type : "element",
+          field: "tags",
+          value: query };
+
+      // Top-level returning variable
+      var result = [];
+
+      // Query for those apps, put 'em into a list
+      var tlist = liberated.dbif.Entity.query("aiagallery.dbif.ObjAppData",
+                                                 criteria, null);
+
+      // Add the author's display name to each app
+      tlist.forEach(
+          function(app) {
+            // Issue owner query for EACH app (expensive)
+            var owners = liberated.dbif.Entity.query(
+                           "aiagallery.dbif.ObjVisitors", 
+                            app.owner);
+
+            if (owners.length == 0)
+            {
+              app.displaName = "DELETED";
+            } else {
+              app.displayName = owners[0].displayName || "<>";          
+            }
+
+            delete app.owner; // Remove the owner field
+      });
+
+      // Do the same for images for each app by this tag, but 100px.
+      tlist.forEach( function(app) { app.image1 += "=s100"; });
+
+      // Send each of the apps by this tag to the requestedFields
+      // function for stripping and remapping
+/*      tlist.forEach( function(app) {
+        aiagallery.dbif.MApps._requestedFields(app, requestedFields);
+      });
+*/
+
+      result[0] = tlist;
+      // Also add the tag name to return data for easy retrieval
+      result[1] = query;
+      
+
+      return result;
+
+    },
+
+
+    /**
      * Specify the set of Featured Apps.
      * 
      * Any formerly-featured apps are removed from the featured list, and
@@ -2978,6 +3423,8 @@ qx.Mixin.define("aiagallery.dbif.MApps",
     {
       var             apps;
       var             criteria;
+      var             cacheList;
+      var             requestedFields;
 
       // Within a transaction...
       liberated.dbif.Entity.asTransaction(
@@ -3022,14 +3469,28 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               // Write the object back to the database
               appObj.put();
             });
-          
+
+          // List to update the cache with          
+          cacheList = [];
+
+          // The only fields we need to cache this app
+          requestedFields =  
+          {
+            uid          : "uid",
+            owner        : "owner",
+            image1       : "image1",
+            title        : "title",
+            displayName  : "displayName"
+          };
+
           // For each to-be-featured app...
           featuredApps.forEach(
             function(uid)
             {
               var             appObj;
               var             appData;
-              
+              var             owners;              
+
               // Retrieve this app as an object
               appObj = new aiagallery.dbif.ObjAppData(uid);
               
@@ -3051,8 +3512,80 @@ qx.Mixin.define("aiagallery.dbif.MApps",
               
               // Write the object back to the database
               appObj.put();
+
+              // Strip the app of field we do not need so we can
+              // stringize it and store it in the cache
+              // Add the owner's display name
+              owners = liberated.dbif.Entity.query("aiagallery.dbif.ObjVisitors",
+                                                 appData["owner"]);
+
+              // Add his display name
+              if (owners.length == 0)
+              {
+                // Owner has been deleted
+                appData["displayName"] = "DELETED"; 
+              } else {
+                appData["displayName"] = owners[0].displayName || "<>"; 
+              }
+
+              // Delete the owner and strip unneded fields
+              delete appData.owner; 
+
+              aiagallery.dbif.MApps._requestedFields(appData, requestedFields);
+
+              // KLUDGE, for some reason appData has an undefined field that is messing up
+              // displaying the app delete it here
+              delete appData.undefined; 
+
+              // Add to list. The list will then update the list in the cache
+              cacheList.push(appData); 
             });
         });
+
+      // Update the cache with the new list of featured apps
+      // If we are running on appengine we need to update memcache
+      switch (liberated.dbif.Entity.getCurrentDatabaseProvider())
+      {
+
+      case "appengine":
+        var  MemcacheServiceFactory =
+          Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+        var syncCache = MemcacheServiceFactory.getMemcacheService();
+       
+        // read from cache, -1 is magic number to get homeRibbonData,
+        // the featured app list is stored here
+        var value = syncCache.get(-1); 
+
+        // If nothing is in the cache, do nothing 
+        if (value == null) {
+          break;
+        }
+
+       // Stored as JSON string, so parse back to map
+       value = JSON.parse(value);
+
+       // Update featured apps list with new value
+       // Convert to JSON and back to create a copy to store in the map
+       value.Featured = JSON.parse(JSON.stringify(cacheList));   
+
+       // Store back onto memcache
+       // Convert back to JSON string
+       value = JSON.stringify(value);
+
+       // Create a Java date object and add one day to set the expiration time
+       var calendarClass = java.util.Calendar;
+       var date = calendarClass.getInstance();  
+       date.add(calendarClass.DATE, 1); 
+
+       var expirationClass = com.google.appengine.api.memcache.Expiration;
+       var expirationDate = expirationClass.onDate(date.getTime());
+       syncCache.put(-1, value, expirationDate);
+
+       default:
+         // We are not using appengine
+         break; 
+
+      }
 
       // Always return true
       return true;

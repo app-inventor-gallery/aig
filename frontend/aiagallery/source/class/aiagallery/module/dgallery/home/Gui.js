@@ -33,6 +33,12 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var             outerCanvas = module.canvas;
       var             scroller;
       var             motdLabel; 
+      var             searchTextField;
+      var             searchLayout; 
+      var             command; 
+      var             searchLabel; 
+      var             innerCanvas;
+      var             newsLabel; 
       
       outerCanvas.setLayout(new qx.ui.layout.VBox());
       var scrollContainer = new qx.ui.container.Scroll();
@@ -43,96 +49,6 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var canvas = new qx.ui.container.Composite(layout);
       canvas.setPadding(20);
       scrollContainer.add(canvas, { flex : 1 });
-      
-/*
-      // Create the top row (welcome and general info about AIA/Gallery)
-      var welcomeLayout = new qx.ui.layout.HBox();
-      welcomeLayout.setSpacing(20);
-      var welcomeRow = new qx.ui.container.Composite(welcomeLayout);
-      
-      // Create an image (temporary one for now)
-      var homeImage = new qx.ui.basic.Image("aiagallery/homepage2.png");
-      welcomeRow.add(homeImage);
-
-      // Create a welcome message      
-      var message = new qx.ui.basic.Label();
-      text = 
-        [
-          "<h2>Welcome to the App Inventor Community Gallery!</h2>",
-
-	  "You can:",
-	  "<ul>",
-	  "<p><li>Browse and download App Inventor projects",
-
-	  "<p><li>Contribute your App Inventor project to share it with others",
-
-	  "<p><li>Discuss projects you like and encourage new ideas!",
-
-	  "</ul>",
-
-	  "<p>Get started by clicking on <b>Find Apps</b>, and go ahead ",
-	  "and add your own projects by clicking on <b>My Apps</b>.",
-
-	  "<p>Also, you can browse projects from your ",
-	  "Android phone by using our companion ",
-	  '<a href="http://www.appinventor.org/mobile-gallery" target="new">',
-          "Mobile Community Gallery</a> ",
-	  "app!"
-        ].join("");
-      message.set(
-        {
-          value         : text,
-          rich          : true,
-          minWidth      : 150,
-          allowStretchX : true
-        });
-      welcomeRow.add(message, { flex : 1 });
-      
-      // Add the welcome row to the page
-      canvas.add(welcomeRow);
-      
-      // Create a row of links to the other main tabs
-      var linkRowLayout = new qx.ui.layout.HBox();
-      linkRowLayout.setSpacing(20);
-      var linkRow = new qx.ui.container.Composite(linkRowLayout);
-
-      // Add spacer
-      linkRow.add(new qx.ui.core.Widget(), { flex : 1 });
-      
-      // Add "Find Apps" box to link row
-      text =
-        [
-	  "Use <b>Find Apps</b> to browse apps by tag, or search for them ",
-          "using a variety of parameters."
-        ].join("");
-      var findApps = new aiagallery.module.dgallery.home.LinkBox(
-        "<b>Find Apps</b><br>" + text,
-        "aiagallery/findApps.png");
-      findApps.addListener("click", fsm.eventListener, fsm);
-      linkRow.add(findApps);
-      fsm.addObject("Find Apps", findApps);
-      
-      // Add spacer
-      linkRow.add(new qx.ui.core.Widget(), { flex : 1 });
-
-      // Add "My Apps" box to link row
-      text =
-        [
-	 "Go to <b>My Apps</b> to review and change your uploaded projects."
-        ].join("");
-      var myApps = new aiagallery.module.dgallery.home.LinkBox(
-        "<b>My Apps</b><br>" + text,
-        "aiagallery/myStuff.png");
-      myApps.addListener("click", fsm.eventListener, fsm);
-      linkRow.add(myApps);
-      fsm.addObject("My Apps", myApps);
-
-      // Add spacer
-      linkRow.add(new qx.ui.core.Widget(), { flex : 1 });
-
-      // Add the link row to the page
-      canvas.add(linkRow);
-*/
       
       // Create a large bold font
       font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
@@ -156,60 +72,264 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // Add a top spacer
       vbox.add(new qx.ui.core.Spacer(), { flex : 1 });
 
-      // Put in some random text
-      text = 
-        [
-          "<div style='text-align:center'>",
-          "<h2>Welcome to<br>",
-//          "<span style='font-style:italic;'>",
-          "App Inventor Community Gallery!",
-//          "</span>",
-          "</div>",
-          "</h2>",
+      // Inner composite to hold text and search field
+      innerCanvas 
+        = new qx.ui.container.Composite(new qx.ui.layout.VBox(10));
 
-	  "You can:",
-	  "<ul>",
-	  "<p><li>Browse and download App Inventor projects",
+      innerCanvas.setWidth(450);
 
-	  "<p><li>Contribute your App Inventor project to share it with others",
+      // Add background
+      var homepageBG = new qx.ui.decoration.Background();
+      homepageBG.setBackgroundImage("aiagallery/hpbg.png");
+      innerCanvas.setDecorator(homepageBG);
 
-	  "<p><li>Discuss projects you like and encourage new ideas!",
-
-	  "</ul>",
-
-	  "<p>Get started by clicking on <b>Find Apps</b>, or ",
-          "add your own projects by clicking on <b>My Apps</b>.",
-
-/*
-	  "<p>Also, you can browse projects from your ",
-	  "Android phone by using our companion ",
-	  '<a href="http://www.appinventor.org/mobile-gallery" target="new">',
-          "Mobile Community Gallery</a> ",
-	  "app!"
-*/
-          
-          "<hr />",
-
-          "<div style='background-color:#dddddd;",
-          " font-size:larger;font-weight:bold; padding:6px;'><b>",
-          "Please note: ",
-          "The App Inventor Community Gallery is currently in a ",
-          "closed beta. To apply to be a tester, please complete ",
-          "<a href='https://docs.google.com/spreadsheet/viewform",
-          "?formkey=dHlzWWNyNFhuLVdvNVRJVFRYcUZhb3c6MQ#gid=0'",
-          " target='new'>",
-          "this form",
-          "</a>.",
-          "</div>"
-        ].join("");
-      o = new qx.ui.basic.Label(text);
-      o.set(
+      // Put in some welcoming text
+      // text = 
+      //   [
+      //     "<div style='padding:0 30px 0 0;'>",
+      //     "<div style='text-align:center;'>",
+      //     "<h2>",
+      //     "Welcome to the <br/>MIT App Inventor Community Gallery!",
+      //     "</h2>",
+      //     "</div>",
+      // 
+      //     "<div style='font-size:larger; font-weight:bold; padding:6px;'>",
+      //     "<b>",
+      //     "<ul><li>Check out mobile apps from all over the world!<br/></li>",
+      //     "<li>Download App Inventor blocks and learn to program!<br/></li>",
+      //     "<li>Join the community of App Inventor programmers!<br/></li></ul>",
+      //     "</div>",
+      //     "</div>" 
+      //   ].join("");
+	  
+	  // Add the main tagline first
+      var welcomingLabel = new qx.ui.basic.Label(
+		  this.tr("Welcome to the MIT App Inventor Community Gallery!"));
+	  font.setSize(26);
+      welcomingLabel.setFont(font);
+      welcomingLabel.set(
         {
           rich         : true,
-          width        : 400
+          width        : 434,
+          height       : 100      
         });
-      vbox.add(o);
+		
+      innerCanvas.add(welcomingLabel);
+	  
+	  // Add the remaining lines
+      var introLabel = new qx.ui.basic.Label(
+		  this.tr("Check out mobile apps from all over the world! <br/>Download App Inventor blocks and learn to program! <br/>Join the community of App Inventor programmers!<br/><br/>"));
+	  font.setSize(16);
+      introLabel.setFont(font);
+      introLabel.set(
+        {
+          rich         : true,
+          width        : 434  
+        });
+
+      innerCanvas.add(introLabel);
+
+      // Add a vertical spacer
+      o = new qx.ui.core.Spacer();
+      o.set(
+        {
+          minWidth     : 20
+        });
+      innerCanvas.add(o, { flex : 1 });
+
+/*      
+      // Create a simple international header
+      var i8nLabel = new qx.ui.basic.Label(
+		  this.tr("Browse Gallery in the language you like"));
+      font.setSize(16);
+      i8nLabel.setFont(font);
+      innerCanvas.add(i8nLabel);
+
+	  // Add translation / internationalization options
+	  // Access all available locales and the currently set locale
+	  var localeManager = qx.locale.Manager.getInstance();
+	  var locales = localeManager.getAvailableLocales();
+	  var currentLocale = localeManager.getLocale();
+	  
+	  // Register auto-generated string in *.po translation files
+	  this.marktr("$$languagename");
+	  
+	  // Add UI components, set it to be horizontal
+	  // i8n UI Radio buttons (RadioButtonGroup)
+	  var i8nRadioGroup = new qx.ui.form.RadioButtonGroup();
+	  i8nRadioGroup.setLayout(new qx.ui.layout.Flow());
+	  	  
+	  // Create a radio button for every available locale
+	  for (var i = 0; i < locales.length; i++) {
+	    var locale = locales[i];
+	    var languageName = localeManager.translate("$$languagename", [], locale);
+	    var localeButton = new qx.ui.form.RadioButton(languageName.toString());
+        localeButton.setMarginRight(5);
+	    // Save the locale as model
+	    localeButton.setModel(locale);
+	    i8nRadioGroup.add(localeButton);
+ 
+	    // Preselect the current locale
+	    if (currentLocale == locale) {
+	      localeButton.setValue(true);
+	    }
+	  };
+	  
+	  // Get the model selection and listen to its change
+	  i8nRadioGroup.getModelSelection().addListener("change", function(e) {
+	    // Selection is the first item of the data array
+	    var newLocale = i8nRadioGroup.getModelSelection().getItem(0);
+	    localeManager.setLocale(newLocale);
+	  }, this);
+	  
+	  innerCanvas.add(i8nRadioGroup);
+*/	  
       
+      // Create a simple search from the home page
+      searchLabel = new qx.ui.basic.Label(this.tr("Search for an App"));
+      
+      // Create a large bold font
+      font.setSize(16);
+      searchLabel.setFont(font);
+      innerCanvas.add(searchLabel);
+
+      layout = new qx.ui.layout.HBox();
+      layout.setSpacing(5);      
+      searchLayout = new qx.ui.container.Composite(layout);
+
+      searchTextField = new qx.ui.form.TextField;
+      searchTextField.setWidth(300); 
+
+      this.searchButton = new qx.ui.form.Button(this.tr("Search"));
+
+      // Excute a search when the user clicks the button
+      this.searchButton.addListener("execute", 
+        function(e) {
+          
+          var searchValue = searchTextField.getValue();
+          // Do not execute an empty search 
+          if (searchValue == null || searchValue.trim() == "")
+          {
+            return;
+          }
+
+          var query = 
+          {
+            text : [searchValue]
+          }; 
+
+          // Initiate a search
+          aiagallery.main.Gui.getInstance().selectModule(
+          {
+            page  : aiagallery.main.Constant.PageName.FindApps,
+            query : qx.lang.Json.stringify(query)
+          });
+        }, 
+      this);
+
+      // Allow 'Enter' to fire a search
+      command = new qx.ui.core.Command("Enter");
+      this.searchButton.setCommand(command);
+
+      // Add button and search text field to layout
+      searchLayout.add(searchTextField);
+      searchLayout.add(this.searchButton);
+
+      // Add search layout to inner canvas
+      innerCanvas.add(searchLayout);
+
+
+      var hLayout = new qx.ui.layout.HBox();
+      hLayout.setSpacing(5);   
+      var vLayout = new qx.ui.layout.VBox();
+      vLayout.setSpacing(5);   
+      var tagCloudLayout = new qx.ui.container.Composite(vLayout);
+      tagCloudLayout.setWidth(450);
+      var tagItemsLayout = new qx.ui.container.Composite(new qx.ui.layout.Flow());
+
+      var tagCloudLabel = new qx.ui.basic.Label(this.tr("Most popular tags in the gallery"));
+      
+      // Create a large bold font
+
+      tagCloudLabel.setFont(font);
+      tagCloudLayout.add(tagCloudLabel);
+
+      // An array of pre-filled tagcloud texts, before actual mechanism's done
+      // USF static
+      // var tagTexts = ["tag1", "Comics", "Entertainment", "*Featured*", "dave"];
+      // MIT static
+      var tagTexts = ["Games", "Education", "Entertainment", "Productivity", "Communication",
+                      "Business", "Social", "Transportation", "Lifestyle", "Finance"];
+      // An array of tag items
+      var tagItems = [];
+
+      for (var i = 0; i < tagTexts.length; i++) {
+        // Add the tag cloud items to the innerCanvas
+        var tagItem = new qx.ui.basic.Label();
+	tagItem.setMarginRight(5);
+        var tagfont = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+        tagfont.setSize(16);
+        tagfont.set(
+          {
+            decoration : "underline",
+            color      : "#75940c"
+          });
+        tagItem.set(
+          {
+            textColor : null, // don't let it override font's color
+            font         : tagfont, 
+            value        : tagTexts[i],
+            rich         : true,
+            cursor       : "pointer"
+          });
+
+        // Add to the tag cloud canvas
+        tagItemsLayout.add(tagItem);
+        tagItems.push(tagItem);
+      }
+      // Comment out for build version 
+      //console.log("Printing tagItems");
+      //console.log(tagItems.length);
+
+      tagCloudLayout.add(tagItemsLayout);
+
+      for (i = 0; i < tagItems.length; i++) {
+        // Add the tag cloud items to the innerCanvas
+        var tagItem = tagItems[i];
+
+        // TagItem clicks will launch a search of that tag
+        tagItems[i].addListener(
+          "click",
+          function(e)
+          {
+            // Prevent the default 'click' behavior
+            e.preventDefault();
+            e.stop();
+
+            var query = 
+            {
+              text : [e.getTarget().getValue()]
+            }; 
+            // Comment out for build
+            //console.log(query.text);
+
+            // Initiate a search
+            aiagallery.main.Gui.getInstance().selectModule(
+            {
+              page  : aiagallery.main.Constant.PageName.FindApps,
+              query : qx.lang.Json.stringify(query)
+            });
+          },
+          this);
+      }
+
+
+      // Add search layout to inner canvas
+      innerCanvas.add(tagCloudLayout);
+
+      // Inner canvas contains intro text and search box
+      vbox.add(innerCanvas); 
+/*
       // Add a top spacer
       vbox.add(new qx.ui.core.Spacer(), { flex : 1 });
    
@@ -241,10 +361,10 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       
       //Start out hidden
       motdLabel.hide(); 
-      
+
       // Add a bottom spacer
       vbox.add(new qx.ui.core.Spacer(), { flex : 1 });
-      
+
       // Add a right spacer to center the welcome text and right-justify the
       // featured apps.
       o = new qx.ui.core.Spacer();
@@ -253,7 +373,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
           minWidth     : 20
         });
       hbox.add(o, { flex : 1 });
-
+*/
       // Featured Apps section
       var featuredAppsLayout = new qx.ui.layout.VBox();
       featuredAppsLayout.set(
@@ -269,10 +389,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         });
 
       // Featured Apps heading
-      var featuredAppsHeader = new qx.ui.basic.Label();
+      var featuredAppsHeader = new qx.ui.basic.Label(this.tr("Featured Apps"));
       featuredAppsHeader.set(
         {
-          value : "Featured Apps",
           font  : font,
           decorator : "home-page-header"
         });
@@ -307,10 +426,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         });
 
       // Newest Apps heading
-      var newestAppsHeader = new qx.ui.basic.Label();
+      var newestAppsHeader = new qx.ui.basic.Label(this.tr("Newest Apps"));
       newestAppsHeader.set(
         {
-          value : "Newest Apps",
           font  : font,
           decorator : "home-page-header"
         });
@@ -346,10 +464,9 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         });
 
       // Liked Apps heading
-      var likedAppsHeader = new qx.ui.basic.Label();
+      var likedAppsHeader = new qx.ui.basic.Label(this.tr("Most Popular Apps"));
       likedAppsHeader.set(
         {
-          value : "Most Liked Apps",
           font  : font,
           decorator : "home-page-header"
         });
@@ -405,12 +522,14 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         var featuredAppsList = response.data.result.Featured;
         var newestAppsList = response.data.result.Newest;
         var likedAppsList = response.data.result.MostLiked;
-        
+
+/*        
         // Grab the MOTD as well
         var motd = response.data.result.Motd; 
         
         // Set the motd on the front page
         this.motdText.setValue(motd); 
+*/
 
         // Remove everything from the lists. They're about to be refilled.
         this.featuredAppsContainer.removeAll();
@@ -522,6 +641,14 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       default:
         throw new Error("Unexpected request type: " + requestType);
       }
+    },
+
+    // Retrieve search button.  Used by fsm on appear/disappear
+    // events to enable/disable association with "Enter" key.
+    getSearchButton : function()
+    {
+        return this.searchButton;
     }
+
   }
 });

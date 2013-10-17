@@ -11,6 +11,7 @@
 /*
 #require(aiagallery.dbif.DbifSim)
 #use(aiagallery.main.AbstractModule)
+#ignore(aiagallery.module.testing.temp)
 */
 
 /**
@@ -195,13 +196,11 @@ new aiagallery.main.Module(
   aiagallery.module.dgallery.findapps.FindApps);
 
 new aiagallery.main.Module(
-  "My Apps",
-  "aiagallery/module/emblem-favorite.png",
-  "My Apps",
-  aiagallery.main.Constant.PageName.MyApps,
-  aiagallery.module.dgallery.myapps.MyApps);
-
-
+  "Contest Winners",
+  "aiagallery/module/system-search.png",
+  "Contest",
+  aiagallery.main.Constant.PageName.Contest,
+  aiagallery.module.dgallery.contest.Contest);
 
 if (qx.core.Environment.get("qx.debug"))
 {
