@@ -138,62 +138,6 @@ qx.Class.define("aiagallery.main.Gui",
         header.add(o);
 */		
 		
-        var layout = new qx.ui.layout.HBox();
-        layout.setSpacing(5);      
-        var searchLayout = new qx.ui.container.Composite(layout);
-		searchLayout.set({ marginTop: 12 });
-
-        var searchTextField = new qx.ui.form.TextField;
-        searchTextField.setWidth(150); 
-        searchTextField.setHeight(26); 
-		searchTextField.set({ marginTop : 1 });
-		
-
-        var searchButton = new qx.ui.form.Button(this.tr("Search"));
-		searchButton.setHeight(25);
-		searchButton.setMaxHeight(25);
-		searchButton.set({ height : 25, width: 100 });
-
-        // Excute a search when the user clicks the button
-        searchButton.addListener("execute", 
-          function(e) {
-          
-            var searchValue = searchTextField.getValue();
-            // Do not execute an empty search 
-            if (searchValue == null || searchValue.trim() == "") {
-              return;
-            }
-
-            var query = {
-              text : [searchValue]
-            }; 
-
-            // Initiate a search
-            aiagallery.main.Gui.getInstance().selectModule(
-            {
-              page  : aiagallery.main.Constant.PageName.FindApps,
-              query : qx.lang.Json.stringify(query)
-            });
-          }, 
-        this);
-
-        // Allow 'Enter' to fire a search
-        var command = new qx.ui.core.Command("Enter");
-        searchButton.setCommand(command);
-
-        // Add button and search text field to layout
-        searchLayout.add(searchTextField);
-        searchLayout.add(searchButton);
-
-        // Add search layout to inner canvas
-        header.add(searchLayout);		
-		
-
-        // Create a small spacer after the dropdown
-        o = new qx.ui.core.Spacer(20);
-        header.add(o);
-				
-		
   	    // Add translation / internationalization options
   	    // Access all available locales and the currently set locale
   	    var localeManager = qx.locale.Manager.getInstance();
@@ -239,6 +183,62 @@ qx.Class.define("aiagallery.main.Gui",
 	  
   	    i8nBox.add(i8nSelectBox);
    	    header.add(i8nBox);
+
+
+        // Create a small spacer after the module
+        o = new qx.ui.core.Spacer(10);
+        header.add(o);
+		
+
+		// Add search module to header
+        var layout = new qx.ui.layout.HBox();
+        layout.setSpacing(5);      
+        var searchLayout = new qx.ui.container.Composite(layout);
+		searchLayout.set({ marginTop: 12 });
+
+        var searchTextField = new qx.ui.form.TextField;
+        searchTextField.setWidth(150); 
+        searchTextField.setHeight(26); 
+		searchTextField.set({ marginTop : 1 });		
+
+        var searchButton = new qx.ui.form.Button(this.tr("Search"));
+		searchButton.setHeight(25);
+		searchButton.setMaxHeight(25);
+		searchButton.set({ height : 25, width: 100 });
+
+        // Excute a search when the user clicks the button
+        searchButton.addListener("execute", 
+          function(e) {
+          
+            var searchValue = searchTextField.getValue();
+            // Do not execute an empty search 
+            if (searchValue == null || searchValue.trim() == "") {
+              return;
+            }
+
+            var query = {
+              text : [searchValue]
+            }; 
+
+            // Initiate a search
+            aiagallery.main.Gui.getInstance().selectModule(
+            {
+              page  : aiagallery.main.Constant.PageName.FindApps,
+              query : qx.lang.Json.stringify(query)
+            });
+          }, 
+        this);
+
+        // Allow 'Enter' to fire a search
+        var command = new qx.ui.core.Command("Enter");
+        searchButton.setCommand(command);
+
+        // Add button and search text field to layout
+        searchLayout.add(searchTextField);
+        searchLayout.add(searchButton);
+
+        // Add search layout to inner canvas
+        header.add(searchLayout);		
 		
 		
         // Add a flexible spacer to take up the whole middle
