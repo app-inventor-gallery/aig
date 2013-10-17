@@ -132,11 +132,70 @@ qx.Class.define("aiagallery.main.Gui",
           });
         header.add(o);
 
-        // Add a flexible spacer to take up the whole middle
-        o = new qx.ui.core.Widget();
-        o.setMinWidth(1);
-        header.add(o, { flex : 1 });
 
+        // Create a small spacer after the text
+        o = new qx.ui.core.Spacer(20);
+        header.add(o);
+		
+		
+  	    // Add translation / internationalization options
+  	    // Access all available locales and the currently set locale
+  	    var localeManager = qx.locale.Manager.getInstance();
+  	    var locales = localeManager.getAvailableLocales();
+  	    var currentLocale = localeManager.getLocale();
+  	    // console.log("LOCALE TESTING");
+  	    // console.log(locales);
+  	    // console.log(currentLocale);
+	  
+  	    // Register auto-generated string in *.po translation files
+  	    this.marktr("$$languagename");
+
+  	    // Add dropdown menu GUI for locales, set it to be horizontal
+  	    
+        // Create a select box (AKA dropdown menu)
+        var i8nBox = new qx.ui.container.Composite(new qx.ui.layout.VBox());
+		i8nBox.set({ marginTop : 12, width : 100 });
+        var i8nSelectBox = new qx.ui.form.SelectBox();
+
+        // Fill the select box with available locales
+        for (var i = 0; i < locales.length; i++) {
+  	      var locale = locales[i];
+  	      var languageName = localeManager.translate("$$languagename", [], locale);
+          var localeItem = new qx.ui.form.ListItem(languageName.toString());
+  	      // Save the locale as model
+  		  localeItem.setModel(locale);
+          i8nSelectBox.add(localeItem);
+  	  	  // Set default value to be the first one in the list
+  		  if (i == 0) {
+  		    i8nSelectBox.setSelection([localeItem]);			
+  		  }
+        } 
+	  
+  	    // Event handler for select box, set locale if selection changed
+        i8nSelectBox.addListener("changeSelection", function(e) {
+   		  // Capture the returned ListItem
+  		  // Courtersy of qooxdoo playground code http://goo.gl/Gqdr04
+  		  var listItem = e.getData()[0].getLabel();
+          console.log("ChangeValue of locale: " + listItem + " | ");
+  	      var newLocale = i8nSelectBox.getModelSelection().getItem(0);
+  	      localeManager.setLocale(newLocale);
+        });
+	  
+  	    i8nBox.add(i8nSelectBox);
+   	    header.add(i8nBox);
+
+
+        // Create a small spacer after the dropdown
+        o = new qx.ui.core.Spacer(20);
+        header.add(o);
+		
+		
+        // // Add a flexible spacer to take up the whole middle
+        // o = new qx.ui.core.Widget();
+        // o.setMinWidth(1);
+        // header.add(o, { flex : 1 });
+		
+		
         // Create a label to hold the user's login info and a logout button
         if (false)
         {
