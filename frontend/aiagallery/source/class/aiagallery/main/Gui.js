@@ -118,10 +118,11 @@ qx.Class.define("aiagallery.main.Gui",
           });
         header.add(o);
 
-        // Create a small spacer after the logo label
-        o = new qx.ui.core.Spacer(20);
-        header.add(o);
-
+        // Add a flexible spacer to take up the whole middle
+        o = new qx.ui.core.Widget();
+        o.setMinWidth(1);
+        header.add(o, { flex : 1 });
+/*
         // Add another label to header for release note + forum helper text
 		o = new qx.ui.basic.Label(this.tr("<div><br/>Welcome to the <a href='gallery.html'>gallery!</a> See <a href='https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit'>Release Notes</a><br/>and post feedback / bug reports to the <a href='http://groups.google.com/group/app-inventor-gallery/topics' >Forum</a></div>"));
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
@@ -132,11 +133,119 @@ qx.Class.define("aiagallery.main.Gui",
           });
         header.add(o);
 
-        // Add a flexible spacer to take up the whole middle
-        o = new qx.ui.core.Widget();
-        o.setMinWidth(1);
-        header.add(o, { flex : 1 });
+        // Create a small spacer after the text
+        o = new qx.ui.core.Spacer(20);
+        header.add(o);
+*/		
+		
+  	    // Add translation / internationalization options
+  	    // Access all available locales and the currently set locale
+  	    var localeManager = qx.locale.Manager.getInstance();
+  	    var locales = localeManager.getAvailableLocales();
+  	    var currentLocale = localeManager.getLocale();
+  	    // console.log("LOCALE TESTING");
+  	    // console.log(locales);
+  	    // console.log(currentLocale);
+	  
+  	    // Register auto-generated string in *.po translation files
+  	    this.marktr("$$languagename");
 
+  	    // Add dropdown menu GUI for locales, set it to be horizontal
+  	    
+        // Create a select box (AKA dropdown menu)
+        var i8nBox = new qx.ui.container.Composite(new qx.ui.layout.VBox());
+		i8nBox.set({ marginTop : 12, width : 100 });
+        var i8nSelectBox = new qx.ui.form.SelectBox();
+
+        // Fill the select box with available locales
+        for (var i = 0; i < locales.length; i++) {
+  	      var locale = locales[i];
+  	      var languageName = localeManager.translate("$$languagename", [], locale);
+          var localeItem = new qx.ui.form.ListItem(languageName.toString());
+  	      // Save the locale as model
+  		  localeItem.setModel(locale);
+          i8nSelectBox.add(localeItem);
+  	  	  // Set default value to be the first one in the list
+  		  if (i == 0) {
+  		    i8nSelectBox.setSelection([localeItem]);			
+  		  }
+        } 
+	  
+  	    // Event handler for select box, set locale if selection changed
+        i8nSelectBox.addListener("changeSelection", function(e) {
+   		  // Capture the returned ListItem
+  		  // Courtersy of qooxdoo playground code http://goo.gl/Gqdr04
+  		  var listItem = e.getData()[0].getLabel();
+          console.log("ChangeValue of locale: " + listItem + " | ");
+  	      var newLocale = i8nSelectBox.getModelSelection().getItem(0);
+  	      localeManager.setLocale(newLocale);
+        });
+	  
+  	    i8nBox.add(i8nSelectBox);
+   	    header.add(i8nBox);
+
+
+        // Create a small spacer after the module
+        o = new qx.ui.core.Spacer(10);
+        header.add(o);
+		
+
+		// Add search module to header
+        var layout = new qx.ui.layout.HBox();
+        layout.setSpacing(5);      
+        var searchLayout = new qx.ui.container.Composite(layout);
+		searchLayout.set({ marginTop: 12 });
+
+        var searchTextField = new qx.ui.form.TextField;
+        searchTextField.setWidth(150); 
+        searchTextField.setHeight(26); 
+		searchTextField.set({ marginTop : 1 });		
+
+        var searchButton = new qx.ui.form.Button(this.tr("Search"));
+		searchButton.setHeight(25);
+		searchButton.setMaxHeight(25);
+		searchButton.set({ height : 25, width: 100 });
+
+        // Excute a search when the user clicks the button
+        searchButton.addListener("execute", 
+          function(e) {
+          
+            var searchValue = searchTextField.getValue();
+            // Do not execute an empty search 
+            if (searchValue == null || searchValue.trim() == "") {
+              return;
+            }
+
+            var query = {
+              text : [searchValue]
+            }; 
+
+            // Initiate a search
+            aiagallery.main.Gui.getInstance().selectModule(
+            {
+              page  : aiagallery.main.Constant.PageName.FindApps,
+              query : qx.lang.Json.stringify(query)
+            });
+          }, 
+        this);
+
+        // Allow 'Enter' to fire a search
+        var command = new qx.ui.core.Command("Enter");
+        searchButton.setCommand(command);
+
+        // Add button and search text field to layout
+        searchLayout.add(searchTextField);
+        searchLayout.add(searchButton);
+
+        // Add search layout to inner canvas
+        header.add(searchLayout);		
+
+
+        // Create a small spacer after the logo label
+        o = new qx.ui.core.Spacer(20);
+        header.add(o);
+		
+		
         // Create a label to hold the user's login info and a logout button
         if (false)
         {
@@ -901,7 +1010,7 @@ qx.Class.define("aiagallery.main.Gui",
             page.setUserData("pageId",
                              moduleList[menuItem][moduleName].pageId); 
 
-            var layout=new qx.ui.layout.VBox(4);
+            var layout = new qx.ui.layout.VBox(4);
             subPage.setLayout(layout);
             subTabs.add(subPage, { flex : 1 });
 

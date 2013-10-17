@@ -103,8 +103,7 @@ qx.Class.define("aiagallery.main.WhoAmI",
       if (control && value != "") 
       {
         control.setValue(
-          "<a href='javascript:editProfile();'>" +
-          "(" + value + ")" +
+          "<a href='javascript:editProfile();'>" + value +
           "</a>");
       }
     },
@@ -146,7 +145,7 @@ qx.Class.define("aiagallery.main.WhoAmI",
       // Check and see if this is an anon user
       if(bAnon)
       {
-        var loginStr = this.tr("Login to submit apps and comment"); 
+        var loginStr = this.tr("Login"); 
         // if it is the anon user will have a 
         // logout url set to go to the google login
         control.setValue("<a href='" + who.getLogoutUrl() + "'>" + loginStr +"</a>"); 
@@ -176,7 +175,7 @@ qx.Class.define("aiagallery.main.WhoAmI",
       case "email":
         control = new qx.ui.basic.Label(this.getEmail());
         control.setAnonymous(true);
-        this._add(control, { row : 0, column : 1 });
+        //this._add(control, { row : 0, column : 1 });
         break;
 
       case "displayName":
@@ -186,7 +185,7 @@ qx.Class.define("aiagallery.main.WhoAmI",
           "</a>");
         control.setAnonymous(true);
         control.setRich(true);
-        this._add(control, { row : 0, column : 2 });
+        this._add(control, { row : 0, column : 1 });
         break;
         
       case "hasSetDisplayName":
