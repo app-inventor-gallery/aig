@@ -118,10 +118,10 @@ qx.Class.define("aiagallery.main.Gui",
           });
         header.add(o);
 
-        // Create a small spacer after the logo label
-        o = new qx.ui.core.Spacer(20);
-        header.add(o);
-
+        // Add a flexible spacer to take up the whole middle
+        o = new qx.ui.core.Widget();
+        o.setMinWidth(1);
+        header.add(o, { flex : 1 });
 /*
         // Add another label to header for release note + forum helper text
 		o = new qx.ui.basic.Label(this.tr("<div><br/>Welcome to the <a href='gallery.html'>gallery!</a> See <a href='https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit'>Release Notes</a><br/>and post feedback / bug reports to the <a href='http://groups.google.com/group/app-inventor-gallery/topics' >Forum</a></div>"));
@@ -239,12 +239,11 @@ qx.Class.define("aiagallery.main.Gui",
 
         // Add search layout to inner canvas
         header.add(searchLayout);		
-		
-		
-        // Add a flexible spacer to take up the whole middle
-        o = new qx.ui.core.Widget();
-        o.setMinWidth(1);
-        header.add(o, { flex : 1 });
+
+
+        // Create a small spacer after the logo label
+        o = new qx.ui.core.Spacer(20);
+        header.add(o);
 		
 		
         // Create a label to hold the user's login info and a logout button
