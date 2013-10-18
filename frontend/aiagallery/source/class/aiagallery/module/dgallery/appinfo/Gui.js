@@ -93,6 +93,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       grid.setColumnFlex(0, 1);
       grid.setRowFlex(1, 1);
       commentsGrid = new qx.ui.container.Composite(grid);
+	  commentsGrid.set({ paddingLeft: 10 });
       canvas.add(commentsGrid, { row : 1, column : 0 });
 
       // Add a label for adding a new comment
