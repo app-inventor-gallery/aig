@@ -95,24 +95,6 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       commentsGrid = new qx.ui.container.Composite(grid);
       canvas.add(commentsGrid, { row : 1, column : 0 });
 
-
-      o = new qx.ui.basic.Label(this.tr("Comments"));
-      o.set(
-        {
-          font          : font,
-          paddingBottom : 6
-        });
-      commentsGrid.add(o, { row : 0, column : 0, colSpan : 3 });
-
-      // Create the scroller to hold all of the comments
-      o = new qx.ui.container.Scroll();
-      commentsGrid.add(o, { row : 1, column : 0, colSpan : 3 });
-      
-      // The Scroller may contain only one container, so create that container.
-      this.commentsScrollContainer = 
-        new qx.ui.container.Composite(new qx.ui.layout.VBox());
-      o.add(this.commentsScrollContainer);
-
       // Add a label for adding a new comment
       o = new qx.ui.basic.Atom(this.tr("Add a comment"));
       o.set(
@@ -121,8 +103,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
           marginTop     : 10,
           paddingBottom : 6
         });
-      commentsGrid.add(o, { row : 2, column : 0, colSpan : 3 });
-
+      // commentsGrid.add(o, { row : 2, column : 0, colSpan : 3 });
+      commentsGrid.add(o, { row : 0, column : 0, colSpan : 3 });
+	  
+	  
       // Add a text field for the new comment
       this.textNewComment = new qx.ui.form.TextArea();
       this.textNewComment.set(
@@ -154,9 +138,10 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       vBoxComments.add(this.textNewComment);
       vBoxComments.add(this.commentCountLabel);   
 
-      commentsGrid.add(vBoxComments,
-                       { row : 3, column : 0, colSpan : 3 });
-      
+      // commentsGrid.add(vBoxComments, { row : 3, column : 0, colSpan : 3 });
+      commentsGrid.add(vBoxComments, { row : 1, column : 0, colSpan : 3 });	 
+	  
+	        
       // Add the Add button
       this.butAddComment = new qx.ui.form.Button(this.tr("Add"));
       this.butAddComment.set(
@@ -165,7 +150,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
         });
       fsm.addObject("butAddComment", this.butAddComment);
       this.butAddComment.addListener("execute", fsm.eventListener, fsm);
-      commentsGrid.add(this.butAddComment, { row : 4, column : 1 });
+      // commentsGrid.add(this.butAddComment, { row : 4, column : 1 });
+      commentsGrid.add(this.butAddComment, { row : 2, column : 1 });
       
       // Add the Cancel button
       this.butCancelComment = new qx.ui.form.Button(this.tr("Cancel"));
@@ -180,14 +166,36 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
           this.textNewComment.setValue("");
         },
         this);
-      commentsGrid.add(this.butCancelComment, { row : 4, column : 2 });
+      // commentsGrid.add(this.butCancelComment, { row : 4, column : 2 });
+      commentsGrid.add(this.butCancelComment, { row : 2, column : 2 });
 
       // Add a label to tell a user to log in
       // will only be shown if a user is not logged in
       this.logInToCommentLabel = 
         new qx.ui.basic.Label(this.tr("Login to comment"));
+      // commentsGrid.add(this.logInToCommentLabel, { row : 5, column : 0 });
+      commentsGrid.add(this.logInToCommentLabel, { row : 3, column : 0 }); 
+	  
 
-      commentsGrid.add(this.logInToCommentLabel, { row : 5, column : 0 });
+      o = new qx.ui.basic.Label(this.tr("Comments"));
+      o.set(
+        {
+          font          : font,
+          paddingBottom : 6
+        });
+      // commentsGrid.add(o, { row : 0, column : 0, colSpan : 3 });
+      commentsGrid.add(o, { row : 4, column : 0, colSpan : 3 });
+	  
+
+      // Create the scroller to hold all of the comments
+      o = new qx.ui.container.Scroll();
+      // The Scroller may contain only one container, so create that container.
+      this.commentsScrollContainer = 
+        new qx.ui.container.Composite(new qx.ui.layout.VBox());
+      o.add(this.commentsScrollContainer);
+      // commentsGrid.add(o, { row : 1, column : 0, colSpan : 3 });
+      commentsGrid.add(o, { row : 5, column : 0, colSpan : 3 });
+	  
 
       // Initialize a tabview for both byAuthor and byTags
       this.tagTabView = new qx.ui.tabview.TabView();
