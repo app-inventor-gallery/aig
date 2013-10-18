@@ -184,7 +184,11 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 	  
 	  innerCanvas.add(i8nRadioGroup);
 */	  
-      
+	  
+	  var messageLabel = new qx.ui.basic.Label("<a href='#page%3DActivities'>Check out the latest event: UnX collaboration!</a><br><br>");
+	  messageLabel.set({ rich : true, font : font });
+      innerCanvas.add(messageLabel);
+	  
       // Create a simple search from the home page
       searchLabel = new qx.ui.basic.Label(this.tr("Search for an App"));
       
@@ -248,6 +252,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       var tagItemsLayout = new qx.ui.container.Composite(new qx.ui.layout.Flow());
 
       var tagCloudLabel = new qx.ui.basic.Label(this.tr("Most popular tags in the gallery"));
+	  tagCloudLabel.set({ paddingTop: 20 });
       
       // Create a large bold font
 
