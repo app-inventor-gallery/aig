@@ -203,7 +203,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       
       // A label for reminding users what to do
       this.sidebarLabel = new qx.ui.basic.Label(
-		  this.tr("Check out related apps below!"));
+		  this.tr("Related apps"));
       this.sidebarLabel.set(
         {
           font          : font,
@@ -221,10 +221,12 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
       // A container created specifically for tags
       this.tagContainer = new qx.ui.container.Composite(mainLayout);
 
+	  /*
       var tagLabel = new qx.ui.basic.Label(
 		  this.tr("Select tags below to find out similar apps:"));
       this.tagContainer.add(tagLabel);
-      
+      */
+	  
       vbox.add(this.tagContainer);
 
 

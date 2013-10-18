@@ -66,14 +66,24 @@ qx.Class.define("aiagallery.module.dgallery.help.Gui",
       canvas.add(o);
 
       // Add text header
-	  o = new qx.ui.basic.Label("Publishing your app to the App Inventor Gallery (Also on <a href='http://www.appinventor.org/galleryHowTo'>AppInventor.org</a>)");
+	  o = new qx.ui.basic.Label("Publishing your app to the App Inventor Gallery");
 	  o.set({ 
 		  rich : true,
 		  font : fontHeader,
-		  paddingTop : 20,
-		  paddingBottom : 20
+		  paddingTop : 10,
+		  paddingBottom : 10
 	      });
 	  canvas.add(o);
+
+      // Add text
+      o = new qx.ui.basic.Label("<i>By David Wolber on <a href='http://www.appinventor.org/galleryHowTo' target='_blank'>AppInventor.org</a></i>. Check out the how-to video below:");
+	  o.set({ 
+		  rich  : true,
+	      font  : font,
+		  paddingTop : 8,
+		  paddingBottom : 8
+		  });		  
+      canvas.add(o);
 
       // Add video embed code
 	  o = new qx.ui.embed.Html("");
@@ -83,7 +93,7 @@ qx.Class.define("aiagallery.module.dgallery.help.Gui",
 	  canvas.add(o);
 
       // Add text
-      o = new qx.ui.basic.Label("The MIT App Inventor Gallery is the main site for sharing your App Inventor apps and checking out the apps and blocks of others. It is like Google Play, except open source-- all of the uploaded apps have source code (blocks) that you can study and remix! Think of it as one of the greatest open source learning studios ever created.");
+      o = new qx.ui.basic.Label("The <b><a href='http://gallery.appinventor.mit.edu'>MIT App Inventor Gallery</a></b> is the main site for sharing your App Inventor apps and checking out the apps and blocks of others. It is like Google Play, except open source-- all of the uploaded apps have source code (blocks) that you can study and remix! Think of it as one of the greatest open source learning studios ever created.");
 	  o.set({ 
 		  rich  : true,
 	      font  : font,
@@ -113,7 +123,17 @@ qx.Class.define("aiagallery.module.dgallery.help.Gui",
       canvas.add(o);
 
       // Add text
-      o = new qx.ui.basic.Label("You can use your gmail account to login-- just click the link in the upper right hand corner. To publish your app, click on My Apps and then Add New Application.You'll see the following form:");
+      o = new qx.ui.basic.Label("You can use your gmail account to login -- just click the link in the upper right hand corner.");
+	  o.set({ 
+		  rich  : true,
+	      font  : font,
+		  paddingTop : 8,
+		  paddingBottom : 8
+		  });		  
+      canvas.add(o);
+
+      // Add text
+      o = new qx.ui.basic.Label("To publish your app, click on My Apps and then Add New Application. You'll see the following form:");
 	  o.set({ 
 		  rich  : true,
 	      font  : font,

@@ -29,6 +29,7 @@ qx.Class.define("aiagallery.module.dgallery.activities.Gui",
       var             o;
       var             fsm = module.fsm;
       var             outerCanvas = module.canvas;
+	  var			  canvas;
 
       // Put whole page in a scroller 
       outerCanvas.setLayout(new qx.ui.layout.VBox());
@@ -36,20 +37,56 @@ qx.Class.define("aiagallery.module.dgallery.activities.Gui",
       outerCanvas.add(scrollContainer, { flex : 1 });
 
       // Layout to hold intro and canvas
-      var introCanvas = new qx.ui.container.Composite(new qx.ui.layout.VBox());
-      scrollContainer.add(introCanvas, { flex : 1, margin : 10 });  
+      canvas = new qx.ui.container.Composite(new qx.ui.layout.VBox());
+	  canvas.set({ paddingLeft : 20, paddingRight : 20 });
+      scrollContainer.add(canvas, { flex : 1 });  
       
-      // Create a large bold font
-      var font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
-      font.setSize(26);
+      // Create a large bold font for headers
+      var fontHeader = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+      fontHeader.setSize(18);
+      // Create a medium font for content
+      var font = new qx.bom.Font(14, ["Helvetica", "Arial"]);
 
-      // Intro
-      var label = new qx.ui.basic.Label("<a href='gallery.html' target='_blank'>About the gallery!</a>");
-	  label.set({ 
-			rich  : true
-		  });
+      // Add text header
+	  o = new qx.ui.basic.Label("UnX platform promotional header here - Oct 18th 2013");
+	  o.set({ 
+		  rich  : true,
+		  font : fontHeader,
+		  paddingTop : 10,
+		  paddingBottom : 20
+	      });
+	  canvas.add(o);
 
-      introCanvas.add(label);
+      // Add text
+      o = new qx.ui.basic.Label("We can put some text / link / information here to inform our community about the upcoming UnX event and encourage them to publish more apps.<br><br><hr>");
+	  o.set({ 
+		  rich  : true,
+		  font  : font,
+		  paddingBottom : 10
+		  });		  
+      canvas.add(o);
+
+      // Add text header
+	  o = new qx.ui.basic.Label("2012 MIT App Inventor App Contest - Dec 23rd, 2012");
+	  o.set({ 
+		  rich : true,
+		  paddingTop : 10,
+		  paddingBottom : 10
+	      });
+	  canvas.add(o);
+
+      // Add text
+      o = new qx.ui.basic.Label("The 2012 MIT App Inventor App Contest had 125 submissions in four categories: K-8, High School, College/University, and Open. Google Nexus 7 Tablets are being awarded to the 1st place winners, with App Inventor books given for second place. Participants included students as young as third grade, college students, hobbyists, professional developers, and even some self-described \"retired old ladies\"! The following are the prize winners and a few of the other notable apps. <a href='#'>Please click here to read the full report.</a>");
+	  o.set({ 
+		  rich  : true,
+	      font  : font,
+		  paddingTop : 8,
+		  paddingBottom : 8
+		  });		  
+      canvas.add(o);
+	  
+
+	  /* End of buildGui() */
     },
 
     

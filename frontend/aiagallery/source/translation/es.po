@@ -13,7 +13,7 @@ msgstr ""
 
 #: aiagallery/main/Gui.js:111
 msgid "App Inventor<br/>Community Gallery"
-msgstr "Galería Comunitaria<br/>de App Inventor"
+msgstr "Galería <br/>de App Inventor"
 
 #: aiagallery/main/Gui.js:151
 msgid "$$languagename"

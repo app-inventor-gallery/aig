@@ -13,7 +13,7 @@ msgstr ""
 
 #: aiagallery/main/Gui.js:111
 msgid "App Inventor<br/>Community Gallery"
-msgstr "Galeria Comunitária<br/>do App Inventor"
+msgstr "Galeria <br/>do App Inventor"
 
 #: aiagallery/main/Gui.js:151
 msgid "$$languagename"
@@ -206,15 +206,15 @@ msgstr "Encontrar apps que..."
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1382
 msgid "Title contains"
-msgstr "Contenha no título"
+msgstr "Incluam no título"
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1386
 msgid "Description contains"
-msgstr "Contenha na descrição"
+msgstr "Incluam na descrição"
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1390
 msgid "Tags include"
-msgstr "As tags incluam"
+msgstr "Incluam as seguintes tags"
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1394
 msgid "Selected categories"
@@ -222,7 +222,7 @@ msgstr "Categorias selecionadas"
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1422
 msgid "Author Name"
-msgstr "Nome do autor"
+msgstr "Incluam no nome do autor"
 
 #: aiagallery/module/dgallery/findapps/Gui.js:112
 msgid "No results found"
