@@ -70,6 +70,7 @@ qx.Class.define("aiagallery.module.dgallery.activities.Gui",
 	  o = new qx.ui.basic.Label("2012 MIT App Inventor App Contest - Dec 23rd, 2012");
 	  o.set({ 
 		  rich : true,
+		  font : fontHeader,
 		  paddingTop : 10,
 		  paddingBottom : 10
 	      });
