@@ -15,49 +15,54 @@ msgstr ""
 msgid "App Inventor<br/>Community Gallery"
 msgstr "Galeria Comunitária<br/>do App Inventor"
 
-#: aiagallery/main/Gui.js:126
-msgid "<div><br/>Welcome to the <a href='gallery.html'>gallery!</a> See <a href='https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit'>Release Notes</a><br/>and post feedback / bug reports to the <a href='http://groups.google.com/group/app-inventor-gallery/topics' >Forum</a></div>"
-msgstr "<div><br/>Bem-vindos à <a href='gallery.html'>galeria!</a> Ver <a href='https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit'>Notas da Versão</a><br/>e incluir comentários / informar sobre erros no <a href='http://groups.google.com/group/app-inventor-gallery/topics' >Fórum</a></div>"
+#: aiagallery/main/Gui.js:151
+msgid "$$languagename"
+msgstr "Português"
 
-#: aiagallery/main/Gui.js:165
+#: aiagallery/main/Gui.js:273
 msgid "Simulate"
 msgstr "Simular"
 
-#: aiagallery/main/Gui.js:693
+#: aiagallery/main/Gui.js:801
 msgid "About the gallery"
 msgstr "Sobre a galeria"
 
-#: aiagallery/main/Gui.js:705
+#: aiagallery/main/Gui.js:813
 msgid "App Inventor Gallery About Us"
 msgstr "Galeria do App Inventor"
 
-#: aiagallery/main/Gui.js:713
+#: aiagallery/main/Gui.js:821
 msgid "Terms of Use"
 msgstr "Termos de uso"
 
-#: aiagallery/main/Gui.js:725
+#: aiagallery/main/Gui.js:833
 msgid "App Inventor Gallery Terms of Use"
 msgstr "Termos de uso da Galeria do App Inventor"
 
-#: aiagallery/main/Gui.js:733
+#: aiagallery/main/Gui.js:841
 msgid "Privacy Policy"
 msgstr "Política de Privacidade"
 
-#: aiagallery/main/Gui.js:745
+#: aiagallery/main/Gui.js:853
 msgid "App Inventor Gallery Privacy Policy"
 msgstr "Política de Privacidade da Galeria do App Inventor"
 
-#: aiagallery/main/Gui.js:753
+#: aiagallery/main/Gui.js:861
 msgid "Supported Browsers"
 msgstr "Navegadores suportados"
 
-#: aiagallery/main/Gui.js:765
+#: aiagallery/main/Gui.js:873
 msgid "App Inventor Gallery Supported Browsers"
 msgstr "Navegadores suportados pela Galeria do App Inventor"
 
-#: aiagallery/main/WhoAmI.js:149
-msgid "Login to submit apps and comment"
-msgstr "Faça login para enviar apps e comentários"
+#: aiagallery/main/WhoAmI.js:148
+msgid "Login"
+msgstr ""
+
+#: aiagallery/module/dgallery/about/Gui.js:118
+#: aiagallery/module/dgallery/contest/Gui.js:121
+msgid "The 2012 MIT App Inventor App Contest had 125 submissions in four categories: K-8, High School, College/University, and Open. Google Nexus 7 Tablets are being awarded to the 1st place winners, with <a href=http://www.amazon.com/App-Inventor-Create-Your-Android/dp/1449397484>App Inventor</a> books given for second place. Participants included students as young as third grade, college students, hobbyists, professional developers, and even some self-described \"retired old ladies\"! The following are the prize winners and a few of the other notable apps:"
+msgstr "Para o Concurso de Apps do MIT App Inventor de 2012 foram feitas 125 entregas em quatro categorias: K-8, Ensino Médio, Ensino Superior e Aberto. Os participantes que ficaram em primeiro lugar receberão um tablet modelo Google Nexus 7; os que ficaram em segundo, um livro de <a href=http://www.amazon.com/App-Inventor-Create-Your-Android/dp/1449397484>App Inventor</a>. Entre os participantes havia crianças do ensino fundamental I, universitários, amadores, desenvolvedores profissionais e, inclusive, alguns que se descreviam como \"senhoras aposentadas\"! Seguem os nomes dos ganhadores e alguns outros ótimos apps:"
 
 #: aiagallery/module/dgallery/appinfo/Comment.js:211
 msgid "Keep Comment"
@@ -98,7 +103,7 @@ msgid "480 Characters Left"
 msgstr "480 caracteres restantes"
 
 #: aiagallery/module/dgallery/appinfo/Gui.js:161
-#: aiagallery/widget/mystuff/Detail.js:189
+#: aiagallery/widget/mystuff/Detail.js:203
 msgid "Add"
 msgstr "Incluir"
 
@@ -165,10 +170,6 @@ msgstr "Um administrador irá revisá-lo."
 msgid "This comment has been flagged."
 msgstr "Este comentário foi marcado."
 
-#: aiagallery/module/dgallery/contest/Gui.js:121
-msgid "The 2012 MIT App Inventor App Contest had 125 submissions in four categories: K-8, High School, College/University, and Open. Google Nexus 7 Tablets are being awarded to the 1st place winners, with <a href=http://www.amazon.com/App-Inventor-Create-Your-Android/dp/1449397484>App Inventor</a> books given for second place. Participants included students as young as third grade, college students, hobbyists, professional developers, and even some self-described \"retired old ladies\"! The following are the prize winners and a few of the other notable apps:"
-msgstr "Para o Concurso de Apps do MIT App Inventor de 2012 foram feitas 125 entregas em quatro categorias: K-8, Ensino Médio, Ensino Superior e Aberto. Os participantes que ficaram em primeiro lugar receberão um tablet modelo Google Nexus 7; os que ficaram em segundo, um livro de <a href=http://www.amazon.com/App-Inventor-Create-Your-Android/dp/1449397484>App Inventor</a>. Entre os participantes havia crianças do ensino fundamental I, universitários, amadores, desenvolvedores profissionais e, inclusive, alguns que se descreviam como \"senhoras aposentadas\"! Seguem os nomes dos ganhadores e alguns outros ótimos apps:"
-
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:32
 msgid "Search in: "
 msgstr "Pesquisar em:"
@@ -180,6 +181,11 @@ msgstr "Todos os campos de texto"
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:50
 msgid "Specific fields"
 msgstr "Campos específicos"
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:135
+#: aiagallery/main/Gui.js:204 aiagallery/module/dgallery/home/Gui.js:203
+msgid "Search"
+msgstr "Pesquisar"
 
 #: aiagallery/module/dgallery/findapps/CriteriaSearch.js:158
 #: aiagallery/module/mgmt/motd/Gui.js:73
@@ -230,36 +236,23 @@ msgstr "Bem-vindo à Galeria Comunitária do MIT App Inventor!"
 msgid "Check out mobile apps from all over the world! <br/>Download App Inventor blocks and learn to program! <br/>Join the community of App Inventor programmers!<br/><br/>"
 msgstr "Veja aplicativos móveis do mundo todo! <br/>Faça o download do App Inventor Blocks e comece a programar <br/>Faça parte da comunidade de programadores do App Inventor!<br/><br/>"
 
-#: aiagallery/module/dgallery/home/Gui.js:143
-msgid "Browse Gallery in the language you like"
-msgstr "Navegue pela Galeria no idioma da sua preferência"
-
-#: aiagallery/module/dgallery/home/Gui.js:162
-msgid "$$languagename"
-msgstr "Português"
-
-#: aiagallery/module/dgallery/home/Gui.js:191
+#: aiagallery/module/dgallery/home/Gui.js:189
 msgid "Search for an App"
 msgstr "Procurar um app"
 
-#: aiagallery/module/dgallery/home/Gui.js:206
-#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:135
-msgid "Search"
-msgstr "Pesquisar"
-
-#: aiagallery/module/dgallery/home/Gui.js:253
+#: aiagallery/module/dgallery/home/Gui.js:250
 msgid "Most popular tags in the gallery"
 msgstr "Tags mais populares da galeria"
 
-#: aiagallery/module/dgallery/home/Gui.js:395
+#: aiagallery/module/dgallery/home/Gui.js:392
 msgid "Featured Apps"
 msgstr "Apps destacados"
 
-#: aiagallery/module/dgallery/home/Gui.js:432
+#: aiagallery/module/dgallery/home/Gui.js:429
 msgid "Newest Apps"
 msgstr "Apps mais recentes"
 
-#: aiagallery/module/dgallery/home/Gui.js:470
+#: aiagallery/module/dgallery/home/Gui.js:467
 msgid "Most Popular Apps"
 msgstr "Apps mais populares"
 
@@ -442,29 +435,20 @@ msgstr "Editar app: "
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:79
 #: aiagallery/module/dgallery/myapps/Gui.js:169
 #: aiagallery/module/mgmt/applications/Gui.js:110
-#: aiagallery/widget/mystuff/Detail.js:92
+#: aiagallery/widget/mystuff/Detail.js:96
 msgid "Title"
 msgstr "Título"
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:80
 #: aiagallery/module/mgmt/applications/Gui.js:115
-#: aiagallery/widget/mystuff/Detail.js:115
+#: aiagallery/widget/mystuff/Detail.js:119
 msgid "Description"
 msgstr "Descrição"
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:81
-#: aiagallery/widget/mystuff/Detail.js:145
+#: aiagallery/widget/mystuff/Detail.js:159
 msgid "Categories"
 msgstr "Categorias"
-
-#: aiagallery/module/mgmt/applications/CellEditorFactory.js:209
-#: aiagallery/module/mgmt/permissions/Gui.js:107
-#: aiagallery/module/mgmt/flags/Gui.js:191
-#: aiagallery/module/mgmt/flags/Gui.js:294
-#: aiagallery/module/mgmt/applications/Gui.js:72
-#: aiagallery/module/mgmt/users/Gui.js:103
-msgid "Delete"
-msgstr "Apagar"
 
 #: aiagallery/module/mgmt/applications/CellEditorFactory.js:217
 msgid "add tags"
@@ -567,6 +551,15 @@ msgstr "Incluir grupo de autorização"
 msgid "Save"
 msgstr "Salvar"
 
+#: aiagallery/module/mgmt/permissions/Gui.js:107
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:209
+#: aiagallery/module/mgmt/flags/Gui.js:191
+#: aiagallery/module/mgmt/flags/Gui.js:294
+#: aiagallery/module/mgmt/applications/Gui.js:72
+#: aiagallery/module/mgmt/users/Gui.js:103
+msgid "Delete"
+msgstr "Apagar"
+
 #: aiagallery/module/mgmt/users/CellEditorFactory.js:42
 msgid "Edit User: "
 msgstr "Editar usuário: "
@@ -645,62 +638,74 @@ msgstr "Criado: "
 msgid "Last updated: "
 msgstr "Última atualização: "
 
-#: aiagallery/widget/mystuff/Detail.js:82
+#: aiagallery/widget/mystuff/Detail.js:86
 msgid "Enter the application title (30 character limit)"
 msgstr "Introduza o título do aplicativo (limite 30 caracteres)"
 
-#: aiagallery/widget/mystuff/Detail.js:104
+#: aiagallery/widget/mystuff/Detail.js:108
 msgid "Enter a brief description (480 Character Limit)"
 msgstr "Introduza uma breve descrição (limite 480 caracteres)"
 
-#: aiagallery/widget/mystuff/Detail.js:126
+#: aiagallery/widget/mystuff/Detail.js:140
 msgid "Tags :"
 msgstr "Tags :"
 
-#: aiagallery/widget/mystuff/Detail.js:157
+#: aiagallery/widget/mystuff/Detail.js:171
 msgid "Enter a new tag"
 msgstr "Introduzir uma nova tag"
 
-#: aiagallery/widget/mystuff/Detail.js:179
+#: aiagallery/widget/mystuff/Detail.js:193
 msgid "For example, if you are from unX, you may want to tag your app with 'Spanish' or 'Portuguese.'"
 msgstr "Por exemplo, se você é da unX, pode etiquetar o seu app com 'Espanhol' ou 'Português'"
 
-#: aiagallery/widget/mystuff/Detail.js:253
+#: aiagallery/widget/mystuff/Detail.js:267
 msgid "Delete Tag"
 msgstr "Excluir tag"
 
-#: aiagallery/widget/mystuff/Detail.js:295
+#: aiagallery/widget/mystuff/Detail.js:309
 msgid "Select source file"
 msgstr "Selecionar arquivo fonte"
 
-#: aiagallery/widget/mystuff/Detail.js:362
+#: aiagallery/widget/mystuff/Detail.js:376
 msgid "Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose 'Other Actions' and select 'Download Source'. Do not open the downloaded zip file but upload it here directly."
 msgstr "Por favor, suba o código fonte (arquivo .zip) para o app do App Inventor. Para criar este arquivo com o  App Inventor, vá à página Meus Projetos, selecione o projeto desejado, escolha 'Outras Ações' e selecione 'Fazer download Fonte'. Não abra o arquivo zip descarregado. Faça upload aqui diretamente."
 
-#: aiagallery/widget/mystuff/Detail.js:375
+#: aiagallery/widget/mystuff/Detail.js:389
 msgid "Select Image"
 msgstr "Selecione imagem"
 
-#: aiagallery/widget/mystuff/Detail.js:434
+#: aiagallery/widget/mystuff/Detail.js:444
 msgid "The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one. The file size limit is "
 msgstr "A imagem que você subir aparecerá no site do app e em todas as telas de pesquisa. Será dimensionada para tamanho 180*230. Normalmente a imagem é uma captura de tela ou um ícone que você criou. O tamanho limite é"
 
-#: aiagallery/widget/mystuff/Detail.js:455
+#: aiagallery/widget/mystuff/Detail.js:462
 msgid "Save Application"
 msgstr "Salvar aplicativo"
 
-#: aiagallery/widget/mystuff/Detail.js:536
+#: aiagallery/widget/mystuff/Detail.js:543
 msgid "Reset"
 msgstr "Restabelecer"
 
-#: aiagallery/widget/mystuff/Detail.js:562
+#: aiagallery/widget/mystuff/Detail.js:569
 msgid "Discard"
 msgstr "Excluir"
 
-#: aiagallery/widget/mystuff/Detail.js:586
+#: aiagallery/widget/mystuff/Detail.js:593
 msgid "Really delete application"
 msgstr "Excluir realmente o aplicativo"
 
-#: aiagallery/widget/mystuff/Detail.js:818
+#: aiagallery/widget/mystuff/Detail.js:825
 msgid "Delete Application"
 msgstr ""
+
+#~ msgid "<div><br/>Welcome to the <a href='gallery.html'>gallery!</a> See <a href='https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit'>Release Notes</a><br/>and post feedback / bug reports to the <a href='http://groups.google.com/group/app-inventor-gallery/topics' >Forum</a></div>"
+#~ msgstr "<div><br/>Bem-vindos à <a href='gallery.html'>galeria!</a> Ver <a href='https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit'>Notas da Versão</a><br/>e incluir comentários / informar sobre erros no <a href='http://groups.google.com/group/app-inventor-gallery/topics' >Fórum</a></div>"
+
+#~ msgid "Activities"
+#~ msgstr ""
+
+#~ msgid "Browse Gallery in the language you like"
+#~ msgstr "Navegue pela Galeria no idioma da sua preferência"
+
+#~ msgid "Login to submit apps and comment"
+#~ msgstr "Faça login para enviar apps e comentários"

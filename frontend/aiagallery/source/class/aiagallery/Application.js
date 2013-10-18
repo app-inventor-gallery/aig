@@ -189,6 +189,20 @@ new aiagallery.main.Module(
   aiagallery.module.dgallery.home.Home);
 
 new aiagallery.main.Module(
+  "Help",
+  "aiagallery/module/system-search.png",
+  "Help",
+  aiagallery.main.Constant.PageName.Help,
+  aiagallery.module.dgallery.help.Help);
+
+new aiagallery.main.Module(
+  "Activities",
+  "aiagallery/module/go-home.png",
+  "Activities",
+  aiagallery.main.Constant.PageName.Activities,      
+  aiagallery.module.dgallery.activities.Activities);
+
+new aiagallery.main.Module(
   "Find Apps",
   "aiagallery/module/system-search.png",
   "Find Apps",

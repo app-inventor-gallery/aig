@@ -42,7 +42,9 @@ qx.Class.define("aiagallery.main.Constant",
         AppInfo    : "App",
         User       : "Profile",
         PublicUser : "PublicUser",
-        Contest    : "Contest"
+        Contest    : "Contest",
+		Activities : "Activities",
+		Help       : "Help"
       }
   }
 });
