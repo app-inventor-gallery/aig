@@ -875,6 +875,26 @@ qx.Class.define("aiagallery.main.Gui",
         hbox.add(o);
 
         // Spacer
+        hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
+
+        // Add a link to the supported browser page
+        o = new qx.ui.basic.Label(this.tr("Release Notes"));
+        o.set(
+          {
+            font   : font,
+            height : 20,
+            cursor : "pointer"
+          });
+        o.addListener(
+          "click",
+          function(e)
+          {
+            window.open("https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit",
+                        this.tr("App Inventor Gallery Release Notes"));
+          });
+        hbox.add(o);
+
+        // Spacer
         hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 2 });
 
         // Add the hbox to the application
