@@ -5,8 +5,9 @@
  *   LGPL: http://www.gnu.org/licenses/lgpl.html 
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
+
 /*
-#ignore(goog.appengine*)
+ * The GUI component for the editing / uploading / viewing app info panel
  */
 
 qx.Class.define("aiagallery.widget.mystuff.Detail",
@@ -123,8 +124,9 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     // Add the left spacer
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
 
+	/*
     // Label to remind users what tags are for
-    o = new qx.ui.basic.Label("I'm testing insertion. I'm testing insertion. I'm testing insertion. 03");
+    o = new qx.ui.basic.Label("");
 	o.set({ rich : true, wrap : true });
     tempContainer.add(o);
 
@@ -132,7 +134,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
 	// Add the container to form
     form.addButton(tempContainer, { row : 2, column : 0, rowSpan: 1, colSpan : 6 });
-
+	*/
 
 
 
@@ -335,15 +337,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     this.ffSource = o;
 
 
-    // ********* beta002 start *********
-    // Objective: add app upload instructions.
-
-//    form.add(o, "This is a reminder about file upload", null, "sourceprompt", null,
-//             { row : 1, column : 6, rowSpan : 1 });
-//    o = new qx.ui.basic.Label("This is a reminder about file upload");
-//    form.add(o, "This is a reminder about file upload", null, "sourceprompt", null,
-//             { row : 0, column : 6, rowSpan : 1 });
-
     // Create a temporary container for a spacer, a label, and a spacer
     tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
 
@@ -361,7 +354,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     // Add the right spacer
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-    form.addButton(tempContainer, { row : 0, column : 7, rowSpan : 1 });
+    form.addButton(tempContainer, { row : 0, column : 7 });
 
     // define the popup we need
     var sourceFilePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
@@ -425,11 +418,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     // Add the right spacer
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-    form.addButton(tempContainer, { row : 4, column : 7, rowSpan : 1 });
-
-    // bind onClick event for the popup
-//    selectImageMessage = "The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one.";
-//    this.selectImagePrompt.addListener("click", function(e){ alert(selectImageMessage); }, this);
+    form.addButton(tempContainer, { row : 4, column : 7 });
 
     // define the popup we need
     var selectImagePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
