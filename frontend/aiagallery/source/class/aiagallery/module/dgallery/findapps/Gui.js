@@ -8,7 +8,7 @@
  */
 
 /**
- * The graphical user interface for the gallery "find apps"" page
+ * The graphical user interface for the gallery "find apps" page
  */
 qx.Class.define("aiagallery.module.dgallery.findapps.Gui",
 {

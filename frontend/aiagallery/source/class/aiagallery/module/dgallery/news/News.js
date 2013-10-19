@@ -8,9 +8,9 @@
  */
 
 /**
- * Activities gallery page 
+ * News gallery page 
  */
-qx.Class.define("aiagallery.module.dgallery.activities.Activities",
+qx.Class.define("aiagallery.module.dgallery.news.News",
 {
   type : "singleton",
   extend : aiagallery.main.AbstractModule,
@@ -30,10 +30,10 @@ qx.Class.define("aiagallery.module.dgallery.activities.Activities",
     initialAppear : function(module)
     {
       // Replace existing (temporary) finite state machine with the real one.
-      aiagallery.module.dgallery.activities.Fsm.getInstance().buildFsm(module);
+      aiagallery.module.dgallery.news.Fsm.getInstance().buildFsm(module);
 
       // Create the real gui.
-      aiagallery.module.dgallery.activities.Gui.getInstance().buildGui(module);
+      aiagallery.module.dgallery.news.Gui.getInstance().buildGui(module);
     }
   }
 });

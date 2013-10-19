@@ -8,10 +8,10 @@
  */
 
 /**
- * The graphical user interface for the activities page
+ * The graphical user interface for the news page
  * 
  */
-qx.Class.define("aiagallery.module.dgallery.activities.Gui",
+qx.Class.define("aiagallery.module.dgallery.news.Gui",
 {
   type : "singleton",
   extend : qx.ui.core.Widget,

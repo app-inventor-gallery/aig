@@ -185,7 +185,7 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 	  innerCanvas.add(i8nRadioGroup);
 */	  
 	  
-	  var messageLabel = new qx.ui.basic.Label("<a href='#page%3DActivities'>Check out the latest event: UnX collaboration!</a><br><br>");
+	  var messageLabel = new qx.ui.basic.Label("<a href='#page%3DNews'>Check out the latest event: UnX collaboration!</a><br><br>");
 	  messageLabel.set({ rich : true, font : font });
       innerCanvas.add(messageLabel);
 	  

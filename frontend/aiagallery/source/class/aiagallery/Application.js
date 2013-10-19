@@ -196,11 +196,11 @@ new aiagallery.main.Module(
   aiagallery.module.dgallery.help.Help);
 
 new aiagallery.main.Module(
-  "Activities",
+  "News",
   "aiagallery/module/go-home.png",
-  "Activities",
-  aiagallery.main.Constant.PageName.Activities,      
-  aiagallery.module.dgallery.activities.Activities);
+  "News",
+  aiagallery.main.Constant.PageName.News,      
+  aiagallery.module.dgallery.news.News);
 
 new aiagallery.main.Module(
   "Find Apps",

@@ -12,9 +12,9 @@ require(aiagallery.module.dgallery.appinfo.AppInfo)
  */
 
 /**
- * Activities page Finite State Machine
+ * News page Finite State Machine
  */
-qx.Class.define("aiagallery.module.dgallery.activities.Fsm",
+qx.Class.define("aiagallery.module.dgallery.news.Fsm",
 {
   type : "singleton",
   extend : aiagallery.main.AbstractModuleFsm,
@@ -51,7 +51,7 @@ qx.Class.define("aiagallery.module.dgallery.activities.Fsm",
             var rpcRequest = this.popRpcRequest();
 
             // Call the standard result handler
-            var gui = aiagallery.module.dgallery.about.Gui.getInstance();
+            var gui = aiagallery.module.dgallery.news.Gui.getInstance();
             gui.handleResponse(module, rpcRequest);
 
             // Dispose of the request
