@@ -549,7 +549,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         this.snapshotModel();
       },
       this);
-    form.addButton(o);
+    // form.addButton(o); // We don't want reset here, get rid of it from GUI
     this.butReset = o;
 
     // Delete. The button's label is reset to "Delete Application" when a uid
@@ -811,7 +811,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       
       // Set the Delete Application button's label properly since there's an
       // app here to be deleted.
-      this.butDeleteApp.setLabel(this.tr("Delete Application"));
+      this.butDeleteApp.setLabel(this.tr("Delete"));
     },
 
     _applyTitle : function(value, old)
