@@ -47,7 +47,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     // Text to add to buttons (which don't provide the 'required' property) to
     // indicate that they are required.
-    required = " <span style='color:red'>*</span> ";
+    required = " <span></span> ";
 
     // Create a form
     form = new qx.ui.form.Form();
@@ -81,8 +81,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         tabIndex    : 1,
         maxLength   : aiagallery.dbif.Constants.FieldLength.Title,
-        width       : 270,
-        maxWidth    : 270,
+        width       : 700,
+        maxWidth    : 700,
         required    : true,
         placeholder : this.tr("Enter the application title (30 character limit)")
       });
@@ -95,7 +95,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       },
       this);
     form.add(o, this.tr("Title"), null, "title", null,
-             { row : 0, column : 0, colSpan : 6 });
+             { row : 0, column : 0, colSpan : 10 });
     this.txtTitle = o;
 
     // Description
@@ -104,7 +104,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         tabIndex    : 2,
         maxLength   : aiagallery.dbif.Constants.FieldLength.Description,
-        height      : 60,
+        height      : 100,
         required    : true,
         placeholder : this.tr("Enter a brief description (480 Character Limit)")
       });
@@ -118,13 +118,13 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       this); 
 
     form.add(o, this.tr("Description"), null, "description", null,
-             { row : 1, column : 0, colSpan : 6, rowSpan : 2 });
+             { row : 1, column : 0, colSpan : 10, rowSpan : 3 });
     this.txtDescription = o;
 
+	/*
     // Add the left spacer
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
 
-	/*
     // Label to remind users what tags are for
     o = new qx.ui.basic.Label("");
 	o.set({ rich : true, wrap : true });
@@ -137,29 +137,18 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 	*/
 
 
-
-    // Button to add a tag
-    o = new qx.ui.basic.Label(this.tr("Tags :"));
-    tempContainer.add(o);
-
-    // Add the right spacer
-    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-
-    form.addButton(tempContainer, { row : 4, column : 2, colSpan : 4 });
-
     // Create a multi-selection list and add the categories to it.
     o = new qx.ui.form.List();
     o.set(
       {
         tabIndex      : 3,
         width         : 150,
-        height        : 100,
         selectionMode : "multi",
         required      : true
       });
     o.addListener("changeSelection", this._changeCategories, this);
     form.add(o, this.tr("Categories"), null, "categories", null,
-             { row : 4, column : 0, rowSpan : 5 });
+             { row : 4, column : 0, rowSpan : 1 });
     this.categoryController = new qx.data.controller.List(
       new qx.data.Array(categoryList), o);
     this.lstCategories = o;
@@ -183,7 +172,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         return true;
       });
     form.add(o, "", null, "newTag", null,
-             { row : 5, column : 2 });
+             { row : 5, column : 0 });
     this.txtNewTag = o;
 
 
@@ -193,13 +182,13 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 	
     // Label to remind users what tags are for
     o = new qx.ui.basic.Label(this.tr("For example, if you are from unX, you may want to tag your app with 'Spanish' or 'Portuguese.'"));
-	o.set({ maxWidth : 150, rich : true, wrap : true });
+	o.set({ rich : true, wrap : true });
     tempContainer.add(o);
 
     // Add the right spacer
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
 	// Add the container to form
-    form.addButton(tempContainer, { row : 6, column : 2, colSpan : 2 });
+    form.addButton(tempContainer, { row : 6, column : 0, colSpan : 10 });
 
     // Button to add a tag
     o = new qx.ui.form.Button(this.tr("Add"));
@@ -247,9 +236,16 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         this.txtNewTag.setValue(null);
       },
       this);
-    form.addButton(o, { row : 7, column : 3 });
+    form.addButton(o, { row : 7, column : 0 });
     this.butAddTag = o;
 
+    // Button to add a tag
+    o = new qx.ui.basic.Label(this.tr("Tags :"));
+    tempContainer.add(o);
+
+    // Add the right spacer
+    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+    form.addButton(tempContainer, { row : 8, column : 0, colSpan : 10 });
 
     // Application-specific tags
     o = new qx.ui.form.List();
@@ -262,7 +258,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         required      : false
       });
     form.add(o, "", null, "tags", null,
-             { row : 5, column : 4, rowSpan : 3 });
+             { row : 9, column : 0, rowSpan : 1 });
     this.lstTags = o;
     
     // Button to delete selected tag(s)
@@ -304,7 +300,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         this.setTags(newTags);
       },
       this);
-    form.addButton(o, { row : 8, column : 5 });
+    form.addButton(o, { row : 10, column : 0 });
     this.butDeleteTag = o;
 
     // Source file name
@@ -316,7 +312,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         required  : true
       });
     form.add(o, null, null, "source", null,
-             { row : 0, column : 6, rowSpan : 2 });
+             { row : 11, column : 0 });
 
     // When the file name changes, begin retrieving the file data
     o.addListener(
@@ -354,7 +350,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     // Add the right spacer
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-    form.addButton(tempContainer, { row : 0, column : 7 });
+    form.addButton(tempContainer, { row : 11, column : 1 });
 
     // define the popup we need
     var sourceFilePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
@@ -387,7 +383,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         required  : true
       });
     form.add(o, null, null, "image1", null,
-             { row : 4, column : 6, rowSpan : 5 });
+             { row : 12, column : 0, rowSpan : 5 });
 
     // When the image changes, display it
     o.addListener(
@@ -418,7 +414,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     // Add the right spacer
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-    form.addButton(tempContainer, { row : 4, column : 7 });
+    form.addButton(tempContainer, { row : 12, column : 1 });
 
     // define the popup we need
     var selectImagePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
