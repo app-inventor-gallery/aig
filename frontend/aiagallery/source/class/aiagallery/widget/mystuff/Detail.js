@@ -82,7 +82,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         tabIndex    : 1,
         maxLength   : aiagallery.dbif.Constants.FieldLength.Title,
         width       : 700,
-        maxWidth    : 700,
         required    : true,
         placeholder : this.tr("Enter the application title (30 character limit)")
       });
@@ -95,7 +94,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       },
       this);
     form.add(o, this.tr("Title"), null, "title", null,
-             { row : 0, column : 0, colSpan : 10 });
+             { row : 0, column : 0 });
     this.txtTitle = o;
 
     // Description
@@ -104,7 +103,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         tabIndex    : 2,
         maxLength   : aiagallery.dbif.Constants.FieldLength.Description,
-        height      : 100,
+		width       : 700,
+        height      : 50,
         required    : true,
         placeholder : this.tr("Enter a brief description (480 Character Limit)")
       });
@@ -118,7 +118,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       this); 
 
     form.add(o, this.tr("Description"), null, "description", null,
-             { row : 1, column : 0, colSpan : 10, rowSpan : 3 });
+             { row : 1, column : 0, rowSpan : 2 });
     this.txtDescription = o;
 
 	/*
@@ -136,29 +136,87 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     form.addButton(tempContainer, { row : 2, column : 0, rowSpan: 1, colSpan : 6 });
 	*/
 
+	/*
+    // Create a select box (AKA dropdown menu) for categories
+    o = new qx.ui.form.SelectBox();
+    // o.set(
+    //   {
+    //     tabIndex      : 3,
+    //     width         : 500,
+    //     required      : true
+    //   });
 
+    // Fill the select box with available locales
+    for (var i = 0; i < categoryList.length; i++) {
+      var c = categoryList[i];
+	  // console.log("Adding category item : " + c);
+      var cItem = new qx.ui.form.ListItem(c);
+	  cItem.setModel(c);
+      o.add(cItem);
+  	  // Set default value to be the first one in the list
+	  if (i == 0) {
+	    o.setSelection([cItem]);			
+	  }
+    } 
+
+    // Event handler for select box, set category if selection changed
+    o.addListener("changeSelection", this._changeCategories, this);
+	console.log("Selectbox - " + o.getSelectables(true));
+    form.add(o, this.tr("Categories"), null, "categories", null,
+	             { row : 3, column : 0, rowSpan : 1 });
+    this.categoryController = new qx.data.controller.List(
+      new qx.data.Array(categoryList), o);			 
+    this.lstCategories = o;
+	console.log("Did we add lstCategories? - " + this.lstCategories.toString());
+	*/
+    
     // Create a multi-selection list and add the categories to it.
     o = new qx.ui.form.List();
     o.set(
       {
         tabIndex      : 3,
-        width         : 150,
-        selectionMode : "multi",
+        width         : 700,
+		height        : 100,
+        selectionMode : "single",
         required      : true
       });
     o.addListener("changeSelection", this._changeCategories, this);
     form.add(o, this.tr("Categories"), null, "categories", null,
-             { row : 4, column : 0, rowSpan : 1 });
+             { row : 3, column : 0 });
     this.categoryController = new qx.data.controller.List(
       new qx.data.Array(categoryList), o);
     this.lstCategories = o;
+
+	/*
+    // Create a temporary container for a spacer, a label, and a spacer
+    tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+	
+    // Label to remind users what tags are for
+    o = new qx.ui.basic.Label(this.tr("For example, if you are from unX, you may want to tag your app with 'Spanish' or 'Portuguese.'"));
+	o.set({ rich : true, wrap : true });
+    tempContainer.add(o);
+
+    // Add the right spacer
+    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+	// Add the container to form
+    form.addButton(tempContainer, { row : 6, column : 0 });
+	*/
+
+    // Button to add a tag
+    o = new qx.ui.basic.Label(this.tr("Tags :"));
+    tempContainer.add(o);
+
+    // Add the right spacer
+    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+    form.addButton(tempContainer, { row : 5, column : 0 });
     
+
     // Tag to add
     o = new qx.ui.form.TextField();
     o.set(
       {
         tabIndex    : 4,
-        width       : 150,
+        width       : 700,
         placeholder : this.tr("Enter a new tag")
       });
     form.getValidationManager().add(
@@ -171,24 +229,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         }
         return true;
       });
-    form.add(o, "", null, "newTag", null,
-             { row : 5, column : 0 });
+    form.add(o, this.tr("Tags"), null, "newTag", null,
+             { row : 6, column : 0 });
     this.txtNewTag = o;
-
-
-
-    // Create a temporary container for a spacer, a label, and a spacer
-    tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
 	
-    // Label to remind users what tags are for
-    o = new qx.ui.basic.Label(this.tr("For example, if you are from unX, you may want to tag your app with 'Spanish' or 'Portuguese.'"));
-	o.set({ rich : true, wrap : true });
-    tempContainer.add(o);
-
-    // Add the right spacer
-    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-	// Add the container to form
-    form.addButton(tempContainer, { row : 6, column : 0, colSpan : 10 });
 
     // Button to add a tag
     o = new qx.ui.form.Button(this.tr("Add"));
@@ -236,16 +280,8 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         this.txtNewTag.setValue(null);
       },
       this);
-    form.addButton(o, { row : 7, column : 0 });
+    form.addButton(o, { row : 7, column : 1 });
     this.butAddTag = o;
-
-    // Button to add a tag
-    o = new qx.ui.basic.Label(this.tr("Tags :"));
-    tempContainer.add(o);
-
-    // Add the right spacer
-    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-    form.addButton(tempContainer, { row : 8, column : 0, colSpan : 10 });
 
     // Application-specific tags
     o = new qx.ui.form.List();
@@ -258,7 +294,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         required      : false
       });
     form.add(o, "", null, "tags", null,
-             { row : 9, column : 0, rowSpan : 1 });
+             { row : 8, column : 0, rowSpan : 2 });
     this.lstTags = o;
     
     // Button to delete selected tag(s)
@@ -300,7 +336,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         this.setTags(newTags);
       },
       this);
-    form.addButton(o, { row : 10, column : 0 });
+    form.addButton(o, { row : 10, column : 1 });
     this.butDeleteTag = o;
 
     // Source file name
@@ -312,7 +348,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         required  : true
       });
     form.add(o, null, null, "source", null,
-             { row : 11, column : 0 });
+             { row : 11, column : 1 });
 
     // When the file name changes, begin retrieving the file data
     o.addListener(
@@ -350,7 +386,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     // Add the right spacer
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-    form.addButton(tempContainer, { row : 11, column : 1 });
+    form.addButton(tempContainer, { row : 11, column : 2 });
 
     // define the popup we need
     var sourceFilePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
@@ -383,7 +419,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         required  : true
       });
     form.add(o, null, null, "image1", null,
-             { row : 12, column : 0, rowSpan : 5 });
+             { row : 12, column : 1 });
 
     // When the image changes, display it
     o.addListener(
@@ -414,7 +450,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     // Add the right spacer
     tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-    form.addButton(tempContainer, { row : 12, column : 1 });
+    form.addButton(tempContainer, { row : 12, column : 2 });
 
     // define the popup we need
     var selectImagePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
@@ -778,7 +814,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
       // Initialize to an empty list of selected categories
       tags = [];
-      
+
+	  /*
+	  kM: TODO TEMP COMMENTED OUT!!! REVERT IT BACK LATER      
+      */
       // For each *selected* item in the categories list...
       this.lstCategories.getSelection().forEach(
         function(listItem)
@@ -788,6 +827,10 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         },
         this);
 
+	  // var cat = this.lstCategories.getChildren().getSelection()[0];
+	  // console.log("Change category to : " + cat.getLabel());
+	  // tags.push(cat.getLabel());
+
       // For each and every item in the tags list...
       this.lstTags.getChildren().forEach(
         function(listItem)
@@ -796,7 +839,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
           tags.push(listItem.getLabel());
         },
         this);
-      
       this.setTags(tags);
     },
 
