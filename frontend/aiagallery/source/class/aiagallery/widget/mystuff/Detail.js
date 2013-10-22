@@ -94,7 +94,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       },
       this);
     form.add(o, this.tr("Title"), null, "title", null,
-             { row : 0, column : 0 });
+             { row : 0, column : 0, colSpan : 10 });
     this.txtTitle = o;
 
     // Description
@@ -118,7 +118,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       this); 
 
     form.add(o, this.tr("Description"), null, "description", null,
-             { row : 1, column : 0, rowSpan : 2 });
+             { row : 1, column : 0, rowSpan : 2, colSpan : 10 });
     this.txtDescription = o;
 
 	/*
@@ -182,7 +182,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       });
     o.addListener("changeSelection", this._changeCategories, this);
     form.add(o, this.tr("Categories"), null, "categories", null,
-             { row : 3, column : 0 });
+             { row : 3, column : 0, colSpan : 10, rowSpan : 2 });
     this.categoryController = new qx.data.controller.List(
       new qx.data.Array(categoryList), o);
     this.lstCategories = o;
@@ -201,15 +201,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 	// Add the container to form
     form.addButton(tempContainer, { row : 6, column : 0 });
 	*/
-
-    // Button to add a tag
-    o = new qx.ui.basic.Label(this.tr("Tags :"));
-    tempContainer.add(o);
-
-    // Add the right spacer
-    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-    form.addButton(tempContainer, { row : 5, column : 0 });
-    
 
     // Tag to add
     o = new qx.ui.form.TextField();
@@ -230,7 +221,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         return true;
       });
     form.add(o, this.tr("Tags"), null, "newTag", null,
-             { row : 6, column : 0 });
+             { row : 5, column : 0, colSpan : 10 });
     this.txtNewTag = o;
 	
 
@@ -240,6 +231,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         tabIndex  : 5,
         height    : 24,
+		width     : 100,
         maxHeight : 24
       });
     o.addListener(
@@ -280,21 +272,28 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         this.txtNewTag.setValue(null);
       },
       this);
-    form.addButton(o, { row : 7, column : 1 });
+    form.addButton(o, { row : 6, column : 1, colSpan : 1 });
     this.butAddTag = o;
+	
+
+    // Button to add a tag
+    o = new qx.ui.basic.Label(this.tr("For example, if your app is made in in Spanish or Portuguese, you may want to tag your app with 'Spanish' or 'Portuguese.'"));
+	o.set({ rich : true, wrap : true, width : 500 });
+    form.addButton(o, { row : 7, column : 1, colSpan : 10 });
+	
 
     // Application-specific tags
     o = new qx.ui.form.List();
     o.set(
       {
         tabIndex      : 7,
-        width         : 150,
+        width         : 100,
         height        : 100,
         selectionMode : "single",
         required      : false
       });
     form.add(o, "", null, "tags", null,
-             { row : 8, column : 0, rowSpan : 2 });
+             { row : 8, column : 0, rowSpan : 2, colSpan : 10 });
     this.lstTags = o;
     
     // Button to delete selected tag(s)
@@ -303,6 +302,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         tabIndex  : 8,
         height    : 24,
+		width     : 100,
         maxHeight : 24
       });
     o.addListener(
@@ -336,7 +336,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         this.setTags(newTags);
       },
       this);
-    form.addButton(o, { row : 10, column : 1 });
+    form.addButton(o, { row : 10, column : 1, colSpan : 1 });
     this.butDeleteTag = o;
 
     // Source file name
@@ -345,6 +345,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         tabIndex  : 9,
         focusable : false,
+		width     : 100,
         required  : true
       });
     form.add(o, null, null, "source", null,
@@ -371,9 +372,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     // Create a temporary container for a spacer, a label, and a spacer
     tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
-
-    // Add the left spacer
-    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
 
     // Add imagebutton
     o = new qx.ui.basic.Image("aiagallery/question_blue.png");
@@ -416,6 +414,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         tabIndex  : 10,
         focusable : false,
+		width     : 200,
         required  : true
       });
     form.add(o, null, null, "image1", null,
@@ -435,9 +434,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     // Create a temporary container for a spacer, a label, and a spacer
     tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
-
-    // Add the left spacer
-    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
 
     // Add imagebutton
     o = new qx.ui.basic.Image("aiagallery/question_blue.png");
@@ -484,7 +480,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o.set(
       {
         tabIndex : 11,
-        width    : 130
+        width    : 200
       });
     o.addListener(
       "execute",
@@ -553,7 +549,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
                            });
       },
       this);
-    form.addButton(o);
+    form.addButton(o, { row : 13, column : 1, colSpan : 1 });
     this.butSaveApp = o;
    
     this.addListener("saveApp", this.__fsm.eventListener, this.__fsm);
@@ -565,7 +561,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o.set(
       {
         tabIndex : 12,
-        width    : 130
+        width    : 200
       });
     o.addListener(
       "execute",
@@ -591,7 +587,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     o.set(
       {
         tabIndex : 13,
-        width    : 130
+        width    : 200
       });
     o.addListener(
       "execute",
@@ -629,7 +625,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
           this);
       },
       this);
-    form.addButton(o);
+    form.addButton(o, { row : 13, column : 2, colSpan : 1 });
     this.butDeleteApp = o;
 
     this.addListener("deleteApp", this.__fsm.eventListener, this.__fsm);
