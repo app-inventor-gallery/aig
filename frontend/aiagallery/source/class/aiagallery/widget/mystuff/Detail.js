@@ -46,7 +46,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     // Text to add to buttons (which don't provide the 'required' property) to
     // indicate that they are required.
-    required = " <span></span> ";
+    required = " <span style='color:red'>*</span> ";
 
     // Create a form
     form = new qx.ui.form.Form();
@@ -54,10 +54,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     // Specify the message to display for required fields
     form.getValidationManager().setRequiredFieldMessage(
       "This field is required");
-
-    // Create a temporary container for a spacer, a label, and a spacer    
-	tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
-    
     
     //
     // Add the fields
@@ -73,6 +69,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     form.add(o, "UID", null, "uid", null,
              { row : 0, column : 100 });
     this.spinUid = o;
+
 
     // Title
     o = new qx.ui.form.TextField();
@@ -102,7 +99,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       {
         tabIndex    : 2,
         maxLength   : aiagallery.dbif.Constants.FieldLength.Description,
-		width       : 700,
+                width       : 700,
         height      : 50,
         required    : true,
         placeholder : this.tr("Enter a brief description (480 Character Limit)")
@@ -120,515 +117,514 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
              { row : 1, column : 0, rowSpan : 2, colSpan : 10 });
     this.txtDescription = o;
 
-	/*
-    // Add the left spacer
-    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+    /*
+// Add the left spacer
+tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
 
-    // Label to remind users what tags are for
-    o = new qx.ui.basic.Label("");
-	o.set({ rich : true, wrap : true });
-    tempContainer.add(o);
+// Label to remind users what tags are for
+o = new qx.ui.basic.Label("");
+    o.set({ rich : true, wrap : true });
+tempContainer.add(o);
 
-    // Add the right spacer
-    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-	// Add the container to form
-    form.addButton(tempContainer, { row : 2, column : 0, rowSpan: 1, colSpan : 6 });
-	*/
+// Add the right spacer
+tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+    // Add the container to form
+form.addButton(tempContainer, { row : 2, column : 0, rowSpan: 1, colSpan : 6 });
+    */
 
-	/*
-    // Create a select box (AKA dropdown menu) for categories
-    o = new qx.ui.form.SelectBox();
-    // o.set(
-    //   {
-    //     tabIndex      : 3,
-    //     width         : 500,
-    //     required      : true
-    //   });
+    /*
+// Create a select box (AKA dropdown menu) for categories
+o = new qx.ui.form.SelectBox();
+// o.set(
+//   {
+//     tabIndex      : 3,
+//     width         : 500,
+//     required      : true
+//   });
 
-    // Fill the select box with available locales
-    for (var i = 0; i < categoryList.length; i++) {
-      var c = categoryList[i];
-	  // console.log("Adding category item : " + c);
-      var cItem = new qx.ui.form.ListItem(c);
-	  cItem.setModel(c);
-      o.add(cItem);
-  	  // Set default value to be the first one in the list
-	  if (i == 0) {
-	    o.setSelection([cItem]);			
-	  }
-    } 
+// Fill the select box with available locales
+for (var i = 0; i < categoryList.length; i++) {
+  var c = categoryList[i];
+      // console.log("Adding category item : " + c);
+  var cItem = new qx.ui.form.ListItem(c);
+      cItem.setModel(c);
+  o.add(cItem);
+        // Set default value to be the first one in the list
+      if (i == 0) {
+        o.setSelection([cItem]);                        
+      }
+} 
 
-    // Event handler for select box, set category if selection changed
-    o.addListener("changeSelection", this._changeCategories, this);
-	console.log("Selectbox - " + o.getSelectables(true));
-    form.add(o, this.tr("Categories"), null, "categories", null,
-	             { row : 3, column : 0, rowSpan : 1 });
-    this.categoryController = new qx.data.controller.List(
-      new qx.data.Array(categoryList), o);			 
-    this.lstCategories = o;
-	console.log("Did we add lstCategories? - " + this.lstCategories.toString());
-	*/
+// Event handler for select box, set category if selection changed
+o.addListener("changeSelection", this._changeCategories, this);
+    console.log("Selectbox - " + o.getSelectables(true));
+form.add(o, this.tr("Categories"), null, "categories", null,
+                 { row : 3, column : 0, rowSpan : 1 });
+this.categoryController = new qx.data.controller.List(
+  new qx.data.Array(categoryList), o);                         
+this.lstCategories = o;
+    console.log("Did we add lstCategories? - " + this.lstCategories.toString());
+    */
+
+// Create a multi-selection list and add the categories to it.
+o = new qx.ui.form.List();
+o.set(
+  {
+    tabIndex      : 3,
+    width         : 700,
+            height        : 100,
+    selectionMode : "single",
+    required      : true
+  });
+o.addListener("changeSelection", this._changeCategories, this);
+form.add(o, this.tr("Categories"), null, "categories", null,
+         { row : 3, column : 0, colSpan : 10, rowSpan : 2 });
+this.categoryController = new qx.data.controller.List(
+  new qx.data.Array(categoryList), o);
+this.lstCategories = o;
+
+    /*
+// Create a temporary container for a spacer, a label, and a spacer
+tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
     
-    // Create a multi-selection list and add the categories to it.
-    o = new qx.ui.form.List();
-    o.set(
-      {
-        tabIndex      : 3,
-        width         : 700,
-		height        : 100,
-        selectionMode : "single",
-        required      : true
-      });
-    o.addListener("changeSelection", this._changeCategories, this);
-    form.add(o, this.tr("Categories"), null, "categories", null,
-             { row : 3, column : 0, colSpan : 10, rowSpan : 2 });
-    this.categoryController = new qx.data.controller.List(
-      new qx.data.Array(categoryList), o);
-    this.lstCategories = o;
+// Label to remind users what tags are for
+o = new qx.ui.basic.Label(this.tr("For example, if you are from unX, you may want to tag your app with 'Spanish' or 'Portuguese.'"));
+    o.set({ rich : true, wrap : true });
+tempContainer.add(o);
 
-	/*
-    // Create a temporary container for a spacer, a label, and a spacer
-    tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
-	
-    // Label to remind users what tags are for
-    o = new qx.ui.basic.Label(this.tr("For example, if you are from unX, you may want to tag your app with 'Spanish' or 'Portuguese.'"));
-	o.set({ rich : true, wrap : true });
-    tempContainer.add(o);
+// Add the right spacer
+tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+    // Add the container to form
+form.addButton(tempContainer, { row : 6, column : 0 });
+    */
 
-    // Add the right spacer
-    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-	// Add the container to form
-    form.addButton(tempContainer, { row : 6, column : 0 });
-	*/
-
-    // Tag to add
-    o = new qx.ui.form.TextField();
-    o.set(
-      {
-        tabIndex    : 4,
-        width       : 700,
-        placeholder : this.tr("Enter a new tag")
-      });
-    form.getValidationManager().add(
-      o,
-      function(value, item)
-      {
-        if (value != null && value.length != 0)
-        {
-          throw new qx.core.ValidationError("Add this tag?");
-        }
-        return true;
-      });
-    form.add(o, this.tr("Tags"), null, "newTag", null,
-             { row : 5, column : 0, colSpan : 10 });
-    this.txtNewTag = o;
-	
-
-    // Button to add a tag
-    o = new qx.ui.form.Button(this.tr("Add"));
-    o.set(
-      {
-        tabIndex  : 5,
-        height    : 24,
-		width     : 100,
-        maxHeight : 24
-      });
-    o.addListener(
-      "execute",
-      function(e)
-      {
-        var             existingTags;
-        var             newTags;
-        var             newValue;
-
-        // Get the value being added
-        newValue = this.txtNewTag.getValue();
-        
-        // Ensure there's something there
-        if (! newValue || newValue.length == 0)
-        {
-          // Nothing to do
-          return;
-        }
-
-        // Get the current list of tags
-        existingTags = this.getTags();
-        
-        // Is the tag being added already in the list?
-        if (! qx.lang.Array.contains(existingTags, newValue))
-        {
-          // Nope, it's a new tag. Clone the tag list.
-          newTags = qx.lang.Array.clone(existingTags);
-          
-          // Add the new one to the tag list
-          newTags.push(this.txtNewTag.getValue());
-          
-          // Save the new set of tags
-          this.setTags(newTags);
-        }
-        
-        // Clear out the text field
-        this.txtNewTag.setValue(null);
-      },
-      this);
-    form.addButton(o, { row : 6, column : 1, colSpan : 1 });
-    this.butAddTag = o;
-	
-
-    // Button to add a tag
-    o = new qx.ui.basic.Label(this.tr("For example, if your app is made in in Spanish or Portuguese, you may want to tag your app with 'Spanish' or 'Portuguese.'"));
-	o.set({ rich : true, wrap : true, width : 500 });
-    form.addButton(o, { row : 7, column : 1, colSpan : 10 });
-	
-
-    // Application-specific tags
-    o = new qx.ui.form.List();
-    o.set(
-      {
-        tabIndex      : 7,
-        width         : 100,
-        height        : 100,
-        selectionMode : "single",
-        required      : false
-      });
-    form.add(o, "", null, "tags", null,
-             { row : 8, column : 0, rowSpan : 2, colSpan : 10 });
-    this.lstTags = o;
-    
-    // Button to delete selected tag(s)
-    o = new qx.ui.form.Button(this.tr("Delete Tag"));
-    o.set(
-      {
-        tabIndex  : 8,
-        height    : 24,
-		width     : 100,
-        maxHeight : 24
-      });
-    o.addListener(
-      "execute",
-      function(e)
-      {
-        var             existingTags;
-        var             selectedTags;
-        var             newTags;
-
-        // Get the current list of tags
-        existingTags = this.getTags();
-        
-        // Get the tag to be deleted
-        selectedTags = this.lstTags.getSelection();
-        
-        // Is there a selection?
-        if (selectedTags.length == 0)
-        {
-          // Nope. Nothing to do.
-          return;
-        }
-        
-        // Clone the tags list
-        newTags = qx.lang.Array.clone(existingTags);
-        
-        // Remove the selected tag
-        qx.lang.Array.remove(newTags, selectedTags[0].getLabel());
-        
-        // Save the new set of tags
-        this.setTags(newTags);
-      },
-      this);
-    form.addButton(o, { row : 10, column : 1, colSpan : 1 });
-    this.butDeleteTag = o;
-
-    // Source file name
-    o = new aiagallery.widget.mystuff.FormFile(this.tr("Select source file"), "source");
-    o.set(
-      {
-        tabIndex  : 9,
-        focusable : false,
-		width     : 100,
-        required  : true
-      });
-    form.add(o, null, null, "source", null,
-             { row : 11, column : 1 });
-
-    // When the file name changes, begin retrieving the file data
-    o.addListener(
-      "changeValue",
-      function(e)
-      {
-        // Save the new source file name
-        this.setSourceFileName(e.getData());
-      },
-      this);
-    o.addListener(
-      "changeContent",
-      function(e)
-      {
-        this.setSource(e.getData());
-      },
-      this);
-    this.ffSource = o;
-
-
-    // Create a temporary container for a spacer, a label, and a spacer
-    tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
-
-    // Add imagebutton
-    o = new qx.ui.basic.Image("aiagallery/question_blue.png");
-    tempContainer.add(o);
-    o.set(
-      {
-	focusable : true
-      });
-    this.sourceFilePrompt = o;
-
-    // Add the right spacer
-    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-    form.addButton(tempContainer, { row : 11, column : 2 });
-
-    // define the popup we need
-    var sourceFilePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
-        backgroundColor: "#FFFAD3",
-        padding: [2, 4],
-        offset : 3,
-        offsetBottom : 20
-    });
-
-    // add a label widget to the popup
-    sourceFilePopup.add(new qx.ui.basic.Label().set({ 
-	    value: this.tr("Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose 'Other Actions' and select 'Download Source'. Do not open the downloaded zip file but upload it here directly."),
-        rich : true,
-		width: 300 
-    }));
-
-    // bind onClick event for the popup
-    this.sourceFilePrompt.addListener("click", function(e)
+// Tag to add
+o = new qx.ui.form.TextField();
+o.set(
+  {
+    tabIndex    : 4,
+    width       : 700,
+    placeholder : this.tr("Enter a new tag")
+  });
+form.getValidationManager().add(
+  o,
+  function(value, item)
+  {
+    if (value != null && value.length != 0)
     {
-        sourceFilePopup.placeToMouse(e);
-        sourceFilePopup.show();
-    }, this);
+      throw new qx.core.ValidationError("Add this tag?");
+    }
+    return true;
+  });
+form.add(o, this.tr("Tags"), null, "newTag", null,
+         { row : 5, column : 0, colSpan : 10 });
+this.txtNewTag = o;
     
-    // Image1
-    o = new aiagallery.widget.mystuff.FormImage(this.tr("Select Image"), "image1");
-    o.set(
-      {
-        tabIndex  : 10,
-        focusable : false,
-		width     : 200,
-        required  : true
-      });
-    form.add(o, null, null, "image1", null,
-             { row : 12, column : 1 });
 
-    // When the image changes, display it
-    o.addListener(
-      "changeValue",
-      function(e)
-      {
-        // Save the new image
-        this.setImage1(e.getData());
-      },
-      this);
-    this.fiImage1 = o;
+// Button to add a tag
+o = new qx.ui.form.Button(this.tr("Add"));
+o.set(
+  {
+    tabIndex  : 5,
+    height    : 24,
+            width     : 100,
+    maxHeight : 24
+  });
+o.addListener(
+  "execute",
+  function(e)
+  {
+    var             existingTags;
+    var             newTags;
+    var             newValue;
 
-
-    // Create a temporary container for a spacer, a label, and a spacer
-    tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
-
-    // Add imagebutton
-    o = new qx.ui.basic.Image("aiagallery/question_blue.png");
-    tempContainer.add(o);
-    o.set(
-      {
-	focusable : true
-      });
-    this.selectImagePrompt = o;
-
-    // Add the right spacer
-    tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-    form.addButton(tempContainer, { row : 12, column : 2 });
-
-    // define the popup we need
-    var selectImagePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
-        backgroundColor: "#FFFAD3",
-        padding: [2, 4],
-        offset : 3,
-        offsetBottom : 20
-    });
-
-    // add a label widget to the popup
-    selectImagePopup.add(new qx.ui.basic.Label().set({ 
-		value: this.tr("The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one. The file size limit is ") + aiagallery.main.Constant.MAX_IMAGE_FILE_SIZE/1024 + " kb.",
-        rich : true,
-		width: 300 
-    }));
-
-    // bind onClick event for the popup
-    this.selectImagePrompt.addListener("click", function(e)
+    // Get the value being added
+    newValue = this.txtNewTag.getValue();
+    
+    // Ensure there's something there
+    if (! newValue || newValue.length == 0)
     {
-        selectImagePopup.placeToMouse(e);
-        selectImagePopup.show();
-    }, this);
-        
+      // Nothing to do
+      return;
+    }
 
-    //
-    // Add the buttons at the end
-    //
+    // Get the current list of tags
+    existingTags = this.getTags();
     
-    // Save
-    o = new qx.ui.form.Button(this.tr("Save Application"));
-    o.set(
+    // Is the tag being added already in the list?
+    if (! qx.lang.Array.contains(existingTags, newValue))
+    {
+      // Nope, it's a new tag. Clone the tag list.
+      newTags = qx.lang.Array.clone(existingTags);
+      
+      // Add the new one to the tag list
+      newTags.push(this.txtNewTag.getValue());
+      
+      // Save the new set of tags
+      this.setTags(newTags);
+    }
+    
+    // Clear out the text field
+    this.txtNewTag.setValue(null);
+  },
+  this);
+form.addButton(o, { row : 6, column : 1, colSpan : 1 });
+this.butAddTag = o;
+    
+
+// Button to add a tag
+o = new qx.ui.basic.Label(this.tr("For example, if your app is made in in Spanish or Portuguese, you may want to tag your app with 'Spanish' or 'Portuguese.'"));
+    o.set({ rich : true, wrap : true, width : 500 });
+form.addButton(o, { row : 7, column : 1, colSpan : 10 });
+    
+
+// Application-specific tags
+o = new qx.ui.form.List();
+o.set(
+  {
+    tabIndex      : 7,
+    width         : 100,
+    height        : 100,
+    selectionMode : "single",
+    required      : false
+  });
+form.add(o, "", null, "tags", null,
+         { row : 8, column : 0, rowSpan : 2, colSpan : 10 });
+this.lstTags = o;
+
+// Button to delete selected tag(s)
+o = new qx.ui.form.Button(this.tr("Delete Tag"));
+o.set(
+  {
+    tabIndex  : 8,
+    height    : 24,
+            width     : 100,
+    maxHeight : 24
+  });
+o.addListener(
+  "execute",
+  function(e)
+  {
+    var             existingTags;
+    var             selectedTags;
+    var             newTags;
+
+    // Get the current list of tags
+    existingTags = this.getTags();
+    
+    // Get the tag to be deleted
+    selectedTags = this.lstTags.getSelection();
+    
+    // Is there a selection?
+    if (selectedTags.length == 0)
+    {
+      // Nope. Nothing to do.
+      return;
+    }
+    
+    // Clone the tags list
+    newTags = qx.lang.Array.clone(existingTags);
+    
+    // Remove the selected tag
+    qx.lang.Array.remove(newTags, selectedTags[0].getLabel());
+    
+    // Save the new set of tags
+    this.setTags(newTags);
+  },
+  this);
+form.addButton(o, { row : 10, column : 1, colSpan : 1 });
+this.butDeleteTag = o;
+
+// Source file name
+o = new aiagallery.widget.mystuff.FormFile(this.tr("Select source file"), "source");
+o.set(
+  {
+    tabIndex  : 9,
+    focusable : false,
+            width     : 100,
+    required  : true
+  });
+form.add(o, null, null, "source", null,
+         { row : 11, column : 1 });
+
+// When the file name changes, begin retrieving the file data
+o.addListener(
+  "changeValue",
+  function(e)
+  {
+    // Save the new source file name
+    this.setSourceFileName(e.getData());
+  },
+  this);
+o.addListener(
+  "changeContent",
+  function(e)
+  {
+    this.setSource(e.getData());
+  },
+  this);
+this.ffSource = o;
+
+
+// Create a temporary container for a spacer, a label, and a spacer
+tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+
+// Add imagebutton
+o = new qx.ui.basic.Image("aiagallery/question_blue.png");
+tempContainer.add(o);
+o.set(
+  {
+    focusable : true
+  });
+this.sourceFilePrompt = o;
+
+// Add the right spacer
+tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+form.addButton(tempContainer, { row : 11, column : 2 });
+
+// define the popup we need
+var sourceFilePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
+    backgroundColor: "#FFFAD3",
+    padding: [2, 4],
+    offset : 3,
+    offsetBottom : 20
+});
+
+// add a label widget to the popup
+sourceFilePopup.add(new qx.ui.basic.Label().set({ 
+        value: this.tr("Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose 'Other Actions' and select 'Download Source'. Do not open the downloaded zip file but upload it here directly."),
+    rich : true,
+            width: 300 
+}));
+
+// bind onClick event for the popup
+this.sourceFilePrompt.addListener("click", function(e)
+{
+    sourceFilePopup.placeToMouse(e);
+    sourceFilePopup.show();
+}, this);
+
+// Image1
+o = new aiagallery.widget.mystuff.FormImage(this.tr("Select Image"), "image1");
+o.set(
+  {
+    tabIndex  : 10,
+    focusable : false,
+            width     : 200,
+    required  : true
+  });
+form.add(o, null, null, "image1", null,
+         { row : 12, column : 1 });
+
+// When the image changes, display it
+o.addListener(
+  "changeValue",
+  function(e)
+  {
+    // Save the new image
+    this.setImage1(e.getData());
+  },
+  this);
+this.fiImage1 = o;
+
+
+// Create a temporary container for a spacer, a label, and a spacer
+tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+
+// Add imagebutton
+o = new qx.ui.basic.Image("aiagallery/question_blue.png");
+tempContainer.add(o);
+o.set(
+  {
+    focusable : true
+  });
+this.selectImagePrompt = o;
+
+// Add the right spacer
+tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+form.addButton(tempContainer, { row : 12, column : 2 });
+
+// define the popup we need
+var selectImagePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
+    backgroundColor: "#FFFAD3",
+    padding: [2, 4],
+    offset : 3,
+    offsetBottom : 20
+});
+
+// add a label widget to the popup
+selectImagePopup.add(new qx.ui.basic.Label().set({ 
+            value: this.tr("The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one. The file size limit is ") + aiagallery.main.Constant.MAX_IMAGE_FILE_SIZE/1024 + " kb.",
+    rich : true,
+            width: 300 
+}));
+
+// bind onClick event for the popup
+this.selectImagePrompt.addListener("click", function(e)
+{
+    selectImagePopup.placeToMouse(e);
+    selectImagePopup.show();
+}, this);
+    
+
+//
+// Add the buttons at the end
+//
+
+// Save
+o = new qx.ui.form.Button(this.tr("Save Application"));
+o.set(
+  {
+    tabIndex : 11,
+    width    : 200
+  });
+o.addListener(
+  "execute",
+  function(e)
+  {
+    var             modelObj;
+    var             field;
+    var             modelJson;
+    var             snapshotJson;
+
+    // Is the form complete and ready for submission? First test basic
+    // validation.
+    if (! form.validate())
+    {
+      // Nope. Get outta here!
+      return;
+    }
+    
+    // Retrieve the model and most recent snapshot, in JSON format
+    modelJson = this.getModelJson();
+    snapshotJson = this.getSnapshotJson();
+
+    // Has anything changed
+    if (modelJson == snapshotJson)
+    {
+      // Nope. We have nothing to do.
+      return;
+    }
+
+    // Retrieve a copy of the data model
+    modelObj = qx.lang.Object.clone(this.getModel(), true);
+    
+    // Check each field in the model to see if it has changed since the
+    // original model was created (when the "appear" event occurred). If
+    // it has not changed, remove it from our current model object. What
+    // we'll be left with is only fields that have changed (and the uid).
+    for (field in modelObj)
+    {
+      if (field == "uid")
       {
-        tabIndex : 11,
-        width    : 200
-      });
-    o.addListener(
-      "execute",
-      function(e)
+        // Do not delete the uid field
+        continue;
+      }
+      else if (qx.lang.Type.isArray(modelObj[field]))
       {
-        var             modelObj;
-        var             field;
-        var             modelJson;
-        var             snapshotJson;
-
-        // Is the form complete and ready for submission? First test basic
-        // validation.
-        if (! form.validate())
+        if (this._snapshot[field] &&
+            qx.lang.Array.equals(modelObj[field], this._snapshot[field]))
         {
-          // Nope. Get outta here!
-          return;
+          delete modelObj[field];
         }
-        
-        // Retrieve the model and most recent snapshot, in JSON format
-        modelJson = this.getModelJson();
-        snapshotJson = this.getSnapshotJson();
+      }
+      else if (modelObj[field] == this._snapshot[field])
+      {
+        delete modelObj[field];
+      }
+    }
+    
+    // Change the status to Uploading to provide some feedback
+    this.__container.setStatus(aiagallery.dbif.Constants.Status.Uploading);
 
-        // Has anything changed
-        if (modelJson == snapshotJson)
+    // Fire an event with the changed data
+    this.fireDataEvent("saveApp",
+                       {
+                         model : modelObj, 
+                         app   : container
+                       });
+  },
+  this);
+form.addButton(o, { row : 13, column : 1, colSpan : 1 });
+this.butSaveApp = o;
+
+this.addListener("saveApp", this.__fsm.eventListener, this.__fsm);
+
+// Add some space between the save button and the reset/discard button
+form.addButton(new qx.ui.core.Spacer(100));
+
+o = new qx.ui.form.Button(this.tr("Reset"));
+o.set(
+  {
+    tabIndex : 12,
+    width    : 200
+  });
+o.addListener(
+  "execute",
+  function(e)
+  {
+    // Use the model to reset the form
+    this.set(this._snapshot);
+
+    // Reset the status to what it was originally
+    this.__container.setStatus(this.getOrigStatus());
+    
+    // Save a new snapshot
+    this.snapshotModel();
+  },
+  this);
+// form.addButton(o); // We don't want reset here, get rid of it from GUI
+this.butReset = o;
+
+// Delete. The button's label is reset to "Delete Application" when a uid
+// is specified, meaning that there actually is an application to be
+// deleted.
+o = new qx.ui.form.Button(this.tr("Discard"));
+o.set(
+  {
+    tabIndex : 13,
+    width    : 200
+  });
+o.addListener(
+  "execute",
+  function(e)
+  {
+    var             uid = this.getUid();
+
+    // If this is a new app...
+    if (uid === null)
+    {
+      // ... then just remove this App object
+      container.getLayoutParent().remove(container);
+      container.dispose();
+      return;
+    }
+    
+    // Confirm that they really want to delete this application
+    dialog.Dialog.confirm(
+      this.tr(
+        "Really delete application") + 
+        " '" + this.getOrigTitle() + "'?",
+      function(result)
+      {
+        // If they confirmed the deletion...
+        if (result)
         {
-          // Nope. We have nothing to do.
-          return;
+          // ... then fire an event to the FSM to delete the app
+          this.fireDataEvent("deleteApp",
+                             {
+                               uid   : uid,
+                               app   : container
+                             });
         }
-
-        // Retrieve a copy of the data model
-        modelObj = qx.lang.Object.clone(this.getModel(), true);
-        
-        // Check each field in the model to see if it has changed since the
-        // original model was created (when the "appear" event occurred). If
-        // it has not changed, remove it from our current model object. What
-        // we'll be left with is only fields that have changed (and the uid).
-        for (field in modelObj)
-        {
-          if (field == "uid")
-          {
-            // Do not delete the uid field
-            continue;
-          }
-          else if (qx.lang.Type.isArray(modelObj[field]))
-          {
-            if (this._snapshot[field] &&
-                qx.lang.Array.equals(modelObj[field], this._snapshot[field]))
-            {
-              delete modelObj[field];
-            }
-          }
-          else if (modelObj[field] == this._snapshot[field])
-          {
-            delete modelObj[field];
-          }
-        }
-        
-        // Change the status to Uploading to provide some feedback
-        this.__container.setStatus(aiagallery.dbif.Constants.Status.Uploading);
-
-        // Fire an event with the changed data
-        this.fireDataEvent("saveApp",
-                           {
-                             model : modelObj, 
-                             app   : container
-                           });
       },
       this);
-    form.addButton(o, { row : 13, column : 1, colSpan : 1 });
-    this.butSaveApp = o;
-   
-    this.addListener("saveApp", this.__fsm.eventListener, this.__fsm);
+  },
+  this);
+form.addButton(o, { row : 13, column : 2, colSpan : 1 });
+this.butDeleteApp = o;
 
-    // Add some space between the save button and the reset/discard button
-    form.addButton(new qx.ui.core.Spacer(100));
-
-    o = new qx.ui.form.Button(this.tr("Reset"));
-    o.set(
-      {
-        tabIndex : 12,
-        width    : 200
-      });
-    o.addListener(
-      "execute",
-      function(e)
-      {
-        // Use the model to reset the form
-        this.set(this._snapshot);
-
-        // Reset the status to what it was originally
-        this.__container.setStatus(this.getOrigStatus());
-        
-        // Save a new snapshot
-        this.snapshotModel();
-      },
-      this);
-    // form.addButton(o); // We don't want reset here, get rid of it from GUI
-    this.butReset = o;
-
-    // Delete. The button's label is reset to "Delete Application" when a uid
-    // is specified, meaning that there actually is an application to be
-    // deleted.
-    o = new qx.ui.form.Button(this.tr("Discard"));
-    o.set(
-      {
-        tabIndex : 13,
-        width    : 200
-      });
-    o.addListener(
-      "execute",
-      function(e)
-      {
-        var             uid = this.getUid();
-
-        // If this is a new app...
-        if (uid === null)
-        {
-          // ... then just remove this App object
-          container.getLayoutParent().remove(container);
-          container.dispose();
-          return;
-        }
-        
-        // Confirm that they really want to delete this application
-        dialog.Dialog.confirm(
-          this.tr(
-            "Really delete application") + 
-            " '" + this.getOrigTitle() + "'?",
-          function(result)
-          {
-            // If they confirmed the deletion...
-            if (result)
-            {
-              // ... then fire an event to the FSM to delete the app
-              this.fireDataEvent("deleteApp",
-                                 {
-                                   uid   : uid,
-                                   app   : container
-                                 });
-            }
-          },
-          this);
-      },
-      this);
-    form.addButton(o, { row : 13, column : 2, colSpan : 1 });
-    this.butDeleteApp = o;
-
-    this.addListener("deleteApp", this.__fsm.eventListener, this.__fsm);
-
+this.addListener("deleteApp", this.__fsm.eventListener, this.__fsm);
 
     // Create the rendered form and add it to the HBox
     formRendered = new aiagallery.widget.mystuff.DetailRenderer(form);
@@ -1169,4 +1165,3 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
     }
   }
 });
-
