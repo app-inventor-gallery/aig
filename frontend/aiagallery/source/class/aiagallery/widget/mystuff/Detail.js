@@ -5,9 +5,8 @@
  *   LGPL: http://www.gnu.org/licenses/lgpl.html 
  *   EPL : http://www.eclipse.org/org/documents/epl-v10.php
  */
-
 /*
- * The GUI component for the editing / uploading / viewing app info panel
+#ignore(goog.appengine*)
  */
 
 qx.Class.define("aiagallery.widget.mystuff.Detail",
@@ -630,6 +629,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
     this.addListener("deleteApp", this.__fsm.eventListener, this.__fsm);
 
+
     // Create the rendered form and add it to the HBox
     formRendered = new aiagallery.widget.mystuff.DetailRenderer(form);
     hBox.add(formRendered);
@@ -810,10 +810,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
 
       // Initialize to an empty list of selected categories
       tags = [];
-
-	  /*
-	  kM: TODO TEMP COMMENTED OUT!!! REVERT IT BACK LATER      
-      */
+      
       // For each *selected* item in the categories list...
       this.lstCategories.getSelection().forEach(
         function(listItem)
@@ -823,10 +820,6 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
         },
         this);
 
-	  // var cat = this.lstCategories.getChildren().getSelection()[0];
-	  // console.log("Change category to : " + cat.getLabel());
-	  // tags.push(cat.getLabel());
-
       // For each and every item in the tags list...
       this.lstTags.getChildren().forEach(
         function(listItem)
@@ -835,6 +828,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
           tags.push(listItem.getLabel());
         },
         this);
+      
       this.setTags(tags);
     },
 
@@ -845,7 +839,7 @@ qx.Class.define("aiagallery.widget.mystuff.Detail",
       
       // Set the Delete Application button's label properly since there's an
       // app here to be deleted.
-      this.butDeleteApp.setLabel(this.tr("Delete"));
+      this.butDeleteApp.setLabel(this.tr("Delete Application"));
     },
 
     _applyTitle : function(value, old)
