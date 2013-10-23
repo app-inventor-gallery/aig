@@ -632,7 +632,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
           // Disable flag and likeit buttons
           this.searchResult.getChildControl("likeIt").set(
             {
-              value : this.tr("Login to like!"),
+              value : this.tr(""),
               font  : "default"
             });
         
@@ -649,7 +649,7 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Gui",
           // Replace the label
           this.searchResult.getChildControl("flagIt").set(
             {
-              value : this.tr("Login to flag!"),
+              value : this.tr(""),
               font  : "default"
             });
         

@@ -398,7 +398,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
         
       case "title":
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
-        font.setDecoration("underline");
+        // font.setDecoration("underline");
         
         // Display the title single-line in searchResults format; possibly
         // wrapping on multiple lines in the other formats.
@@ -415,9 +415,10 @@ qx.Class.define("aiagallery.widget.SearchResult",
         case "byAuthor":
         case "appInfo":
           textAlign = "left";
-          size = 300;
+          size = 600;
           break;
         }
+		font.setSize(16);
         control.set(
           {
             width     : size,

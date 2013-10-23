@@ -189,13 +189,6 @@ new aiagallery.main.Module(
   aiagallery.module.dgallery.home.Home);
 
 new aiagallery.main.Module(
-  "Help",
-  "aiagallery/module/system-search.png",
-  "Help",
-  aiagallery.main.Constant.PageName.Help,
-  aiagallery.module.dgallery.help.Help);
-
-new aiagallery.main.Module(
   "News",
   "aiagallery/module/go-home.png",
   "News",
@@ -208,6 +201,14 @@ new aiagallery.main.Module(
   "Find Apps",
   aiagallery.main.Constant.PageName.FindApps,
   aiagallery.module.dgallery.findapps.FindApps);
+
+new aiagallery.main.Module(
+  "Help",
+  "aiagallery/module/system-search.png",
+  "Help",
+  aiagallery.main.Constant.PageName.Help,
+  aiagallery.module.dgallery.help.Help);  
+
   /*
 new aiagallery.main.Module(
   "Contest Winners",

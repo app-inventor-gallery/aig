@@ -76,7 +76,7 @@ qx.Class.define("aiagallery.module.dgallery.help.Gui",
 	  canvas.add(o);
 
       // Add text
-      o = new qx.ui.basic.Label("<i>By David Wolber on <a href='http://www.appinventor.org/galleryHowTo' target='_blank'>AppInventor.org</a></i>. Check out the how-to video below:");
+      o = new qx.ui.basic.Label("Check out the how-to video below:");
 	  o.set({ 
 		  rich  : true,
 	      font  : font,
@@ -85,15 +85,27 @@ qx.Class.define("aiagallery.module.dgallery.help.Gui",
 		  });		  
       canvas.add(o);
 
-      // Add video embed code
+	  /*
+      // Add video embed code for YouTube
 	  o = new qx.ui.embed.Html("");
 	  o.setHtml('<object width="420" height="315"><param name="movie" value="//www.youtube.com/v/4cs1zFFYRYE?hl=en_US&amp;version=3"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="//www.youtube.com/v/4cs1zFFYRYE?hl=en_US&amp;version=3" type="application/x-shockwave-flash" width="420" height="315" allowscriptaccess="always" allowfullscreen="true"></embed></object>');
 	  o.set({
 		  });		  
 	  canvas.add(o);
+	  */
+
+	  o = new qx.ui.basic.Label('<a href="http://www.youtube.com/watch?v=4cs1zFFYRYE" target="_blank"><img src="http://i.imgur.com/wiZO9PA.png" height="389" width="642" /></a>');
+	  o.set({ 
+		  rich  : true,
+	      font  : font,
+		  paddingTop : 8,
+		  paddingBottom : 8
+		  });		  
+	  canvas.add(o);
+	  
 
       // Add text
-      o = new qx.ui.basic.Label("The <b><a href='http://gallery.appinventor.mit.edu'>MIT App Inventor Gallery</a></b> is the main site for sharing your App Inventor apps and checking out the apps and blocks of others. It is like Google Play, except open source-- all of the uploaded apps have source code (blocks) that you can study and remix! Think of it as one of the greatest open source learning studios ever created.");
+      o = new qx.ui.basic.Label("The <b>MIT App Inventor Gallery</b> is the main site for sharing your App Inventor apps and checking out the apps and blocks of others. It is like Google Play, except open source-- all of the uploaded apps have source code (blocks) that you can study and remix! Think of it as one of the greatest open source learning studios ever created.");
 	  o.set({ 
 		  rich  : true,
 	      font  : font,
@@ -143,7 +155,7 @@ qx.Class.define("aiagallery.module.dgallery.help.Gui",
       canvas.add(o);
 	  
 	  // Add image for submit app form
-	  o = new qx.ui.basic.Image("http://www.appinventor.org/assets/img/galleryAddApp.png");
+	  o = new qx.ui.basic.Image("http://i.imgur.com/TWA0gb7.png");
 	  o.set({ 
 		  paddingTop : 8,
 		  paddingBottom : 8
@@ -161,7 +173,7 @@ qx.Class.define("aiagallery.module.dgallery.help.Gui",
       canvas.add(o);
 
       // Add text
-      o = new qx.ui.basic.Label("After you enter all the fields, click Save Application to submit your app. Then click on the home page and you should see your app in the listing of \"Newest Apps\". Click on your app, and you'll see the public app page for your app.");
+      o = new qx.ui.basic.Label("After you enter all the fields, click Save Application to submit your app. Be patient as submitting the app and uploading the source file can take up to a minute. When the status changes from \"processing\" to \"Active\" your app is in the gallery. Then click on the home page and you should see your app in the listing of \"Newest Apps\". Click on your app, and you'll see the public app page for your app.");
 	  o.set({ 
 		  rich  : true,
 	      font  : font,
