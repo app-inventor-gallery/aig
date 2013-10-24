@@ -183,6 +183,139 @@ this.categoryController = new qx.data.controller.List(
   new qx.data.Array(categoryList), o);
 this.lstCategories = o;
 
+
+// Source file name
+o = new aiagallery.widget.mystuff.FormFile(this.tr("Select source file"), "source");
+o.set(
+  {
+    tabIndex  : 9,
+    focusable : false,
+            width     : 100,
+    required  : true
+  });
+form.add(o, null, null, "source", null,
+         { row : 5, column : 1 });
+
+// When the file name changes, begin retrieving the file data
+o.addListener(
+  "changeValue",
+  function(e)
+  {
+    // Save the new source file name
+    this.setSourceFileName(e.getData());
+  },
+  this);
+o.addListener(
+  "changeContent",
+  function(e)
+  {
+    this.setSource(e.getData());
+  },
+  this);
+this.ffSource = o;
+
+
+// Create a temporary container for a spacer, a label, and a spacer
+tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+
+// Add imagebutton
+o = new qx.ui.basic.Image("aiagallery/question_blue.png");
+tempContainer.add(o);
+o.set(
+  {
+    focusable : true
+  });
+this.sourceFilePrompt = o;
+
+// Add the right spacer
+tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+form.addButton(tempContainer, { row : 5, column : 2 });
+
+// define the popup we need
+var sourceFilePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
+    backgroundColor: "#FFFAD3",
+    padding: [2, 4],
+    offset : 3,
+    offsetBottom : 20
+});
+
+// add a label widget to the popup
+sourceFilePopup.add(new qx.ui.basic.Label().set({ 
+        value: this.tr("Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose 'Other Actions' and select 'Download Source'. Do not open the downloaded zip file but upload it here directly."),
+    rich : true,
+            width: 300 
+}));
+
+// bind onClick event for the popup
+this.sourceFilePrompt.addListener("click", function(e)
+{
+    sourceFilePopup.placeToMouse(e);
+    sourceFilePopup.show();
+}, this);
+
+// Image1
+o = new aiagallery.widget.mystuff.FormImage(this.tr("Select Image"), "image1");
+o.set(
+  {
+    tabIndex  : 10,
+    focusable : false,
+            width     : 200,
+    required  : true
+  });
+form.add(o, null, null, "image1", null,
+         { row : 6, column : 1 });
+
+// When the image changes, display it
+o.addListener(
+  "changeValue",
+  function(e)
+  {
+    // Save the new image
+    this.setImage1(e.getData());
+  },
+  this);
+this.fiImage1 = o;
+
+
+// Create a temporary container for a spacer, a label, and a spacer
+tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+
+// Add imagebutton
+o = new qx.ui.basic.Image("aiagallery/question_blue.png");
+tempContainer.add(o);
+o.set(
+  {
+    focusable : true
+  });
+this.selectImagePrompt = o;
+
+// Add the right spacer
+tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
+form.addButton(tempContainer, { row : 6, column : 2 });
+
+// define the popup we need
+var selectImagePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
+    backgroundColor: "#FFFAD3",
+    padding: [2, 4],
+    offset : 3,
+    offsetBottom : 20
+});
+
+// add a label widget to the popup
+selectImagePopup.add(new qx.ui.basic.Label().set({ 
+            value: this.tr("The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one. The file size limit is ") + aiagallery.main.Constant.MAX_IMAGE_FILE_SIZE/1024 + " kb.",
+    rich : true,
+            width: 300 
+}));
+
+// bind onClick event for the popup
+this.selectImagePrompt.addListener("click", function(e)
+{
+    selectImagePopup.placeToMouse(e);
+    selectImagePopup.show();
+}, this);
+
+
     /*
 // Create a temporary container for a spacer, a label, and a spacer
 tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
@@ -217,7 +350,7 @@ form.getValidationManager().add(
     return true;
   });
 form.add(o, this.tr("Tags"), null, "newTag", null,
-         { row : 5, column : 0, colSpan : 10 });
+         { row : 7, column : 0, colSpan : 10 });
 this.txtNewTag = o;
     
 
@@ -268,14 +401,14 @@ o.addListener(
     this.txtNewTag.setValue(null);
   },
   this);
-form.addButton(o, { row : 6, column : 1, colSpan : 1 });
+form.addButton(o, { row : 8, column : 1, colSpan : 1 });
 this.butAddTag = o;
     
 
 // Button to add a tag
 o = new qx.ui.basic.Label(this.tr("For example, if your app is made in in Spanish or Portuguese, you may want to tag your app with 'Spanish' or 'Portuguese.'"));
     o.set({ rich : true, wrap : true, width : 500 });
-form.addButton(o, { row : 7, column : 1, colSpan : 10 });
+form.addButton(o, { row : 9, column : 1, colSpan : 10 });
     
 
 // Application-specific tags
@@ -289,7 +422,7 @@ o.set(
     required      : false
   });
 form.add(o, "", null, "tags", null,
-         { row : 8, column : 0, rowSpan : 2, colSpan : 10 });
+         { row : 10, column : 0, rowSpan : 2, colSpan : 10 });
 this.lstTags = o;
 
 // Button to delete selected tag(s)
@@ -332,139 +465,8 @@ o.addListener(
     this.setTags(newTags);
   },
   this);
-form.addButton(o, { row : 10, column : 1, colSpan : 1 });
+form.addButton(o, { row : 12, column : 1, colSpan : 1 });
 this.butDeleteTag = o;
-
-// Source file name
-o = new aiagallery.widget.mystuff.FormFile(this.tr("Select source file"), "source");
-o.set(
-  {
-    tabIndex  : 9,
-    focusable : false,
-            width     : 100,
-    required  : true
-  });
-form.add(o, null, null, "source", null,
-         { row : 11, column : 1 });
-
-// When the file name changes, begin retrieving the file data
-o.addListener(
-  "changeValue",
-  function(e)
-  {
-    // Save the new source file name
-    this.setSourceFileName(e.getData());
-  },
-  this);
-o.addListener(
-  "changeContent",
-  function(e)
-  {
-    this.setSource(e.getData());
-  },
-  this);
-this.ffSource = o;
-
-
-// Create a temporary container for a spacer, a label, and a spacer
-tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
-
-// Add imagebutton
-o = new qx.ui.basic.Image("aiagallery/question_blue.png");
-tempContainer.add(o);
-o.set(
-  {
-    focusable : true
-  });
-this.sourceFilePrompt = o;
-
-// Add the right spacer
-tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-form.addButton(tempContainer, { row : 11, column : 2 });
-
-// define the popup we need
-var sourceFilePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
-    backgroundColor: "#FFFAD3",
-    padding: [2, 4],
-    offset : 3,
-    offsetBottom : 20
-});
-
-// add a label widget to the popup
-sourceFilePopup.add(new qx.ui.basic.Label().set({ 
-        value: this.tr("Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose 'Other Actions' and select 'Download Source'. Do not open the downloaded zip file but upload it here directly."),
-    rich : true,
-            width: 300 
-}));
-
-// bind onClick event for the popup
-this.sourceFilePrompt.addListener("click", function(e)
-{
-    sourceFilePopup.placeToMouse(e);
-    sourceFilePopup.show();
-}, this);
-
-// Image1
-o = new aiagallery.widget.mystuff.FormImage(this.tr("Select Image"), "image1");
-o.set(
-  {
-    tabIndex  : 10,
-    focusable : false,
-            width     : 200,
-    required  : true
-  });
-form.add(o, null, null, "image1", null,
-         { row : 12, column : 1 });
-
-// When the image changes, display it
-o.addListener(
-  "changeValue",
-  function(e)
-  {
-    // Save the new image
-    this.setImage1(e.getData());
-  },
-  this);
-this.fiImage1 = o;
-
-
-// Create a temporary container for a spacer, a label, and a spacer
-tempContainer = new qx.ui.container.Composite(new qx.ui.layout.HBox());
-
-// Add imagebutton
-o = new qx.ui.basic.Image("aiagallery/question_blue.png");
-tempContainer.add(o);
-o.set(
-  {
-    focusable : true
-  });
-this.selectImagePrompt = o;
-
-// Add the right spacer
-tempContainer.add(new qx.ui.core.Spacer(), { flex : 1 });
-form.addButton(tempContainer, { row : 12, column : 2 });
-
-// define the popup we need
-var selectImagePopup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
-    backgroundColor: "#FFFAD3",
-    padding: [2, 4],
-    offset : 3,
-    offsetBottom : 20
-});
-
-// add a label widget to the popup
-selectImagePopup.add(new qx.ui.basic.Label().set({ 
-            value: this.tr("The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one. The file size limit is ") + aiagallery.main.Constant.MAX_IMAGE_FILE_SIZE/1024 + " kb.",
-    rich : true,
-            width: 300 
-}));
-
-// bind onClick event for the popup
-this.selectImagePrompt.addListener("click", function(e)
-{
-    selectImagePopup.placeToMouse(e);
-    selectImagePopup.show();
-}, this);
     
 
 //
@@ -545,7 +547,7 @@ o.addListener(
                        });
   },
   this);
-form.addButton(o, { row : 13, column : 1, colSpan : 1 });
+form.addButton(o, { row : 15, column : 1, colSpan : 1 });
 this.butSaveApp = o;
 
 this.addListener("saveApp", this.__fsm.eventListener, this.__fsm);
@@ -621,7 +623,7 @@ o.addListener(
       this);
   },
   this);
-form.addButton(o, { row : 13, column : 2, colSpan : 1 });
+form.addButton(o, { row : 15, column : 2, colSpan : 1 });
 this.butDeleteApp = o;
 
 this.addListener("deleteApp", this.__fsm.eventListener, this.__fsm);

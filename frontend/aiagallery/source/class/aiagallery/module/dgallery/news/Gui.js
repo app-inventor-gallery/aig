@@ -47,6 +47,7 @@ qx.Class.define("aiagallery.module.dgallery.news.Gui",
       // Create a medium font for content
       var font = new qx.bom.Font(14, ["Helvetica", "Arial"]);
 
+	  /*
       // Add text header
 	  o = new qx.ui.basic.Label("UnX platform promotional header here - Oct 18th 2013");
 	  o.set({ 
@@ -65,6 +66,7 @@ qx.Class.define("aiagallery.module.dgallery.news.Gui",
 		  paddingBottom : 10
 		  });		  
       canvas.add(o);
+	  */
 
       // Add text header
 	  o = new qx.ui.basic.Label("2012 MIT App Inventor App Contest - Dec 23rd, 2012");

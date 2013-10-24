@@ -63,6 +63,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
  
       // Add an Add New Apps button, left-justified
       hBox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+	  hBox.set({ paddingLeft : 10, paddingRight : 10 });
       o = new qx.ui.form.Button(this.tr("Add New Application"));
       o.addListener(
         "execute",
@@ -98,6 +99,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
 
           // Scroll the app editor into view
           this.scrollCanvas.addAt(app, 0);
+		  app.set({ paddingLeft : 10, paddingRight : 10 });
 
           // Be sure it's open
           app.setValue(true);
@@ -215,6 +217,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       // create a scroll canvas to which we'll add each of the apps.
       this.scrollCanvas =
         new qx.ui.container.Composite(new qx.ui.layout.VBox());
+	  this.scrollCanvas.set({ paddingLeft : 10, paddingRight : 10 });
       o.add(this.scrollCanvas);
       
       // Make the header visible or not depending on whether there are any
