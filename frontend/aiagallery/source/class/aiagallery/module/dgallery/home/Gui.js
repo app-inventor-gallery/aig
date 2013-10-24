@@ -129,14 +129,6 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
 
       innerCanvas.add(introLabel);
 
-      // Add a vertical spacer
-      o = new qx.ui.core.Spacer();
-      o.set(
-        {
-          minWidth     : 20
-        });
-      innerCanvas.add(o, { flex : 1 });
-
 /*      
       // Create a simple international header
       var i8nLabel = new qx.ui.basic.Label(
@@ -278,7 +270,6 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
         tagfont.setSize(16);
         tagfont.set(
           {
-            decoration : "underline",
             color      : "#75940c"
           });
         tagItem.set(
@@ -334,6 +325,17 @@ qx.Class.define("aiagallery.module.dgallery.home.Gui",
       // Add search layout to inner canvas
       innerCanvas.add(tagCloudLayout);
 
+
+      // Add a vertical spacer
+      o = new qx.ui.core.Spacer();
+      o.set(
+        {
+          minWidth     : 20,
+		  height       : 50
+        });
+      innerCanvas.add(o, { flex : 1 });
+	  
+	  
       // Inner canvas contains intro text and search box
       vbox.add(innerCanvas); 
 /*

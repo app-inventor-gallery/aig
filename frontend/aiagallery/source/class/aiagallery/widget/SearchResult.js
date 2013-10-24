@@ -573,8 +573,8 @@ qx.Class.define("aiagallery.widget.SearchResult",
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.set(
           {
-            color      : "#75940c",     // android-green-dark
-            decoration : "underline"
+            color      : "#75940c"     // android-green-dark
+            // decoration : "underline"
           });
         control = new qx.ui.basic.Label();
         control.set(
@@ -659,7 +659,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.set(
           {
-            decoration : "underline"
+            // decoration : "underline"
           });
         control = new qx.ui.basic.Label(this.tr("Like It?"));
         control.set(
@@ -684,7 +684,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.set(
           {
-            decoration : "underline"
+            // decoration : "underline"
           });
         control = new qx.ui.basic.Label(this.tr("Flag as inappropriate?"));
         control.set(
@@ -712,7 +712,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.set(
           {
-            decoration : "underline"
+            // decoration : "underline"
           });
         control = new qx.ui.basic.Label(this.tr("Download Source"));
         control.set(
