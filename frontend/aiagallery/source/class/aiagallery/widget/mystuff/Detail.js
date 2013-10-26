@@ -172,7 +172,7 @@ o.set(
   {
     tabIndex      : 3,
     width         : 700,
-            height        : 100,
+    height        : 100,
     selectionMode : "single",
     required      : true
   });
@@ -894,8 +894,13 @@ this.addListener("deleteApp", this.__fsm.eventListener, this.__fsm);
         },
         this);
       
+	    var c = new qx.data.Array(categories);
+		// console.log("I reached here = " + c.slice(0, 1));
+		
       // Select the categories for this app
-      this.categoryController.setSelection(new qx.data.Array(categories));
+      // this.categoryController.setSelection(new qx.data.Array(categories)[0]);
+      // Select the categories for this app to apply to the GUI, displaying only the first one! (Allow multiple in db)
+      this.categoryController.setSelection(c.slice(0, 1));
     },
     
     _applySourceFileName : function(value, old)

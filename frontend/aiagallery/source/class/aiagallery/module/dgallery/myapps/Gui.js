@@ -319,7 +319,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
            },
            this))();
 */
-
+											  
         // Add each of the apps
         response.data.result.apps.forEach(
           function(appData)
@@ -353,10 +353,12 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
               {
                 usefulAppData[field] = appData[field];
               });
-
+            
             // Set this app's data
             app.set(usefulAppData);
             
+			// console.log("########### FOREACH ############");
+			// console.log(app);
             // Add it to the scrolling canvas
             this.scrollCanvas.add(app);
 
