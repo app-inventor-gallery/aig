@@ -159,8 +159,8 @@ qx.Class.define("aiagallery.module.dgallery.appinfo.Comment",
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.set(
           {
-            color      : "#75940c",     // android-green-dark
-            decoration : "underline"
+            color      : "#75940c"     // android-green-dark
+            // decoration : "underline"
           });
         control = new qx.ui.basic.Label();
         control.set(
