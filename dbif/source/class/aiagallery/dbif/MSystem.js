@@ -171,7 +171,7 @@ qx.Mixin.define("aiagallery.dbif.MSystem",
            msgFinal.addRecipient(javax.mail.Message.RecipientType.TO,
                            new javax.mail.internet.InternetAddress(
                              userEmail,
-                             "Author or App"));
+                             "Author of App"));
 
            msgFinal.setSubject(subject);
             
