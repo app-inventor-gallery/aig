@@ -60,6 +60,7 @@ qx.Class.define("aiagallery.dbif.Constants",
       "Active",
       "Unpublished",
       "Invalid",
+      // "Source file is not a valid App Inventor program.",
       "Incomplete",
       "Editing",
       "Not saved!",
@@ -73,14 +74,17 @@ qx.Class.define("aiagallery.dbif.Constants",
       Title       : 30,
       Description : 480,
       Tags        : 20,
-      Comment     : 480
+      Comment     : 480,
+      Bio         : 480,
+      User        : 100 
     },
 
     /** Mapping of FlagType names to values */
     FlagType      : 
     {
-      App  : 0,
-      Comment : 1
+      App     : 0,
+      Comment : 1,
+      Profile : 2
     },
 
     /** Reverse mapping of FlagType values to names */
@@ -88,6 +92,16 @@ qx.Class.define("aiagallery.dbif.Constants",
     [
       "App", 
       "Comment"
+    ],
+
+    /** List of dissalowed usernames */
+    unallowedNames : 
+    [
+      "admin", 
+      "administrator", 
+      "guest", 
+      "superuser", 
+      "root"
     ],
 
     /** Mapping of permission names to descriptions */
@@ -127,6 +141,9 @@ qx.Class.define("aiagallery.dbif.Constants",
       //
       "flagIt"         : "Flag an app or comment",
       "clearAppFlags"  : "Clear all of an app's flags, and reset count to 0",
+      "clearProfileFlags" : "Clear all of a profile's flags",
+      "clearProfileFlagsWithId" : "Clear all a profile's flags with a user id",
+      "getFlags" : "Get either a specific flag type or all of them",
       
       //
       // MMobile
@@ -157,13 +174,16 @@ qx.Class.define("aiagallery.dbif.Constants",
       "deleteVisitor"              : "Delete visitors",
       "editProfile"                : "Edit user profile",
       "getVisitorListAndPGroups"   : "Retrieve list of visitors",
+      "managementAllNotifications" : "Set all user notification settings",
       
       //
       // MWhoAmI
       //
       // Anonymous access...
       "whoAmI" : "Identify the current user id and permissions",
+      "getPublicUserProfile" : "Show user data publicly",
       // ... Anonymous access
+      "getUserProfile" : "User data shown when a user edits their profile",
 
       //
       // MLikes
@@ -192,7 +212,8 @@ qx.Class.define("aiagallery.dbif.Constants",
       // MSystem
       //
       "getMotd" : "Get the message of the day",
-      "setMotd" : "Set the message of the day"
+      "setMotd" : "Set the message of the day",
+      "sendEmail" : "Send email to a user"
     },
     
     // Log messages. Comments above each are required parameters

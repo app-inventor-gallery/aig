@@ -51,6 +51,20 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
       hBox.add(edit);
       fsm.addObject("edit", edit);
 
+      // Create a label for displaying total view count of all apps
+      // We will fill data to this label later when apps are loaded
+      this.viewCount = new qx.ui.basic.Label("Total views:");
+      hBox.add(this.viewCount);
+      // Create a label for displaying total download count of all apps
+      // We will fill data to this label later when apps are loaded
+      this.dlCount = new qx.ui.basic.Label("Total downloads:");
+      hBox.add(this.dlCount);
+      // Create a label for displaying total like count of all apps
+      // We will fill data to this label later when apps are loaded
+      this.likeCount = new qx.ui.basic.Label("Total likes:");
+      hBox.add(this.likeCount);
+
+
       // Now right-justify the Delete button
       hBox.add(new qx.ui.core.Widget(), { flex : 1 });
 
@@ -387,6 +401,26 @@ qx.Class.define("aiagallery.module.mgmt.applications.Gui",
         // (Not so important, really.)
         this.getApplicationRoot().setUserData("categories",
                                               response.data.result.categories);
+
+        // Retrieve total counts for the following data
+        var viewCountData = 0;
+        var dlCountData = 0;
+        var likeCountData = 0;
+        for (var i = 0; i < response.data.result.apps.length; i++)
+        {
+          viewCountData += response.data.result.apps[i].numViewed;
+          dlCountData += response.data.result.apps[i].numDownloads;
+          likeCountData += response.data.result.apps[i].numLikes;
+        }
+
+        var viewCountText = ["Total views: ", viewCountData].join("");
+        var dlCountText = ["Total downloads: ", dlCountData].join("");
+        var likeCountText = ["Total likes: ", likeCountData].join("");
+
+        // Fill the total labels with the total counts we just computed
+        this.viewCount.setValue(viewCountText);
+        this.dlCount.setValue(dlCountText);
+        this.likeCount.setValue(likeCountText);
 
         break;
 

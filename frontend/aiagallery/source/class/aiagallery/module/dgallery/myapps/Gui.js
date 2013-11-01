@@ -9,6 +9,7 @@
 /**
  * The graphical user interface for the temporary testing page
  */
+
 qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
 {
   type : "singleton",
@@ -48,6 +49,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
         "app.postupload", 
         function(e)
         {
+
           // Generate an event to the FSM
           this.fireDataEvent("serverPush", e);
         },
@@ -58,16 +60,18 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       this.group.setAllowEmptySelection(true);
 
       canvas.setLayout(new qx.ui.layout.VBox());
-
+ 
       // Add an Add New Apps button, left-justified
       hBox = new qx.ui.container.Composite(new qx.ui.layout.HBox());
-      o = new qx.ui.form.Button("Add New Application");
+	  hBox.set({ paddingLeft : 10, paddingRight : 10 });
+      o = new qx.ui.form.Button(this.tr("Add New Application"));
       o.addListener(
         "execute",
         function(e)
         {
           var             app = null;
           var             children;
+
 
           // Obtain the first app (if there is one) to see if it's our one and
           // only new app editor
@@ -95,6 +99,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
 
           // Scroll the app editor into view
           this.scrollCanvas.addAt(app, 0);
+		  app.set({ paddingLeft : 10, paddingRight : 10 });
 
           // Be sure it's open
           app.setValue(true);
@@ -163,35 +168,35 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       // Prepare to bold some headings
       font = qx.theme.manager.Font.getInstance().resolve("bold");
 
-      o = new qx.ui.basic.Label("Title");
+      o = new qx.ui.basic.Label(this.tr("Title"));
       o.setFont(font);
       header.add(o, { row : 2, column : 2 });
 
-      o = new qx.ui.basic.Label("Status");
+      o = new qx.ui.basic.Label(this.tr("Status"));
       o.setFont(font);
       header.add(o, { row : 2, column : 3 });
 
       o = new qx.ui.basic.Image("aiagallery/thumbs-up.png"); // Likes
       header.add(o, { row : 0, column : 4, rowSpan : 2 });
-      o = new qx.ui.basic.Label("Likes");
+      o = new qx.ui.basic.Label(this.tr("Likes"));
       o.setFont(font);
       header.add(o, { row : 2, column : 4 });
 
       o = new qx.ui.basic.Image("aiagallery/downloads.png"); // Downloads
       header.add(o, { row : 0, column : 5, rowSpan : 2 });
-      o = new qx.ui.basic.Label("Downloads");
+      o = new qx.ui.basic.Label(this.tr("Downloads"));
       o.setFont(font);
       header.add(o, { row : 2, column : 5 });
 
       o = new qx.ui.basic.Image("aiagallery/viewed.png");    // Views
       header.add(o, { row : 0, column : 6, rowSpan : 2 });
-      o = new qx.ui.basic.Label("Views");
+      o = new qx.ui.basic.Label(this.tr("Views"));
       o.setFont(font);
       header.add(o, { row : 2, column : 6 });
 
       o = new qx.ui.basic.Image("aiagallery/comments.png");  // Comments
       header.add(o, { row : 0, column : 7, rowSpan : 2 });
-      o = new qx.ui.basic.Label("Comments");
+      o = new qx.ui.basic.Label(this.tr("Comments"));
       o.setFont(font);
       header.add(o, { row : 2, column : 7 });
       
@@ -212,6 +217,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
       // create a scroll canvas to which we'll add each of the apps.
       this.scrollCanvas =
         new qx.ui.container.Composite(new qx.ui.layout.VBox());
+	  this.scrollCanvas.set({ paddingLeft : 10, paddingRight : 10 });
       o.add(this.scrollCanvas);
       
       // Make the header visible or not depending on whether there are any
@@ -313,7 +319,7 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
            },
            this))();
 */
-
+											  
         // Add each of the apps
         response.data.result.apps.forEach(
           function(appData)
@@ -347,10 +353,12 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Gui",
               {
                 usefulAppData[field] = appData[field];
               });
-
+            
             // Set this app's data
             app.set(usefulAppData);
             
+			// console.log("########### FOREACH ############");
+			// console.log(app);
             // Add it to the scrolling canvas
             this.scrollCanvas.add(app);
 

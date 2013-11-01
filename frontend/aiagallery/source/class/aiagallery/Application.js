@@ -11,6 +11,7 @@
 /*
 #require(aiagallery.dbif.DbifSim)
 #use(aiagallery.main.AbstractModule)
+#ignore(aiagallery.module.testing.temp)
 */
 
 /**
@@ -188,6 +189,13 @@ new aiagallery.main.Module(
   aiagallery.module.dgallery.home.Home);
 
 new aiagallery.main.Module(
+  "News",
+  "aiagallery/module/go-home.png",
+  "News",
+  aiagallery.main.Constant.PageName.News,      
+  aiagallery.module.dgallery.news.News);
+
+new aiagallery.main.Module(
   "Find Apps",
   "aiagallery/module/system-search.png",
   "Find Apps",
@@ -195,14 +203,20 @@ new aiagallery.main.Module(
   aiagallery.module.dgallery.findapps.FindApps);
 
 new aiagallery.main.Module(
-  "My Apps",
-  "aiagallery/module/emblem-favorite.png",
-  "My Apps",
-  aiagallery.main.Constant.PageName.MyApps,
-  aiagallery.module.dgallery.myapps.MyApps);
+  "Help",
+  "aiagallery/module/system-search.png",
+  "Help",
+  aiagallery.main.Constant.PageName.Help,
+  aiagallery.module.dgallery.help.Help);  
 
-
-
+  /*
+new aiagallery.main.Module(
+  "Contest Winners",
+  "aiagallery/module/system-search.png",
+  "Contest",
+  aiagallery.main.Constant.PageName.Contest,
+  aiagallery.module.dgallery.contest.Contest);
+*/
 if (qx.core.Environment.get("qx.debug"))
 {
   new aiagallery.main.Module(

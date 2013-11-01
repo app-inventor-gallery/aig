@@ -108,14 +108,7 @@ qx.Class.define("aiagallery.main.Gui",
         header.add(o);
 
         // Add a label to the header
-        o = new qx.ui.basic.Label(
-          "<div>" +
-          "<center>" +
-          "App Inventor" +
-          "<br />" +
-          "Community Gallery" +
-          "</center>" +
-          "</div>");
+        o = new qx.ui.basic.Label(this.tr("App Inventor<br/>Community Gallery"));
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.setSize(22);
         o.set(
@@ -129,7 +122,130 @@ qx.Class.define("aiagallery.main.Gui",
         o = new qx.ui.core.Widget();
         o.setMinWidth(1);
         header.add(o, { flex : 1 });
+/*
+        // Add another label to header for release note + forum helper text
+		o = new qx.ui.basic.Label(this.tr("<div><br/>Welcome to the <a href='gallery.html'>gallery!</a> See <a href='https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit'>Release Notes</a><br/>and post feedback / bug reports to the <a href='http://groups.google.com/group/app-inventor-gallery/topics' >Forum</a></div>"));
+        font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
+        o.set(
+          {
+            rich : true,
+            font : font
+          });
+        header.add(o);
 
+        // Create a small spacer after the text
+        o = new qx.ui.core.Spacer(20);
+        header.add(o);
+*/		
+		
+  	    // Add translation / internationalization options
+  	    // Access all available locales and the currently set locale
+  	    var localeManager = qx.locale.Manager.getInstance();
+  	    var locales = localeManager.getAvailableLocales();
+  	    var currentLocale = localeManager.getLocale();
+  	    // console.log("LOCALE TESTING");
+  	    // console.log(locales);
+  	    // console.log(currentLocale);
+	  
+  	    // Register auto-generated string in *.po translation files
+  	    this.marktr("$$languagename");
+
+  	    // Add dropdown menu GUI for locales, set it to be horizontal
+  	    
+        // Create a select box (AKA dropdown menu)
+        var i8nBox = new qx.ui.container.Composite(new qx.ui.layout.VBox());
+		i8nBox.set({ marginTop : 12, width : 100 });
+        var i8nSelectBox = new qx.ui.form.SelectBox();
+
+        // Fill the select box with available locales
+        for (var i = 0; i < locales.length; i++) {
+  	      var locale = locales[i];
+  	      var languageName = localeManager.translate("$$languagename", [], locale);
+          var localeItem = new qx.ui.form.ListItem(languageName.toString());
+  	      // Save the locale as model
+  		  localeItem.setModel(locale);
+          i8nSelectBox.add(localeItem);
+  	  	  // Set default value to be the first one in the list
+  		  if (i == 0) {
+  		    i8nSelectBox.setSelection([localeItem]);			
+  		  }
+        } 
+	  
+  	    // Event handler for select box, set locale if selection changed
+        i8nSelectBox.addListener("changeSelection", function(e) {
+   		  // Capture the returned ListItem
+  		  // Courtersy of qooxdoo playground code http://goo.gl/Gqdr04
+  		  var listItem = e.getData()[0].getLabel();
+          console.log("ChangeValue of locale: " + listItem + " | ");
+  	      var newLocale = i8nSelectBox.getModelSelection().getItem(0);
+  	      localeManager.setLocale(newLocale);
+        });
+	  
+  	    i8nBox.add(i8nSelectBox);
+   	    header.add(i8nBox);
+
+
+        // Create a small spacer after the module
+        o = new qx.ui.core.Spacer(10);
+        header.add(o);
+		
+
+		// Add search module to header
+        var layout = new qx.ui.layout.HBox();
+        layout.setSpacing(5);      
+        var searchLayout = new qx.ui.container.Composite(layout);
+		searchLayout.set({ marginTop: 12 });
+
+        var searchTextField = new qx.ui.form.TextField;
+        searchTextField.setWidth(150); 
+        searchTextField.setHeight(26); 
+		searchTextField.set({ marginTop : 1 });		
+
+        var searchButton = new qx.ui.form.Button(this.tr("Search"));
+		searchButton.setHeight(25);
+		searchButton.setMaxHeight(25);
+		searchButton.set({ height : 25, width: 100 });
+
+        // Excute a search when the user clicks the button
+        searchButton.addListener("execute", 
+          function(e) {
+          
+            var searchValue = searchTextField.getValue();
+            // Do not execute an empty search 
+            if (searchValue == null || searchValue.trim() == "") {
+              return;
+            }
+
+            var query = {
+              text : [searchValue]
+            }; 
+
+            // Initiate a search
+            aiagallery.main.Gui.getInstance().selectModule(
+            {
+              page  : aiagallery.main.Constant.PageName.FindApps,
+              query : qx.lang.Json.stringify(query)
+            });
+          }, 
+        this);
+
+        // Allow 'Enter' to fire a search
+        var command = new qx.ui.core.Command("Enter");
+        searchButton.setCommand(command);
+
+        // Add button and search text field to layout
+        searchLayout.add(searchTextField);
+        searchLayout.add(searchButton);
+
+        // Add search layout to inner canvas
+        header.add(searchLayout);		
+
+
+        // Create a small spacer after the logo label
+        o = new qx.ui.core.Spacer(20);
+        header.add(o);
+		
+		
         // Create a label to hold the user's login info and a logout button
         if (false)
         {
@@ -146,10 +262,12 @@ qx.Class.define("aiagallery.main.Gui",
         }
         header.add(this.whoAmI);
 
-        // Add a flexible spacer to take up the whole middle
-        o = new qx.ui.core.Widget();
-        o.setMinWidth(1);
-        header.add(o, { flex : 1 });
+        // Save a copy for global access
+        qx.core.Init.getApplication().setUserData("whoAmI", this.whoAmI); 
+
+        // Create a small spacer at the rightmost area
+        o = new qx.ui.core.Spacer(10);
+        header.add(o);
 
         // Add a checkbox to enable/disable RPC simulation.
         var simulate = new qx.ui.form.CheckBox(this.tr("Simulate"));
@@ -276,7 +394,11 @@ qx.Class.define("aiagallery.main.Gui",
             // Create a global function accessible via <a href=
             window.editProfile = function()
               {
-                _this._editProfile();
+                // Take us to the user's edit page
+                aiagallery.main.Gui.getInstance().selectModule(
+                  {
+                    page : aiagallery.main.Constant.PageName.User
+                  });
               };
 
             // Set the header to display just-retrieved values
@@ -286,15 +408,90 @@ qx.Class.define("aiagallery.main.Gui",
             _this.whoAmI.setDisplayName(e.displayName);
             _this.whoAmI.setHasSetDisplayName(e.hasSetDisplayName);
             _this.whoAmI.setLogoutUrl(e.logoutUrl);
+            _this.whoAmI.setIsAnonymous(e.isAnonymous);
 
             // Save the user's permissions
             application = qx.core.Init.getApplication();
             application.setUserData("permissions", e.permissions);
 
-            // Prepare to add management modules if permissions allow it.
+            // Update the saved whoami
+            qx.core.Init.getApplication().setUserData("whoAmI", _this.whoAmI); 
+
+            // Prepare to add user/management modules if permissions allow it.
             moduleList = {};
             bAddModules = false;
 
+            // Add My Apps module if the user has permission
+            bAllowed = false;
+            [ 
+              // These permissions allow access to the page
+              "addOrEditApp",
+              "deleteApp", 
+              "getAppList",
+              "appQuery",
+              "intersectKeywordAndQuery",
+              "getAppListByList",
+              "getAppInfo"
+              
+            ].forEach(
+              function(rpcFunc)
+              {
+                if (qx.lang.Array.contains(e.permissions, rpcFunc))
+                {
+                  bAllowed = true;
+                }
+              });
+
+            // If they're allowed access to the page...
+            if (e.isAdmin || bAllowed || !e.isAnonymous)
+            {
+              // ... then create it
+              module = new aiagallery.main.Module(
+                "My Apps",
+                "aiagallery/module/emblem-favorite.png",
+                "My Apps",
+                aiagallery.main.Constant.PageName.MyApps,
+                aiagallery.module.dgallery.myapps.MyApps);
+
+              moduleList["My Apps"] = {}; 	
+              moduleList["My Apps"]["My Apps"] = module;
+
+              // We've instantiated a new module which needs to be added
+              bAddModules = true;
+            }
+
+            // Add Profile page if user has permission
+            bAllowed = false;
+            [ 
+              // These permissions allow access to the page
+              "getUserProfile"
+            ].forEach(
+              function(rpcFunc)
+              {
+                if (qx.lang.Array.contains(e.permissions, rpcFunc))
+                {
+                  bAllowed = true;
+                }
+              });
+
+            // If they're allowed access to the page...
+            if (e.isAdmin || bAllowed || !e.isAnonymous)
+            {
+              // ... then create it
+              module = new aiagallery.main.Module(
+                "Profile",
+                "aiagallery/module/emblem-favorite.png",
+                "Profile",
+                aiagallery.main.Constant.PageName.User,
+                aiagallery.module.dgallery.user.User);
+
+              moduleList["Profile"] = {}; 	      
+              moduleList["Profile"]["Profile"] = module;
+
+              // We've instantiated a new module which needs to be added
+              bAddModules = true;
+            }
+            
             // Determine whether they have access to the database
             // management page.
             bAllowed = false;
@@ -483,7 +680,7 @@ qx.Class.define("aiagallery.main.Gui",
               // We've instantiated a new module which needs to be added
               bAddModules = true;
             }
-	    
+            
             // Determine whether they have access to the message of
             // the day management page.
             bAllowed = false;
@@ -519,13 +716,15 @@ qx.Class.define("aiagallery.main.Gui",
 
               // We've instantiated a new module which needs to be added
               bAddModules = true;
-            }
-	    
-	    // Determine whether they have access to the comment
+            }                 
+
+            // Determine whether they have access to the flag 
             // management page.
             bAllowed = false;
             [ 
               // These permissions allow access to the page
+              "deleteApp",
+              "deleteVisitor",
               "deleteComment"
             ].forEach(
               function(rpcFunc)
@@ -543,16 +742,16 @@ qx.Class.define("aiagallery.main.Gui",
               module = new aiagallery.main.Module(
                 "Management",
                 "aiagallery/test.png",
-                "Comments",
+                "Flag",
                 aiagallery.main.Constant.PageName.Management,
-                aiagallery.module.mgmt.comments.Comments);
+                aiagallery.module.mgmt.flags.Flags);
 
               // Start up the new module
               if (! moduleList["Management"])
               {
                 moduleList["Management"] = {};
               }
-              moduleList["Management"]["Comments"] = module;
+              moduleList["Management"]["Flags"] = module;
 
               // We've instantiated a new module which needs to be added
               bAddModules = true;
@@ -564,168 +763,25 @@ qx.Class.define("aiagallery.main.Gui",
               // ... then add them.
               aiagallery.Application.addModules(moduleList);
             }
+
+            // Init bookmarking after modules loaded 
+            // Have to wait for the rpc to finish since
+            // we may have to switch to a particular module
+            // which may or may not be loaded give a user's permissions
+            var          mainTabs;
+
+            // Init history support
+            _this.__historyInit();
+
+            // Retrieve the previously-created top-level tab view
+            mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
+
+            // Add listener to detect page changes
+            mainTabs.addListener("changeSelection", 
+                                 _this.__onTabSelectionChanged);
           },
           "whoAmI",
           []);
-
-
-          // Load the Channel API. If we're on App Engine, it'll succeed
-          var loader = new qx.bom.request.Script();
-          loader.onload = 
-          function createChannel()
-          {
-            // Did we successfully load the Channel API?
-            switch(loader.status)
-            {
-            case 200:
-              // Found the Channel API. Reqest a server push channel
-              rpc.callAsync(
-                function(e)
-                {
-                  var             channel;
-                  var             socket;
-                  var             channelMessage;
-
-                  // Did we get a channel token?
-                  if (! e)
-                  {
-                    // Nope. Nothing to do.
-                    _this.warn("getChannelToken: " +
-                            "Received no channel token");
-                    return;
-                  }
-
-                  channelMessage = function(type, data)
-                  {
-                    // If this is an "open" message...
-                    if (type == "open")
-                    {
-                      qx.util.TimerManager.getInstance().start(
-                        function()
-                        {
-                          var             socket;
-
-                          // ... then start a timer to close the channel
-                          // in a little less than two hours, to avoid the
-                          // server from closing the channel
-                          socket = application.getUserData("channelSocket");
-                          if (socket)
-                          {
-                            socket.close();
-                          }
-                          application.setUserData("channelSocket", null);
-                          socket = null;
-
-                          // Re-establish the channel
-                          qx.util.TimerManager.getInstance().start(
-                            createChannel,
-                            0,
-                            _this,
-                            null,
-                            5000);
-                        },
-                        (2 * 1000 * 60 * 60) - (5 * 1000 * 60),
-                        _this);
-                    }
-
-                    if (typeof data == "undefined")
-                    {
-                      _this.debug("Channel Message (" + type + ")");
-                    }
-                    else
-                    {
-                      _this.debug(liberated.dbif.Debug.debugObjectToString(
-                                    data,
-                                    "Channel Message (" + type + ")"));
-                    }
-                  };
-
-                  // If there was a prior channel open...
-                  socket = application.getUserData("channelSocket");
-                  if (socket)
-                  {
-                    // ... then close it
-                    socket.close();
-                  }
-
-                  // Open a channel for server push
-                  channel = new goog.appengine.Channel(e);
-                  socket = channel.open();
-
-                  // Save the channel socket
-                  application.setUserData("channelSocket", socket);
-
-                  // When we receive a message on the channel, post a
-                  // message on the message bus.
-                  socket.onmessage = function(data)
-                  {
-                    var             messageBus;
-
-                    // Parse the JSON message
-                    data = qx.lang.Json.parse(data.data);
-                    channelMessage("message", data);
-
-                    // Dispatch a message for any subscribers to
-                    // this type.
-                    messageBus = qx.event.message.Bus.getInstance();
-                    messageBus.dispatchByName(data.type, data);
-                  };
-
-                  // Display a message when the channel is open
-                  socket.onopen = function(data)
-                  {
-                    channelMessage("open", data);
-                  };
-
-                  // Display a message upon error
-                  socket.onerror = function(data)
-                  {
-                    channelMessage("error", data);
-
-                    // There's no longer a channel socket
-                    application.setUserData("channelSocket", null);
-                    socket = null;
-
-                    // Re-establish the channel
-                    qx.util.TimerManager.getInstance().start(
-                      createChannel,
-                      0,
-                      _this,
-                      null,
-                      5000);
-                  };
-
-                  // Display a message when the channel is closed
-                  socket.onclose = function(data)
-                  {
-                    channelMessage("close", data);
-
-                    // There's no longer a channel socket
-                    application.setUserData("channelSocket", null);
-                    socket = null;
-
-                    // Re-establish the channel
-                    qx.util.TimerManager.getInstance().start(
-                      createChannel,
-                      0,
-                      _this,
-                      null,
-                      5000);
-                  };
-                },
-                "getChannelToken",
-                []);
-              break;
-
-            default:
-              // Nope.
-              _this.warn(loader.status + ": Failed to load Channel API");
-              break;
-            }
-          };
-
-          loader.open("GET", "/_ah/channel/jsapi");
-          loader.send();
         });
 
         // Create the footer, containing links to terms of service,
@@ -741,8 +797,28 @@ qx.Class.define("aiagallery.main.Gui",
         // Spacer
         hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 2 });
 
+        // Add a link to the about us page
+        o = new qx.ui.basic.Label(this.tr("About the gallery"));
+        o.set(
+          {
+            font   : font,
+            height : 20,
+            cursor : "pointer"
+          });
+        o.addListener(
+          "click",
+          function(e)
+          {
+            window.open("gallery.html",
+                        this.tr("App Inventor Gallery About Us"));
+          });
+        hbox.add(o);
+
+        // Spacer
+        hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
+
         // Add a link to the terms of service
-        o = new qx.ui.basic.Label("Terms of Use");
+        o = new qx.ui.basic.Label(this.tr("Terms of Use"));
         o.set(
           {
             font   : font,
@@ -754,7 +830,7 @@ qx.Class.define("aiagallery.main.Gui",
           function(e)
           {
             window.open("TOU.html",
-                        "App Inventor Gallery Terms of Use");
+                        this.tr("App Inventor Gallery Terms of Use"));
           });
         hbox.add(o);
 
@@ -762,7 +838,7 @@ qx.Class.define("aiagallery.main.Gui",
         hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
 
         // Add a link to the privacy policy
-        o = new qx.ui.basic.Label("Privacy Policy");
+        o = new qx.ui.basic.Label(this.tr("Privacy Policy"));
         o.set(
           {
             font   : font,
@@ -774,7 +850,7 @@ qx.Class.define("aiagallery.main.Gui",
           function(e)
           {
             window.open("privacy.html",
-                        "App Inventor Gallery Privacy Policy");
+                        this.tr("App Inventor Gallery Privacy Policy"));
           });
         hbox.add(o);
 
@@ -782,7 +858,7 @@ qx.Class.define("aiagallery.main.Gui",
         hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
 
         // Add a link to the supported browser page
-        o = new qx.ui.basic.Label("Supported Browsers");
+        o = new qx.ui.basic.Label(this.tr("Supported Browsers"));
         o.set(
           {
             font   : font,
@@ -794,7 +870,27 @@ qx.Class.define("aiagallery.main.Gui",
           function(e)
           {
             window.open("browsers.html",
-                        "App Inventor Gallery Supported Browsers");
+                        this.tr("App Inventor Gallery Supported Browsers"));
+          });
+        hbox.add(o);
+
+        // Spacer
+        hbox.add(new qx.ui.core.Spacer(10, 10), { flex : 1 });
+
+        // Add a link to the supported browser page
+        o = new qx.ui.basic.Label(this.tr("Release Notes"));
+        o.set(
+          {
+            font   : font,
+            height : 20,
+            cursor : "pointer"
+          });
+        o.addListener(
+          "click",
+          function(e)
+          {
+            window.open("https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit",
+                        this.tr("App Inventor Gallery Release Notes"));
           });
         hbox.add(o);
 
@@ -804,29 +900,7 @@ qx.Class.define("aiagallery.main.Gui",
         // Add the hbox to the application
         application.add(hbox);
 
-        // Arrange to initialize bookmark support some time after this
-        // function completes
-        qx.util.TimerManager.getInstance().start(
-          function()
-          {
-            var          mainTabs;
-
-            // Init history support
-            this.__historyInit();
-
-            // Retrieve the previously-created top-level tab view
-            mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
-
-            // Add listener to detect page changes
-            mainTabs.addListener("changeSelection", 
-                                 this.__onTabSelectionChanged);
-          },
-          0,
-          this,
-          null,
-          0);
         }
-
       // Get the page hierarchy
       hierarchy = this.getUserData("hierarchy");
 
@@ -888,6 +962,12 @@ qx.Class.define("aiagallery.main.Gui",
             page.setUserData("app_uid", 
             moduleList[menuItem][moduleName].getUserData("app_uid"));
           } 
+          else if(numModules === 0 && moduleList[menuItem][moduleName].pageId ==
+              aiagallery.main.Constant.PageName.PublicUser)
+          {
+            page.setUserData("user", 
+              moduleList[menuItem][moduleName].getUserData("user")); 
+          }
 
           // We found a module.  Increment our counter
           numModules++;
@@ -950,7 +1030,7 @@ qx.Class.define("aiagallery.main.Gui",
             page.setUserData("pageId",
                              moduleList[menuItem][moduleName].pageId); 
 
-            var layout=new qx.ui.layout.VBox(4);
+            var layout = new qx.ui.layout.VBox(4);
             subPage.setLayout(layout);
             subTabs.add(subPage, { flex : 1 });
 
@@ -1042,10 +1122,8 @@ qx.Class.define("aiagallery.main.Gui",
           // Clone the new hierarchy and re-set it for display
           hierarchy.setHierarchy(qx.lang.Array.clone(hierarchy.getHierarchy()));
 
-          // FIXME: Remove this item from the Module list too. effectively
-          // do this: delete aiagallery.main.Module._list[menuItem] (but
-          // create some function in the Module class to do it.
-          // See also issue #52 for an alternative solution.
+          // Clear out ephemral menu items from the module lists
+          aiagallery.main.Module.removeEphemeralMenuItems(); 
 
           // There can only ever be one ephemeral page. See ya!
           break;
@@ -1083,152 +1161,6 @@ qx.Class.define("aiagallery.main.Gui",
       }
     },
     
-    _editProfile : function()
-    {
-      var             win;
-      var             errorWin; 
-      var             errorLabel; 
-      var             grid;
-      var             container;
-      var             displayName;
-      var             hBox;
-      var             ok;
-      var             cancel;
-      var             command;
-
-      // Create a modal window for editing the profile
-      if (! this._win)
-      {
-        win = new qx.ui.window.Window(this.tr("Edit Profile"));
-        win.set(
-          {
-            layout : new qx.ui.layout.VBox(30),
-            modal  : true
-          });
-        this.getApplicationRoot().add(win);
-
-        // We'll use a grid to layout the property editor
-        grid = new qx.ui.layout.Grid();
-        grid.setSpacingX(5);
-        grid.setSpacingY(15);
-        grid.setColumnAlign(0, "right", "middle");
-
-        // Create a container for the grid
-        container = new qx.ui.container.Composite(grid);
-        win.add(container);
-
-        // Add the label
-        container.add(new qx.ui.basic.Label(this.tr("Display Name")), 
-                      { row : 0, column : 0 });
-
-        // Add the text field
-        win._displayName = new qx.ui.form.TextField();
-        win._displayName.set(
-        {
-          width  : 120,
-          filter : /[a-zA-Z0-9 _-]/
-        });
-        container.add(win._displayName, { row : 0, column : 1 });
-
-        // Create a horizontal box to hold the buttons
-        hBox = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
-
-        // Add spacer to right-align the buttons
-        hBox.add(new qx.ui.core.Spacer(null, 1), { flex : 1 });
-
-        // Add the Ok button
-        ok = new qx.ui.form.Button(this.tr("Ok"));
-        ok.setWidth(100);
-        ok.setHeight(30);
-        hBox.add(ok);
-
-        // Allow 'Enter' to confirm entry
-        command = new qx.ui.core.Command("Enter");
-        ok.setCommand(command);
-
-        // When the Ok button is pressed, issue an editProfile request
-        ok.addListener(
-        "execute", 
-        function(e)
-        {
-          var             rpc;
-          var             _this = this;
-
-          // Get and configure a new RPC object
-          rpc = new qx.io.remote.Rpc();
-          rpc.setProtocol("2.0");
-          rpc.set(
-          {
-            url         : aiagallery.main.Constant.SERVICES_URL,
-            timeout     : 30000,
-            crossDomain : false,
-            serviceName : "aiagallery.features"
-          });
-
-          // Issue the request. When we get the result...
-          rpc.callAsync(
-          function(result, ex, id)
-          {
-            // Check for an error
-            if (ex != null)
-            {
-              // Error occured, display window
-              dialog.Dialog.warning(ex.message); 
-              
-              return; 
-            
-            }
-            // Set the display name in the application header
-            _this.whoAmI.setDisplayName(win._displayName.getValue().trim());
-            _this.whoAmI.setHasSetDisplayName(true);
-
-            // Close the window
-            win.close();
-          },
-          "editProfile",
-          {
-            displayName : win._displayName.getValue()
-          });
-        },
-        this);
-
-        // Add the Cancel button
-        cancel = new qx.ui.form.Button(this.tr("Cancel"));
-        cancel.setWidth(100);
-        cancel.setHeight(30);
-        hBox.add(cancel);
-
-        // Allow 'Escape' to cancel
-        command = new qx.ui.core.Command("Esc");
-        cancel.setCommand(command);
-
-        // Close the window if the cancel button is pressed
-        cancel.addListener(
-        "execute",
-        function(e)
-        {
-          win.close();
-        },
-        this);
-
-        // Add the button bar to the window
-        win.add(hBox);
-
-        // We only want to create this window once.
-        this._win = win;
-      }
-
-      // Clear out the display name field
-      this._win._displayName.setValue("");
-
-      // Set the focus to the display name field
-      this._win._displayName.focus();
-
-      // Show the window
-      this._win.center();
-      this._win.show();
-    },
-
     /**
     * Initialize Back button and bookmark support. Also look at the fragment
     * of the current URL to see if we need to go to a particular module.
@@ -1257,7 +1189,7 @@ qx.Class.define("aiagallery.main.Gui",
           // if the user stays on the Find Apps page, but does a
           // different search. This issue cannot be fixed simply and
           // is documented on the issue tracker as issue #64. 
-	  
+          
           this.__selectModuleByFragment(state);
 
           
@@ -1281,6 +1213,9 @@ qx.Class.define("aiagallery.main.Gui",
 
           // Retrieve the currently-selected page
           selectedPage = mainTabs.getSelection()[0];
+
+          // Encode the query again to preserve special characters
+          jsonQuery = encodeURIComponent(jsonQuery);  
 
           // Build the new fragment which identifies this particular query
           fragment =
@@ -1353,6 +1288,16 @@ qx.Class.define("aiagallery.main.Gui",
         // We already returned in the case of an author search (an internal
         // search), so if we got here it's because of a user click for direct
         // entry to the FindApps module.)
+      } 
+
+      else if(selectedPage.getUserData("pageId") ==
+              aiagallery.main.Constant.PageName.PublicUser)
+      {
+        // This is a user profile page
+        // add username to fragment
+        fragment +=
+          "&username=" +
+          selectedPage.getUserData("user");   
       }
 
       // Change URL to add language independent constant to it
@@ -1392,20 +1337,41 @@ qx.Class.define("aiagallery.main.Gui",
       var             bPageExists;
       var             pageLocation;
       var             mainTabsLocation; 
+      var             bAppOrUser = false;
       
-      // Is this a request for the App page?
-      if (components.page == aiagallery.main.Constant.PageName.AppInfo)
+      // Is this a request for the App page or user profile?
+      if (components.page == aiagallery.main.Constant.PageName.AppInfo ||
+          components.page == aiagallery.main.Constant.PageName.PublicUser)
       {
-        // Yup. Ensure there's a uid and a label provided
-        if (! components.uid)
+
+        // Set boolean flags so we now which one to do
+        // false for app, true for profile
+        if(components.page == aiagallery.main.Constant.PageName.PublicUser)
         {
-          throw new Error("Got request for AppInfo without UID");
+          bAppOrUser = true; 
         }
-        if (! components.label)
+
+        if(bAppOrUser)
         {
-          throw new Error("Got request for AppInfo without label");
+          // Need to have a username 
+          if (! components.username)
+          {
+            throw new Error("Got request for User Profile without username");
+          }     
+        } 
+        else 
+        {
+          // Yup. Ensure there's a uid and a label provided
+          if (! components.uid)
+          {
+            throw new Error("Got request for AppInfo without UID");
+          }
+          if (! components.label)
+          {
+            throw new Error("Got request for AppInfo without label");
+          }
         }
-        
+
         // Get the page selector bar
         pageSelectorBar =
           aiagallery.main.Gui.getInstance().getUserData("pageSelectorBar");
@@ -1417,7 +1383,8 @@ qx.Class.define("aiagallery.main.Gui",
         // so remove it 
         for (j = 0; j < pageArray.length; j++)
         {
-          if (pageArray[j].getUserData("app"))
+          if (pageArray[j].getUserData("app") || 
+              pageArray[j].getUserData("user"))
           {
           
             // Save the page location to replace later on else
@@ -1441,7 +1408,8 @@ qx.Class.define("aiagallery.main.Gui",
 
           // Is this the one we're looking for?
           if (-1 != pageLabel.indexOf("-") 
-            && pageLabel.substring(1) != components.label)
+            && (pageLabel.substring(1) != components.label &&
+               pageLabel.substring(1) != components.username))
           {
             // Save the page location to replace later on else
             // the preceding tab will be selected incorrectly            
@@ -1460,7 +1428,8 @@ qx.Class.define("aiagallery.main.Gui",
           pageLabel = tabArray[i].getLabel(); 
 
           // is this an ephemeral page
-          if (pageLabel.substring(1) == components.label)
+          if (pageLabel.substring(1) == components.label ||
+              pageLabel.substring(1) == components.username)
           {
             bPageExists = true;
             break;
@@ -1470,14 +1439,29 @@ qx.Class.define("aiagallery.main.Gui",
         // If this is false we need to open the page ourselves
         if (!bPageExists)
         {
-          aiagallery.module.dgallery.appinfo.AppInfo.addAppView(
-            Number(components.uid), components.label);
+          if (bAppOrUser) 
+          {
+             aiagallery.module.dgallery.userinfo.UserInfo.addPublicUserView(
+               components.username); 
+          } 
+          else 
+          {              
+            aiagallery.module.dgallery.appinfo.AppInfo.addAppView(
+              Number(components.uid), components.label);
+          }
         }
           
           
         // All ephemeral pages have been removed at this point via addAppView
         // Create new temporary app radio button page
-        tempRadioButton = new qx.ui.form.RadioButton(components.label);
+        if(bAppOrUser)
+        {
+          tempRadioButton = new qx.ui.form.RadioButton(components.username);  
+        }
+        else
+        {
+          tempRadioButton = new qx.ui.form.RadioButton(components.label);
+        }       
         tempRadioButton.set(
             {
               appearance : "pageselector",
@@ -1508,14 +1492,14 @@ qx.Class.define("aiagallery.main.Gui",
 
         // Page selected. Nothing more to do.
         return;
-      }
+      } 
 
       // Retrieve the previously-created top-level tab view
       mainTabs = qx.core.Init.getApplication().getUserData("mainTabs");
       tabArray = mainTabs.getChildren();
 
-      // It's not an AppInfo request. Iterate through the tabs' labels to find
-      // the tab.
+      // It's not an AppInfo or user profile request. 
+      // Iterate through the tabs' labels to find the tab.
       for (i = 0; i < tabArray.length; i++)
       {
         // Get the pageId
@@ -1591,14 +1575,17 @@ qx.Class.define("aiagallery.main.Gui",
       for (i = 0; i < tabArray.length; i++)
       {
         // Get the pageId
-        var pageLabel = tabArray[i].getLabel(); 
+        var modulePageLabel = tabArray[i].getLabel(); 
 
         // Is this the one we're looking for?
-        if (-1 != pageLabel.indexOf("-"))
+        if (-1 != modulePageLabel.indexOf("-"))
         {
           mainTabs.remove(tabArray[i]); 
         }
       }
+
+      // Clear out ephemeral menu items on the main module 
+      aiagallery.main.Module.removeEphemeralMenuItems(); 
 
       // FIXME On app entry the title of the page is not set
       // We set it here, even though in app when a user selects
@@ -1609,6 +1596,7 @@ qx.Class.define("aiagallery.main.Gui",
       switch(pageId)
       {
       case aiagallery.main.Constant.PageName.AppInfo:
+      case aiagallery.main.Constant.PageName.PublicUser: 
         // This was special-cased above
         break;
 
@@ -1642,12 +1630,25 @@ qx.Class.define("aiagallery.main.Gui",
     {
       var             parts;
       var             components;
-      
-      // Ensure fragment is properly decoded
-      fragment = decodeURIComponent(fragment); 
+      var             i;      
 
       // Is this an app page or find apps search?
       parts = fragment.split("&"); 
+
+      // On firefox the fragment will come in decoded, but on chrome/ie
+      // the fragment will be decoded. If the fragement is not decoded
+      // then parts will not have been split at all. Thus we need to decode it.
+      // We do not decode in all cases in order to allow searches with an &.
+      if (parts.length == 1)
+      {
+        parts = decodeURIComponent(fragment).split("&"); 
+      }
+
+      // Ensure parts are properly decoded
+      for (i = 0; i < parts.length; i++)
+      {
+        parts[i] = decodeURIComponent(parts[i]);
+      }
 
       // Parse it completely
       components = {};

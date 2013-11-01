@@ -81,17 +81,18 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
       user = userService.getCurrentUser();
       
       // If no one is logged in...
-      if (! user)
+      if (!user)
       {
         this.setWhoAmI(
           {
             id                : "",
-            email             : "anonymous",
+            email             : "Guest",
             displayName       : "",
             isAdmin           : false,
-            logoutUrl         : "",
+            logoutUrl         : userService.createLoginURL("/"),
             permissions       : [],
-            hasSetDisplayName : true
+            hasSetDisplayName : true,
+            isAnonymous       : true
           });
         return;
       }
@@ -138,6 +139,7 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
         }, [], this); // End of transaction
 
         // Save the logged-in user. The whoAmI property is in MDbifCommon.
+
         this.setWhoAmI(
           {
             id                : googleUserId,
@@ -146,8 +148,9 @@ qx.Class.define("aiagallery.dbif.DbifAppEngine",
             isAdmin           : userService.isUserAdmin(),
             logoutUrl         : userService.createLogoutURL("/"),
             permissions       : permissions,
-            hasSetDisplayName : displayName != googleUserId
-            });
+            hasSetDisplayName : displayName != googleUserId,
+            isAnonymous       : false
+          });
     },
          
     /**

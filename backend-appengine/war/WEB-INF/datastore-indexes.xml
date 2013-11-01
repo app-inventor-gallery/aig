@@ -8,20 +8,55 @@
 
     <datastore-index kind="apps" ancestor="true" source="manual">
         <property name="status" direction="asc"/>
+        <property name="numComments" direction="desc"/>
+        <property name="uploadTime" direction="desc"/>
+        <property name="creationTime" direction="desc"/>
+    </datastore-index>
+
+    <datastore-index kind="apps" ancestor="true" source="manual">
+        <property name="status" direction="asc"/>
+        <property name="creationTime" direction="asc"/>
+        <property name="uploadTime" direction="asc"/>
+    </datastore-index>
+
+    <datastore-index kind="apps" ancestor="true" source="manual">
+        <property name="status" direction="asc"/>
+        <property name="numViewed" direction="asc"/>
+    </datastore-index>
+	
+    <datastore-index kind="apps" ancestor="true" source="manual">
+        <property name="status" direction="asc"/>
+        <property name="numViewed" direction="desc"/>
+    </datastore-index>
+
+    <datastore-index kind="apps" ancestor="true" source="manual">
+        <property name="status" direction="asc"/>
+        <property name="numLikes" direction="asc"/>
+    </datastore-index>
+	
+    <datastore-index kind="apps" ancestor="true" source="manual">
+        <property name="status" direction="asc"/>
         <property name="numLikes" direction="desc"/>
     </datastore-index>
 
     <datastore-index kind="apps" ancestor="true" source="manual">
         <property name="status" direction="asc"/>
-        <property name="uploadTime" direction="desc"/>
-    </datastore-index>
-
-    <datastore-index kind="apps" ancestor="true" source="manual">
-        <property name="numLikes" direction="asc"/>
-    </datastore-index>
-
-    <datastore-index kind="apps" ancestor="true" source="manual">
         <property name="numDownloads" direction="asc"/>
+    </datastore-index>
+
+    <datastore-index kind="apps" ancestor="true" source="manual">
+        <property name="status" direction="asc"/>
+        <property name="numDownloads" direction="desc"/>
+    </datastore-index>
+
+    <datastore-index kind="apps" ancestor="true" source="manual">
+        <property name="status" direction="asc"/>
+        <property name="numDownloads" direction="asc"/>
+    </datastore-index>
+
+    <datastore-index kind="apps" ancestor="true" source="manual">
+        <property name="status" direction="asc"/>
+        <property name="numDownloads" direction="desc"/>
     </datastore-index>
 
     <datastore-index kind="apps" ancestor="true" source="manual">
@@ -39,7 +74,6 @@
         <property name="numDownloads" direction="asc"/>
         <property name="numLikes" direction="asc"/>
         <property name="status" direction="asc"/>
-        <property name="numViewed" direction="asc"/>
     </datastore-index>
 
     <datastore-index kind="apps" ancestor="true" source="manual">

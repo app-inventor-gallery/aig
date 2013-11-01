@@ -172,7 +172,7 @@ qx.Class.define("aiagallery.module.dgallery.findapps.CriteriaSearch",
     // Add the search results label
     font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
     font.setSize(18);
-    label = new qx.ui.basic.Label("Search Results");
+    label = new qx.ui.basic.Label(this.tr("Search Results"));
     label.set(
       {
         font : font

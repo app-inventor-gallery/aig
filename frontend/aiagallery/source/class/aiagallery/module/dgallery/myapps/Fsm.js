@@ -218,12 +218,36 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
                            data.uid
                          ]);
 
+          // Only use memcache if we are on Google App Engine.
+          if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+          {
+
+	      var memcacheServiceFactory;
+	      var syncCache;
+              var value;
+/*
+	      // Setting up memcache references
+	      memcacheServiceFactory = 
+                Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+	      syncCache = memcacheServiceFactory.getMemcacheService();	
+              // Check if item in memcache, if it exists we flush it
+	      value = syncCache.get(data.uid); 
+              if (value != null) {
+              // After pulling data, make sure to clear memcache
+              syncCache.clearAll();
+
+              }*/
+          }
+
           // When we get the result, we'll need to know what type of request
           // we made.
           request.setUserData("requestType", "deleteApp");
           
           // Save the App object to which this request applies
           request.setUserData("App", data.app);
+
+
+
         }
       });
 
@@ -250,12 +274,27 @@ qx.Class.define("aiagallery.module.dgallery.myapps.Fsm",
         "ontransition" : function(fsm, event)
         {
           var data;
-            
           // Retrieve the serverPush event
           data = event.getData();
           
           // The serverPush event contains the data we care about
           data = data.getData();
+/**
+          // Only use memcache if we are on Google App Engine.
+          if (liberated.dbif.Entity.getCurrentDatabaseProvider() == "appengine")
+          {
+
+	      var memcacheServiceFactory;
+	      var syncCache;
+
+	      // Setting up memcache references
+	      memcacheServiceFactory = 
+                Packages.com.google.appengine.api.memcache.MemcacheServiceFactory;
+	      syncCache = memcacheServiceFactory.getMemcacheService();	
+              // After pulling data, make sure to clear memcache
+              syncCache.clearAll();
+          }**/
+
           
           //
           // Simulate that this is an RPC response

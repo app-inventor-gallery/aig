@@ -75,6 +75,9 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
             "addUser" : "Transition_Idle_to_AddOrEditVisitor_via_addUser"
           },
 
+          // When the turnOnNoti button is pressed
+          "turnOnNoti" : "Transition_Idle_to_AwaitRpcResult_via_turnOnNoti", 
+
           "cellEditorOpening" :
           {
             // When a cell is double-clicked, or the Edit button is pressed,
@@ -136,7 +139,7 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
                           "aiagallery.features",
                           "deleteVisitor",
                           [
-                            data[1] // the email address is their user id
+                            data[2] // the email address is their user id
                           ]);
 
           // When we get the result, we'll need to know what type of request
@@ -198,6 +201,43 @@ qx.Class.define("aiagallery.module.mgmt.users.Fsm",
         }
       });
         
+      state.addTransition(trans);
+
+
+      /*
+       * Transition: Idle to AwaitRpcResult
+       *
+       * Cause: "execute" on turnOnNoti button
+       *
+       * Action:
+       *  Issue a remote procedure call to turn on the alert 
+       *  notifications on all users 
+       */
+
+      trans = new qx.util.fsm.Transition(
+        "Transition_Idle_to_AwaitRpcResult_via_turnOnNoti",
+      {
+        "nextState" : "State_AwaitRpcResult",
+
+        "context" : this,
+
+        "ontransition" : function(fsm, event)
+        {     
+          // Issue a Delete Visitor call
+          var request =
+            this.callRpc(fsm,
+                          "aiagallery.features",
+                          "managementAllNotifications",
+                          [
+                            true // Can use false to turn them all off 
+                          ]);
+
+          // When we get the result, we'll need to know what type of request
+          // we made.
+          request.setUserData("requestType", "turnOnNoti");
+        }
+      });
+
       state.addTransition(trans);
 
       /*

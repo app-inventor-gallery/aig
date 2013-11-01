@@ -398,7 +398,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
         
       case "title":
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
-        font.setDecoration("underline");
+        // font.setDecoration("underline");
         
         // Display the title single-line in searchResults format; possibly
         // wrapping on multiple lines in the other formats.
@@ -415,9 +415,10 @@ qx.Class.define("aiagallery.widget.SearchResult",
         case "byAuthor":
         case "appInfo":
           textAlign = "left";
-          size = 300;
+          size = 600;
           break;
         }
+		font.setSize(16);
         control.set(
           {
             width     : size,
@@ -572,8 +573,8 @@ qx.Class.define("aiagallery.widget.SearchResult",
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.set(
           {
-            color      : "#75940c",     // android-green-dark
-            decoration : "underline"
+            color      : "#75940c"     // android-green-dark
+            // decoration : "underline"
           });
         control = new qx.ui.basic.Label();
         control.set(
@@ -583,12 +584,11 @@ qx.Class.define("aiagallery.widget.SearchResult",
             cursor    : "pointer"
           });
 
-        // Author clicks initiate a search for apps of that author
+        // Author clicks will launch the user's profile page
         control.addListener(
           "click",
           function(e)
           {
-            var             query;
             var             displayName;
 
             // Prevent the default 'click' behavior
@@ -598,17 +598,9 @@ qx.Class.define("aiagallery.widget.SearchResult",
             // Remove "by" from displayName
             displayName = this.getDisplayName().replace("by ", "");
 
-            query  =
-              {
-                authorName : displayName
-              };
-            
-            // Initiate a search
-            aiagallery.main.Gui.getInstance().selectModule(
-              {
-                page  : aiagallery.main.Constant.PageName.FindApps,
-                query : qx.lang.Json.stringify(query)
-              });
+            // Launch user page module
+            aiagallery.module.dgallery.userinfo.UserInfo.addPublicUserView(
+            displayName);
           },
           this);
 
@@ -667,7 +659,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.set(
           {
-            decoration : "underline"
+            // decoration : "underline"
           });
         control = new qx.ui.basic.Label(this.tr("Like It?"));
         control.set(
@@ -688,11 +680,11 @@ qx.Class.define("aiagallery.widget.SearchResult",
         this._add(control, this.gridConfig.likeIt);
         break;
         
-      case "flagIt":
+      case "flagIt":      
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.set(
           {
-            decoration : "underline"
+            // decoration : "underline"
           });
         control = new qx.ui.basic.Label(this.tr("Flag as inappropriate?"));
         control.set(
@@ -702,21 +694,25 @@ qx.Class.define("aiagallery.widget.SearchResult",
           });
         
         // Fire a "flagIt" event when this label is clicked
-        control.addListener(
+        this.eventList = control.addListener(
           "click",
           function(e)
           {
-            this.fireEvent("flagIt");
+            var win = new aiagallery.widget.FlagPopUp(
+               aiagallery.dbif.Constants.FlagType.App, this);
+
+            win.show();
           },
           this);
         this._add(control, this.gridConfig.flagIt);
+               
         break;
 
       case "download":
         font = qx.theme.manager.Font.getInstance().resolve("bold").clone();
         font.set(
           {
-            decoration : "underline"
+            // decoration : "underline"
           });
         control = new qx.ui.basic.Label(this.tr("Download Source"));
         control.set(
@@ -820,7 +816,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
     // property transform function
     _transformCreationTime : function(value)
     {
-      return("Created: " +
+      return(this.tr("Created: ") +
              this.dateFormat.format(new Date(Number(value))));
     },
     
@@ -833,7 +829,7 @@ qx.Class.define("aiagallery.widget.SearchResult",
     // property transform function
     _transformUploadTime : function(value)
     {
-      return("Last updated: " +
+      return(this.tr("Last updated: ") +
              this.dateFormat.format(new Date(Number(value))));
     },
 
@@ -874,3 +870,5 @@ qx.Class.define("aiagallery.widget.SearchResult",
     this.removeListener("mouseout", this._onMouseOut, this);
   }
 });
+
+

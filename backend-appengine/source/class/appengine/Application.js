@@ -258,7 +258,7 @@ qx.Class.define("appengine.Application",
 
         break;
 */
-
+/* Invasive admin functions that are no longer needed 
       case "flushDB":               // flush the entire database
         var             entities;
 
@@ -490,7 +490,7 @@ qx.Class.define("appengine.Application",
         }
 
         break;
-
+*/ 
       case "tag":              // mobile client request
         // Simulate a real RPC request
         jsonInput = 

@@ -1,0 +1,756 @@
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: you@your.org\n"
+"POT-Creation-Date: 2013-09-03 14:12-0500\n"
+"PO-Revision-Date: 2013-09-03 14:12-0500\n"
+"Last-Translator: you <you@your.org>\n"
+"Language-Team: Team <yourteam@your.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: aiagallery/main/Gui.js:111
+msgid "App Inventor<br/>Community Gallery"
+msgstr ""
+
+#: aiagallery/main/Gui.js:151
+msgid "$$languagename"
+msgstr "English"
+
+#: aiagallery/main/Gui.js:273
+msgid "Simulate"
+msgstr ""
+
+#: aiagallery/main/Gui.js:801
+msgid "About the gallery"
+msgstr ""
+
+#: aiagallery/main/Gui.js:813
+msgid "App Inventor Gallery About Us"
+msgstr ""
+
+#: aiagallery/main/Gui.js:821
+msgid "Terms of Use"
+msgstr ""
+
+#: aiagallery/main/Gui.js:833
+msgid "App Inventor Gallery Terms of Use"
+msgstr ""
+
+#: aiagallery/main/Gui.js:841
+msgid "Privacy Policy"
+msgstr ""
+
+#: aiagallery/main/Gui.js:853
+msgid "App Inventor Gallery Privacy Policy"
+msgstr ""
+
+#: aiagallery/main/Gui.js:861
+msgid "Supported Browsers"
+msgstr ""
+
+#: aiagallery/main/Gui.js:873
+msgid "App Inventor Gallery Supported Browsers"
+msgstr ""
+
+#: aiagallery/main/WhoAmI.js:148
+msgid "Login"
+msgstr ""
+
+#: aiagallery/module/dgallery/about/Gui.js:118
+#: aiagallery/module/dgallery/contest/Gui.js:121
+msgid "The 2012 MIT App Inventor App Contest had 125 submissions in four categories: K-8, High School, College/University, and Open. Google Nexus 7 Tablets are being awarded to the 1st place winners, with <a href=http://www.amazon.com/App-Inventor-Create-Your-Android/dp/1449397484>App Inventor</a> books given for second place. Participants included students as young as third grade, college students, hobbyists, professional developers, and even some self-described \"retired old ladies\"! The following are the prize winners and a few of the other notable apps:"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Comment.js:211
+msgid "Keep Comment"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Comment.js:234
+msgid "Delete Comment"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Comment.js:258
+msgid "Visit App"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Comment.js:300
+#: aiagallery/widget/SearchResult.js:688
+msgid "Flag as inappropriate?"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Comment.js:306
+msgid "Flag this comment"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:99
+#: aiagallery/module/dgallery/myapps/Gui.js:197
+msgid "Comments"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:117
+msgid "Add a comment"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:132
+msgid "Talk about this app"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:145
+msgid "480 Characters Left"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:161
+#: aiagallery/widget/mystuff/Detail.js:203
+msgid "Add"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:171
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:330
+#: aiagallery/widget/FlagPopUp.js:183
+msgid "Cancel"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:188
+msgid "Login to comment"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:206
+msgid "Check out related apps below!"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:225
+msgid "Select tags below to find out similar apps:"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:313
+msgid " Characters Left"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:400
+msgid "Apps by this author"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:536
+#: aiagallery/module/dgallery/appinfo/Gui.js:716
+msgid "You liked it!"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:554
+#: aiagallery/module/dgallery/appinfo/Gui.js:738
+#: aiagallery/module/dgallery/userinfo/Gui.js:432
+#: aiagallery/module/dgallery/userinfo/Gui.js:466
+msgid "Flagged as inappropriate."
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:604
+msgid "No source data found!"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:624
+msgid "Login to like!"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:641
+msgid "Login to flag!"
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:757
+msgid "This app has been flagged."
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:758
+#: aiagallery/module/dgallery/appinfo/Gui.js:767
+msgid " An admin will review it."
+msgstr ""
+
+#: aiagallery/module/dgallery/appinfo/Gui.js:766
+msgid "This comment has been flagged."
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:32
+msgid "Search in: "
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:45
+msgid "All text fields"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:50
+msgid "Specific fields"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:135
+#: aiagallery/main/Gui.js:204 aiagallery/module/dgallery/home/Gui.js:203
+msgid "Search"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:158
+#: aiagallery/module/mgmt/motd/Gui.js:73
+msgid "Clear"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:175
+msgid "Search Results"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1278
+msgid "Search for words found in apps' title, description, categories, or tags"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1373
+msgid "Find apps in which..."
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1382
+msgid "Title contains"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1386
+msgid "Description contains"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1390
+msgid "Tags include"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1394
+msgid "Selected categories"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1422
+msgid "Author Name"
+msgstr ""
+
+#: aiagallery/module/dgallery/findapps/Gui.js:112
+msgid "No results found"
+msgstr ""
+
+#: aiagallery/module/dgallery/home/Gui.js:107
+msgid "Welcome to the MIT App Inventor Community Gallery!"
+msgstr ""
+
+#: aiagallery/module/dgallery/home/Gui.js:121
+msgid "Check out mobile apps from all over the world! <br/>Download App Inventor blocks and learn to program! <br/>Join the community of App Inventor programmers!<br/><br/>"
+msgstr ""
+
+#: aiagallery/module/dgallery/home/Gui.js:189
+msgid "Search for an App"
+msgstr ""
+
+#: aiagallery/module/dgallery/home/Gui.js:250
+msgid "Most popular tags in the gallery"
+msgstr ""
+
+#: aiagallery/module/dgallery/home/Gui.js:392
+msgid "Featured Apps"
+msgstr ""
+
+#: aiagallery/module/dgallery/home/Gui.js:429
+msgid "Newest Apps"
+msgstr ""
+
+#: aiagallery/module/dgallery/home/Gui.js:467
+msgid "Most Popular Apps"
+msgstr ""
+
+#: aiagallery/module/dgallery/myapps/Gui.js:66
+msgid "Add New Application"
+msgstr ""
+
+#: aiagallery/module/dgallery/myapps/Gui.js:179
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1398
+#: aiagallery/module/mgmt/applications/Gui.js:145
+msgid "Likes"
+msgstr ""
+
+#: aiagallery/module/dgallery/myapps/Gui.js:185
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1402
+msgid "Downloads"
+msgstr ""
+
+#: aiagallery/module/dgallery/myapps/Gui.js:191
+#: aiagallery/module/dgallery/findapps/CriteriaSearch.js:1412
+#: aiagallery/module/mgmt/applications/Gui.js:135
+msgid "Views"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:95
+msgid "Username:"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:119
+msgid "Valid usernames must be between 2 and 30 characters. It must not be admin, administrator, guest, superuser, or root."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:156
+msgid "Date of Birth (Not Displayed):"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:179
+msgid "The date of birth info is for site statistics only. It is not displayed."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:205
+msgid "Month"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:231
+msgid "Year"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:252
+#: aiagallery/module/dgallery/userinfo/Gui.js:98
+msgid "Email:"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:275
+msgid "Check this box to show your email on your public profile."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:315
+msgid "Display Email on Public Profile"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:330
+#: aiagallery/module/dgallery/userinfo/Gui.js:118
+msgid "Location:"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:353
+msgid "Enter where you are. It could be a state, a country, or somewhere else."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:388
+#: aiagallery/module/dgallery/userinfo/Gui.js:133
+msgid "Organization:"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:412
+msgid "Enter the organization you are affiliated with if you have one. It could be a school, or a company, or something else."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:446
+#: aiagallery/module/dgallery/userinfo/Gui.js:148
+msgid "URL:"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:469
+msgid "Enter your site url if you have one."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:508
+msgid "Describe Yourself:"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:532
+msgid "Tell us about yourself, the kind of apps you make, why you make apps, and anything else that floats your fancy."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:556
+msgid "Tell people about yourself"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:566
+#: aiagallery/module/dgallery/user/Gui.js:883
+msgid " Characters left"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:578
+msgid "500 Character Limit"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:588
+msgid "Save Changes"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:616
+msgid "User Options:"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:639
+msgid "Options for sending emails to the email address you logged in with."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:657
+msgid "Notify me by email if:"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:668
+msgid "Someone likes one of my apps"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:676
+#: aiagallery/module/dgallery/user/Gui.js:709
+#: aiagallery/module/dgallery/user/Gui.js:742
+msgid "Every..."
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:701
+msgid "Someone comments on one of my apps"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:734
+msgid "Someone downloads one of my apps"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:759
+msgid "Select your profile image"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:856
+msgid "You must log in to edit your profile"
+msgstr ""
+
+#: aiagallery/module/dgallery/user/Gui.js:998
+msgid "New profile information saved."
+msgstr ""
+
+#: aiagallery/module/dgallery/userinfo/Gui.js:77
+msgid "Date of Birth:"
+msgstr ""
+
+#: aiagallery/module/dgallery/userinfo/Gui.js:165
+msgid "About this user:"
+msgstr ""
+
+#: aiagallery/module/dgallery/userinfo/Gui.js:244
+msgid "Flag this Profile"
+msgstr ""
+
+#: aiagallery/module/dgallery/userinfo/Gui.js:257
+msgid "Flag this user profile"
+msgstr ""
+
+#: aiagallery/module/dgallery/userinfo/Gui.js:390
+msgid "Apps By "
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:44
+msgid "Edit App: "
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:79
+#: aiagallery/module/dgallery/myapps/Gui.js:169
+#: aiagallery/module/mgmt/applications/Gui.js:110
+#: aiagallery/widget/mystuff/Detail.js:96
+msgid "Title"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:80
+#: aiagallery/module/mgmt/applications/Gui.js:115
+#: aiagallery/widget/mystuff/Detail.js:119
+msgid "Description"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:81
+#: aiagallery/widget/mystuff/Detail.js:159
+msgid "Categories"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:217
+msgid "add tags"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:220
+msgid "Add tag"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:289
+#: aiagallery/module/mgmt/applications/Gui.js:120
+msgid "Flags"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:302
+msgid "Remove all flags"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:324
+#: aiagallery/widget/FlagPopUp.js:90
+msgid "Ok"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/Gui.js:44
+#: aiagallery/module/mgmt/users/Gui.js:44
+msgid "Edit"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/Gui.js:93
+msgid "Owner"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/Gui.js:105
+#: aiagallery/module/mgmt/users/Gui.js:121
+msgid "Display Name"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/Gui.js:130
+msgid "Tags"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/Gui.js:140
+msgid "DLs"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/Gui.js:150
+msgid "Coms"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/Gui.js:155
+msgid "Im"
+msgstr ""
+
+#: aiagallery/module/mgmt/applications/Gui.js:300
+msgid "Really delete app "
+msgstr ""
+
+#: aiagallery/module/mgmt/flags/Gui.js:177
+#: aiagallery/module/mgmt/flags/Gui.js:280
+msgid "Keep"
+msgstr ""
+
+#: aiagallery/module/mgmt/flags/Gui.js:201
+msgid "Really Delete this App?"
+msgstr ""
+
+#: aiagallery/module/mgmt/flags/Gui.js:215
+msgid "Go To App"
+msgstr ""
+
+#: aiagallery/module/mgmt/flags/Gui.js:304
+msgid "Really Delete this User?"
+msgstr ""
+
+#: aiagallery/module/mgmt/flags/Gui.js:318
+msgid "Go To User Profile"
+msgstr ""
+
+#: aiagallery/module/mgmt/flags/Gui.js:464
+msgid "Message Kept"
+msgstr ""
+
+#: aiagallery/module/mgmt/flags/Gui.js:493
+msgid "Message Deleted"
+msgstr ""
+
+#: aiagallery/module/mgmt/motd/Gui.js:60
+msgid "Submit"
+msgstr ""
+
+#: aiagallery/module/mgmt/motd/Gui.js:88
+msgid "Enter Message of the day here:"
+msgstr ""
+
+#: aiagallery/module/mgmt/permissions/Gui.js:73
+msgid "Add Permission Group"
+msgstr ""
+
+#: aiagallery/module/mgmt/permissions/Gui.js:90
+msgid "Save"
+msgstr ""
+
+#: aiagallery/module/mgmt/permissions/Gui.js:107
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:209
+#: aiagallery/module/mgmt/flags/Gui.js:191
+#: aiagallery/module/mgmt/flags/Gui.js:294
+#: aiagallery/module/mgmt/applications/Gui.js:72
+#: aiagallery/module/mgmt/users/Gui.js:103
+msgid "Delete"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/CellEditorFactory.js:42
+msgid "Edit User: "
+msgstr ""
+
+#: aiagallery/module/mgmt/users/CellEditorFactory.js:47
+msgid "Add New User"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/CellEditorFactory.js:92
+msgid "DisplayName"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/CellEditorFactory.js:93
+#: aiagallery/module/mgmt/applications/Gui.js:99
+#: aiagallery/module/mgmt/users/Gui.js:122
+msgid "Email"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/CellEditorFactory.js:94
+#: aiagallery/module/mgmt/users/Gui.js:123
+msgid "Id"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/CellEditorFactory.js:95
+#: aiagallery/module/mgmt/users/Gui.js:124
+msgid "Permissions"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/CellEditorFactory.js:96
+#: aiagallery/module/mgmt/users/Gui.js:125
+msgid "Permission Groups"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/CellEditorFactory.js:97
+#: aiagallery/module/mgmt/applications/CellEditorFactory.js:82
+#: aiagallery/module/dgallery/myapps/Gui.js:173
+#: aiagallery/module/mgmt/applications/Gui.js:125
+#: aiagallery/module/mgmt/users/Gui.js:126
+msgid "Status"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/Gui.js:71
+msgid "Turn on All User Notifications"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/Gui.js:83
+msgid "This will turn all user notifications settings on. Do you really want to do this?"
+msgstr ""
+
+#: aiagallery/module/mgmt/users/Gui.js:227
+msgid "Really delete user "
+msgstr ""
+
+#: aiagallery/module/mgmt/users/Gui.js:317
+msgid "All user notifications turned on."
+msgstr ""
+
+#: aiagallery/widget/FlagPopUp.js:127
+#: aiagallery/module/dgallery/appinfo/Comment.js:290
+msgid "Comment Flagged"
+msgstr ""
+
+#: aiagallery/widget/SearchResult.js:663
+msgid "Like It?"
+msgstr ""
+
+#: aiagallery/widget/SearchResult.js:716
+msgid "Download Source"
+msgstr ""
+
+#: aiagallery/widget/SearchResult.js:818
+msgid "Created: "
+msgstr ""
+
+#: aiagallery/widget/SearchResult.js:831
+msgid "Last updated: "
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:86
+msgid "Enter the application title (30 character limit)"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:108
+msgid "Enter a brief description (480 Character Limit)"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:140
+msgid "Tags :"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:171
+msgid "Enter a new tag"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:193
+msgid "For example, if you are from unX, you may want to tag your app with 'Spanish' or 'Portuguese.'"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:267
+msgid "Delete Tag"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:309
+msgid "Select source file"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:376
+msgid "Please upload the source code (.zip file) for an App Inventor app. To create this file in App Inventor, go to the My Projects page, select the project you want, then  choose 'Other Actions' and select 'Download Source'. Do not open the downloaded zip file but upload it here directly."
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:389
+msgid "Select Image"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:444
+msgid "The image you upload will appear on the app's page and all search screens. It will be scaled into a 180*230 image. Typically the image is a screenshot or an icon if you've created one. The file size limit is "
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:462
+msgid "Save Application"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:543
+msgid "Reset"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:569
+msgid "Discard"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:593
+msgid "Really delete application"
+msgstr ""
+
+#: aiagallery/widget/mystuff/Detail.js:825
+msgid "Delete Application"
+msgstr ""
+
+#~ msgid " See "
+#~ msgstr ""
+
+#~ msgid "<div><br/>Welcome to the <a href='gallery.html'>gallery!</a> See <a href='https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit'>Release Notes</a><br/>and post feedback / bug reports to the <a href='http://groups.google.com/group/app-inventor-gallery/topics' >Forum</a></div>"
+#~ msgstr ""
+
+#~ msgid "<div><br/>Welcome to the <a href=\"gallery.html\">gallery!</a> See <a href=\"https://docs.google.com/document/d/1sZ3rRdjsuicLbiaarLzbdspsmdfkllxRhWzY-y62sZk/edit\" target=\"_blank\" >Release Notes</a><br/>and post feedback / bug reports to the <a href=\"http://groups.google.com/group/app-inventor-gallery/topics\" target=\"_blank\" >Forum</a></div>"
+#~ msgstr ""
+
+#~ msgid "Activities"
+#~ msgstr ""
+
+#~ msgid "App Inventor"
+#~ msgstr ""
+
+#~ msgid "Browse Gallery in the language you like"
+#~ msgstr ""
+
+#~ msgid "Community Gallery"
+#~ msgstr ""
+
+#~ msgid "Contest Winners"
+#~ msgstr ""
+
+#~ msgid "Find Apps"
+#~ msgstr ""
+
+#~ msgid "Forum"
+#~ msgstr ""
+
+#~ msgid "Home"
+#~ msgstr ""
+
+#~ msgid "Login to submit apps and comment"
+#~ msgstr ""
+
+#~ msgid "Release Notes"
+#~ msgstr ""
+
+#~ msgid "Welcome to the "
+#~ msgstr ""
+
+#~ msgid "Welcome to the <a href=‘google.com’>gallery!</a>"
+#~ msgstr ""
+
+#~ msgid "Welcome to the gallery!"
+#~ msgstr ""
+
+#~ msgid "and post feedback / bug reports to the "
+#~ msgstr ""
+
+#~ msgid "gallery"
+#~ msgstr ""
+
+#~ msgid "gallery!"
+#~ msgstr ""
